@@ -98,9 +98,9 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <p>关于使用多任务操作系统的益处，可以参考：<a target="_blank" rel="noopener" href="https://fengxun2017.github.io/2022/10/27/why-use-RTOS/">为什么使用嵌入式实时操作系统(RTOS)</a> </p>
-<p>如何基于自己的开发板上新建FreeRTOS工程可以参考：<a href>基于crotex-m处理器新建FreeRTOS工程</a></p>
+<p>如何基于自己的开发板上新建FreeRTOS工程可以参考：<a target="_blank" rel="noopener" href="https://fengxun2017.github.io/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/">基于crotex-m处理器新建FreeRTOS工程</a></p>
 <hr>
-<h4 id="FreeRTOS如何创建任务："><a href="#FreeRTOS如何创建任务：" class="headerlink" title="FreeRTOS如何创建任务："></a>FreeRTOS如何创建任务：</h4><p>&amp;emsp;&amp;emsp;在多任务操作系统中，每个任务都可以看做是一个独立的”小应用”，操作系统负责对各个任务进行调度。FreeRTOS对任务的函数原型定义如下：</p>
+<h4 id="FreeRTOS如何创建任务："><a href="#FreeRTOS如何创建任务：" class="headerlink" title="FreeRTOS如何创建任务："></a>FreeRTOS如何创建任务：</h4><p>在多任务操作系统中，每个任务都可以看做是一个独立的”小应用”，操作系统负责对各个任务进行调度。FreeRTOS对任务的函数原型定义如下：</p>
 <p><code>void ATaskFunction( void *pvParameters );</code></p>
 <p>即每个任务的入口函数必须为上面的形式(无RTOS的裸机程序，可以认为入口函数就是Main函数)。一般任务的入口函数实现形式如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">ATaskFunction</span><span class="params">( <span class="type">void</span> *pvParameters )</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>( ;; )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 这里实现任务功能代码</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 任务退出前需要删除自己</span></span><br><span class="line">    vTaskDelete( <span class="literal">NULL</span> );</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
@@ -211,7 +211,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/29/FreeRTOS%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" data-id="cl9u1i8y40001ecu29u5ga0mz" data-title="FreeRTOS创建任务" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/29/FreeRTOS%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" data-id="cl9u3yiri0001egu2dwc9d4ll" data-title="FreeRTOS创建任务" class="article-share-link">Share</a>
       
       
       
@@ -250,8 +250,10 @@
     <div class="e-content article-entry" itemprop="articleBody">
       
         <hr>
-<p>&amp;emsp;这里我们只讨论支持多任务的嵌入式实时操作系统，如何理解多任务呢？以PC上的例子来说更容易理解。例如，你一边播放音乐，同时也在一边编辑文字。从体验上来看，这两个任务在你的PC上就像是在同时运行，这就是多任务的直观体现。<br>&amp;ensp;<br>&amp;emsp;那么在嵌入式系统上，基于FreeRTOS这类嵌入式多任务操作系统进行应用开发有什么好处呢？ 毕竟，操作系统内核本身需要占用存储和CPU资源的。<br>&amp;emsp;以一个环境采集监控系统为例，不使用RTOS的裸机程序，通常就是在Main 函数中实现一个无线循环，周期性的采集诸如温度、湿度、气压、等传传感器的数据，再通过LCD等显示设备将数据进行展示。各个功能相互耦合，功能代码全部集中在一起。对于早期开发维护人员来说这并没有什么障碍，但随着功能迭代，会逐渐出现各种需求。例如,增加一个用户输入功能，用来实时配置采集传感器的参数，或用来修改显示模式。又例如，在检测到温度高于某个临界值后，以频率A闪烁红灯；在检测温度低于某个临界值后，以频率B闪烁红灯。当这种需求越来越多，你的代码就会逐渐变得混乱不堪，让其它人难以理解，因为它们全都耦合在一起，看起来太费劲了。</p>
-<p>&amp;emsp;基于FreeRTOS这类多任务操作系统，我们可以将上述应用拆分成多逻辑清晰的子任务。例如，一个温度采集任务，一个湿度采集任务，一个气压采集任务，一个中控任务，一个输入管理任务，一个输出管理任务。这样每个任务的功能划分就很清晰。并且，各个任务间进行隔离，通过RTOS提供的任务间通讯机制(例如<strong>消息队列</strong>)进行通讯，而不是直接调用其它任务中的功能函数，这样就实现了任务间的解耦。</p>
+<p>这里我们只讨论支持多任务的嵌入式实时操作系统，如何理解多任务呢？以PC上的例子来说更容易理解。例如，你一边播放音乐，同时也在一边编辑文字。从体验上来看，这两个任务在你的PC上就像是在同时运行，这就是多任务的直观体现。</p>
+<p>那么在嵌入式系统上，基于FreeRTOS这类嵌入式多任务操作系统进行应用开发有什么好处呢？ 毕竟，操作系统内核本身需要占用存储和CPU资源的。</p>
+<p>以一个环境采集监控系统为例，不使用RTOS的裸机程序，通常就是在Main 函数中实现一个无线循环，周期性的采集诸如温度、湿度、气压、等传传感器的数据，再通过LCD等显示设备将数据进行展示。各个功能相互耦合，功能代码全部集中在一起。对于早期开发维护人员来说这并没有什么障碍，但随着功能迭代，会逐渐出现各种需求。例如,增加一个用户输入功能，用来实时配置采集传感器的参数，或用来修改显示模式。又例如，在检测到温度高于某个临界值后，以频率A闪烁红灯；在检测温度低于某个临界值后，以频率B闪烁红灯。当这种需求越来越多，你的代码就会逐渐变得混乱不堪，让其它人难以理解，因为它们全都耦合在一起，看起来太费劲了。</p>
+<p>基于FreeRTOS这类多任务操作系统，我们可以将上述应用拆分成多逻辑清晰的子任务。例如，一个温度采集任务，一个湿度采集任务，一个气压采集任务，一个中控任务，一个输入管理任务，一个输出管理任务。这样每个任务的功能划分就很清晰。并且，各个任务间进行隔离，通过RTOS提供的任务间通讯机制(例如<strong>消息队列</strong>)进行通讯，而不是直接调用其它任务中的功能函数，这样就实现了任务间的解耦。</p>
 <ul>
 <li><strong>采集任务</strong>只负责对相应传感器进行配置，以及对数据进行采集，并通过任务间通信机制(如<strong>消息队列</strong>)，将数据发送给中控任务。</li>
 <li><strong>输入管理任务</strong>只负责对输入设备进行配置，并获取用户输入，之后通过任务通信机制，将用户输入发送给中控任务。</li>
@@ -259,13 +261,15 @@
 <li><strong>中控任务</strong>负责处理各种策略和逻辑。例如，它从<strong>消息队列A</strong>中提取数据(可能是采集任务发来的，也可能是输入管理任务发来的)，并解析，如果需要做下一步动作(例如显示)，则将相应的<strong>命令</strong>发送到<strong>消息队列B</strong>中，让下游任务执行。</li>
 </ul>
 <p>我们可以清晰地抽象出如下图所示的系统逻辑：<br><img src="/2022/10/27/why-use-RTOS/system_view.jpg" alt="系统逻辑图"></p>
-<p>通过多任务和消息队列，我们将”<strong>机制</strong>“和”<strong>策略</strong>“进行了拆分。<br>像<strong>采集任务&#x2F;输入管理任务&#x2F;输出管理任务</strong>这种类型的任务只提供基本的”功能机制”(获取输入数据，输出显示数据)，它们并不关心数据本身是什么。它们只负责收集数据，再将数据丢到<strong>消息队列</strong>中(如采集任务)；或者从<strong>消息队列</strong>中提取数据，按原样配置到自己的寄存器中(如<strong>显示任务</strong>)。这样每个任务的代码就很清晰，职责也很明确，不会在这些模块中充斥着令人费解的业务相关”策略逻辑”(这些”策略逻辑”随着时间的推移，往往可能最后都没人清楚为什么要这样做，非常影响代码阅读)。<br>另一方面，<strong>中控任务</strong>负责实现具体的业务相关的逻辑。它从<strong>消息队列</strong>中提取输入数据(可能是输入管理任务发来的数据，也可能是采集任务发来的数据)，针对不同的数据(例如，通过消息的type字段来区分)，进行一些业务逻辑上的处理，并可能进行一些数据展示(通过消息队列将要展示的数据发送给显示任务)。这样，我们就将业务相关的”策略逻辑”收敛到单个任务上进行集中处理，即使随着时间的推移我们丢失了某些”策略逻辑”的需求说明，但在中控任务中每个”策略逻辑”都有明确的输入和输出，所以在代码上还是很清晰的(我们丢失的信息只是为什么业务上当初要定”这个”输入的情况下做这个”策略逻辑”处理)。</p>
-<p>所以基于FreeRTOS这类多任务操作系统，我们可以将需要实现的应用功能拆分成多个更简单清晰的子任务，再通过RTOS提供的任务间通信机制，将各个子任务进行解耦，避免相互直接调用功能函数。这让我们可以更轻松的开发中&#x2F;大型应用，也更利于产品的长期维护。</p>
+<p>通过多任务和消息队列，我们将”<strong>机制</strong>“和”<strong>策略</strong>“进行了拆分。</p>
+<p>像<strong>采集任务&#x2F;输入管理任务&#x2F;输出管理任务</strong>这种类型的任务只提供基本的”功能机制”(获取输入数据，输出显示数据)，它们并不关心数据本身是什么。它们只负责收集数据，再将数据丢到<strong>消息队列</strong>中(如采集任务)；或者从<strong>消息队列</strong>中提取数据，按原样配置到自己的寄存器中(如<strong>显示任务</strong>)。这样每个任务的代码就很清晰，职责也很明确，不会在这些模块中充斥着令人费解的业务相关”策略逻辑”(这些”策略逻辑”随着时间的推移，往往可能最后都没人清楚为什么要这样做，非常影响代码阅读)。</p>
+<p>另一方面，<strong>中控任务</strong>负责实现具体的业务相关的逻辑。它从<strong>消息队列</strong>中提取输入数据(可能是输入管理任务发来的数据，也可能是采集任务发来的数据)，针对不同的数据(例如，通过消息的type字段来区分)，进行一些业务逻辑上的处理，并可能进行一些数据展示(通过消息队列将要展示的数据发送给显示任务)。这样，我们就将业务相关的<strong>策略逻辑</strong>收敛到单个任务上进行集中处理，即使随着时间的推移我们丢失了某些<strong>策略逻辑</strong>的需求说明，但在中控任务中每个<strong>策略逻辑</strong>都有明确的输入和输出，所以在代码上还是很清晰的(我们丢失的信息只是为什么业务上当初要定”这个”输入的情况下做这个”策略逻辑”处理)。</p>
+<p>所以，基于FreeRTOS这类多任务操作系统，我们可以将需要实现的应用功能拆分成多个更简单清晰的子任务，再通过RTOS提供的任务间通信机制，将各个子任务进行解耦，避免相互直接调用功能函数。这让我们可以更轻松的开发中&#x2F;大型应用，也更利于产品的长期维护。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/27/why-use-RTOS/" data-id="cl9u1i8y70002ecu23hm58iav" data-title="为什么使用嵌入式实时操作系统(RTOS)" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/27/why-use-RTOS/" data-id="cl9u3yirr0004egu2aute8hku" data-title="为什么使用嵌入式实时操作系统(RTOS)" class="article-share-link">Share</a>
       
       
       
@@ -306,28 +310,29 @@
         <p><strong>前提</strong>：首先需要基于自己的开发板实现一个点灯的程序，确保工程编译通过，烧录后程序能正常运行。</p>
 <hr>
 <h4 id="提取FreeRtos必要文件"><a href="#提取FreeRtos必要文件" class="headerlink" title="提取FreeRtos必要文件"></a>提取FreeRtos必要文件</h4><ol>
-<li><p>FreeRtos<a target="_blank" rel="noopener" href="https://freertos.org/a00104.html">官网</a>下载源码</p>
+<li>FreeRtos<a target="_blank" rel="noopener" href="https://freertos.org/a00104.html">官网</a>下载源码</li>
+<li>自己工程里新建一个目录用来保存提取的FreeRtos核心必要文件</li>
+<li>提取如下文件保存到自己新建的文件夹中<ul>
+<li><p>3.1 FreeRTOS&#x2F;Source&#x2F;tasks.c <font color="#008000">&#x2F;&#x2F; 包含FreeRtos核心功能和数据，如任务的创建、调度。</font></p>
 </li>
-<li><p>自己工程里新建一个目录用来保存提取的FreeRtos核心必要文件</p>
+<li><p>3.2 FreeRTOS&#x2F;Source&#x2F;list.c <font color="#008000">&#x2F;&#x2F; tasks.c中的任务就绪任务列表、阻塞任务列表都是基于 list.c中的连接数据结构来实现的。</font></p>
 </li>
-<li><p>提取如下文件保存到自己新建的文件夹中</p>
-<ul>
-<li>3.1 FreeRTOS&#x2F;Source&#x2F;tasks.c <font color="#008000">&amp;emsp;&#x2F;&#x2F; 包含FreeRtos核心功能和数据，如任务的创建、调度。</font></li>
-<li>3.2 FreeRTOS&#x2F;Source&#x2F;list.c <font color="#008000">&amp;emsp;&#x2F;&#x2F; tasks.c中的任务就绪任务列表、阻塞任务列表都是基于 list.c中的连接数据结构来实现的。</font></li>
-<li>3.3 FreeRTOS&#x2F;Source&#x2F;queue.c <font color="#008000">&amp;emsp;&#x2F;&#x2F; 提供基础的队列应用功能，同时freertos的信号量、互斥量也是基于队列来实现的。</font></li>
-<li>3.4 FreeRTOS&#x2F;Source&#x2F;portable&#x2F;[compiler]&#x2F;[architecture]&#x2F;port.c. <font color="#008000">&amp;emsp;&#x2F;&#x2F; 与实际MCU和使用的编译工具相关的文件，例如使用keil工具和crotex-m4的mcu时可以选择：&#x2F;RVDS&#x2F;ARM_CM4F下的文件(port.c portmacro.h)</font></li>
-</ul>
-<p> &amp;emsp;&amp;emsp;<font color="#008000">如果是较新的Keil工具，使用了V6版本的编译工具，由于和旧版本的汇编不兼容，需要替换成&#x2F;GCC&#x2F;ARM_CM4下的文件。(实际应该使用ARMClang目录下的，但这个目录下的文件指明应该使用&#x2F;GCC目录下的，即表明新版本编译器是兼容GCC的)</font></p>
-<ul>
-<li>3.5 FreeRTOS&#x2F;Source&#x2F;portable&#x2F;MemMang&#x2F;heap_3.c <font color="#008000">&amp;emsp;&#x2F;&#x2F; FreeRtos内核默认创建系统相关数据结构时会使用动态内存分配，因此需要提供一个动态内存分配的算法，这里直接使用heap_3.c，即内容就是对 c标准库 malloc、free的封装。熟悉后可以根据自己的应用场景选择FreeRtos提供的其它合适方案</font></li>
-<li>3.6 拷贝文件夹FreeRTOS&#x2F;Source&#x2F;include 到自己的工程中，并将其添加到工程的头文件目录配置中。</li>
-<li>前面 3.4 拷贝的 portmacro.h 文件所在目录也要添加到工程头文件目录配置中。</li>
+<li><p>3.3 FreeRTOS&#x2F;Source&#x2F;queue.c <font color="#008000">&#x2F;&#x2F; 提供基础的队列应用功能，同时freertos的信号量、互斥量也是基于队列来实现的。</font></p>
+</li>
+<li><p>3.4 FreeRTOS&#x2F;Source&#x2F;portable&#x2F;[compiler]&#x2F;[architecture]&#x2F;port.c. <font color="#008000">&#x2F;&#x2F; 与实际MCU和使用的编译工具相关的文件，例如使用keil工具和crotex-m4的mcu时可以选择：&#x2F;RVDS&#x2F;ARM_CM4F下的文件(port.c portmacro.h)</font><br> <font color="#008000">如果是较新的Keil工具，使用了V6版本的编译工具，由于和旧版本的汇编不兼容，需要替换成&#x2F;GCC&#x2F;ARM_CM4下的文件。(实际应该使用ARMClang目录下的，但这个目录下的文件指明应该使用&#x2F;GCC目录下的，即新版本编译器是兼容GCC语法的)</font></p>
+</li>
+<li><p>3.5 FreeRTOS&#x2F;Source&#x2F;portable&#x2F;MemMang&#x2F;heap_3.c <font color="#008000">&#x2F;&#x2F; FreeRtos内核默认创建系统相关数据结构时会使用动态内存分配，因此需要提供一个动态内存分配的算法，这里直接使用heap_3.c，即内容就是对 c标准库 malloc、free的封装。熟悉后可以根据自己的应用场景选择FreeRtos提供的其它合适方案</font></p>
+</li>
+<li><p>3.6 拷贝文件夹FreeRTOS&#x2F;Source&#x2F;include 到自己的工程中，并将其添加到工程的头文件目录配置中。</p>
+</li>
+<li><p>前面 3.4 拷贝的 portmacro.h 文件所在目录也要添加到工程头文件目录配置中。</p>
+</li>
 </ul>
 </li>
 </ol>
 <br>
 
-<h4 id="FreeRtos功能配置文件FreeRTOSConfig-h"><a href="#FreeRtos功能配置文件FreeRTOSConfig-h" class="headerlink" title="FreeRtos功能配置文件FreeRTOSConfig.h"></a>FreeRtos功能配置文件FreeRTOSConfig.h</h4><p>&amp;emsp;&amp;emsp;移植完上面的文件，就搭建好了FreeRtos的源码环境。但是想要实际运行起来，还需要一个应用配置文件，配置一些全局参数。FreeRtos的源码中有很多Demo都已配置好FreeRTOSConfig.h文件，一般找一个同系列的芯片配置，进行小改动下就能用了。</p>
+<h4 id="FreeRtos功能配置文件FreeRTOSConfig-h"><a href="#FreeRtos功能配置文件FreeRTOSConfig-h" class="headerlink" title="FreeRtos功能配置文件FreeRTOSConfig.h"></a>FreeRtos功能配置文件FreeRTOSConfig.h</h4><p>移植完上面的文件，就搭建好了FreeRtos的源码环境。但是想要实际运行起来，还需要一个应用配置文件，配置一些全局参数。FreeRtos的源码中有很多Demo都已配置好FreeRTOSConfig.h文件，一般找一个同系列的芯片配置，进行小改动下就能用了。</p>
 <p>例如，FreeRtos的任务调度周期需要设置多少，即多久产生一时钟中断，该中断即系统的时钟滴答(tick)，是rtos能运行的核心。例如，当调用vTaskDelay 函数时，当前任务即进入阻塞态，那么rtos如何知道何时唤醒这个被阻塞的任务？就是基于tick中断来统计当前运行了多久，以及是否需要唤醒某个被阻塞的任务。</p>
 <p>如下，将内核设置为 1秒中产生 10 次时钟滴答，即调度周期为100ms：<br><code>#define configTICK_RATE_HZ			( ( TickType_t ) 10 )</code><br>内核的时钟滴答越快，精度越高(例如FreeRtos提供的vTaskDelay的精度)，但由于频繁产生中断并执行内核调度过程，功耗也会相应增加，所以需要更具实际应用选择一个合适的tick频率。</p>
 <p>那么设置了 <code>configTICK_RATE_HZ=10</code> 后如何就能让系统没 100ms 产生一次中断？<br>crotex-m系列的内核都自带SysTick定时器，FreeRtos默认使用该定时器来产生定时中断来作为内核的tick，FreeRtos默认配置使用内核时钟作为时钟源的计数器，所以知道了MCU的运行频率，FreeRtos就可以计算出，应该给SysTick计数器配置成多少值，才能让其每100ms产生一次中断。例如，我的MCU运行在 64M:<br><code>#define configCPU_CLOCK_HZ			( ( unsigned long ) 64000000 )	</code><br>具体如何根据<code>configTICK_RATE_HZ</code>和<code>configCPU_CLOCK_HZ</code>来配置SysTick，可以在前面移植的文件port.c中的vPortSetupTimerInterrup 函数中查看。</p>
@@ -341,9 +346,9 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> vPortSVCHandler SVC_Handler</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> xPortPendSVHandler PendSV_Handler</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> xPortSysTickHandler SysTick_Handler</span></span><br></pre></td></tr></table></figure>
 <br>
 
-<h4 id="输出调试信息"><a href="#输出调试信息" class="headerlink" title="输出调试信息"></a>输出调试信息</h4><p>&amp;emsp;&amp;emsp;在前面的FreeRTOSConfig.h中我们重定义了断言函数，FreeRtos在运行时会有充分的配置和参数检查，在调试阶段打开这个断言函数，可以快速定位一些配置和参数不正确的问题。</p>
+<h4 id="输出调试信息"><a href="#输出调试信息" class="headerlink" title="输出调试信息"></a>输出调试信息</h4><p>在前面的FreeRTOSConfig.h中我们重定义了断言函数，FreeRtos在运行时会有充分的配置和参数检查，在调试阶段打开这个断言函数，可以快速定位一些配置和参数不正确的问题。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">vAssertCalled</span><span class="params">( <span class="type">const</span> <span class="type">char</span> * pcFile, <span class="type">uint32_t</span> ulLine )</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configASSERT( x ) <span class="keyword">if</span>( ( x ) == 0 )  vAssertCalled( __FILE__, __LINE__ )</span></span><br></pre></td></tr></table></figure>
-<p><code>vAssertCalled( const char * pcFile, uint32_t ulLine )</code>的具体实现可以使用任意的工具(例如通过串口工具)将出现问题的函数所在的文件名和行号显示出来。这里，我使用了J-Link RTT工具来输出错误日志信息，J-Link RTT的使用可以参考这篇文章：</p>
+<p><code>vAssertCalled( const char * pcFile, uint32_t ulLine )</code>的具体实现可以使用任意的工具(例如通过串口工具)将出现问题的函数所在的文件名和行号显示出来。这里，我使用了J-Link RTT工具来输出错误日志信息，J-Link RTT的使用可以参考这篇文章：<a target="_blank" rel="noopener" href="http://localhost:4000/2022/10/20/use-jlink-RTT/">使用JLink-RTT输出调试信息</a></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">vAssertCalled</span><span class="params">( <span class="type">const</span> <span class="type">char</span> * pcFile, <span class="type">uint32_t</span> ulLine )</span>&#123;</span><br><span class="line">    SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;error at:%s, line:%d\r\n&quot;</span>, pcFile, ulLine);</span><br><span class="line">    <span class="keyword">for</span>(;;)&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <br>
 
@@ -364,7 +369,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" data-id="cl9u1i8yd0005ecu2g2fqambu" data-title="基于crotex-m处理器新建FreeRTOS工程" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" data-id="cl9u3yirw000aegu26fw24pbn" data-title="基于crotex-m处理器新建FreeRTOS工程" class="article-share-link">Share</a>
       
       
       
@@ -476,7 +481,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/20/use-jlink-RTT/" data-id="cl9u1i8yb0004ecu2b1qqc60l" data-title="使用JLink-RTT输出调试信息" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/20/use-jlink-RTT/" data-id="cl9u3yirn0002egu2hg9z8u1m" data-title="使用JLink-RTT输出调试信息" class="article-share-link">Share</a>
       
       
       
