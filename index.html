@@ -211,7 +211,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/29/FreeRTOS%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" data-id="cl9u3yiri0001egu2dwc9d4ll" data-title="FreeRTOS创建任务" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/29/FreeRTOS%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" data-id="cl9u4en5m00026su21o4aan2k" data-title="FreeRTOS创建任务" class="article-share-link">Share</a>
       
       
       
@@ -269,7 +269,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/27/why-use-RTOS/" data-id="cl9u3yirr0004egu2aute8hku" data-title="为什么使用嵌入式实时操作系统(RTOS)" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/27/why-use-RTOS/" data-id="cl9u4en5r00056su293wic0yb" data-title="为什么使用嵌入式实时操作系统(RTOS)" class="article-share-link">Share</a>
       
       
       
@@ -348,7 +348,7 @@
 
 <h4 id="输出调试信息"><a href="#输出调试信息" class="headerlink" title="输出调试信息"></a>输出调试信息</h4><p>在前面的FreeRTOSConfig.h中我们重定义了断言函数，FreeRtos在运行时会有充分的配置和参数检查，在调试阶段打开这个断言函数，可以快速定位一些配置和参数不正确的问题。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">vAssertCalled</span><span class="params">( <span class="type">const</span> <span class="type">char</span> * pcFile, <span class="type">uint32_t</span> ulLine )</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configASSERT( x ) <span class="keyword">if</span>( ( x ) == 0 )  vAssertCalled( __FILE__, __LINE__ )</span></span><br></pre></td></tr></table></figure>
-<p><code>vAssertCalled( const char * pcFile, uint32_t ulLine )</code>的具体实现可以使用任意的工具(例如通过串口工具)将出现问题的函数所在的文件名和行号显示出来。这里，我使用了J-Link RTT工具来输出错误日志信息，J-Link RTT的使用可以参考这篇文章：<a target="_blank" rel="noopener" href="http://localhost:4000/2022/10/20/use-jlink-RTT/">使用JLink-RTT输出调试信息</a></p>
+<p><code>vAssertCalled( const char * pcFile, uint32_t ulLine )</code>的具体实现可以使用任意的工具(例如通过串口工具)将出现问题的函数所在的文件名和行号显示出来。这里，我使用了J-Link RTT工具来输出错误日志信息，J-Link RTT的使用可以参考这篇文章：<a target="_blank" rel="noopener" href="https://fengxun2017.github.io/2022/10/20/use-jlink-RTT/">使用JLink-RTT输出调试信息</a></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">vAssertCalled</span><span class="params">( <span class="type">const</span> <span class="type">char</span> * pcFile, <span class="type">uint32_t</span> ulLine )</span>&#123;</span><br><span class="line">    SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;error at:%s, line:%d\r\n&quot;</span>, pcFile, ulLine);</span><br><span class="line">    <span class="keyword">for</span>(;;)&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <br>
 
@@ -369,7 +369,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" data-id="cl9u3yirw000aegu26fw24pbn" data-title="基于crotex-m处理器新建FreeRTOS工程" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" data-id="cl9u4en5q00046su285n1fp83" data-title="基于crotex-m处理器新建FreeRTOS工程" class="article-share-link">Share</a>
       
       
       
@@ -481,7 +481,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/20/use-jlink-RTT/" data-id="cl9u3yirn0002egu2hg9z8u1m" data-title="使用JLink-RTT输出调试信息" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/20/use-jlink-RTT/" data-id="cl9u4en5j00016su268yb8ed7" data-title="使用JLink-RTT输出调试信息" class="article-share-link">Share</a>
       
       
       
