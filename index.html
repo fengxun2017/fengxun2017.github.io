@@ -4,17 +4,17 @@
   <meta charset="utf-8">
   
   
-  <title>Hexo</title>
+  <title>fx</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
+<meta property="og:title" content="fx">
 <meta property="og:url" content="http://example.com/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="fx">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="fx" type="application/atom+xml">
   
   
     <link rel="shortcut icon" href="/favicon.png">
@@ -42,7 +42,7 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
+        <a href="/" id="logo">fx</a>
       </h1>
       
     </div>
@@ -71,12 +71,16 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <article id="post-freertos创建任务" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2022/10/23/hello-world/" class="article-date">
-  <time class="dt-published" datetime="2022-10-23T07:34:49.864Z" itemprop="datePublished">2022-10-23</time>
+    <a href="/2022/10/29/freertos%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" class="article-date">
+  <time class="dt-published" datetime="2022-10-28T16:00:00.000Z" itemprop="datePublished">2022-10-29</time>
 </a>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/FreeRTOS/">FreeRTOS</a>
+  </div>
+
   </div>
   <div class="article-inner">
     
@@ -85,7 +89,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/10/23/hello-world/">Hello World</a>
+      <a class="p-name article-title" href="/2022/10/29/freertos%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/">FreeRTOS创建任务</a>
     </h1>
   
 
@@ -93,24 +97,387 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
+        <center>关于使用多任务操作系统的益处，可以参考：</center>
+<center>如何移植FreeRTOS可以参考这里：</center>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="FreeRTOS如何创建任务："><a href="#FreeRTOS如何创建任务：" class="headerlink" title="FreeRTOS如何创建任务："></a>FreeRTOS如何创建任务：</h4><p>&amp;emsp;&amp;emsp;在多任务操作系统中，每个任务都可以看做是一个独立的”小应用”，操作系统负责对各个任务进行调度。FreeRTOS对任务的函数原型定义如下：</p>
+<p><code>void ATaskFunction( void *pvParameters );</code></p>
+<p>即每个任务的入口函数必须为上面的形式(无RTOS的裸机程序，可以认为入口函数就是Main函数)。一般任务的入口函数实现形式如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">ATaskFunction</span><span class="params">( <span class="type">void</span> *pvParameters )</span></span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>( ;; )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 这里实现任务功能代码</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 任务退出前需要删除自己</span></span><br><span class="line">    vTaskDelete( <span class="literal">NULL</span> );</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>嵌入式设备通常都是实现某个单一应用功能，当设备上电后，其程序就一直保持运行，直到设备断电。所以裸机开发时，都是main函数中实现一个无线循环，让其不停运行。</p>
+<p>而到了RTOS上，应用的整体功能被拆分成多个任务，可以认为每个任务都是作为整体功能一部分的“小应用”。所以,一般情况下，这些任务也是一直运行的。因此，其实现也是内部一个无限的循环(如上述代码所示)。当然，也有一些情况下，某些任务不需要在运行了，这种情况下，我们可以让它跳出这个大循环，然后删除自己(上述代码，<code>NULL传入vTaskDelete</code>即表示删除调用这个函数的任务本身)。<br>ps：严格来说，是将自己放入等待结束队列中，RTOS自带的idle任务会负责实际的删除。因为任务无法删除自己，删除自己意味着要释放任务所占的任务控制块结构体信息，以及这个任务所拥有的栈，而任务执行代码又依赖于这些资源。</p>
+<p>实现了任务函数后，还需要将其创建出来，即实例化出一个具体的任务。FreeRTOS提供了如下任务创建接口(该接口会动态申请任务需要的内核结构和任务需要的栈空间，不需要外部提供)：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">BaseType_t <span class="title function_">xTaskCreate</span><span class="params">( TaskFunction_t pvTaskCode, </span></span><br><span class="line"><span class="params">                        <span class="type">const</span> <span class="type">char</span> * <span class="type">const</span> pcName, </span></span><br><span class="line"><span class="params">                        <span class="type">uint16_t</span> usStackDepth, </span></span><br><span class="line"><span class="params">                        <span class="type">void</span> *pvParameters, </span></span><br><span class="line"><span class="params">                        UBaseType_t uxPriority, </span></span><br><span class="line"><span class="params">                        TaskHandle_t *pxCreatedTask )</span>;</span><br></pre></td></tr></table></figure>
+<p> 其中：</p>
+<ul>
+<li><code>pvTaskCode：</code>即任务函数</li>
+<li><code>pcName：</code>可以给该任务命名，该名字是用来调试用的，FreeRTOS提供了一些辅助函数，可以获取系统中当前运行的任务的状态信息，通过这个名字可以更清楚的知道每个任务的具体作用。</li>
+<li><code>usStackDepth：</code>为任务栈大小(如果任务函数中没有很深的函数嵌套调用，任务函数内部也没有定义大的临时数组，则一般设置个200左右的值即可)。</li>
+<li><code>pvParameters：</code> 在任务的入口函数定义中也有一个参数<code>void ATaskFunction( void *pvParameters )</code>，任务创建时填入的该参数，在任务实际运行时就会传递给任务。</li>
+<li><code>uxPriority：</code>任务优先级，值越大，优先级越高。FreeRTOS会优先让优先级更高的任务运行（该值需要小于FreeRTOSConfig.h中配置的<code>configMAX_PRIORITIES</code>）。</li>
+<li><code>pxCreatedTask： </code>任务句柄，FreeRTOS会将该值设置为当前任务的句柄（即在系统内唯一标识一个任务），例如你的应用中存在任务A在某个条件下会删除任务B。那么，任务A就需要保存任务B的句柄，并且调用<code>vTaskDelete( TaskHandle_t pxTask )</code>时传入任务B的句柄，即可删除任务B。</li>
+<li><strong>返回值</strong>：创建成功时返回pdPASS，其它值表示失败(例如，堆空间所剩的ram资源已经不足够创建任务的内核数据结构和栈空间了)。</li>
+</ul>
+<p>任务创建成功后，就是启动FreeRTOS的内核，让其开始进行任务的调度。<br>即调用：<code>vTaskStartScheduler()</code></p>
+<p>如下是一个启动两个任务的demo，分别闪烁两个LED灯，两个任务都是使用的同一个入口函数，通过传递不同的LED参数使它们闪烁不同的LED。(虽然使用的是同一个入口函数，但是任务创建后它们是作为两个独立任务存在的)</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">include <span class="string">&quot;FreeRTOS.h&quot;</span></span><br><span class="line">include <span class="string">&quot;task.h&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">led_flash</span><span class="params">( <span class="type">void</span> * pvParameters )</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">uint32_t</span> LED_NUM = *(<span class="type">uint32_t</span> *)pvParameters;</span><br><span class="line">    <span class="type">const</span> TickType_t xDelay = <span class="number">500</span> / portTICK_PERIOD_MS;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">        vTaskDelay( xDelay );</span><br><span class="line">        nrf_gpio_pin_toggle(LED_NUM);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">uint32_t</span> LED_1 = <span class="number">13</span>, LED_2 = <span class="number">14</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> </span><br><span class="line">&#123;</span><br><span class="line">    TaskHandle_t task_handle1=<span class="literal">NULL</span>, task_handle2=<span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    bsp_board_leds_init();</span><br><span class="line"></span><br><span class="line">    xTaskCreate(led_flash,       </span><br><span class="line">                <span class="string">&quot;NAME&quot;</span>,         </span><br><span class="line">                <span class="number">200</span>,    <span class="comment">/* stack size */</span></span><br><span class="line">                &amp;LED_1,    </span><br><span class="line">                <span class="number">2</span>,</span><br><span class="line">                &amp;task_handle1);      </span><br><span class="line"></span><br><span class="line">    xTaskCreate(led_flash,      </span><br><span class="line">                <span class="string">&quot;NAME&quot;</span>,         </span><br><span class="line">                <span class="number">200</span>,     </span><br><span class="line">                &amp;LED_2,   </span><br><span class="line">                <span class="number">2</span>,</span><br><span class="line">                &amp;task_handle2);   </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* Start the created tasks running. */</span></span><br><span class="line">    vTaskStartScheduler();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* Execution will only reach here if there was insufficient heap to</span></span><br><span class="line"><span class="comment">    start the scheduler. */</span></span><br><span class="line">    <span class="keyword">for</span>( ;; );</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<p><strong>注意</strong>：上述LED标记变量<code>uint32_t LED_1 = 13, LED_2 = 14; </code>是定义成全局的，不能在main函数内部定义。因为，在调用<code>vTaskStartScheduler()</code>启动内核调度后，内核会重置main函数的栈以作它用。所以Main函数栈中的变量会变得无效。(FreeRTOS在启动内核调度后，<strong>就永远不会再返回main函数中了</strong>，只会调度创建的任务，所以FreeRTOS可以重置main的栈用来做其它用途)<br><strong>注意</strong>：由于FreeRTOS在调用<code>vTaskStartScheduler</code>启动后就不会再返回到main函数中，所以也不要在Main函数中编写业务代码。main函数中基本只做一些必要的初始化工作，以及创建所有任务。</p>
+<h4 id="如何确定任务栈的大小："><a href="#如何确定任务栈的大小：" class="headerlink" title="如何确定任务栈的大小："></a>如何确定任务栈的大小：</h4><p>初期经验不足时，可能不清楚创建任务时应该设置多大的任务栈比较合适（<code>xTaskCreate</code>的参数<code>usStackDepth</code>）。在调试阶段，我们可先设置一个比较大的值，例如如果你的任务函数内没有局部数组变量，也没有很深的函数嵌套函数调用，可以直接设置一个200。如果，你的任务函数中有大的局部数组（例如<code>char buffer[N]</code>），你可以设置栈大小为 N+200（当前前提是你的mcu中的确有那么多ram空间，没有的话就改小，先试试）。<br>之后，再利用FreeRTOS内核提供的 <code>UBaseType_t uxTaskGetStackHighWaterMark( TaskHandle_t xTask )</code> 函数来获取函数运行过程中，栈的使用量。<br><strong>注意</strong>，使用该函数需要在头文件<code>FreeRTOSConfig.h</code>中增加配置<code>#define INCLUDE_uxTaskGetStackHighWaterMark 1</code></p>
+<p>任务栈使用量的检测原理简单解释如下：<br>例如，任务A创建时设置的栈大小为200，则内核会为任务A申请了一个 200 字大小的内存空间作为栈（32位处理器中<strong>一个字是4字节</strong>，所以实际申请的是<strong>200*4字节</strong>空间）。在初始化任务信息时，内核会将该段RAM空间设置为一个<strong>特殊值(0xA5)</strong>,假设该段内存起始地址为0，结束地址为799，栈增长时地址会增加（这里是为了解释方便，实际上cortex-m3&#x2F;m4硬件都是”满减栈”，跟这里的描述是相反的）<br>初始时，栈内存状态如下，0-799地址空间都是0xA5：</p>
+<table>
+<thead>
+<tr>
+<th align="center">0</th>
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">4</th>
+<th align="center">…</th>
+<th align="center">791</th>
+<th align="center">792</th>
+<th align="center">793</th>
+<th align="center">794</th>
+<th align="center">795</th>
+<th align="center">796</th>
+<th align="center">797</th>
+<th align="center">798</th>
+<th align="center">799</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">…</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+</tr>
+</tbody></table>
+<p>程序运行一段时间后，最大时曾经使用到过791地址处，则内存状态如下(x表示其它值)：</p>
+<table>
+<thead>
+<tr>
+<th align="center">0</th>
+<th align="center">1</th>
+<th align="center">2</th>
+<th align="center">3</th>
+<th align="center">4</th>
+<th align="center">…</th>
+<th align="center">791</th>
+<th align="center">792</th>
+<th align="center">793</th>
+<th align="center">794</th>
+<th align="center">795</th>
+<th align="center">796</th>
+<th align="center">797</th>
+<th align="center">798</th>
+<th align="center">799</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">x</td>
+<td align="center">…</td>
+<td align="center">x</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+<td align="center">0xA5</td>
+</tr>
+</tbody></table>
+<p>FreeRTOS提供的函数<code>uxTaskGetStackHighWaterMark</code>就是从799地址处往前检查，看还有多少值保持为0x5A，这里例子为8，则会返回2（返回的是字个数）这样曾经使用过的最大深度就是(200-2)，根据该值就可以将创建任务时的栈大小设置为一个更合适的值。</p>
+<p>一个使用demo如下，<code>SEGGER_RTT_printf</code>替换成自己的调试输出函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">test_task</span><span class="params">( <span class="type">void</span> * pvParameters )</span></span><br><span class="line">&#123;</span><br><span class="line">    UBaseType_t uxHighWaterMark;</span><br><span class="line">    <span class="type">const</span> TickType_t xDelay = <span class="number">1000</span> / portTICK_PERIOD_MS;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">        vTaskDelay( xDelay );</span><br><span class="line">        uxHighWaterMark = uxTaskGetStackHighWaterMark( <span class="literal">NULL</span> );</span><br><span class="line">        SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;The maximum stack size ever used:%d\r\n&quot;</span>, <span class="number">200</span>-uxHighWaterMark);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">    xTaskCreate(test_task,       </span><br><span class="line">                <span class="string">&quot;NAME&quot;</span>,         </span><br><span class="line">                <span class="number">200</span>,      </span><br><span class="line">                <span class="literal">NULL</span>,    </span><br><span class="line">                <span class="number">2</span>,</span><br><span class="line">                <span class="literal">NULL</span>);      </span><br><span class="line">    </span><br><span class="line">    vTaskStartScheduler();</span><br><span class="line">    <span class="keyword">for</span>( ;; );</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我的调试信息显示如下，所以设置200大小的栈是完全没必要的：<br><code>The maximum stack size ever used:62</code></p>
+<p><strong>最后：</strong> <code>uxTaskGetStackHighWaterMark</code>函数应该在开发阶段使用，正式发布的产品还是不要再使用了，毕竟每次调用都会遍历内存检查值。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/23/hello-world/" data-id="cl9l5i7hn0000tgu26804dytd" data-title="Hello World" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/29/freertos%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" data-id="cl9u181s00001cwu2b23hf532" data-title="FreeRTOS创建任务" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-why-use-RTOS" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/10/27/why-use-RTOS/" class="article-date">
+  <time class="dt-published" datetime="2022-10-26T16:00:00.000Z" itemprop="datePublished">2022-10-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/FreeRTOS/">FreeRTOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/10/27/why-use-RTOS/">为什么使用嵌入式实时操作系统(RTOS)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <hr>
+<p>&amp;emsp;这里我们只讨论支持多任务的嵌入式实时操作系统，如何理解多任务呢？以PC上的例子来说更容易理解。例如，你一边播放音乐，同时也在一边编辑文字。从体验上来看，这两个任务在你的PC上就像是在同时运行，这就是多任务的直观体现。<br>&amp;ensp;<br>&amp;emsp;那么在嵌入式系统上，基于FreeRTOS这类嵌入式多任务操作系统进行应用开发有什么好处呢？ 毕竟，操作系统内核本身需要占用存储和CPU资源的。<br>&amp;emsp;以一个环境采集监控系统为例，不使用RTOS的裸机程序，通常就是在Main 函数中实现一个无线循环，周期性的采集诸如温度、湿度、气压、等传传感器的数据，再通过LCD等显示设备将数据进行展示。各个功能相互耦合，功能代码全部集中在一起。对于早期开发维护人员来说这并没有什么障碍，但随着功能迭代，会逐渐出现各种需求。例如,增加一个用户输入功能，用来实时配置采集传感器的参数，或用来修改显示模式。又例如，在检测到温度高于某个临界值后，以频率A闪烁红灯；在检测温度低于某个临界值后，以频率B闪烁红灯。当这种需求越来越多，你的代码就会逐渐变得混乱不堪，让其它人难以理解，因为它们全都耦合在一起，看起来太费劲了。</p>
+<p>&amp;emsp;基于FreeRTOS这类多任务操作系统，我们可以将上述应用拆分成多逻辑清晰的子任务。例如，一个温度采集任务，一个湿度采集任务，一个气压采集任务，一个中控任务，一个输入管理任务，一个输出管理任务。这样每个任务的功能划分就很清晰。并且，各个任务间进行隔离，通过RTOS提供的任务间通讯机制(例如<strong>消息队列</strong>)进行通讯，而不是直接调用其它任务中的功能函数，这样就实现了任务间的解耦。</p>
+<ul>
+<li><strong>采集任务</strong>只负责对相应传感器进行配置，以及对数据进行采集，并通过任务间通信机制(如<strong>消息队列</strong>)，将数据发送给中控任务。</li>
+<li><strong>输入管理任务</strong>只负责对输入设备进行配置，并获取用户输入，之后通过任务通信机制，将用户输入发送给中控任务。</li>
+<li><strong>输出管理任务</strong>只负责对显示设备进行配置，它从<strong>消息队列</strong>中提取需要显示的数据，并进行展示(任务只负责显示，并不关心要显示的内容)。</li>
+<li><strong>中控任务</strong>负责处理各种策略和逻辑。例如，它从<strong>消息队列A</strong>中提取数据(可能是采集任务发来的，也可能是输入管理任务发来的)，并解析，如果需要做下一步动作(例如显示)，则将相应的<strong>命令</strong>发送到<strong>消息队列B</strong>中，让下游任务执行。</li>
+</ul>
+<p>我们可以清晰地抽象出如下图所示的系统逻辑：<br><img src="/2022/10/27/why-use-RTOS/system_view.jpg" alt="系统逻辑图"></p>
+<p>通过多任务和消息队列，我们将”<strong>机制</strong>“和”<strong>策略</strong>“进行了拆分。<br>像<strong>采集任务&#x2F;输入管理任务&#x2F;输出管理任务</strong>这种类型的任务只提供基本的”功能机制”(获取输入数据，输出显示数据)，它们并不关心数据本身是什么。它们只负责收集数据，再将数据丢到<strong>消息队列</strong>中(如采集任务)；或者从<strong>消息队列</strong>中提取数据，按原样配置到自己的寄存器中(如<strong>显示任务</strong>)。这样每个任务的代码就很清晰，职责也很明确，不会在这些模块中充斥着令人费解的业务相关”策略逻辑”(这些”策略逻辑”随着时间的推移，往往可能最后都没人清楚为什么要这样做，非常影响代码阅读)。<br>另一方面，<strong>中控任务</strong>负责实现具体的业务相关的逻辑。它从<strong>消息队列</strong>中提取输入数据(可能是输入管理任务发来的数据，也可能是采集任务发来的数据)，针对不同的数据(例如，通过消息的type字段来区分)，进行一些业务逻辑上的处理，并可能进行一些数据展示(通过消息队列将要展示的数据发送给显示任务)。这样，我们就将业务相关的”策略逻辑”收敛到单个任务上进行集中处理，即使随着时间的推移我们丢失了某些”策略逻辑”的需求说明，但在中控任务中每个”策略逻辑”都有明确的输入和输出，所以在代码上还是很清晰的(我们丢失的信息只是为什么业务上当初要定”这个”输入的情况下做这个”策略逻辑”处理)。</p>
+<p>所以基于FreeRTOS这类多任务操作系统，我们可以将需要实现的应用功能拆分成多个更简单清晰的子任务，再通过RTOS提供的任务间通信机制，将各个子任务进行解耦，避免相互直接调用功能函数。这让我们可以更轻松的开发中&#x2F;大型应用，也更利于产品的长期维护。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/10/27/why-use-RTOS/" data-id="cl9u181s60004cwu21zhb3i5j" data-title="为什么使用嵌入式实时操作系统(RTOS)" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-移植freertos" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/10/25/%E7%A7%BB%E6%A4%8Dfreertos/" class="article-date">
+  <time class="dt-published" datetime="2022-10-24T16:00:00.000Z" itemprop="datePublished">2022-10-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/FreeRTOS/">FreeRTOS</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/10/25/%E7%A7%BB%E6%A4%8Dfreertos/">基于crotex-m处理器新建FreeRTOS工程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><strong>前提</strong>：首先需要基于自己的开发板实现一个点灯的程序，确保工程编译通过，烧录后程序能正常运行。</p>
+<hr>
+<h4 id="提取FreeRtos必要文件"><a href="#提取FreeRtos必要文件" class="headerlink" title="提取FreeRtos必要文件"></a>提取FreeRtos必要文件</h4><ol>
+<li><p>FreeRtos<a target="_blank" rel="noopener" href="https://freertos.org/a00104.html">官网</a>下载源码</p>
+</li>
+<li><p>自己工程里新建一个目录用来保存提取的FreeRtos核心必要文件</p>
+</li>
+<li><p>提取如下文件保存到自己新建的文件夹中</p>
+<ul>
+<li>3.1 FreeRTOS&#x2F;Source&#x2F;tasks.c <font color="#008000">&amp;emsp;&#x2F;&#x2F; 包含FreeRtos核心功能和数据，如任务的创建、调度。</font></li>
+<li>3.2 FreeRTOS&#x2F;Source&#x2F;list.c <font color="#008000">&amp;emsp;&#x2F;&#x2F; tasks.c中的任务就绪任务列表、阻塞任务列表都是基于 list.c中的连接数据结构来实现的。</font></li>
+<li>3.3 FreeRTOS&#x2F;Source&#x2F;queue.c <font color="#008000">&amp;emsp;&#x2F;&#x2F; 提供基础的队列应用功能，同时freertos的信号量、互斥量也是基于队列来实现的。</font></li>
+<li>3.4 FreeRTOS&#x2F;Source&#x2F;portable&#x2F;[compiler]&#x2F;[architecture]&#x2F;port.c. <font color="#008000">&amp;emsp;&#x2F;&#x2F; 与实际MCU和使用的编译工具相关的文件，例如使用keil工具和crotex-m4的mcu时可以选择：&#x2F;RVDS&#x2F;ARM_CM4F下的文件(port.c portmacro.h)</font></li>
+</ul>
+<p> &amp;emsp;&amp;emsp;<font color="#008000">如果是较新的Keil工具，使用了V6版本的编译工具，由于和旧版本的汇编不兼容，需要替换成&#x2F;GCC&#x2F;ARM_CM4下的文件。(实际应该使用ARMClang目录下的，但这个目录下的文件指明应该使用&#x2F;GCC目录下的，即表明新版本编译器是兼容GCC的)</font></p>
+<ul>
+<li>3.5 FreeRTOS&#x2F;Source&#x2F;portable&#x2F;MemMang&#x2F;heap_3.c <font color="#008000">&amp;emsp;&#x2F;&#x2F; FreeRtos内核默认创建系统相关数据结构时会使用动态内存分配，因此需要提供一个动态内存分配的算法，这里直接使用heap_3.c，即内容就是对 c标准库 malloc、free的封装。熟悉后可以根据自己的应用场景选择FreeRtos提供的其它合适方案</font></li>
+<li>3.6 拷贝文件夹FreeRTOS&#x2F;Source&#x2F;include 到自己的工程中，并将其添加到工程的头文件目录配置中。</li>
+<li>前面 3.4 拷贝的 portmacro.h 文件所在目录也要添加到工程头文件目录配置中。</li>
+</ul>
+</li>
+</ol>
+<br>
+
+<h4 id="FreeRtos功能配置文件FreeRTOSConfig-h"><a href="#FreeRtos功能配置文件FreeRTOSConfig-h" class="headerlink" title="FreeRtos功能配置文件FreeRTOSConfig.h"></a>FreeRtos功能配置文件FreeRTOSConfig.h</h4><p>&amp;emsp;&amp;emsp;移植完上面的文件，就搭建好了FreeRtos的源码环境。但是想要实际运行起来，还需要一个应用配置文件，配置一些全局参数。FreeRtos的源码中有很多Demo都已配置好FreeRTOSConfig.h文件，一般找一个同系列的芯片配置，进行小改动下就能用了。</p>
+<p>例如，FreeRtos的任务调度周期需要设置多少，即多久产生一时钟中断，该中断即系统的时钟滴答(tick)，是rtos能运行的核心。例如，当调用vTaskDelay 函数时，当前任务即进入阻塞态，那么rtos如何知道何时唤醒这个被阻塞的任务？就是基于tick中断来统计当前运行了多久，以及是否需要唤醒某个被阻塞的任务。</p>
+<p>如下，将内核设置为 1秒中产生 10 次时钟滴答，即调度周期为100ms：<br><code>#define configTICK_RATE_HZ			( ( TickType_t ) 10 )</code><br>内核的时钟滴答越快，精度越高(例如FreeRtos提供的vTaskDelay的精度)，但由于频繁产生中断并执行内核调度过程，功耗也会相应增加，所以需要更具实际应用选择一个合适的tick频率。</p>
+<p>那么设置了 <code>configTICK_RATE_HZ=10</code> 后如何就能让系统没 100ms 产生一次中断？<br>crotex-m系列的内核都自带SysTick定时器，FreeRtos默认使用该定时器来产生定时中断来作为内核的tick，FreeRtos默认配置使用内核时钟作为时钟源的计数器，所以知道了MCU的运行频率，FreeRtos就可以计算出，应该给SysTick计数器配置成多少值，才能让其每100ms产生一次中断。例如，我的MCU运行在 64M:<br><code>#define configCPU_CLOCK_HZ			( ( unsigned long ) 64000000 )	</code><br>具体如何根据<code>configTICK_RATE_HZ</code>和<code>configCPU_CLOCK_HZ</code>来配置SysTick，可以在前面移植的文件port.c中的vPortSetupTimerInterrup 函数中查看。</p>
+<p>另一个需要配置的重要参数：<br><code>#define configPRIO_BITS       		3 </code><br>该值定义了几个bit来进行优先级分组配置（cortex-m3&#x2F;4内核定义的优先级寄存器是具有8 bit的，但是芯片厂商是可以自己决定使用更少的bit来简化芯片和降低功耗，一般芯片厂商只会用3 bit或4 bit）。所以这个值需要根据你使用的MCU来决定(芯片手册里肯定能找到相关描述)。</p>
+<p>此外，FreeRTOS默认配置是抢占式调度系统，即优先级高的任务会立即抢占优先级低的任务，这里的优先级指的是FreeRTOS自己定义的优先级，FreeRTOS一共可以有的优先级是通过<code>configMAX_PRIORITIES</code>来配置的，即创建任务时允许的优先级范围是[0,configMAX_PRIORITIES-1]，数值越大，优先级越高，越优先被调度。如果有多个任务的优先级相同，且处于当前最高优先级，FreeRTOS默认是会轮流调度它们(FreeRTOS的相同优先级时间片调度配置项<code>configUSE_TIME_SLICING</code>默认配置就是1)。</p>
+<p>我们的样例需要闪烁LED等，需要使用FreeRtos的延迟函数，所以还需要添加如下定义:<br><code>#define INCLUDE_vTaskDelay				1</code></p>
+<p>其余值使用默认即可，例如一个样例配置文件FreeRTOSConfig.h：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;SEGGER_RTT.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configUSE_PREEMPTION		1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configUSE_IDLE_HOOK			0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configUSE_TICK_HOOK			0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configCPU_CLOCK_HZ			( ( unsigned long ) 64000000 )	</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configTICK_RATE_HZ			( ( TickType_t ) 10 )</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configMAX_PRIORITIES		( 5 )</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configMINIMAL_STACK_SIZE	( ( unsigned short ) 128 )</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configTOTAL_HEAP_SIZE		( ( size_t ) ( 17 * 1024 ) )</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configMAX_TASK_NAME_LEN		( 16 )</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configUSE_TRACE_FACILITY	0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configUSE_16_BIT_TICKS		0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configIDLE_SHOULD_YIELD		1</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Co-routine definitions. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configUSE_CO_ROUTINES 		0</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configMAX_CO_ROUTINE_PRIORITIES ( 2 )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Software timer definitions. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configUSE_TIMERS				1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configTIMER_TASK_PRIORITY		( 2 )</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configTIMER_QUEUE_LENGTH		10</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE * 2 )</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Set the following definitions to 1 to include the API function, or zero</span></span><br><span class="line"><span class="comment">to exclude the API function. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INCLUDE_vTaskPrioritySet		1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INCLUDE_uxTaskPriorityGet		1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INCLUDE_vTaskDelete				1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INCLUDE_vTaskCleanUpResources	1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INCLUDE_vTaskSuspend			1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INCLUDE_vTaskDelayUntil			1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INCLUDE_vTaskDelay				1</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INCLUDE_xTaskGetCurrentTaskHandle 1</span></span><br><span class="line"><span class="comment">/* Cortex-M specific definitions. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __NVIC_PRIO_BITS</span></span><br><span class="line">	<span class="comment">/* __BVIC_PRIO_BITS will be specified when CMSIS is being used. */</span></span><br><span class="line">	<span class="meta">#<span class="keyword">define</span> configPRIO_BITS       		__NVIC_PRIO_BITS</span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">	<span class="meta">#<span class="keyword">define</span> configPRIO_BITS       		3        <span class="comment">/* 15 priority levels */</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* The lowest interrupt priority that can be used in a call to a &quot;set priority&quot;</span></span><br><span class="line"><span class="comment">function. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configLIBRARY_LOWEST_INTERRUPT_PRIORITY			0xf</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* The highest interrupt priority that can be used by any interrupt service</span></span><br><span class="line"><span class="comment">routine that makes calls to interrupt safe FreeRTOS API functions.  DO NOT CALL</span></span><br><span class="line"><span class="comment">INTERRUPT SAFE FREERTOS API FUNCTIONS FROM ANY INTERRUPT THAT HAS A HIGHER</span></span><br><span class="line"><span class="comment">PRIORITY THAN THIS! (higher priorities are lower numeric values. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY	5</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Interrupt priorities used by the kernel port layer itself.  These are generic</span></span><br><span class="line"><span class="comment">to all Cortex-M ports, and do not rely on any particular library functions. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configKERNEL_INTERRUPT_PRIORITY 		( configLIBRARY_LOWEST_INTERRUPT_PRIORITY &lt;&lt; (8 - configPRIO_BITS) )</span></span><br><span class="line"><span class="comment">/* !!!! configMAX_SYSCALL_INTERRUPT_PRIORITY must not be set to zero !!!!</span></span><br><span class="line"><span class="comment">See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configMAX_SYSCALL_INTERRUPT_PRIORITY 	( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY &lt;&lt; (8 - configPRIO_BITS) )</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS</span></span><br><span class="line"><span class="comment">standard names. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> vPortSVCHandler SVC_Handler</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> xPortPendSVHandler PendSV_Handler</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> xPortSysTickHandler SysTick_Handler</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">vAssertCalled</span><span class="params">( <span class="type">const</span> <span class="type">char</span> * pcFile, <span class="type">uint32_t</span> ulLine )</span>;</span><br><span class="line"><span class="comment">/* Normal assert() semantics without relying on the provision of an assert.h</span></span><br><span class="line"><span class="comment">header file. */</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configASSERT( x ) <span class="keyword">if</span>( ( x ) == 0 )	vAssertCalled( __FILE__, __LINE__ )</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>注意</strong>：对于cortex-m处理器，一般启动文件(工程中的那个startup.s汇编文件，一般都是芯片厂商提供的)中都是默认使用CMSIS标准的名称，如<code>SysTick_Handler</code>，而Port.c文件中函数定义的名字用的是<code>xPortSysTickHandler</code>，因此需要在配置文件FreeRTOSConfig.h中使用<code>#define</code> 将其改名:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> vPortSVCHandler SVC_Handler</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> xPortPendSVHandler PendSV_Handler</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> xPortSysTickHandler SysTick_Handler</span></span><br></pre></td></tr></table></figure>
+<br>
+
+<h4 id="输出调试信息"><a href="#输出调试信息" class="headerlink" title="输出调试信息"></a>输出调试信息</h4><p>&amp;emsp;&amp;emsp;在前面的FreeRTOSConfig.h中我们重定义了断言函数，FreeRtos在运行时会有充分的配置和参数检查，在调试阶段打开这个断言函数，可以快速定位一些配置和参数不正确的问题。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">vAssertCalled</span><span class="params">( <span class="type">const</span> <span class="type">char</span> * pcFile, <span class="type">uint32_t</span> ulLine )</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configASSERT( x ) <span class="keyword">if</span>( ( x ) == 0 )  vAssertCalled( __FILE__, __LINE__ )</span></span><br></pre></td></tr></table></figure>
+<p><code>vAssertCalled( const char * pcFile, uint32_t ulLine )</code>的具体实现可以使用任意的工具(例如通过串口工具)将出现问题的函数所在的文件名和行号显示出来。这里，我使用了J-Link RTT工具来输出错误日志信息，J-Link RTT的使用可以参考这篇文章：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">vAssertCalled</span><span class="params">( <span class="type">const</span> <span class="type">char</span> * pcFile, <span class="type">uint32_t</span> ulLine )</span>&#123;</span><br><span class="line">    SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;error at:%s, line:%d\r\n&quot;</span>, pcFile, ulLine);</span><br><span class="line">    <span class="keyword">for</span>(;;)&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+
+<h4 id="实现一个翻转LED的测试程序"><a href="#实现一个翻转LED的测试程序" class="headerlink" title="实现一个翻转LED的测试程序"></a>实现一个翻转LED的测试程序</h4><ol>
+<li>首先确保自己的裸机LED翻转测试可以正常运行。 <br></li>
+<li>创建每500ms翻转一个LED的任务：其中LED硬件相关代码使用自己的 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">vTaskCode</span><span class="params">( <span class="type">void</span> * pvParameters )</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">const</span> TickType_t xDelay = <span class="number">500</span> / portTICK_PERIOD_MS;</span><br><span class="line">    bsp_board_leds_init();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">uint32_t</span> i = <span class="number">0</span>; i &lt; LEDS_NUMBER; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            vTaskDelay( xDelay );</span><br><span class="line">            nrf_gpio_pin_toggle(m_board_led_list[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+ <br></li>
+<li>实现main函数：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdbool.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;FreeRTOS.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;task.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">    BaseType_t xReturned;</span><br><span class="line">    TaskHandle_t xHandle = <span class="literal">NULL</span>;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* Create the task, storing the handle. */</span></span><br><span class="line">    xReturned = xTaskCreate(</span><br><span class="line">                    vTaskCode,       <span class="comment">/* Function that implements the task. */</span></span><br><span class="line">                    <span class="string">&quot;NAME&quot;</span>,          <span class="comment">/* Text name for the task. */</span></span><br><span class="line">                    configMINIMAL_STACK_SIZE,      <span class="comment">/* Stack size in words, not bytes. */</span></span><br><span class="line">                    <span class="literal">NULL</span>,    <span class="comment">/* Parameter passed into the task. */</span></span><br><span class="line">                    <span class="number">2</span>,<span class="comment">/* Priority at which the task is created. */</span></span><br><span class="line">                    &amp;xHandle );      <span class="comment">/* Used to pass out the created task&#x27;s handle. */</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* Start the created tasks running. */</span></span><br><span class="line">    vTaskStartScheduler();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/* Execution will only reach here if there was insufficient heap to</span></span><br><span class="line"><span class="comment">    start the scheduler. */</span></span><br><span class="line">    <span class="keyword">for</span>( ;; );</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>烧录到开发板上，配置没有问题的话，这里应该就能看到自己开发板的LED闪烁了。</p>
+<br>
+<br>
+<br>
+<br>
+
+<p>参考链接：<a target="_blank" rel="noopener" href="https://freertos.org/Creating-a-new-FreeRTOS-project.html">https://freertos.org/Creating-a-new-FreeRTOS-project.html</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/10/25/%E7%A7%BB%E6%A4%8Dfreertos/" data-id="cl9u181s70005cwu23g64hjgs" data-title="基于crotex-m处理器新建FreeRTOS工程" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-use-jlink-RTT" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/10/20/use-jlink-RTT/" class="article-date">
+  <time class="dt-published" datetime="2022-10-19T16:00:00.000Z" itemprop="datePublished">2022-10-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2022/10/20/use-jlink-RTT/">使用JLink-RTT输出调试信息</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <hr>
+<h4 id="为什么使用J-Link-RTT？"><a href="#为什么使用J-Link-RTT？" class="headerlink" title="为什么使用J-Link RTT？"></a>为什么使用J-Link RTT？</h4><p>开发调试过程中通常需要输出程序运行日志信息，以供排查问题。一般我们使用芯片自带的UART，将调试进行信息输出到PC串口工具进行排查。但如果芯片UART被占用了，则无法再用来作为调试信息输出工具。<br>J-Link RTT 同样具有输出信息的功能，并且速度更快，同时J-Link RTT也支持 MCU-&gt;PC以及PC-&gt;MCU双向发送数据。</p>
+<h4 id="如何移植到工程中："><a href="#如何移植到工程中：" class="headerlink" title="如何移植到工程中："></a>如何移植到工程中：</h4><p>首先确定自己现有的工程能编译，烧录到开发板后可以正常运行。在系统的J-Link驱动安装目录xxx\SEGGER\JLink\Samples\RTT\SEGGER_RTT_V782 中，有对应版本的RTT样例代码。<br>移植到自己的工程中也很简单，在自己的工程中新建一个目录，将SEGGER\JLink\Samples\RTT\SEGGER_RTT_V782\RTT 目录中的几个文件，以及SEGGER\JLink\Samples\RTT\SEGGER_RTT_V782\Config 中的配置文件拷贝到自己的目录中。</p>
+<ul>
+<li>SEGGER_RTT.c</li>
+<li>SEGGER_RTT.h</li>
+<li>SEGGER_RTT_Conf.h</li>
+<li>SEGGER_RTT_printf.c</li>
+</ul>
+<p>使用也很简单：引入头文件后，就可以使用输出函数了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;SEGGER_RTT.h&quot;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    SEGGER_RTT_Init();</span><br><span class="line">    <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">        SEGGER_RTT_WriteString(<span class="number">0</span>, <span class="string">&quot;Hello World from SEGGER!\n&quot;</span>);</span><br><span class="line">        SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;Test formatted output, %s:%d\n&quot;</span>,<span class="string">&quot;test_key&quot;</span>, <span class="number">3</span>);</span><br><span class="line">        your_delay_ms(<span class="number">500</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果需要格式化输出字符串，可以使用 <code>SEGGER_RTT_printf(0, xxxx)</code>，除了需要在前面加一个通道 id&#x3D;0，其它写法和标准库的printf一致。编译工程，烧录到开发板上。</p>
+<h4 id="如何显示输出的日志信息："><a href="#如何显示输出的日志信息：" class="headerlink" title="如何显示输出的日志信息："></a>如何显示输出的日志信息：</h4><p>使用Jlink连接开发板和电脑<br>电脑安装J-Link驱动后，系统中会存在一个<code>J-Link RTT Viewer</code>工具，打开工具，有如下配置选项。选择自己的板载目标芯片，其它配置默认即可。<br><img src="/2022/10/20/use-jlink-RTT/picture1.jpg"></p>
+<br>
+确认后，即可在工具界面中看到输出信息：
+
+<p><img src="/2022/10/20/use-jlink-RTT/picture2.jpg"></p>
+<p><strong>备注：</strong></p>
+<ul>
+<li><ol>
+<li>如果没有日志输出，可能是连接丢失了，可以在RTT Viewer工具左上角的File中点击Connect再次弹出配置界面，点击确认后即可连接上。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>可以在keil工程配置中设置烧录后自动复位重启，避免手动复位后丢失jlink连接。<br>  <img src="/2022/10/20/use-jlink-RTT/picture3.jpg"></li>
+</ol>
+</li>
+</ul>
+<br> 
+
+<h4 id="RTT-Real-Time-Transfer-是如何工作的："><a href="#RTT-Real-Time-Transfer-是如何工作的：" class="headerlink" title="RTT(Real Time Transfer)是如何工作的："></a>RTT(Real Time Transfer)是如何工作的：</h4><p>J-link直接访问MCU的内存，将其中的数据转发到PC端工具(如RTT Viewer)进行显示。<br><img src="/2022/10/20/use-jlink-RTT/picture5.jpg"><br>整体逻辑可以分为如下几步：</p>
+<ul>
+<li>1：MCU中的代码使用SEGGER_RTT_printf 将日志信息写入一个特定的ram区域。</li>
+<li>2：J-Link直接访问这段特定内存，读出其中数据</li>
+<li>3：J-Link将读到的数据发往PC工具。</li>
+</ul>
+<p>J-Link如何知道MCU将日志写到内存哪里去了？<br>在RTT文件SEGGER_RTT.c中定义了一个全局结构体变量：<code>SEGGER_RTT_CB _SEGGER_RTT</code>，这个结构体变量即 RTT控制块，它维护了 RTT相关的控制信息。</p>
+<p>如MCU-&gt;PC 方向发送数据时应该写入的buffer地址。以及PC-&gt;MCU方向发送数据时，数据缓存在MCU上的buffer地址。<br>其逻辑如下图所示：<br><img src="/2022/10/20/use-jlink-RTT/picture6.jpg"></p>
+<ul>
+<li>Up Buffer即MCU-&gt;PC方向的buffer，MCU将日志信息写入这里，J-Link会从这里读取。</li>
+<li>Down Buffer即PC-&gt;MCU方向的buffer，PC发的数据会写入这里，MCU可以通过RTT提供的SEGGER_RTT_Read 函数从其中读出数据。</li>
+</ul>
+<p>Up Buffer和Down Buffer在RTT的中都是实现为循环数组，所以需要维护各自的读写指针。</p>
+<p>在<code>SEGGER_RTT_CB _SEGGER_RTT</code> 结构体中：</p>
+<ul>
+<li><p>成员ID是一个16字节的数组(即上图中的ID)，这个数组的内容会被初始化成“SEGGER RTT”字符串。</p>
+</li>
+<li><p>成员aUp就是 MCU-&gt;PC方向的buffer信息，其本身是一个数组，初始化时会默认配置其第0个buffer,即通道0。(所以使用SEGGER_RTT_printf 时，第一个参数要指定0)，buffer的大小在SEGGER_RTT_Conf.h中配置(BUFFER_SIZE_UP)</p>
+</li>
+<li><p>成员aDown就是 PC-&gt;方向的buffer信息，其本身是一个数组，初始化时会默认配置其第0个buffer,即通道0。buffer的大小在SEGGER_RTT_Conf.h中配置(BUFFER_SIZE_DOWN)</p>
+</li>
+</ul>
+<p>使用J-Link和MCU连接后，就是通过在内存范围内寻找“SEGGER RTT”这个字符串，从而确定 RTT 控制块的地址。并通过其中的 aUp成员确定MCU写的日志所存放的buffer地址，并从中提取出数据，在PC端的RTT Viewer进行显示。</p>
+<h4 id="额外补充："><a href="#额外补充：" class="headerlink" title="额外补充："></a>额外补充：</h4><p>J-Link RTT Viewer支持 <code>Channel 0</code>和<code>Channel 1</code>。<br><code>Chaneel 0</code>在初始化时已经默认配置了。<br><code>Channel 1</code>如果需要使用需要自己配置其<code>Up</code>和<code>Down</code>的buffer，例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SEGGER_RTT_ConfigUpBuffer(<span class="number">1</span>, <span class="string">&quot;channel 1&quot;</span>, up_buffer, <span class="number">512</span>, SEGGER_RTT_MODE_DEFAULT);</span><br><span class="line">SEGGER_RTT_ConfigDownBuffer(<span class="number">1</span>, <span class="string">&quot;channel 1&quot;</span>, down_buffer, <span class="number">16</span>, SEGGER_RTT_MODE_DEFAULT);</span><br></pre></td></tr></table></figure>
+<p>使用SEGGER_RTT_printf时指定 <code>channel 1</code>即可。<br><code>channel 1</code>的数据无法在<code>rtt viewer中</code>展示，但是可以将<code>channel 1</code>的日志保存在文件中。如下图，点击 <code>start data logging</code>后会弹出保存文件命名，设置后<code>channel 1</code>输出的数据都会保存在该文件中。<br><img src="/2022/10/20/use-jlink-RTT/picture7.jpg"></p>
+<br>
+
+<p>此外，<code>Channel 0</code>还支持分开显示，<code>channel 0</code>有16个terminal，通过使用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SEGGER_RTT_SetTerminal(<span class="number">0</span>);<span class="comment">// 让通道0的输出显示在rtt viewer 的terminal 0中</span></span><br><span class="line">SEGGER_RTT_WriteString(<span class="number">0</span>, <span class="string">&quot;Hello World from SEGGER terminal 0\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">SEGGER_RTT_SetTerminal(<span class="number">1</span>);<span class="comment">// 让通道0的输出显示在rtt viewer 的terminal 1中</span></span><br><span class="line">SEGGER_RTT_WriteString(<span class="number">0</span>, <span class="string">&quot;Hello World from SEGGER terminal 1\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">SEGGER_RTT_SetTerminal(<span class="number">2</span>);<span class="comment">// 让通道0的输出显示在rtt viewer 的terminal 2中</span></span><br><span class="line">SEGGER_RTT_WriteString(<span class="number">0</span>, <span class="string">&quot;Hello World from SEGGER terminal 2\r\n&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>可以让<code>channel 0</code>的输出信息在不同的 <code>terminal</code> 中显示。如下图所示，<code>All Terminals</code>会显示<code>chaneel 0</code>的所有<code>terminal</code>的数据，各个<code>terminal</code>会显示自己的：<br><img src="/2022/10/20/use-jlink-RTT/picture8.jpg"></p>
+<br>
+
+<p><strong>注意</strong> ! <code>channel 0</code>的16个<code>terminal</code>，只是逻辑上的区分，其物理存储都是用的<code>channel 0</code>的那个 <code>Up buffer</code>，只是 <code>rtt viewer</code>在逻辑上将它们进行了显示区分。从RTT的源码上可以看到：<br>例如，<code>SEGGER_RTT_SetTerminal(1)</code>; 其作用是设置在<code>terminal 1</code>进行显示，其内部就是将 <code>&#123;0xff, ‘1’&#125;</code> 这两个字节写到<code>Up buffer</code>中， J-Link检查到这两个字节后，就会让后续的日志信息显示在<code>terminal 1</code>上。</p>
+<br>
+<br>
+<br>
+<br>
+
+<p>参考连接：<a target="_blank" rel="noopener" href="https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer">https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/10/20/use-jlink-RTT/" data-id="cl9u181s30002cwu27gt18kj4" data-title="使用JLink-RTT输出调试信息" class="article-share-link">Share</a>
       
       
       
@@ -129,6 +496,13 @@
           <aside id="sidebar">
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/FreeRTOS/">FreeRTOS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a></li></ul>
+    </div>
+  </div>
+
 
   
     
@@ -153,7 +527,19 @@
       <ul>
         
           <li>
-            <a href="/2022/10/23/hello-world/">Hello World</a>
+            <a href="/2022/10/29/freertos%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/">FreeRTOS创建任务</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/27/why-use-RTOS/">为什么使用嵌入式实时操作系统(RTOS)</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/25/%E7%A7%BB%E6%A4%8Dfreertos/">基于crotex-m处理器新建FreeRTOS工程</a>
+          </li>
+        
+          <li>
+            <a href="/2022/10/20/use-jlink-RTT/">使用JLink-RTT输出调试信息</a>
           </li>
         
       </ul>
