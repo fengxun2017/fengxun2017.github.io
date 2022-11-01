@@ -77,8 +77,8 @@
   
     <article id="post-FreeRTOS-task-status-management" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2022/10/30/FreeRTOS-task-status-management/" class="article-date">
-  <time class="dt-published" datetime="2022-10-29T16:00:00.000Z" itemprop="datePublished">2022-10-30</time>
+    <a href="/2022/11/01/FreeRTOS-task-status-management/" class="article-date">
+  <time class="dt-published" datetime="2022-10-31T16:00:00.000Z" itemprop="datePublished">2022-11-01</time>
 </a>
     
   <div class="article-category">
@@ -93,7 +93,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2022/10/30/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>
+      <a class="p-name article-title" href="/2022/11/01/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>
     </h1>
   
 
@@ -199,7 +199,7 @@
 </ul>
 <br>
 
-<h4 id="FreeRTOS的任务状态的转换逻辑："><a href="#FreeRTOS的任务状态的转换逻辑：" class="headerlink" title="FreeRTOS的任务状态的转换逻辑："></a>FreeRTOS的任务状态的转换逻辑：</h4><p>通过前面优先级抢占的例子，基本上也解释了任务不同状态间的转换，FreeRTOS任务的状态转变概括如下图：<br><img src="/2022/10/30/FreeRTOS-task-status-management/task-status.jpg"></p>
+<h4 id="FreeRTOS的任务状态的转换逻辑："><a href="#FreeRTOS的任务状态的转换逻辑：" class="headerlink" title="FreeRTOS的任务状态的转换逻辑："></a>FreeRTOS的任务状态的转换逻辑：</h4><p>通过前面优先级抢占的例子，基本上也解释了任务不同状态间的转换，FreeRTOS任务的状态转变概括如下图：<br><img src="/2022/11/01/FreeRTOS-task-status-management/task-status.jpg"></p>
 <p>绝大多数情况下，我们只需要考虑 运行态、就绪态 和 阻塞态。</p>
 <ul>
 <li><p><strong>运行态</strong>(Running)：即任务当前占有CPU，正在运行。被选中运行的任务，一定是所有处于<strong>就绪态</strong>任务中优先级最高的那个任务（如果存在多个，默认会被轮流选择）。所以，<strong>运行态</strong>一定是从<strong>就绪态</strong>转变过来的。</p>
@@ -225,20 +225,20 @@
 <p>内核中存在4种和任务相关的队列：<strong>就绪任务队列</strong>、<strong>延迟(delayed)任务队列</strong>、<strong>挂起任务队列</strong>。<br>还有一种是<strong>资源(如消息队列资源，信号量资源)内部维持的队列</strong>。例如一个消息队列，其内部就会维持一个等待发送数据队列，和等待接收数据队列。当消息队列中没有数据时，如果任务A调用<code>xQueueReceive</code>获取数据，那么任务A就会被挂载到该消息队列内部维护的等待接收数据任务队列上，这样当消息队列中有数据后，就能立刻通知等待数据的任务。</p>
 <p><strong>运行态</strong>的任务由于只有一个（单核MCU），所以只需要一个全局指针，指向当前正在运行的任务即可，并不需要专用队列。<br><br></p>
 <p>当任务被 当前运行任务指针指向，即当前在运行，则处于 <strong>运行态</strong>。<br>当任务被挂载到 就绪队列 中时，即处于<strong>就绪态</strong>，内核调度器总是从就绪队列中选择优先级最高的任务来运行。<br>当任务被挂载到 挂起队列 中时，即处于<strong>挂起态</strong>。<br>当任务被挂载到 延迟队列 或 资源内部维持队列时， 均处于<strong>阻塞态</strong>。<br><br></p>
-<h5 id="挂起任务队列"><a href="#挂起任务队列" class="headerlink" title="挂起任务队列:"></a>挂起任务队列:</h5><p>挂起队列中保存的即那些被挂起的任务，它们永远不可能被调度运行，除非任务被恢复到就绪队列中。<br><img src="/2022/10/30/FreeRTOS-task-status-management/suspended-queue.jpg"></p>
-<h5 id="就绪任务队列："><a href="#就绪任务队列：" class="headerlink" title="就绪任务队列："></a>就绪任务队列：</h5><p>就绪队列用来保存那些处于就绪状态的任务，并且每个优先级都会有一个队列，例如<code>FreeRTOSConfig.h</code>文件中配置了优先级个数为 3：<br><code>#define configMAX_PRIORITIES		( 3 )</code><br>则内核中会存在三个就绪任务队列。如果我们创建:<br>一个优先级为2的任务 A<br>两个优先级为1的任务 B、C<br>一个优先级为0的任务 D<br>则内核维护的三个就绪任务队列，以及当前任务指针的指向，整体状态如下图所示<code>(实际上内核会自己创建一个idle任务。如果启用了软件定时器，内核还会创建一个timer任务，这里不考虑这两个任务)</code>：<br><img src="/2022/10/30/FreeRTOS-task-status-management/ready-queue.jpg"></p>
+<h5 id="挂起任务队列"><a href="#挂起任务队列" class="headerlink" title="挂起任务队列:"></a>挂起任务队列:</h5><p>挂起队列中保存的即那些被挂起的任务，它们永远不可能被调度运行，除非任务被恢复到就绪队列中。<br><img src="/2022/11/01/FreeRTOS-task-status-management/suspended-queue.jpg"></p>
+<h5 id="就绪任务队列："><a href="#就绪任务队列：" class="headerlink" title="就绪任务队列："></a>就绪任务队列：</h5><p>就绪队列用来保存那些处于就绪状态的任务，并且每个优先级都会有一个队列，例如<code>FreeRTOSConfig.h</code>文件中配置了优先级个数为 3：<br><code>#define configMAX_PRIORITIES		( 3 )</code><br>则内核中会存在三个就绪任务队列。如果我们创建:<br>一个优先级为2的任务 A<br>两个优先级为1的任务 B、C<br>一个优先级为0的任务 D<br>则内核维护的三个就绪任务队列，以及当前任务指针的指向，整体状态如下图所示<code>(实际上内核会自己创建一个idle任务。如果启用了软件定时器，内核还会创建一个timer任务，这里不考虑这两个任务)</code>：<br><img src="/2022/11/01/FreeRTOS-task-status-management/ready-queue.jpg"></p>
 <p>通过这种方式，内核调度器每次进行任务调度时，直接从最高优先级的就绪队列中找下一个任务运行即可(默认相同优先级的任务轮流调度)。</p>
-<h5 id="延迟任务队列："><a href="#延迟任务队列：" class="headerlink" title="延迟任务队列："></a>延迟任务队列：</h5><p>当任务调用<code>vTaskDelay</code>函数休眠时，就会被挂在 延迟任务队列 下。<br>内核在每次时钟tick中断时，会检查延迟队列中任务的超时值，并将等待时间到期的任务从 延迟队列 中剔除，加入到任务优先级对应的就绪队列中。<br><img src="/2022/10/30/FreeRTOS-task-status-management/delayed-queue.jpg"></p>
+<h5 id="延迟任务队列："><a href="#延迟任务队列：" class="headerlink" title="延迟任务队列："></a>延迟任务队列：</h5><p>当任务调用<code>vTaskDelay</code>函数休眠时，就会被挂在 延迟任务队列 下。<br>内核在每次时钟tick中断时，会检查延迟队列中任务的超时值，并将等待时间到期的任务从 延迟队列 中剔除，加入到任务优先级对应的就绪队列中。<br><img src="/2022/11/01/FreeRTOS-task-status-management/delayed-queue.jpg"></p>
 <p>此外，当任务请求某种资源时，例如，调用<code>xQueueReceive</code>从消息队列<strong>Q</strong>中获取消息，并且设置了等待超时时间。那么当消息队列<strong>Q</strong>中没有数据时，内核也会将任务挂在 延迟队列下。这样，当等待的超时时间到期后，内核就会将任务重新挂到就绪队列下，避免了无限期等待数据。</p>
 <h5 id="资源内部维持的任务队列："><a href="#资源内部维持的任务队列：" class="headerlink" title="资源内部维持的任务队列："></a>资源内部维持的任务队列：</h5><p>如前面所述，当从消息队列<strong>Q</strong>中请求数据，但是消息队列<strong>Q</strong>为空，如果设置了等待超时。那么，任务会被 挂在到延迟任务队列中（用来检测是否超时），<strong>同时也会被挂载到消息队列Q内部维护的等待接收任务队列中</strong>（这样<strong>Q</strong>一有数据，就能通过该队列通知等待数据的任务）。</p>
-<p>例如，当消息队列<strong>Q</strong>为空时，高优先级任务X 和低优先级任务Y 均请求获取数据，则它们挂载到消息队列<strong>Q</strong>的状态如下图所示（实际执行逻辑应该是任务X 在运行时请求消息队列获取数据，由于没有数据，则进入阻塞态。内核切换到任务Y运行，任务Y也请求消息队列获取数据，同样进入阻塞态）。<br><img src="/2022/10/30/FreeRTOS-task-status-management/resource-internal-queue-a.png"><br>任务X和任务Y在等待接收数据队列中是按优先级排序的。这样，当消息队列有数据时，即可以最先通知优先级高的任务来提取数据。</p>
-<p>同理，当消息队列<strong>Q</strong>为满时，已经不能再往队列里发送数据了。此时，如果任务Z 向消息队列请求发送数据，则会进入阻塞态，并被挂载到<strong>Q</strong>的等待发送任务队列中(这样<strong>Q</strong>已有空闲空间，就可以通知任务Z)。如下图所示：<br><img src="/2022/10/30/FreeRTOS-task-status-management/resource-internal-queue-b.png"></p>
+<p>例如，当消息队列<strong>Q</strong>为空时，高优先级任务X 和低优先级任务Y 均请求获取数据，则它们挂载到消息队列<strong>Q</strong>的状态如下图所示（实际执行逻辑应该是任务X 在运行时请求消息队列获取数据，由于没有数据，则进入阻塞态。内核切换到任务Y运行，任务Y也请求消息队列获取数据，同样进入阻塞态）。<br><img src="/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-a.png"><br>任务X和任务Y在等待接收数据队列中是按优先级排序的。这样，当消息队列有数据时，即可以最先通知优先级高的任务来提取数据。</p>
+<p>同理，当消息队列<strong>Q</strong>为满时，已经不能再往队列里发送数据了。此时，如果任务Z 向消息队列请求发送数据，则会进入阻塞态，并被挂载到<strong>Q</strong>的等待发送任务队列中(这样<strong>Q</strong>已有空闲空间，就可以通知任务Z)。如下图所示：<br><img src="/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-b.png"></p>
 <p>即任务对于资源的请求，如果不能立刻获取到，并且设置了等待时间，<strong>任务会被同时挂载到 延迟队列，以及资源内部队列中</strong>。<br>挂载到延迟任务队列中，是为了让任务在等待资源可用时，可以设置等待超时。让任务可以在超时时间到期后，即使资源不可用，也会退出等待。<br>挂载到资源内部的任务队列中，是为了当资源可用时，可以立刻通知等待该资源的任务。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/30/FreeRTOS-task-status-management/" data-id="cl9yabhmw0002fku2dyb1691v" data-title="FreeRTOS的任务管理逻辑" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/11/01/FreeRTOS-task-status-management/" data-id="cl9yadr580000acu20oyidaag" data-title="FreeRTOS的任务管理逻辑" class="article-share-link">Share</a>
       
       
       
@@ -390,7 +390,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" data-id="cl9yabhmt0001fku21evw1sv7" data-title="FreeRTOS——创建任务" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" data-id="cl9yadr5i0005acu24dgmbfkh" data-title="FreeRTOS——创建任务" class="article-share-link">Share</a>
       
       
       
@@ -448,7 +448,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/27/why-use-RTOS/" data-id="cl9yabhn10005fku25ymx4ib3" data-title="为什么使用嵌入式实时操作系统(RTOS)" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/27/why-use-RTOS/" data-id="cl9yadr5h0004acu23opl6dn2" data-title="为什么使用嵌入式实时操作系统(RTOS)" class="article-share-link">Share</a>
       
       
       
@@ -548,7 +548,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" data-id="cl9yabhn20006fku23uj5byg9" data-title="基于crotex-m处理器新建FreeRTOS工程" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" data-id="cl9yadr5n000cacu2e2n1cm7x" data-title="基于crotex-m处理器新建FreeRTOS工程" class="article-share-link">Share</a>
       
       
       
@@ -660,7 +660,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2022/10/20/use-jlink-RTT/" data-id="cl9yabhn00004fku2hryhg15r" data-title="使用JLink-RTT输出调试信息" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2022/10/20/use-jlink-RTT/" data-id="cl9yadr5e0002acu2f9433ave" data-title="使用JLink-RTT输出调试信息" class="article-share-link">Share</a>
       
       
       
@@ -697,7 +697,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/10/">October 2022</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/11/">November 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/10/">October 2022</a></li></ul>
     </div>
   </div>
 
@@ -710,7 +710,7 @@
       <ul>
         
           <li>
-            <a href="/2022/10/30/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>
+            <a href="/2022/11/01/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>
           </li>
         
           <li>
