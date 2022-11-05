@@ -17,12 +17,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="前提：首先需要基于自己的开发板实现一个点灯的程序，确保工程编译通过，烧录后程序能正常运行。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于crotex-m处理器新建FreeRTOS工程">
-<meta property="og:url" content="http://example.com/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/index.html">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/index.html">
 <meta property="og:site_name" content="fx">
 <meta property="og:description" content="前提：首先需要基于自己的开发板实现一个点灯的程序，确保工程编译通过，烧录后程序能正常运行。">
 <meta property="og:locale" content="en_US">
@@ -32,11 +32,11 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/">
+<link rel="canonical" href="http://fengxun2017.github.io/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/","path":"2022/10/25/基于crotex-m处理器新建FreeRTOS工程/","title":"基于crotex-m处理器新建FreeRTOS工程"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://fengxun2017.github.io/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/","path":"2022/10/25/基于crotex-m处理器新建FreeRTOS工程/","title":"基于crotex-m处理器新建FreeRTOS工程"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>基于crotex-m处理器新建FreeRTOS工程 | fx</title>
@@ -181,7 +181,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -279,7 +279,7 @@
 
 <h4 id="输出调试信息"><a href="#输出调试信息" class="headerlink" title="输出调试信息"></a>输出调试信息</h4><p>在前面的FreeRTOSConfig.h中我们重定义了断言函数，FreeRtos在运行时会有充分的配置和参数检查，在调试阶段打开这个断言函数，可以快速定位一些配置和参数不正确的问题。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">vAssertCalled</span><span class="params">( <span class="type">const</span> <span class="type">char</span> * pcFile, <span class="type">uint32_t</span> ulLine )</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configASSERT( x ) <span class="keyword">if</span>( ( x ) == 0 )  vAssertCalled( __FILE__, __LINE__ )</span></span><br></pre></td></tr></table></figure>
-<p><code>vAssertCalled( const char * pcFile, uint32_t ulLine )</code>的具体实现可以使用任意的工具(例如通过串口工具)将出现问题的函数所在的文件名和行号显示出来。这里，我使用了J-Link RTT工具来输出错误日志信息，J-Link RTT的使用可以参考这篇文章：<a target="_blank" rel="noopener" href="https://fengxun2017.github.io/2022/10/20/use-jlink-RTT/">使用JLink-RTT输出调试信息</a></p>
+<p><code>vAssertCalled( const char * pcFile, uint32_t ulLine )</code>的具体实现可以使用任意的工具(例如通过串口工具)将出现问题的函数所在的文件名和行号显示出来。这里，我使用了J-Link RTT工具来输出错误日志信息，J-Link RTT的使用可以参考这篇文章：<a href="https://fengxun2017.github.io/2022/10/20/use-jlink-RTT/">使用JLink-RTT输出调试信息</a></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">vAssertCalled</span><span class="params">( <span class="type">const</span> <span class="type">char</span> * pcFile, <span class="type">uint32_t</span> ulLine )</span>&#123;</span><br><span class="line">    SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;error at:%s, line:%d\r\n&quot;</span>, pcFile, ulLine);</span><br><span class="line">    <span class="keyword">for</span>(;;)&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <br>
 
@@ -313,7 +313,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>Post link: </strong>
-      <a href="http://example.com/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" title="基于crotex-m处理器新建FreeRTOS工程">http://example.com/2022/10/25/基于crotex-m处理器新建FreeRTOS工程/</a>
+      <a href="http://fengxun2017.github.io/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" title="基于crotex-m处理器新建FreeRTOS工程">http://fengxun2017.github.io/2022/10/25/基于crotex-m处理器新建FreeRTOS工程/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.

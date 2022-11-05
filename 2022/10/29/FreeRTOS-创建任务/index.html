@@ -17,12 +17,12 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="关于使用嵌入式操作系统的益处，可以参考：为什么使用嵌入式实时操作系统(RTOS)  如何基于自己的开发板新建FreeRTOS工程可以参考：基于crotex-m处理器新建FreeRTOS工程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FreeRTOS——创建任务">
-<meta property="og:url" content="http://example.com/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/index.html">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/index.html">
 <meta property="og:site_name" content="fx">
 <meta property="og:description" content="关于使用嵌入式操作系统的益处，可以参考：为什么使用嵌入式实时操作系统(RTOS)  如何基于自己的开发板新建FreeRTOS工程可以参考：基于crotex-m处理器新建FreeRTOS工程">
 <meta property="og:locale" content="en_US">
@@ -32,11 +32,11 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://example.com/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/">
+<link rel="canonical" href="http://fengxun2017.github.io/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/","path":"2022/10/29/FreeRTOS-创建任务/","title":"FreeRTOS——创建任务"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://fengxun2017.github.io/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/","path":"2022/10/29/FreeRTOS-创建任务/","title":"FreeRTOS——创建任务"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>FreeRTOS——创建任务 | fx</title>
@@ -181,7 +181,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -234,8 +234,8 @@
     <div class="post-body" itemprop="articleBody">
         <center>
 
-<p>关于使用嵌入式操作系统的益处，可以参考：<a target="_blank" rel="noopener" href="https://fengxun2017.github.io/2022/10/27/why-use-RTOS/">为什么使用嵌入式实时操作系统(RTOS)</a> </p>
-<p>如何基于自己的开发板新建FreeRTOS工程可以参考：<a target="_blank" rel="noopener" href="https://fengxun2017.github.io/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/">基于crotex-m处理器新建FreeRTOS工程</a></p>
+<p>关于使用嵌入式操作系统的益处，可以参考：<a href="https://fengxun2017.github.io/2022/10/27/why-use-RTOS/">为什么使用嵌入式实时操作系统(RTOS)</a> </p>
+<p>如何基于自己的开发板新建FreeRTOS工程可以参考：<a href="https://fengxun2017.github.io/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/">基于crotex-m处理器新建FreeRTOS工程</a></p>
 </center>
 
 <span id="more"></span>
@@ -365,7 +365,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>Post link: </strong>
-      <a href="http://example.com/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" title="FreeRTOS——创建任务">http://example.com/2022/10/29/FreeRTOS-创建任务/</a>
+      <a href="http://fengxun2017.github.io/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" title="FreeRTOS——创建任务">http://fengxun2017.github.io/2022/10/29/FreeRTOS-创建任务/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.

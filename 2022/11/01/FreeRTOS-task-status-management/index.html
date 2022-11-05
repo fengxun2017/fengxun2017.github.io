@@ -17,33 +17,33 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="FreeRTOS内核为了方便任务的调度和管理，创建了不同优先级的就绪任务队列，以及其它状态任务队列。通过将任务挂在不同的队列上，实现对任务的状态管理和调度。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FreeRTOS的任务调度和管理">
-<meta property="og:url" content="http://example.com/2022/11/01/FreeRTOS-task-status-management/index.html">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/index.html">
 <meta property="og:site_name" content="fx">
 <meta property="og:description" content="FreeRTOS内核为了方便任务的调度和管理，创建了不同优先级的就绪任务队列，以及其它状态任务队列。通过将任务挂在不同的队列上，实现对任务的状态管理和调度。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2022/11/01/FreeRTOS-task-status-management/task-status.jpg">
-<meta property="og:image" content="http://example.com/2022/11/01/FreeRTOS-task-status-management/suspended-queue.jpg">
-<meta property="og:image" content="http://example.com/2022/11/01/FreeRTOS-task-status-management/ready-queue.jpg">
-<meta property="og:image" content="http://example.com/2022/11/01/FreeRTOS-task-status-management/delayed-queue.jpg">
-<meta property="og:image" content="http://example.com/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-a.png">
-<meta property="og:image" content="http://example.com/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-b.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/task-status.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/suspended-queue.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/ready-queue.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/delayed-queue.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-a.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-b.png">
 <meta property="article:published_time" content="2022-10-31T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-11-05T07:07:05.793Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/11/01/FreeRTOS-task-status-management/task-status.jpg">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/task-status.jpg">
 
 
-<link rel="canonical" href="http://example.com/2022/11/01/FreeRTOS-task-status-management/">
+<link rel="canonical" href="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/11/01/FreeRTOS-task-status-management/","path":"2022/11/01/FreeRTOS-task-status-management/","title":"FreeRTOS的任务调度和管理"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/","path":"2022/11/01/FreeRTOS-task-status-management/","title":"FreeRTOS的任务调度和管理"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>FreeRTOS的任务调度和管理 | fx</title>
@@ -188,7 +188,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11/01/FreeRTOS-task-status-management/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -395,7 +395,7 @@ FreeRTOS内核为了方便任务的调度和管理，创建了不同优先级的
   </li>
   <li class="post-copyright-link">
       <strong>Post link: </strong>
-      <a href="http://example.com/2022/11/01/FreeRTOS-task-status-management/" title="FreeRTOS的任务调度和管理">http://example.com/2022/11/01/FreeRTOS-task-status-management/</a>
+      <a href="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/" title="FreeRTOS的任务调度和管理">http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.

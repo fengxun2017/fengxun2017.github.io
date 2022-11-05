@@ -17,33 +17,33 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="链表是FreeRTOS内核中最重要的数据结构，内核的任务管理都是基于链表数据结构来实现的。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="FreeRTOS内核链表数据结构">
-<meta property="og:url" content="http://example.com/2022/11/04/FreeRTOS-kernel-list/index.html">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/index.html">
 <meta property="og:site_name" content="fx">
 <meta property="og:description" content="链表是FreeRTOS内核中最重要的数据结构，内核的任务管理都是基于链表数据结构来实现的。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2022/11/04/FreeRTOS-kernel-list/list.png">
-<meta property="og:image" content="http://example.com/2022/11/04/FreeRTOS-kernel-list/just-node.png">
-<meta property="og:image" content="http://example.com/2022/11/04/FreeRTOS-kernel-list/node-in-data.png">
-<meta property="og:image" content="http://example.com/2022/11/04/FreeRTOS-kernel-list/insert.png">
-<meta property="og:image" content="http://example.com/2022/11/04/FreeRTOS-kernel-list/cur-index.png">
-<meta property="og:image" content="http://example.com/2022/11/04/FreeRTOS-kernel-list/task-insert.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/list.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/just-node.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/node-in-data.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/insert.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/cur-index.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/task-insert.png">
 <meta property="article:published_time" content="2022-11-03T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-11-05T06:57:58.346Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/11/04/FreeRTOS-kernel-list/list.png">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/list.png">
 
 
-<link rel="canonical" href="http://example.com/2022/11/04/FreeRTOS-kernel-list/">
+<link rel="canonical" href="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2022/11/04/FreeRTOS-kernel-list/","path":"2022/11/04/FreeRTOS-kernel-list/","title":"FreeRTOS内核链表数据结构"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/","path":"2022/11/04/FreeRTOS-kernel-list/","title":"FreeRTOS内核链表数据结构"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>FreeRTOS内核链表数据结构 | fx</title>
@@ -188,7 +188,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/11/04/FreeRTOS-kernel-list/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -270,14 +270,14 @@
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> * <span class="title">next</span>;</span>     </span><br><span class="line">    <span class="type">void</span> * owner;    <span class="comment">// 让其指向节点关联的实际数据</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <p>如此，我们在创建<strong>TaskInfo</strong>类型的变量 <strong>A</strong> 时，只需将其成员 <strong>list_node</strong> 的 <strong>owner</strong> 指向 <strong>A</strong> 自己，即可将链表节点和数据进行关联。下图以单链表演示一个具体的链表节点插入的过程：<br><img src="/2022/11/04/FreeRTOS-kernel-list/insert.png"></p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上内容以简单的单链表为例，描述了FreeRTOS内核链表结构的核心思想。FreeRTOS中所有的任务队列都是都过这种链表结构来管理的（参考文章：<a target="_blank" rel="noopener" href="https://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>）。<br>当然，内核需要处理的任务信息和逻辑更复杂，所以FreeRTOS内核中的链表实际实现会有一些差别，但思想是一致的（链表结构本身和数据解耦）。例如，一些具体差异有：</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上内容以简单的单链表为例，描述了FreeRTOS内核链表结构的核心思想。FreeRTOS中所有的任务队列都是都过这种链表结构来管理的（参考文章：<a href="https://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>）。<br>当然，内核需要处理的任务信息和逻辑更复杂，所以FreeRTOS内核中的链表实际实现会有一些差别，但思想是一致的（链表结构本身和数据解耦）。例如，一些具体差异有：</p>
 <ul>
 <li>内核中的链表为<strong>双向链表</strong>，所以链表的插入、删除更复杂一点。</li>
 <li>内核中实现的<strong>链表节点</strong>除了<strong>owner指针</strong>指向关联数据。还有一个<strong>container指针</strong>，container指针用来指向这个链表节点所属的<strong>链表</strong>，这个指针的目的是为了当任务A（一个链表节点）挂载在某个任务队列上(即链表)，而我们想将任务A其移出该任务队列，除了需要修改任务队列（结构为链表）中任务A前后节点(任务)的next，prev指针，还需要修改队列内部记录信息（如队列包含的任务数量），通过container即可直接找到该任务所在的队列，继而修改相关信息。</li>
-<li>内核中的<strong>链表节点</strong>还存在一个 <strong>ItemValue</strong>，不是说<strong>链表节点</strong>本身不存储信息吗？那这个值是干嘛用的？ 这个值通常赋值为任务的优先级。添加这个值是为了方便内核实现<strong>资源就绪时优先通知高优先级的任务</strong>。例如，文章<a target="_blank" rel="noopener" href="https://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>中描述了，当任务从一个空的<strong>消息队列Q</strong>中请求数据时，就会被挂载到<strong>消息队列Q</strong>内部的等待数据任务队列（一个链表）上，多个任务都向空的消息队列Q请求数据，就都会被挂载到<strong>消息队列Q</strong>的等待数据任务队列上。而当<strong>消息队列Q</strong>有数据时，会优先通知优先级高的来取。怎么实现优先通知高优先级的任务？就是在将任务挂载到<strong>消息队列Q</strong>的等待数据队列上时，是按 节点的ItemValue（被赋值成任务优先级了）来排序的，使得优先级高的任务会排在队列的最前面。</li>
+<li>内核中的<strong>链表节点</strong>还存在一个 <strong>ItemValue</strong>，不是说<strong>链表节点</strong>本身不存储信息吗？那这个值是干嘛用的？ 这个值通常赋值为任务的优先级。添加这个值是为了方便内核实现<strong>资源就绪时优先通知高优先级的任务</strong>。例如，文章<a href="https://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>中描述了，当任务从一个空的<strong>消息队列Q</strong>中请求数据时，就会被挂载到<strong>消息队列Q</strong>内部的等待数据任务队列（一个链表）上，多个任务都向空的消息队列Q请求数据，就都会被挂载到<strong>消息队列Q</strong>的等待数据任务队列上。而当<strong>消息队列Q</strong>有数据时，会优先通知优先级高的来取。怎么实现优先通知高优先级的任务？就是在将任务挂载到<strong>消息队列Q</strong>的等待数据队列上时，是按 节点的ItemValue（被赋值成任务优先级了）来排序的，使得优先级高的任务会排在队列的最前面。</li>
 </ul>
 <p>此外，FreeRTOS内核链表还提供了很多<strong>“非标准”</strong>的链表操作，和各种宏定义。<br>例如，内核任务链表，即任务队列中存在一个”当前索引”，它总是指向每个就绪任务队列中正在运行（最高优先级就绪队列中的某个任务，正在占用cpu）或将要运行（次优先级就绪队列中的某个任务，运行的前提是没有更高优先级的就绪任务）的那个任务。当前索引存在的意义，是为了方便内核实现在相同优先级的任务上轮流调度（通过顺序移动“当前索引”，轮流调度相同优先级的任务）。</p>
-<p>如下图所示（以简单的单链表解释）：每次需要任务切换时，会从最高优先级(3)的就绪任务队列中，通过“当前索引”来找到下一个要调度的任务，从而实现相同优先级任务的“轮流调度”(内核的默认配置)。(优先级队列2中就绪任务运行的前提是没有更高优先级的任务处于就绪状态了，参考：<a target="_blank" rel="noopener" href="https://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>)<br><img src="/2022/11/04/FreeRTOS-kernel-list/cur-index.png"><br>  <center>上图的 <code>end_node</code>为一个尾节点(FreeRTOS内存链表也存在这个尾节点)，队列创建时就默认存在一个尾节点了。它存在的意义是为了更简单的实现链表的插入和删除，因为不用考虑链表为空的特殊情况了（尾节点总是存在）。</center></p>
+<p>如下图所示（以简单的单链表解释）：每次需要任务切换时，会从最高优先级(3)的就绪任务队列中，通过“当前索引”来找到下一个要调度的任务，从而实现相同优先级任务的“轮流调度”(内核的默认配置)。(优先级队列2中就绪任务运行的前提是没有更高优先级的任务处于就绪状态了，参考：<a href="https://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>)<br><img src="/2022/11/04/FreeRTOS-kernel-list/cur-index.png"><br>  <center>上图的 <code>end_node</code>为一个尾节点(FreeRTOS内存链表也存在这个尾节点)，队列创建时就默认存在一个尾节点了。它存在的意义是为了更简单的实现链表的插入和删除，因为不用考虑链表为空的特殊情况了（尾节点总是存在）。</center></p>
 <p>通过“当前索引”，可以顺利找到下一个需要调度的相同优先级任务。为了保持这个顺序，当一个新任务需要插入到某个优先级就绪任务队列上时，会插入的“当前索引的”prev指针指向的位置，内核是通过移动“当前索引”的next指针实现轮流调度同一优先级的任务，而新插入的就绪任务由于插入到“当前索引”的prev指针指向的位置，所以新插入的任务会最后一个调度，如下图所示（FreeRTOS内核实际实现为双链表）：<br><img src="/2022/11/04/FreeRTOS-kernel-list/task-insert.png"></p>
 
     </div>
@@ -296,7 +296,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>Post link: </strong>
-      <a href="http://example.com/2022/11/04/FreeRTOS-kernel-list/" title="FreeRTOS内核链表数据结构">http://example.com/2022/11/04/FreeRTOS-kernel-list/</a>
+      <a href="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/" title="FreeRTOS内核链表数据结构">http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/</a>
   </li>
   <li class="post-copyright-license">
     <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
