@@ -19,19 +19,19 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="这里我们只讨论支持多任务的嵌入式实时操作系统，如何理解多任务呢？以PC上的例子来说更容易理解。例如，你一边播放音乐，同时也在一边编辑文字。从体验上来看，这两个任务在你的PC上就像是在同时运行，这就是多任务的直观体现。 那么在嵌入式系统上，基于FreeRTOS这类嵌入式多任务操作系统进行应用开发有什么好处呢？ 毕竟，操作系统内核本身需要占用存储和CPU资源的。 以一个环境采集监控系统为例，不使用R">
+    <meta name="description" content="在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="为什么使用嵌入式实时操作系统(RTOS)">
 <meta property="og:url" content="http://example.com/2022/10/27/why-use-RTOS/index.html">
 <meta property="og:site_name" content="fx">
-<meta property="og:description" content="这里我们只讨论支持多任务的嵌入式实时操作系统，如何理解多任务呢？以PC上的例子来说更容易理解。例如，你一边播放音乐，同时也在一边编辑文字。从体验上来看，这两个任务在你的PC上就像是在同时运行，这就是多任务的直观体现。 那么在嵌入式系统上，基于FreeRTOS这类嵌入式多任务操作系统进行应用开发有什么好处呢？ 毕竟，操作系统内核本身需要占用存储和CPU资源的。 以一个环境采集监控系统为例，不使用R">
+<meta property="og:description" content="在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2022/10/27/why-use-RTOS/system_view.jpg">
+<meta property="og:image" content="http://example.com/2022/10/27/why-use-RTOS/system_view.png">
 <meta property="article:published_time" content="2022-10-26T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-10-29T15:05:37.793Z">
+<meta property="article:modified_time" content="2022-11-05T07:41:53.926Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2022/10/27/why-use-RTOS/system_view.jpg">
+<meta name="twitter:image" content="http://example.com/2022/10/27/why-use-RTOS/system_view.png">
 
 
 <link rel="canonical" href="http://example.com/2022/10/27/why-use-RTOS/">
@@ -66,6 +66,9 @@
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
@@ -87,6 +90,10 @@
 
 
 
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+  </ul>
+</nav>
 
 
 
@@ -138,6 +145,9 @@
       </div>
   </nav>
 </div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
 
 
 
@@ -205,13 +215,6 @@
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2022-10-29 23:05:37" itemprop="dateModified" datetime="2022-10-29T23:05:37+08:00">2022-10-29</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
       <span class="post-meta-item-text">In</span>
@@ -230,7 +233,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <hr>
+        <center>
+在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。
+</center>
+<span id="more"></span>
+
+<hr>
 <p>这里我们只讨论支持多任务的嵌入式实时操作系统，如何理解多任务呢？以PC上的例子来说更容易理解。例如，你一边播放音乐，同时也在一边编辑文字。从体验上来看，这两个任务在你的PC上就像是在同时运行，这就是多任务的直观体现。</p>
 <p>那么在嵌入式系统上，基于FreeRTOS这类嵌入式多任务操作系统进行应用开发有什么好处呢？ 毕竟，操作系统内核本身需要占用存储和CPU资源的。</p>
 <p>以一个环境采集监控系统为例，不使用RTOS的裸机程序，通常就是在Main 函数中实现一个无线循环，周期性的采集诸如温度、湿度、气压、等传传感器的数据，再通过LCD等显示设备将数据进行展示。各个功能相互耦合，功能代码全部集中在一起。对于早期开发维护人员来说这并没有什么障碍，但随着功能迭代，会逐渐出现各种需求。例如,增加一个用户输入功能，用来实时配置采集传感器的参数，或用来修改显示模式。又例如，在检测到温度高于某个临界值后，以频率A闪烁红灯；在检测温度低于某个临界值后，以频率B闪烁红灯。当这种需求越来越多，你的代码就会逐渐变得混乱不堪，让其它人难以理解，因为它们全都耦合在一起，看起来太费劲了。</p>
@@ -241,7 +249,7 @@
 <li><strong>输出管理任务</strong>只负责对显示设备进行配置，它从<strong>消息队列</strong>中提取需要显示的数据，并进行展示(任务只负责显示，并不关心要显示的内容)。</li>
 <li><strong>中控任务</strong>负责处理各种策略和逻辑。例如，它从<strong>消息队列A</strong>中提取数据(可能是采集任务发来的，也可能是输入管理任务发来的)，并解析，如果需要做下一步动作(例如显示)，则将相应的<strong>命令</strong>发送到<strong>消息队列B</strong>中，让下游任务执行。</li>
 </ul>
-<p>我们可以清晰地抽象出如下图所示的系统逻辑：<br><img src="/2022/10/27/why-use-RTOS/system_view.jpg" alt="系统逻辑图"></p>
+<p>我们可以清晰地抽象出如下图所示的系统逻辑：<br><img src="/2022/10/27/why-use-RTOS/system_view.png" alt="系统逻辑图"></p>
 <p>通过多任务和消息队列，我们将”<strong>机制</strong>“和”<strong>策略</strong>“进行了拆分。</p>
 <p>像<strong>采集任务&#x2F;输入管理任务&#x2F;输出管理任务</strong>这种类型的任务只提供基本的”功能机制”(获取输入数据，输出显示数据)，它们并不关心数据本身是什么。它们只负责收集数据，再将数据丢到<strong>消息队列</strong>中(如采集任务)；或者从<strong>消息队列</strong>中提取数据，按原样配置到自己的寄存器中(如<strong>显示任务</strong>)。这样每个任务的代码就很清晰，职责也很明确，不会在这些模块中充斥着令人费解的业务相关”策略逻辑”(这些”策略逻辑”随着时间的推移，往往可能最后都没人清楚为什么要这样做，非常影响代码阅读)。</p>
 <p>另一方面，<strong>中控任务</strong>负责实现具体的业务相关的逻辑。它从<strong>消息队列</strong>中提取输入数据(可能是输入管理任务发来的数据，也可能是采集任务发来的数据)，针对不同的数据(例如，通过消息的type字段来区分)，进行一些业务逻辑上的处理，并可能进行一些数据展示(通过消息队列将要展示的数据发送给显示任务)。这样，我们就将业务相关的<strong>策略逻辑</strong>收敛到单个任务上进行集中处理，即使随着时间的推移我们丢失了某些<strong>策略逻辑</strong>的需求说明，但在中控任务中每个<strong>策略逻辑</strong>都有明确的输入和输出，所以在代码上还是很清晰的(我们丢失的信息只是为什么业务上当初要定”这个”输入的情况下做这个”策略逻辑”处理)。</p>
@@ -254,6 +262,23 @@
     
 
     <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>Post author:  </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>Post link: </strong>
+      <a href="http://example.com/2022/10/27/why-use-RTOS/" title="为什么使用嵌入式实时操作系统(RTOS)">http://example.com/2022/10/27/why-use-RTOS/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
 
         
 
