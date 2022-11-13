@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="FreeRTOS内核为了方便任务的调度和管理，创建了不同优先级的就绪任务队列，以及其它状态任务队列。通过将任务挂在不同的队列上，实现对任务的状态管理和调度。">
 <meta property="og:type" content="article">
@@ -25,7 +25,7 @@
 <meta property="og:url" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/index.html">
 <meta property="og:site_name" content="fx">
 <meta property="og:description" content="FreeRTOS内核为了方便任务的调度和管理，创建了不同优先级的就绪任务队列，以及其它状态任务队列。通过将任务挂在不同的队列上，实现对任务的状态管理和调度。">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/task-status.jpg">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/wait-delete.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/suspended-queue.jpg">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-a.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-b.png">
 <meta property="article:published_time" content="2022-10-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-11-11T14:25:24.213Z">
+<meta property="article:modified_time" content="2022-11-13T08:41:46.821Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/task-status.jpg">
@@ -44,7 +44,7 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/","path":"2022/11/01/FreeRTOS-task-status-management/","title":"FreeRTOS的任务调度和管理"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/","path":"2022/11/01/FreeRTOS-task-status-management/","title":"FreeRTOS的任务调度和管理"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>FreeRTOS的任务调度和管理 | fx</title>
@@ -71,7 +71,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    <div class="toggle" aria-label="切换导航栏" role="button">
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
         <span class="toggle-line"></span>
@@ -85,7 +85,7 @@
       <p class="site-title">fx</p>
       <i class="logo-line"></i>
     </a>
-      <p class="site-subtitle" itemprop="description">574912883@qq.com</p>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972</p>
   </div>
 
   <div class="site-nav-right">
@@ -97,7 +97,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
   </ul>
 </nav>
 
@@ -118,10 +118,10 @@
     <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
-          Table of Contents
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          Overview
+          站点概览
         </li>
       </ul>
 
@@ -142,13 +142,13 @@
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
           <span class="site-state-item-count">8</span>
-          <span class="site-state-item-name">posts</span>
+          <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
         <span class="site-state-item-count">2</span>
-        <span class="site-state-item-name">categories</span></a>
+        <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
 </div>
@@ -168,7 +168,7 @@
     </header>
 
     
-  <div class="back-to-top" role="button" aria-label="Back to top">
+  <div class="back-to-top" role="button" aria-label="返回顶部">
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
@@ -188,7 +188,7 @@
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -216,21 +216,36 @@
       <span class="post-meta-item-icon">
         <i class="far fa-calendar"></i>
       </span>
-      <span class="post-meta-item-text">Posted on</span>
+      <span class="post-meta-item-text">发表于</span>
 
-      <time title="Created: 2022-11-01 00:00:00" itemprop="dateCreated datePublished" datetime="2022-11-01T00:00:00+08:00">2022-11-01</time>
+      <time title="创建时间：2022-11-01 00:00:00" itemprop="dateCreated datePublished" datetime="2022-11-01T00:00:00+08:00">2022-11-01</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-folder"></i>
       </span>
-      <span class="post-meta-item-text">In</span>
+      <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
           <a href="/categories/FreeRTOS/" itemprop="url" rel="index"><span itemprop="name">FreeRTOS</span></a>
         </span>
     </span>
 
   
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
 </div>
 
         </div>
@@ -384,6 +399,9 @@ FreeRTOS内核为了方便任务的调度和管理，创建了不同优先级的
 <p>例如，当消息队列<strong>Q</strong>为空时，高优先级任务X 和低优先级任务Y 均请求获取数据，则它们挂载到消息队列<strong>Q</strong>的状态如下图所示（实际执行逻辑应该是任务X 在运行时请求消息队列获取数据，由于没有数据，则进入阻塞态。内核切换到任务Y运行，任务Y也请求消息队列获取数据，同样进入阻塞态）。<br><img src="/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-a.png"><br>任务X和任务Y在等待接收数据队列中是按优先级排序的。这样，当消息队列有数据时，即可以最先通知优先级高的任务来提取数据。</p>
 <p>同理，当消息队列<strong>Q</strong>为满时，已经不能再往队列里发送数据了。此时，如果任务Z 向消息队列请求发送数据，则会进入阻塞态，并被挂载到<strong>Q</strong>的等待发送任务队列中(这样<strong>Q</strong>已有空闲空间，就可以通知任务Z)。如下图所示：<br><img src="/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-b.png"></p>
 <p>即任务对于资源的请求，如果不能立刻获取到，并且设置了等待时间，<strong>任务会被同时挂载到 延迟队列，以及资源内部队列中</strong>。<br>挂载到延迟任务队列中，是为了让任务在等待资源可用时，可以设置等待超时。让任务可以在超时时间到期后，即使资源不可用，也会退出等待。<br>挂载到资源内部的任务队列中，是为了当资源可用时，可以立刻通知等待该资源的任务。</p>
+<br>
+FreeRTOS交流QQ群-663806972
+
 
     </div>
 
@@ -397,14 +415,14 @@ FreeRTOS内核为了方便任务的调度和管理，创建了不同优先级的
 <div class="post-copyright">
 <ul>
   <li class="post-copyright-author">
-      <strong>Post author:  </strong>feng xun
+      <strong>本文作者： </strong>feng xun
   </li>
   <li class="post-copyright-link">
-      <strong>Post link: </strong>
+      <strong>本文链接：</strong>
       <a href="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/" title="FreeRTOS的任务调度和管理">http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/</a>
   </li>
   <li class="post-copyright-license">
-    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
   </li>
 </ul>
 </div>
@@ -448,7 +466,23 @@ FreeRTOS内核为了方便任务的调度和管理，创建了不同优先级的
   </span>
   <span class="author" itemprop="copyrightHolder">feng xun</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">34k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">43 分钟</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
 
     </div>
