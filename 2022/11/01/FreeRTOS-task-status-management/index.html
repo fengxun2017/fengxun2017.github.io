@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-a.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-b.png">
 <meta property="article:published_time" content="2022-10-31T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-11-13T08:41:46.821Z">
+<meta property="article:modified_time" content="2022-11-27T15:43:28.494Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/task-status.jpg">
@@ -128,7 +128,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%95%E4%B8%BA%E6%8A%A2%E5%8D%A0%E5%BC%8F%E8%B0%83%E5%BA%A6%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">何为抢占式调度：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FreeRTOS%E7%9A%84%E4%BB%BB%E5%8A%A1%E7%8A%B6%E6%80%81%E7%9A%84%E8%BD%AC%E6%8D%A2%E9%80%BB%E8%BE%91%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">FreeRTOS的任务状态的转换逻辑：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FreeRTOS%E4%BB%BB%E5%8A%A1%E7%8A%B6%E6%80%81%E5%9C%A8%E5%86%85%E6%A0%B8%E4%B8%8A%E7%9A%84%E5%AE%9E%E9%99%85%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">FreeRTOS任务状态在内核上的实际实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AD%89%E5%BE%85%E5%88%A0%E9%99%A4%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97"><span class="nav-number">3.1.</span> <span class="nav-text">等待删除任务队列:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8C%82%E8%B5%B7%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97"><span class="nav-number">3.2.</span> <span class="nav-text">挂起任务队列:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%B1%E7%BB%AA%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">就绪任务队列：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97%EF%BC%9A"><span class="nav-number">3.4.</span> <span class="nav-text">延迟任务队列：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E5%86%85%E9%83%A8%E7%BB%B4%E6%8C%81%E7%9A%84%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97%EF%BC%9A"><span class="nav-number">3.5.</span> <span class="nav-text">资源内部维持的任务队列：</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%95%E4%B8%BA%E6%8A%A2%E5%8D%A0%E5%BC%8F%E8%B0%83%E5%BA%A6%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">何为抢占式调度：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FreeRTOS%E7%9A%84%E4%BB%BB%E5%8A%A1%E7%8A%B6%E6%80%81%E7%9A%84%E8%BD%AC%E6%8D%A2%E9%80%BB%E8%BE%91%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">FreeRTOS的任务状态的转换逻辑：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FreeRTOS%E4%BB%BB%E5%8A%A1%E7%8A%B6%E6%80%81%E5%9C%A8%E5%86%85%E6%A0%B8%E4%B8%8A%E7%9A%84%E5%AE%9E%E9%99%85%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">FreeRTOS任务状态在内核上的实际实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AD%89%E5%BE%85%E5%88%A0%E9%99%A4%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97"><span class="nav-number">3.1.</span> <span class="nav-text">等待删除任务队列:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8C%82%E8%B5%B7%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97"><span class="nav-number">3.2.</span> <span class="nav-text">挂起任务队列:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B0%B1%E7%BB%AA%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">就绪任务队列：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97%EF%BC%9A"><span class="nav-number">3.4.</span> <span class="nav-text">延迟任务队列：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E5%86%85%E9%83%A8%E7%BB%B4%E6%8A%A4%E7%9A%84%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97%EF%BC%9A"><span class="nav-number">3.5.</span> <span class="nav-text">资源内部维护的任务队列：</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -141,7 +141,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -237,7 +237,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>4.9k</span>
+      <span>5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -382,12 +382,12 @@ FreeRTOS内核为了方便任务的调度和管理，创建了不同优先级的
 <br>
 
 <h4 id="FreeRTOS任务状态在内核上的实际实现"><a href="#FreeRTOS任务状态在内核上的实际实现" class="headerlink" title="FreeRTOS任务状态在内核上的实际实现"></a>FreeRTOS任务状态在内核上的实际实现</h4><p>前面所述的任务状态，都是逻辑上抽象出来的概念。在FreeRTOS内核的实际实现中，并不是通过记录任务状态来管理任务的。内核是通过实现不同类别的任务队列，来隐式表示任务状态的。</p>
-<p>内核中存在多种和任务相关的队列：<strong>就绪任务队列</strong>、<strong>延迟(delayed)任务队列</strong>、<strong>挂起任务队列</strong>、<strong>等待删除任务队列</strong>。<br>还有一种是<strong>资源(如消息队列资源，信号量资源)内部维持的队列</strong>。例如一个消息队列，其内部就会维持一个等待发送数据队列，和等待接收数据队列。当消息队列中没有数据时，如果任务A调用<code>xQueueReceive</code>获取数据，那么任务A就会被挂载到该消息队列内部维护的等待接收数据任务队列上，这样当消息队列中有数据后，就能立刻通知等待数据的任务。</p>
+<p>内核中存在多种和任务相关的队列：<strong>就绪任务队列</strong>、<strong>延迟(delayed)任务队列</strong>、<strong>挂起任务队列</strong>、<strong>等待删除任务队列</strong>。<br>还有一种是<strong>资源(如消息队列资源，信号量资源)内维护的队列</strong>。例如一个消息队列，其内部就会维护一个等待发送数据的任务队列，和等待接收数据的任务队列。当消息队列中没有数据时，如果任务A调用<code>xQueueReceive</code>从队列中获取数据，那么任务A就会被挂载到该消息队列内部维护的等待接收数据任务队列上，这样当消息队列中有数据后，就能立刻通知等待数据的任务。同理，如果消息队列已经满了，此时任务A调用<code>xQueueSend</code>往消息队列中发送数据，那么任务A就会被挂载到该消息队列内部维护的等待发送数据任务队列上，如此，当消息队列有空闲位置时，就能立刻通知等待发送数据的任务。</p>
 <p><strong>运行态</strong>的任务由于只有一个（单核MCU），所以只需要一个全局指针，指向当前正在运行的任务即可，并不需要专用队列。<br><br></p>
 <p>当任务被 当前运行任务指针指向，即当前在运行，则处于 <strong>运行态</strong>。</p>
 <p>当任务被挂载到 就绪队列 中时，即处于<strong>就绪态</strong>，内核调度器总是从就绪队列中选择优先级最高的任务来运行。</p>
 <p>当任务被挂载到 挂起队列 中时，即处于<strong>挂起态</strong>。</p>
-<p>当任务被挂载到 延迟队列 或 资源内部维持队列时， 均处于<strong>阻塞态</strong>。</p>
+<p>当任务被挂载到 延迟队列 或 某种资源内部维护的任务队列时， 均处于<strong>阻塞态</strong>。</p>
 <p>当任务被删除时，如果是自己删除自己，即调用<strong>vTaskDelete（NULL）</strong>（参数为 <strong>NULL</strong> 就是删除自己），就会被挂载到等待删除队列。删除一个任务就是释放这个任务占用的内核资源（任务控制块，任务栈空间），调用vTaskDelete删除其它任务时，可以立刻释放删除任务所占用的资源，因为要删除的任务并没有在运行。但是删除自己就不行了，因为代码的执行本身是依赖于任务的控制块以及任务栈空间，但现在又要去释放它们。所以FreeRTOS的做法是，当任务调用<strong>vTaskDelete（NULL）</strong> 删除自己时，就会被挂到<strong>等待删除任务队列</strong>上（不会再被内核调度了），某一个时刻，系统中没有其它高优先级任务在运行或处于就绪态时，内核会运行自己在启动时创建的 idle 任务（优先级为0，最低优先级），该任务中会检查 <strong>等待删除任务队列</strong>中是否有挂载任务，有的话就释放它们所占用的资源（即对于删除自己的任务，FreeRTOS将其延后到系统不忙时，再由内核创建的Idle任务进行实际删除）。<br><br></p>
 <h5 id="等待删除任务队列"><a href="#等待删除任务队列" class="headerlink" title="等待删除任务队列:"></a>等待删除任务队列:</h5><p>内核自己创建的 idle 负责检查 等待删除任务队列上是否有挂载任务，如果有就执行实际的删除（释放占用的任务控制块和栈空间）操作。<br><img src="/2022/11/01/FreeRTOS-task-status-management/wait-delete.png"></p>
 <h5 id="挂起任务队列"><a href="#挂起任务队列" class="headerlink" title="挂起任务队列:"></a>挂起任务队列:</h5><p>挂起队列中保存的即那些被挂起的任务，它们永远不可能被调度运行，除非任务被恢复到就绪队列中。<br><img src="/2022/11/01/FreeRTOS-task-status-management/suspended-queue.jpg"></p>
@@ -395,7 +395,7 @@ FreeRTOS内核为了方便任务的调度和管理，创建了不同优先级的
 <p>通过这种方式，内核调度器每次进行任务调度时，直接从最高优先级的就绪队列中找下一个任务运行即可(默认相同优先级的任务轮流调度)。</p>
 <h5 id="延迟任务队列："><a href="#延迟任务队列：" class="headerlink" title="延迟任务队列："></a>延迟任务队列：</h5><p>当任务调用<code>vTaskDelay</code>函数休眠时，就会被挂在 延迟任务队列 下。<br>内核在每次时钟tick中断时，会检查延迟队列中任务的超时值，并将等待时间到期的任务从 延迟队列 中剔除，加入到任务优先级对应的就绪队列中。<br><img src="/2022/11/01/FreeRTOS-task-status-management/delayed-queue.jpg"></p>
 <p>此外，当任务请求某种资源时，例如，调用<code>xQueueReceive</code>从消息队列<strong>Q</strong>中获取消息，并且设置了等待超时时间。那么当消息队列<strong>Q</strong>中没有数据时，内核也会将任务挂在 延迟队列下。这样，当等待的超时时间到期后，内核就会将任务重新挂到就绪队列下，避免了无限期等待数据。</p>
-<h5 id="资源内部维持的任务队列："><a href="#资源内部维持的任务队列：" class="headerlink" title="资源内部维持的任务队列："></a>资源内部维持的任务队列：</h5><p>如前面所述，当从消息队列<strong>Q</strong>中请求数据，但是消息队列<strong>Q</strong>为空，如果设置了等待超时。那么，任务会被 挂在到延迟任务队列中（用来检测是否超时），<strong>同时也会被挂载到消息队列Q内部维护的等待接收任务队列中</strong>（这样<strong>Q</strong>一有数据，就能通过该队列通知等待数据的任务）。</p>
+<h5 id="资源内部维护的任务队列："><a href="#资源内部维护的任务队列：" class="headerlink" title="资源内部维护的任务队列："></a>资源内部维护的任务队列：</h5><p>如前面所述，当从消息队列<strong>Q</strong>中请求数据，但是消息队列<strong>Q</strong>为空，如果设置了等待超时。那么，任务会被 挂在到延迟任务队列中（用来检测是否超时），<strong>同时也会被挂载到消息队列Q内部维护的等待接收任务队列中</strong>（这样<strong>Q</strong>一有数据，就能通过该队列通知等待数据的任务）。</p>
 <p>例如，当消息队列<strong>Q</strong>为空时，高优先级任务X 和低优先级任务Y 均请求获取数据，则它们挂载到消息队列<strong>Q</strong>的状态如下图所示（实际执行逻辑应该是任务X 在运行时请求消息队列获取数据，由于没有数据，则进入阻塞态。内核切换到任务Y运行，任务Y也请求消息队列获取数据，同样进入阻塞态）。<br><img src="/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-a.png"><br>任务X和任务Y在等待接收数据队列中是按优先级排序的。这样，当消息队列有数据时，即可以最先通知优先级高的任务来提取数据。</p>
 <p>同理，当消息队列<strong>Q</strong>为满时，已经不能再往队列里发送数据了。此时，如果任务Z 向消息队列请求发送数据，则会进入阻塞态，并被挂载到<strong>Q</strong>的等待发送任务队列中(这样<strong>Q</strong>已有空闲空间，就可以通知任务Z)。如下图所示：<br><img src="/2022/11/01/FreeRTOS-task-status-management/resource-internal-queue-b.png"></p>
 <p>即任务对于资源的请求，如果不能立刻获取到，并且设置了等待时间，<strong>任务会被同时挂载到 延迟队列，以及资源内部队列中</strong>。<br>挂载到延迟任务队列中，是为了让任务在等待资源可用时，可以设置等待超时。让任务可以在超时时间到期后，即使资源不可用，也会退出等待。<br>挂载到资源内部的任务队列中，是为了当资源可用时，可以立刻通知等待该资源的任务。</p>
@@ -472,14 +472,14 @@ FreeRTOS交流QQ群-663806972
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">34k</span>
+    <span title="站点总字数">52k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">43 分钟</span>
+    <span title="站点阅读时长">1:05</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
