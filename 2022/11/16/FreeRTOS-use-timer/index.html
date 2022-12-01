@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/timer_reset.jpg">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/timer-trigger.png">
 <meta property="article:published_time" content="2022-11-15T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-11-28T16:18:22.134Z">
+<meta property="article:modified_time" content="2022-12-01T13:40:31.529Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/timer-task-schema.png">
@@ -137,7 +137,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -338,7 +338,7 @@ FreeRTOS内核提供了一个软件定时器，通过软件定时器，我们可
 <p>具体的代码实现如下，按键中断处理程序需要根据自己的硬件来实现：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">GPIOTE_IRQHandler</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">    BaseType_t higher_task_woken = pdFALSE;</span><br><span class="line">    <span class="keyword">if</span> ( NRF_GPIOTE-&gt;EVENTS_PORT == <span class="number">1</span> )&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//中断处理函数中要清除event,不然会导致一直产生中断</span></span><br><span class="line">        NRF_GPIOTE-&gt;EVENTS_PORT = <span class="number">0</span>;      </span><br><span class="line">        <span class="keyword">if</span>(IS_BUTTON_PRESSED(BUTTON_1)) &#123;</span><br><span class="line">            xSemaphoreGiveFromISR(semaphore, &amp;higher_task_woken);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    portYIELD_FROM_ISR(higher_task_woken);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>上述代码，当检测到按键按下后，设置信号量，由于是处于中断处理函数中，所以需要使用<code>xSemaphoreGiveFromISR</code> （中断环境中必须使用带FromISR后缀的API）。<br>此外，在中断处理程序最后使用了 <code>portYIELD_FROM_ISR</code>，这是因为我们在中断处理程序中使用<code>xSemaphoreGiveFromISR</code>设置信号量后，如果另一个优先级更高的任务（比当前运行的任务优先级高，在这里就是<code>button_press_detect_task</code>任务）在等待该信号量，那么由于信号量可用了，等待该信号量的高优先级任务（<code>button_press_detect_task</code>）就会变为就绪状态。我们使用的是抢占式调度的实时操作系统，当存在比当前任务优先级更高的任务就绪时，应该让其立刻被调度，而<code>portYIELD_FROM_ISR</code>的作用就是如果存在更高优先级任务就绪了，就会设置任务切换中断（PendSV中断），这样在中断服务程序<code>GPIOTE_IRQHandler</code>结束后，就会立刻触发任务切换，使得更高优先级的就绪任务（<code>button_press_detect_task</code>）被调度运行。</p>
+<p>上述代码，当检测到按键按下后，设置信号量，由于是处于中断处理函数中，所以需要使用<code>xSemaphoreGiveFromISR</code> （中断环境中必须使用带FromISR后缀的API）。<br>此外，在中断处理程序最后使用了 <code>portYIELD_FROM_ISR</code>，这是因为我们在中断处理程序中使用<code>xSemaphoreGiveFromISR</code>设置信号量后，如果另一个优先级更高的任务（比当前运行的任务优先级高，在这里就是<code>button_press_detect_task</code>任务）在等待该信号量，那么由于信号量可用了，等待该信号量的高优先级任务（<code>button_press_detect_task</code>）就会变为就绪状态（信号量可用，使得另一个等待该信号量的更高优先级的任务变为就绪态，则<code>higher_task_woken</code>会被自动设置为<code>pdTRUE</code>）。我们使用的是抢占式调度的实时操作系统，当存在比当前任务优先级更高的任务就绪时，应该让其立刻被调度，而<code>portYIELD_FROM_ISR</code>的作用就是如果存在更高优先级任务就绪了，就会设置任务切换中断（PendSV中断），这样在中断服务程序<code>GPIOTE_IRQHandler</code>结束后，就会立刻触发任务切换，使得更高优先级的就绪任务（<code>button_press_detect_task</code>）被调度运行。</p>
 <p>按键检测任务实现如下：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">button_press_detect_task</span><span class="params">( <span class="type">void</span> *pvParameters )</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">        <span class="comment">// 等待信号量可用，这里使用portMAX_DELAY，表示一直阻塞任务，直到信号量可用。</span></span><br><span class="line">        <span class="comment">// 注意，使用portMAX_DELAY，需要在FreeRTOSConfig.h 文件中定义 INCLUDE_vTaskSuspend = 1</span></span><br><span class="line">        xSemaphoreTake(semaphore, portMAX_DELAY);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 再次确认按键按下，作为防抖处理</span></span><br><span class="line">        <span class="comment">// 这里需要根据实际情况决定是否在这里再次判断按键，如果你的系统中存在多个更高优先级的任务。</span></span><br><span class="line">        <span class="comment">// 那么按键按下后，可能更高优先级的任务会在button_press_detect_task任务之前运行，</span></span><br><span class="line">        <span class="comment">// 等轮到button_press_detect_task任务运行时，可能已经过了很久（按键已经释放了），那么这里就检测不到按键了。</span></span><br><span class="line">        <span class="keyword">if</span>(IS_BUTTON_PRESSED(BUTTON_1))&#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 检测到按键，打开背光灯</span></span><br><span class="line">            BACKLIGHT_ON();</span><br><span class="line">            <span class="comment">// 每次有按键，就重置定时器，这样只有连续5s 没有操作时，才会关闭背光灯。</span></span><br><span class="line">            xTimerReset(backlight_timer, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <br>
@@ -448,14 +448,14 @@ FreeRTOS交流QQ群-663806972
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">52k</span>
+    <span title="站点总字数">56k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:05</span>
+    <span title="站点阅读时长">1:10</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
