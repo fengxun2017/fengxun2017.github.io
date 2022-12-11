@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/08/FreeRTOS-queue-internal-details/queue-task-list.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/08/FreeRTOS-queue-internal-details/task-status.png">
 <meta property="article:published_time" content="2022-12-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-09T10:38:29.325Z">
+<meta property="article:modified_time" content="2022-12-11T08:37:54.047Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2022/12/08/FreeRTOS-queue-internal-details/queue_size.png">
@@ -233,7 +233,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.8k</span>
+      <span>2.9k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -257,6 +257,7 @@
 <span id="more"></span>
 
 <hr>
+<p>消息队列的使用示例，可以参考<a href="https://fengxun2017.github.io/2022/12/12/FreeRTOS-use-queue/">FreeRTOS-使用消息队列</a></p>
 <p>消息队列的作用不仅仅是用来进行数据通信，从软件设计上来说，更重要的作用是可以将一个复杂软件系统，划分成多个功能相对独立的模块，各个模块间通过消息队列进行数据传递以实现解耦。如此，一个大的复杂系统，被划分成多个功能清晰明确的更小的子模块，使得软件更易维护。并且，当需要修改某一个子模块的功能时，可以最大程度避免影响其它模块（对于每个子模块来说，数据是通过消息队列过来的，只要数据格式未变动，那么就感知不到数据发送方内部做了什么改动<br>）。</p>
 <p>FreeRTOS的消息队列，需要在创建时指定队列的大小（最大可以同时保留的消息数量）以及消息的大小。如下图所示<br><img src="/2022/12/08/FreeRTOS-queue-internal-details/queue_size.png"></p>
 <p>创建消息队列的API为：</p>
