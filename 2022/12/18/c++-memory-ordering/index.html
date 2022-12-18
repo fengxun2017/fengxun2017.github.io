@@ -19,29 +19,31 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。">
+    <meta name="description" content="memory ordering 描述的是：CPU对计算机内存的访问顺序。该术语既可以指编译器在编译时生成的内存访问排序，也可以指CPU在运行时生成的内存访问排序。本文涉及以下几个方面：  处理器如何重新排序指令 什么是内存模型和内存顺序 如何从更高的抽象层次理解memory ordering 如何使用它（无锁编程）">
 <meta property="og:type" content="article">
-<meta property="og:title" content="为什么使用嵌入式实时操作系统(RTOS)">
-<meta property="og:url" content="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/index.html">
+<meta property="og:title" content="memory ordering">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/index.html">
 <meta property="og:site_name" content="fx">
-<meta property="og:description" content="在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。">
+<meta property="og:description" content="memory ordering 描述的是：CPU对计算机内存的访问顺序。该术语既可以指编译器在编译时生成的内存访问排序，也可以指CPU在运行时生成的内存访问排序。本文涉及以下几个方面：  处理器如何重新排序指令 什么是内存模型和内存顺序 如何从更高的抽象层次理解memory ordering 如何使用它（无锁编程）">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/system_view.png">
-<meta property="article:published_time" content="2022-10-26T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-11-13T08:41:55.661Z">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/cpu_structure.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/cpu_cache_line.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/cpu_cache_line_data_layout.jpg">
+<meta property="article:published_time" content="2022-12-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-12-18T15:27:26.908Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/system_view.png">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/cpu_structure.png">
 
 
-<link rel="canonical" href="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/">
+<link rel="canonical" href="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/10/27/why-use-RTOS/","path":"2022/10/27/why-use-RTOS/","title":"为什么使用嵌入式实时操作系统(RTOS)"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/","path":"2022/12/18/c++-memory-ordering/","title":"memory ordering"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>为什么使用嵌入式实时操作系统(RTOS) | fx</title>
+<title>memory ordering | fx</title>
   
 
 
@@ -109,7 +111,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -122,6 +124,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-CPU-cache%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1 CPU cache：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-Cache-line"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 Cache line</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -182,7 +185,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -195,12 +198,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="为什么使用嵌入式实时操作系统(RTOS) | fx">
+      <meta itemprop="name" content="memory ordering | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          为什么使用嵌入式实时操作系统(RTOS)
+          memory ordering
         </h1>
 
         <div class="post-meta-container">
@@ -211,7 +214,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-10-27 00:00:00" itemprop="dateCreated datePublished" datetime="2022-10-27T00:00:00+08:00">2022-10-27</time>
+      <time title="创建时间：2022-12-18 00:00:00" itemprop="dateCreated datePublished" datetime="2022-12-18T00:00:00+08:00">2022-12-18</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -219,7 +222,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/FreeRTOS/" itemprop="url" rel="index"><span itemprop="name">FreeRTOS</span></a>
+          <a href="/categories/c/" itemprop="url" rel="index"><span itemprop="name">c++</span></a>
         </span>
     </span>
 
@@ -230,14 +233,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.7k</span>
+      <span>2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -248,29 +251,50 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <center>
-在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。
-</center>
-<span id="more"></span>
-
-<hr>
-<p>这里我们只讨论支持多任务的嵌入式实时操作系统，如何理解多任务呢？以PC上的例子来说更容易理解。例如，你一边播放音乐，同时也在一边编辑文字。从体验上来看，这两个任务在你的PC上就像是在同时运行，这就是多任务的直观体现。</p>
-<p>那么在嵌入式系统上，基于FreeRTOS这类嵌入式多任务操作系统进行应用开发有什么好处呢？ 毕竟，操作系统内核本身需要占用存储和CPU资源的。</p>
-<p>以一个环境采集监控系统为例，不使用RTOS的裸机程序，通常就是在Main 函数中实现一个无线循环，周期性的采集诸如温度、湿度、气压、等传传感器的数据，再通过LCD等显示设备将数据进行展示。各个功能相互耦合，功能代码全部集中在一起。对于早期开发维护人员来说这并没有什么障碍，但随着功能迭代，会逐渐出现各种需求。例如,增加一个用户输入功能，用来实时配置采集传感器的参数，或用来修改显示模式。又例如，在检测到温度高于某个临界值后，以频率A闪烁红灯；在检测温度低于某个临界值后，以频率B闪烁红灯。当这种需求越来越多，你的代码就会逐渐变得混乱不堪，让其它人难以理解，因为它们全都耦合在一起，看起来太费劲了。</p>
-<p>基于FreeRTOS这类多任务操作系统，我们可以将上述应用拆分成多逻辑清晰的子任务。例如，一个温度采集任务，一个湿度采集任务，一个气压采集任务，一个中控任务，一个输入管理任务，一个输出管理任务。这样每个任务的功能划分就很清晰。并且，各个任务间进行隔离，通过RTOS提供的任务间通讯机制(例如<strong>消息队列</strong>)进行通讯，而不是直接调用其它任务中的功能函数，这样就实现了任务间的解耦。</p>
+        <p><strong>memory ordering</strong> 描述的是：CPU对计算机内存的访问顺序。该术语既可以指编译器在编译时生成的内存访问排序，也可以指CPU在运行时生成的内存访问排序。<br>本文涉及以下几个方面：</p>
 <ul>
-<li><strong>采集任务</strong>只负责对相应传感器进行配置，以及对数据进行采集，并通过任务间通信机制(如<strong>消息队列</strong>)，将数据发送给中控任务。</li>
-<li><strong>输入管理任务</strong>只负责对输入设备进行配置，并获取用户输入，之后通过任务通信机制，将用户输入发送给中控任务。</li>
-<li><strong>输出管理任务</strong>只负责对显示设备进行配置，它从<strong>消息队列</strong>中提取需要显示的数据，并进行展示(任务只负责显示，并不关心要显示的内容)。</li>
-<li><strong>中控任务</strong>负责处理各种策略和逻辑。例如，它从<strong>消息队列A</strong>中提取数据(可能是采集任务发来的，也可能是输入管理任务发来的)，并解析，如果需要做下一步动作(例如显示)，则将相应的<strong>命令</strong>发送到<strong>消息队列B</strong>中，让下游任务执行。</li>
+<li>处理器如何重新排序指令</li>
+<li>什么是内存模型和内存顺序</li>
+<li>如何从更高的抽象层次理解memory ordering</li>
+<li>如何使用它（无锁编程）</li>
 </ul>
-<p>我们可以清晰地抽象出如下图所示的系统逻辑：<br><img src="/2022/10/27/why-use-RTOS/system_view.png" alt="系统逻辑图"></p>
-<p>通过多任务和消息队列，我们将”<strong>机制</strong>“和”<strong>策略</strong>“进行了拆分。</p>
-<p>像<strong>采集任务&#x2F;输入管理任务&#x2F;输出管理任务</strong>这种类型的任务只提供基本的”功能机制”(获取输入数据，输出显示数据)，它们并不关心数据本身是什么。它们只负责收集数据，再将数据丢到<strong>消息队列</strong>中(如采集任务)；或者从<strong>消息队列</strong>中提取数据，按原样配置到自己的寄存器中(如<strong>显示任务</strong>)。这样每个任务的代码就很清晰，职责也很明确，不会在这些模块中充斥着令人费解的业务相关”策略逻辑”(这些”策略逻辑”随着时间的推移，往往可能最后都没人清楚为什么要这样做，非常影响代码阅读)。</p>
-<p>另一方面，<strong>中控任务</strong>负责实现具体的业务相关的逻辑。它从<strong>消息队列</strong>中提取输入数据(可能是输入管理任务发来的数据，也可能是采集任务发来的数据)，针对不同的数据(例如，通过消息的type字段来区分)，进行一些业务逻辑上的处理，并可能进行一些数据展示(通过消息队列将要展示的数据发送给显示任务)。这样，我们就将业务相关的<strong>策略逻辑</strong>收敛到单个任务上进行集中处理，即使随着时间的推移我们丢失了某些<strong>策略逻辑</strong>的需求说明，但在中控任务中每个<strong>策略逻辑</strong>都有明确的输入和输出，所以在代码上还是很清晰的(我们丢失的信息只是为什么业务上当初要定”这个”输入的情况下做这个”策略逻辑”处理)。</p>
-<p>所以，基于FreeRTOS这类多任务操作系统，我们可以将需要实现的应用功能拆分成多个更简单清晰的子任务，再通过RTOS提供的任务间通信机制，将各个子任务进行解耦，避免相互直接调用功能函数。这让我们可以更轻松的开发中&#x2F;大型应用，也更利于产品的长期维护。</p>
+<span id="more"></span>
+<hr>
+<p>本文为个人阅读笔记，原作者文章链接：<a target="_blank" rel="noopener" href="http://gavinchou.github.io/summary/c++/memory-ordering/">memory ordering</a>，笔记中的图片也来自原作者文章中。</p>
+<h4 id="1-CPU-cache："><a href="#1-CPU-cache：" class="headerlink" title="1 CPU cache："></a>1 CPU cache：</h4><p>CPU缓存是CPU使用的一种硬件缓存，该缓存的存储空间小，但访问速度很快。该缓存中存储的是经常访问的主存数据的副本，目的是为了减少CPU访问数据的平均时间成本。多数CPU中的 CPU cache 都是被组织成层次结构形式的多级缓存。<br>如下图所示：一个双核CPU中多级缓存的例子。<br><img src="/2022/12/18/c++-memory-ordering/cpu_structure.png"><br>（L1级缓存会再分为L1 指令缓存，和L1 数据缓存。L1拆成指令和数据两个独立的缓存，可以使得流水线在一个周期内同时取缓存中的指令和数据。此外，缓存如果满了，需要有替换策略，指令和数据的行为和访问热点区别较大，L1分成独立的指令缓存和数据缓存，可以方便各自使用不同的替换策略）</p>
+<p>其中：</p>
+<ul>
+<li>大小方面：L1缓存 &lt; L2缓存 &lt; L3缓存</li>
+<li>速度方面：L1缓存 &gt; L2缓存 &gt; L3缓存</li>
+<li>查找顺序，先L1，找不到数据再查L2，之后是L3</li>
+<li>关于为什么以多层级的形式组织缓存结构，可以参考这篇文章：<a target="_blank" rel="noopener" href="https://toutiao.io/posts/zafunq/preview">为什么CPU有多层缓存</a></li>
+<li>多核CPU中的每个核心，有自己的私有cache（L1、L2），这增强了性能（访问私有cache时，不会和其它核心冲突，所以减少了访问冲突时的处理过程），但也引入了额外的使用复杂性（一个数据同时存在于多个核心的私有cache中，每个核心改变自己的L1 cache中的这个数据时，需要同步给其它核心）。</li>
+</ul>
+<h5 id="1-1-Cache-line"><a href="#1-1-Cache-line" class="headerlink" title="1.1 Cache line"></a>1.1 Cache line</h5><p>数据在内存和CPU 缓存之间传输时，是以固定大小的数据块为单位，称为<strong>缓存行（cache line）或缓存块（cache blocks）</strong>。当一个缓存行被从内存中复制到 cpu chache 中时，就会创建一个<strong>缓存条目（cache entry）</strong>。<strong>缓存条目</strong>中包含了从内存中复制的数据（cache line）、该数据在内存中的地址（tag，实际为地址中的一部分）、以及是否有效（flag）标记。<strong>缓存条目</strong>如下图所示：</p>
+<table>
+<thead>
+<tr>
+<th align="center">flag bits</th>
+<th align="center">tag</th>
+<th align="center">cache line</th>
+</tr>
+</thead>
+</table>
+<br> 
+
+<p>下图为内存中的一块数据（cache line），被复制到 cpu cache 中的，线程访问该 cache line 中某个位置的数据示例：<br><img src="/2022/12/18/c++-memory-ordering/cpu_cache_line.png"></p>
 <br>
-FreeRTOS交流QQ群-663806972
+
+<p>CPU需要读取或写入内存中的某个位置时，它首先在 cpu cache 中检查数据是否在 cache 中，一种实现方式（direct mapped cache）如下图所示：<br><img src="/2022/12/18/c++-memory-ordering/cpu_cache_line_data_layout.jpg"></p>
+<p>图中所示的 cpu cache，包含了 4K 个<strong>缓存条目（cache entry）</strong>，每个缓存条目中包含的<strong>数据（Data）</strong> 为 16字节（4个 data block，每个data block一般为机器字长，32位机器就是32bit，64为机器为64bit）。</p>
+<p>图中，待访问的数据的地址（图中的Address）表示为三部分：</p>
+<ul>
+<li>Tag：高 16位</li>
+<li>Index：4-15位</li>
+<li>offset：2-3位</li>
+</ul>
+<p>访问过程为：根据访问地址（图中的Address）<code>Index</code>，定位到 cpu cache 中的某个 <strong>缓存条目（cache entry）</strong>，比较该<strong>缓存条目</strong>中的<code>Tag</code>是不是和 Address 中的<code>Tag</code>相同。如果相同，并且<strong>缓存条目</strong>的有效标记位（上图中的<code>v</code>）也是有效值，则表明缓存命中（hit），之后根据 Address 中的 <code>offset</code>，从<strong>数据（Data）</strong> 中取出对应位置的数据（图中为一个字，32bit）。<br>反之，如果缓存未命中，则会在 cpu cache 中分配一个新的<strong>缓存条目</strong>，并从内存中复制数据所在的 cache line 到该<strong>缓存条目</strong>中，然后再从cpu cache 中执行访问请求。</p>
+<p>多核 CPU中，核心之间的交互式 以及 核心和内存之间的数据同步，都是通过<strong>缓存条目</strong>来进行的，即同步粒度为 cache line，一般x86 CPU的cache line大小为 64字节。<br><code>cache bouncing</code>：多核CPU中，当一个核心，在改写自己的 L1 cache 中的某个 cache line 中的一个数据后，CPU需要执行cache一致性算法，将该 cache line 同步给其它核（如果其它核上的cache 也有这个cache line），这个同步过程相比写 L1 cache 需要更多的处理时间。如果，多核CPU中，两个线程，频繁的修改同一个变量，这会使各自核心上该变量所在的cache line，需要不停的同步给其它核，这会额外引入大量同步时间。可以使用 thread_local来处理这里问题。<br><code>cache false sharing</code>：如果多核CPU中两个线程，线程A 频繁的修改全局变量A；线程B 频繁的修改全局变量B，变量A 和变量B 在内存中刚好是连续的，在一个cache line中。那么，即使这两个线程访问的是不同的变量，还是会导致两个核心之间需要不停的相互同步cache line。</p>
 
     </div>
 
@@ -288,7 +312,7 @@ FreeRTOS交流QQ群-663806972
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/" title="为什么使用嵌入式实时操作系统(RTOS)">http://fengxun2017.github.io/2022/10/27/why-use-RTOS/</a>
+      <a href="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/" title="memory ordering">http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -301,13 +325,13 @@ FreeRTOS交流QQ群-663806972
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" rel="prev" title="基于crotex-m处理器新建FreeRTOS工程">
-                  <i class="fa fa-chevron-left"></i> 基于crotex-m处理器新建FreeRTOS工程
+                <a href="/2022/12/17/FreeRTOS-use-counting-semaphore/" rel="prev" title="FreeRTOS-使用计数信号量">
+                  <i class="fa fa-chevron-left"></i> FreeRTOS-使用计数信号量
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" rel="next" title="FreeRTOS——创建任务">
-                  FreeRTOS——创建任务 <i class="fa fa-chevron-right"></i>
+                <a href="/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/" rel="next" title="FreeRTOS-任务优先级和中断优先级">
+                  FreeRTOS-任务优先级和中断优先级 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
