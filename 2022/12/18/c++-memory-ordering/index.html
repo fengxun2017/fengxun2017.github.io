@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/cpu_cache_line.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/cpu_cache_line_data_layout.jpg">
 <meta property="article:published_time" content="2022-12-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-19T12:45:25.233Z">
+<meta property="article:modified_time" content="2022-12-19T12:53:58.447Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/cpu_structure.png">
@@ -294,7 +294,11 @@
 <li>offset：2-3位</li>
 </ul>
 <p>访问过程为：根据访问地址（图中的Address）<code>Index</code>，定位到 cpu cache 中的某个 <strong>缓存条目（cache entry）</strong>，比较该<strong>缓存条目</strong>中的<code>Tag</code>是不是和 Address 中的<code>Tag</code>相同。如果相同，并且<strong>缓存条目</strong>的有效标记位（上图中的<code>v</code>）也是有效值，则表明缓存命中（hit），之后根据 Address 中的 <code>offset</code>，从<strong>数据（Data）</strong> 中取出对应位置的数据（图中为一个字，32bit）。<br>反之，如果缓存未命中，则会在 cpu cache 中分配一个新的<strong>缓存条目</strong>，并从内存中复制数据所在的 cache line 到该<strong>缓存条目</strong>中，然后再从cpu cache 中执行访问请求。</p>
-<p>多核 CPU中，核心之间的交互式 以及 核心和内存之间的数据同步，都是通过<strong>缓存条目</strong>来进行的，即同步粒度为 cache line，一般x86 CPU的cache line大小为 64字节。<br><code>cache bouncing</code>：多核CPU中，当一个核心，在改写自己的 L1 cache 中的某个 cache line 中的一个数据后，CPU需要执行cache一致性算法，将该 cache line 同步给其它核（如果其它核上的cache 也有这个cache line），这个同步过程相比写 L1 cache 需要更多的处理时间。如果，多核CPU中，两个线程，频繁的修改同一个变量，这会使各自核心上该变量所在的cache line，需要不停的同步给其它核，这会额外引入大量同步时间。可以使用 thread_local来处理这种问题。<br><code>cache false sharing</code>：如果多核CPU中两个线程，线程A 频繁的修改全局变量A；线程B 频繁的修改全局变量B，变量A 和变量B 在内存中刚好是连续的，在一个cache line中。那么，即使这两个线程访问的是不同的变量，还是会导致两个核心之间需要不停的相互同步cache line。可以使用<code>alignas(64)</code>让变量以cache line的长度对齐，避免它们处于同一个cache line中。</p>
+<p>多核 CPU中，核心之间的交互式 以及 核心和内存之间的数据同步，都是通过<strong>缓存条目</strong>来进行的，即同步粒度为 cache line，一般x86 CPU的cache line大小为 64字节。</p>
+<ul>
+<li><code>cache bouncing</code>：多核CPU中，当一个核心，在改写自己的 L1 cache 中的某个 cache line 中的一个数据后，CPU需要执行cache一致性算法，将该 cache line 同步给其它核（如果其它核上的cache 也有这个cache line），这个同步过程相比写 L1 cache 需要更多的处理时间。如果，多核CPU中，两个线程，频繁的修改同一个变量，这会使各自核心上该变量所在的cache line，需要不停的同步给其它核，这会额外引入大量同步时间。可以使用 thread_local来处理这种问题。</li>
+<li><code>cache false sharing</code>：如果多核CPU中两个线程，线程A 频繁的修改全局变量A；线程B 频繁的修改全局变量B，变量A 和变量B 在内存中刚好是连续的，在一个cache line中。那么，即使这两个线程访问的是不同的变量，还是会导致两个核心之间需要不停的相互同步cache line。可以使用<code>alignas(64)</code>让变量以cache line的长度对齐，避免它们处于同一个cache line中。</li>
+</ul>
 
     </div>
 
@@ -365,14 +369,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">87k</span>
+    <span title="站点总字数">88k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:49</span>
+    <span title="站点阅读时长">1:50</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

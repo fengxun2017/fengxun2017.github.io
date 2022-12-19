@@ -24,10 +24,12 @@
 <meta property="og:url" content="http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/index.html">
 <meta property="og:site_name" content="fx">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/ready-queue.jpg">
 <meta property="article:published_time" content="2022-12-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-15T17:05:30.994Z">
+<meta property="article:modified_time" content="2022-12-19T16:30:44.062Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/ready-queue.jpg">
 
 
 <link rel="canonical" href="http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/">
@@ -105,7 +107,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -118,6 +120,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">1.</span> <span class="nav-text">任务优先级</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -226,7 +229,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>81</span>
+      <span>688</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -252,7 +255,13 @@
 <span id="more"></span>
 
 <hr>
-<p>普通api，可能会让调用任务进入阻塞。但中断函数中执行代码是和任何任务都无关的。因此，FreeRTOS提供两套api</p>
+<h4 id="任务优先级"><a href="#任务优先级" class="headerlink" title="任务优先级"></a>任务优先级</h4><p>FreeRTOS中的任务优先级，是FreeRTOS自己抽象出来的概念。只作用于FreeRTOS创建出来的任务。</p>
+<p>在工程配置文件<code>FreeRTOSConfig.h</code>中定义了当前系统中，允许使用的任务优先级数量：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> configMAX_PRIORITIES		( 3 )</span></span><br></pre></td></tr></table></figure>
+<p>即，使用<code>xTaskCreate</code>时传递的优先级参数<code>uxPriority</code>的值应该在<code>[0,3)</code>中，值越大表示任务的优先级越大。</p>
+<p>任务优先级的唯一作，就是内核在每次调度任务时会选择优先级最高的就绪任务来运行（如果有多个任务的优先级相同，且都是当前最大的，默认是轮流调度）。</p>
+<p>在内核的实现中，会根据宏定义<code>configMAX_PRIORITIES</code>的值，创建对应数量的<code>就绪任务队列</code>，例如<code>configMAX_PRIORITIES = 3</code>时，会创建3个就绪任务队列。例如，当我们创建一个优先级为 2 的任务 A。两个优先级为 1 的任务 B 和 C，以及一个优先级为 0 的任务 D ，则<code>就绪任务队列</code>的状态如下：<br><img src="/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/ready-queue.jpg"><br>这样做的好处时，每个任务在创建时，直接挂到对应优先级任务队列上即可。而内核在选择任务调度时，直接从有任务的最高优先级任务队列上选择即可（会选择这个任务队列中最近一次所运行任务的下一个任务，内核的任务链表结构中，有一个成员指向上本任务链表中最近运行的那个任务，如此即可实现同一优先级的任务间轮流调度）。</p>
+<p>更详细的任务调度和管理信息，可以参考文章：<a href="https://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/#%E5%B0%B1%E7%BB%AA%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97%EF%BC%9A">任务调度和管理-就绪任务队列</a><br>而向任务队列中插入新任务，从任务队列中获取下一个要运行的任务，可以参考文章<a href="https://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/#%E6%80%BB%E7%BB%93">FreeRTOS-内核链表数据结构</a>最后的总结部分。</p>
 <br>
 FreeRTOS交流QQ群-663806972
 
@@ -324,14 +333,14 @@ FreeRTOS交流QQ群-663806972
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">87k</span>
+    <span title="站点总字数">88k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:49</span>
+    <span title="站点阅读时长">1:50</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
