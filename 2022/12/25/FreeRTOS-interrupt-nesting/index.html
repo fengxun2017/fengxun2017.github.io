@@ -20,26 +20,24 @@
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
     <meta property="og:type" content="article">
-<meta property="og:title" content="FreeRTOS-任务优先级和中断优先级">
-<meta property="og:url" content="http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/index.html">
+<meta property="og:title" content="FreeRTOS-硬件中断嵌套模型">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/index.html">
 <meta property="og:site_name" content="fx">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/ready-queue.jpg">
-<meta property="article:published_time" content="2022-12-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-19T16:30:44.062Z">
+<meta property="article:published_time" content="2022-12-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-12-24T16:56:24.713Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/ready-queue.jpg">
 
 
-<link rel="canonical" href="http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/">
+<link rel="canonical" href="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/","path":"2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/","title":"FreeRTOS-任务优先级和中断优先级"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/","path":"2022/12/25/FreeRTOS-interrupt-nesting/","title":"FreeRTOS-硬件中断嵌套模型"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>FreeRTOS-任务优先级和中断优先级 | fx</title>
+<title>FreeRTOS-硬件中断嵌套模型 | fx</title>
   
 
 
@@ -107,7 +105,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -120,7 +118,6 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">1.</span> <span class="nav-text">任务优先级</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -133,7 +130,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -181,7 +178,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -194,12 +191,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="FreeRTOS-任务优先级和中断优先级 | fx">
+      <meta itemprop="name" content="FreeRTOS-硬件中断嵌套模型 | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          FreeRTOS-任务优先级和中断优先级
+          FreeRTOS-硬件中断嵌套模型
         </h1>
 
         <div class="post-meta-container">
@@ -210,7 +207,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-12-20 00:00:00" itemprop="dateCreated datePublished" datetime="2022-12-20T00:00:00+08:00">2022-12-20</time>
+      <time title="创建时间：2022-12-25 00:00:00" itemprop="dateCreated datePublished" datetime="2022-12-25T00:00:00+08:00">2022-12-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -229,7 +226,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>688</span>
+      <span>292</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -249,23 +246,13 @@
     <div class="post-body" itemprop="articleBody">
         <center>
 
-
 </center>
 
 <span id="more"></span>
 
 <hr>
-<h4 id="任务优先级"><a href="#任务优先级" class="headerlink" title="任务优先级"></a>任务优先级</h4><p>FreeRTOS中的任务优先级，是FreeRTOS自己抽象出来的概念。只作用于FreeRTOS创建出来的任务。</p>
-<p>在工程配置文件<code>FreeRTOSConfig.h</code>中定义了当前系统中，允许使用的任务优先级数量：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> configMAX_PRIORITIES		( 3 )</span></span><br></pre></td></tr></table></figure>
-<p>即，使用<code>xTaskCreate</code>时传递的优先级参数<code>uxPriority</code>的值应该在<code>[0,3)</code>中，值越大表示任务的优先级越大。</p>
-<p>任务优先级的唯一作，就是内核在每次调度任务时会选择优先级最高的就绪任务来运行（如果有多个任务的优先级相同，且都是当前最大的，默认是轮流调度）。</p>
-<p>在内核的实现中，会根据宏定义<code>configMAX_PRIORITIES</code>的值，创建对应数量的<code>就绪任务队列</code>，例如<code>configMAX_PRIORITIES = 3</code>时，会创建3个就绪任务队列。例如，当我们创建一个优先级为 2 的任务 A。两个优先级为 1 的任务 B 和 C，以及一个优先级为 0 的任务 D ，则<code>就绪任务队列</code>的状态如下：<br><img src="/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/ready-queue.jpg"><br>这样做的好处时，每个任务在创建时，直接挂到对应优先级任务队列上即可。而内核在选择任务调度时，直接从有任务的最高优先级任务队列上选择即可（会选择这个任务队列中最近一次所运行任务的下一个任务，内核的任务链表结构中，有一个成员指向上本任务链表中最近运行的那个任务，如此即可实现同一优先级的任务间轮流调度）。</p>
-<p>更详细的任务调度和管理信息，可以参考文章：<a href="https://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/#%E5%B0%B1%E7%BB%AA%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97%EF%BC%9A">任务调度和管理-就绪任务队列</a><br>而向任务队列中插入新任务，从任务队列中获取下一个要运行的任务，可以参考文章<a href="https://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/#%E6%80%BB%E7%BB%93">FreeRTOS-内核链表数据结构</a>最后的总结部分。</p>
-<br>
-FreeRTOS交流QQ群-663806972
-
-<br>
+<p>configMAX_API_CALL_INTERRUPT_PRIORITY：</p>
+<p>FreeRTOS提供的很多API都是多任务（多线程）安全的，如消息队列相关的API。多任务安全，指的时当我们在多个任务中调用这些API对同一个资源对象（如消息队列）操作时，并不用关心当多个任务“同时”（并发）调用这些API时（如调用消息队列的相关API，会修改目标消息队列控制块中的数据，以及修改存储区的数据），是否会破坏（该对象）内核中的数据结构。<br>多个任务同时修改同一个“资源”，表明存在资源访问竞争，肯定需要使用“临界区”机制，来保证当一个任务在临界区中访问数据时，其它任务不会同时进入该临界区访问数据。</p>
 
     </div>
 
@@ -283,7 +270,7 @@ FreeRTOS交流QQ群-663806972
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/" title="FreeRTOS-任务优先级和中断优先级">http://fengxun2017.github.io/2022/12/20/FreeRTOS-task-priority-and-interrupt-priority/</a>
+      <a href="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/" title="FreeRTOS-硬件中断嵌套模型">http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -296,8 +283,8 @@ FreeRTOS交流QQ群-663806972
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/12/18/c++-memory-ordering/" rel="prev" title="memory ordering">
-                  <i class="fa fa-chevron-left"></i> memory ordering
+                <a href="/2022/12/22/FreeRTOS-task-priority-and-interrupt-priority/" rel="prev" title="FreeRTOS-任务优先级和内核任务调度中断优先级（SysTick，PendSV）">
+                  <i class="fa fa-chevron-left"></i> FreeRTOS-任务优先级和内核任务调度中断优先级（SysTick，PendSV）
                 </a>
             </div>
             <div class="post-nav-item">
@@ -333,14 +320,14 @@ FreeRTOS交流QQ群-663806972
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">88k</span>
+    <span title="站点总字数">94k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:50</span>
+    <span title="站点阅读时长">1:58</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
