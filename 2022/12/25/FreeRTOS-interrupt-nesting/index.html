@@ -19,25 +19,32 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta property="og:type" content="article">
-<meta property="og:title" content="FreeRTOS-硬件中断嵌套模型">
+    <meta name="description" content="cortex-m3&#x2F;m4的硬件中断是可以嵌套的，即高优先级中断可以抢占正在处理的低优先级中断。在使用FreeRTOS时，该特性仍旧存在，但FreeRTOS为了在并发&#x2F;并行访问资源的情况下，保护内核中的数据结构不被破坏，通过临界区做了一些限制，这使得并不是所有的高优先级中断都能抢占低优先级中断。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FreeRTOS-硬件中断嵌套模型和临界区">
 <meta property="og:url" content="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/index.html">
 <meta property="og:site_name" content="fx">
+<meta property="og:description" content="cortex-m3&#x2F;m4的硬件中断是可以嵌套的，即高优先级中断可以抢占正在处理的低优先级中断。在使用FreeRTOS时，该特性仍旧存在，但FreeRTOS为了在并发&#x2F;并行访问资源的情况下，保护内核中的数据结构不被破坏，通过临界区做了一些限制，这使得并不是所有的高优先级中断都能抢占低优先级中断。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/normal-interrupt-nesting.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/data-compete.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/critical.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/interrupt-nesting.png">
 <meta property="article:published_time" content="2022-12-24T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-24T16:56:24.713Z">
+<meta property="article:modified_time" content="2022-12-25T15:07:17.185Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/normal-interrupt-nesting.png">
 
 
 <link rel="canonical" href="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/","path":"2022/12/25/FreeRTOS-interrupt-nesting/","title":"FreeRTOS-硬件中断嵌套模型"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/","path":"2022/12/25/FreeRTOS-interrupt-nesting/","title":"FreeRTOS-硬件中断嵌套模型和临界区"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>FreeRTOS-硬件中断嵌套模型 | fx</title>
+<title>FreeRTOS-硬件中断嵌套模型和临界区 | fx</title>
   
 
 
@@ -191,12 +198,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="FreeRTOS-硬件中断嵌套模型 | fx">
+      <meta itemprop="name" content="FreeRTOS-硬件中断嵌套模型和临界区 | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          FreeRTOS-硬件中断嵌套模型
+          FreeRTOS-硬件中断嵌套模型和临界区
         </h1>
 
         <div class="post-meta-container">
@@ -226,14 +233,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>292</span>
+      <span>4.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>6 分钟</span>
     </span>
 </div>
 
@@ -245,14 +252,39 @@
     
     <div class="post-body" itemprop="articleBody">
         <center>
-
+cortex-m3/m4的硬件中断是可以嵌套的，即高优先级中断可以抢占正在处理的低优先级中断。在使用FreeRTOS时，该特性仍旧存在，但FreeRTOS为了在并发/并行访问资源的情况下，保护内核中的数据结构不被破坏，通过临界区做了一些限制，这使得并不是所有的高优先级中断都能抢占低优先级中断。
 </center>
 
 <span id="more"></span>
 
 <hr>
-<p>configMAX_API_CALL_INTERRUPT_PRIORITY：</p>
-<p>FreeRTOS提供的很多API都是多任务（多线程）安全的，如消息队列相关的API。多任务安全，指的时当我们在多个任务中调用这些API对同一个资源对象（如消息队列）操作时，并不用关心当多个任务“同时”（并发）调用这些API时（如调用消息队列的相关API，会修改目标消息队列控制块中的数据，以及修改存储区的数据），是否会破坏（该对象）内核中的数据结构。<br>多个任务同时修改同一个“资源”，表明存在资源访问竞争，肯定需要使用“临界区”机制，来保证当一个任务在临界区中访问数据时，其它任务不会同时进入该临界区访问数据。</p>
+<p>硬件中断嵌套，是指中断发生时，中断会打断当前正在执行的“普通”代码，转而执行对应的中断处理函数。在执行中断处理函数时，如果又有一个更高优先级的中断发生，该高优先级中断可以抢占正在运行的较低优先级中断，如下图所示：任务<code>task_a</code>在运行时，被到来的低优先级中断<code>IRQ1</code>打断，在执行<code>IRQ1</code>中断处理函数时，又被到来的高优先级中断<code>IRQ2</code>打断。<code>IRQ2</code>中断处理函数执行完成后，回到<code>IRQ1</code>的中断处理函数继续运行，<code>IRQ1</code>中断处理函数执行完后，回到<code>task_a</code>继续运行。<br><img src="/2022/12/25/FreeRTOS-interrupt-nesting/normal-interrupt-nesting.png"></p>
+<p>但是这种不加限制的中断嵌套模型，肯定是不能直接用在FreeRTOS中的，因为在中断处理函数中也是可以使用FreeRTOS的API（以<code>FromISR</code>后缀结尾的API）。假设当程序刚好执行到<code>task_a</code>向<code>消息队列A</code>中发送消息（此时会涉及<code>消息队列A</code>控制块的修改，消息存储区内容的修改）。这时，发生了一个低优先级中断<code>IRQ1</code>（打断了<code>task_a</code>正在执行的工作），<code>IRQ1</code>中断处理函数中也向<code>消息队列A</code>发送消息或从中提取消息（同样，也是涉及<code>消息队列A</code>控制块的修改，消息存储区内容的修改）。那么此时就可能会改乱<code>消息队列A</code>中内部的控制数据，即对同一个资源的访问冲突了。甚至，在低优先级中断<code>IRQ</code>执行到向<code>消息队列A</code>发送数据时，此时又发生一个更高优先级中断<code>IRQ2</code>，<code>IRQ2</code>中也向<code>消息队列A</code>中发送数据或从中提取数据，这就更加提高了发生资源访问冲突的可能。<br>下图演示了，<code>task_a</code>向<code>消息队列A</code>中发送消息时，被中断<code>IRQ1</code>打断，而<code>IRQ1</code>中断服务程序中也向<code>消息队列A</code>中发送数据，从而造成资源访问冲突（由于并发或并行访问，造成资源内部控制数据被破坏）的一种情况:<br><img src="/2022/12/25/FreeRTOS-interrupt-nesting/data-compete.png"><br>如上图所示，这种情况的冲突发生时，就会导致实际向消息队列<code>消息队列A</code>发送了两次数据，但最终<code>消息队列A</code>内部的消息计数只增加了1。</p>
+<p>实际上，这种共享资源（多个任务或中断都会访问的资源）访问冲突问题，不止在任务和中断间会发生，任务和任务间也也会发生。原理和上图一样，在<code>task_a</code>也是执行到上图的时间点时，发生了任务切换，切换到了任务<code>task_b</code>，而任务<code>task_b</code>中也同样向<code>消息队列A</code>中发送数据，那么就会导致上图同样的资源访问冲突问题。</p>
+<p>备注：<strong>本文所述的 共享资源 特指：通过 FreeRTOS提供的 API访问的那些资源（如消息队列，信号量等），当它们会被多个任务或中断访问时，即为共享资源</strong>。</p>
+<p>如何解决这种共享资源访问冲突的问题？ “临界区”机制，就是用来处理这种对共享资源竞争访问（多个任务&#x2F;中断都会访问某个相同的资源，并且可能会并发访问）导致的问题。通过将某个共享资源的访问过程用“临界区”保护起来，可以保证当一个访问者在临界区中访问资源时，其它访问者不能同时进入该临界区中访问资源，只能等待当前在临界区中的访问者结束其访问过程，其它访问者才能进入临界区中访问资源。或者说，用“临界区保护起来的代码段”，是串行执行的，不会并发（多核就是并行）执行。如下图所示：<br><img src="/2022/12/25/FreeRTOS-interrupt-nesting/critical.png"></p>
+<p>剩下的问题就是如何实现“临界区”了。<br><strong>对于任务和任务之间的资源竞争问题</strong>，最简单的方法，就是通过<strong>禁止任务调度</strong>来解决。即，访问共享资源前，先关掉内核的任务调度功能（开始进入临界区），这样在任务的整个访问共享资源期间，内核是不会进行任务切换的，不会切换到其它任务，也就没有任务间的数据竞争了。当访问共享资源完成后，再打开内核的任务调度功能（退出临界区）。FreeRTOS中<code>vTaskSuspendAll</code>和<code>xTaskResumeAll</code>就是分别用来暂停任务调度和恢复任务调度的。</p>
+<p><strong>但是对于<code>任务和中断</code>之间，以及<code>中断和中断</code>之间的资源竞争</strong>，仅仅暂时关闭内核的任务调度是无法解决的。因为，关闭内核的任务调度，并不会关闭中断。所以如果中断服务程序中，也会访问某个共享资源，那么仍旧可能形成任务和中断服务间的资源竞争，如果不加以限制，就会导致资源内部数据被破坏。这种情况，一个简单、直接的实现进入临界区的方法，就是直接屏蔽所有可以屏蔽的中断。退出临界区时，再取消屏蔽。这样任务执行期间就不会被中断打断，也就不会有资源竞争。中断执行期间，也不会被更高优先级的中断打断，同样也不会形成资源竞争。</p>
+<p>但直接屏蔽所有可以屏蔽的中断，过于简单粗暴，毕竟有的中断服务程序中，并没有访问共享资源（都不访问，也就没有资源竞争）。因此，<strong>FreeRTOS的做法是进入临界区时，只屏蔽部分中断</strong>。这个屏蔽操作，cortex-m处理器可以通过向 <code>BASEPRI</code> 寄存器中写入值<code>x</code>，即表示屏蔽所有优先级小于等于<code>x</code>的中断，FreeRTOS中的宏<code>taskENTER_CRITICAL</code>（中断处理函数中应该使用<code>taskENTER_CRITICAL_FROM_ISR</code>）实现进入临界区就是这么做的。而退出临界区，就是取消屏蔽，通过向 <code>BASEPRI</code> 寄存器中写入0来实现，FreeRTOS中的宏<code>taskEXIT_CRITICAL</code>（中断中应该使用<code>taskEXIT_CRITICAL_FROM_ISR</code>，并传入调用<code>taskENTER_CRITICAL_FROM_ISR</code>时的返回值）就是如此实现退出临界区的。<br>中断优先级屏蔽范围的设置，就是FreeRTOS工程配置文件<code>FreeRTOSConfig.h</code>中的宏<code>configMAX_SYSCALL_INTERRUPT_PRIORITY</code>（新版本名称为<code>configMAX_API_CALL_INTERRUPT_PRIORITY</code>）设置的值。例如，将<code>configMAX_API_CALL_INTERRUPT_PRIORITY</code>设置为<code>3</code>，则此时FreeRTOS的中断嵌套模型如下图所示：为了方便描述，图中假设中断优先级只有1-7，并且优先级数值越高，中断的真实优先级就越高。（<code>cortex-m3/4是反着来着，数值越低，真实优先级越高</code>）<br><img src="/2022/12/25/FreeRTOS-interrupt-nesting/interrupt-nesting.png"></p>
+<center>
+图片原型来自FreeRTOS官网
+</center>
+
+<p>如上图所示，当<code>configMAX_API_CALL_INTERRUPT_PRIORITY = 3</code>时，每次访问共享资源前，需要先进入临界区（屏蔽1-3优先级的中断），资源访问完成后，则退出临界区（取消屏蔽，中断又可以正常响应了）。</p>
+<ul>
+<li><p><strong>对于<code>任务a</code>和<code>任务b</code>之间的资源竞争</strong>（当它们都会访问同一个FreeRTOS资源时），当<code>任务a</code>成功进入临界区后，此时优先级小于等于 3的中断均被暂时屏蔽了，FreeRTOS的任务切换中断优先级<code>PendSV</code>是最低中断优先级，因此也是被屏蔽状态。所以在进入临界区后，访问资源这段时间内不会发生任务切换，因此也就不会存在两个任务间的访问冲突。</p>
+</li>
+<li><p><strong>对于<code>任务a</code>和<code>中断b处理函数</code>之间的资源竞争</strong>，在FreeRTOS的设定的中断嵌套模型下，如果你的<code>中断b处理函数</code>会调用FreeRTOS的API访问某个<code>任务a</code>也会访问的共享资源，那么<code>中断b</code>的优先级必须小于等于3，这样FreeRTOS的进入临界区的宏<code>taskENTER_CRITICAL</code>（中断处理函数中应该使用<code>taskENTER_CRITICAL_FROM_ISR</code>）才能暂时屏蔽这些中断。此时，<code>任务a</code>进入临界区后，<code>中断b</code>一定是被屏蔽状态，也就不会和<code>任务a</code>形成冲突了。反之，如果<code>中断b</code>优先级大于3，那么你的<code>任务a</code>进入临界区后，在访问资源过程中，就可能被<code>中断b</code>打断（不在FreeRTOS可屏蔽中断范围内），如果<code>中断b处理函数</code>中也访问相同资源，那么就会造成资源访问冲突。</p>
+</li>
+<li><p><strong>对于<code>中断a</code>和<code>中断b</code>之间的资源竞争</strong>，如果<code>中断a</code>和<code>中断b</code>会访问某个相同的共享资源，同样它们的中断优先级都必须小于等于3，这样当任意一个中断先进入临界区后，则另一个中断由于被暂时屏蔽，也就不会和先进入临界区的那个中断形成访问冲突。</p>
+</li>
+<li><p>如果，你的中断是在处理一个非常重要的事件，不想因为被其它中断抢占而导致响应出现延迟，那么就需要将该中断优先级设置的比较高（高于<code>configMAX_API_CALL_INTERRUPT_PRIORITY</code>），避免被FreeRTOS的临界区处理给暂时屏蔽了。但是，一但你的中断优先级高于<code>configMAX_API_CALL_INTERRUPT_PRIORITY</code>，就不能在该中断处理函数中使用任何FreeRTOS的 API去访问资源。因为，此时该中断已经不受FreeRTOS的临界区处理控制了，如果该中断发生时，访问的资源，是其它任务或中断（低优先级）正在访问的资源，那么就可能造成访问冲突，破坏资源内部数据。</p>
+</li>
+<li><p>最后，如果你的中断处理函数中压根没有使用FreeRTOS的任何API，那么该中断可以使用任意中断优先级，因为根本不会和其它使用FreeRTOS API访问资源的任务或中断形成冲突。</p>
+</li>
+</ul>
+<p>综上，FreeRTOS内部，通过使用向 <code>BASEPRI</code> 寄存器中写入值<code>configMAX_SYSCALL_INTERRUPT_PRIORITY</code>，来屏蔽部分中断，实现临界区机制。<br>对于那些通过 FreeRTOS API访问的资源，如消息队列，信号量，软件定时器等。当我们在多个任务或中断中使用它们时，其实我们并未做临界区相关的处理，也没有碰到前文所述的访问冲突问题，这是因为FreeRTOS在这些 API的内部已经做了临界区处理。<br>对于开发者来说，需要注意的是，你的中断处理函数是否有使用到FreeRTOS的API访问某个资源。如果有使用，那就需要将其中断优先级设置小于等于<code>configMAX_SYSCALL_INTERRUPT_PRIORITY</code>的值表示的中断优先级；如果没有使用，那么根据你的实际需求可以自行设定。</p>
+<p>最后一个问题，前文所述的共享资源，都是指通过 FreeRTOS的 API访问的那些资源。如果是开发者自定义的一些资源呢？例如，开发者自定义的某个<code>结构体对象</code>，每次访问该结构体对象涉及到内部多个成员的修改，如果该对象在多个任务或中断处理函数中被访问，如何保证这些访问不会冲突。<br>这种情况，就需要我们在访问该结构体对象前，自己主动调用<code>taskENTER_CRITICAL</code>（中断处理函数中应该使用<code>taskENTER_CRITICAL_FROM_ISR</code>）进入临界区，访问结束后，调用<code>taskEXIT_CRITICAL</code>（中断中应该使用<code>taskEXIT_CRITICAL_FROM_ISR</code>，并传入调用<code>taskENTER_CRITICAL_FROM_ISR</code>时的返回值）退出临界区。 并且，会访问该结构体对像的中断处理函数，其对应的中断优先级也需要设置小于等于<code>configMAX_SYSCALL_INTERRUPT_PRIORITY</code>表示的中断优先级，使得该中断能被纳入临界区会屏蔽的中断范围内，避免中断在任务进入临界区后在访问该结构体对象的时候，还能打断任务的执行，并也访问该结构体对象，形成访问冲突。</p>
 
     </div>
 
@@ -270,7 +302,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/" title="FreeRTOS-硬件中断嵌套模型">http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/</a>
+      <a href="http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/" title="FreeRTOS-硬件中断嵌套模型和临界区">http://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -320,14 +352,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">94k</span>
+    <span title="站点总字数">99k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:58</span>
+    <span title="站点阅读时长">2:04</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

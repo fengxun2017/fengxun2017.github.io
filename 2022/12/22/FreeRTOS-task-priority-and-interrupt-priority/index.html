@@ -29,7 +29,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/22/FreeRTOS-task-priority-and-interrupt-priority/ready-queue.jpg">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/22/FreeRTOS-task-priority-and-interrupt-priority/high_pendsv_error.png">
 <meta property="article:published_time" content="2022-12-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-24T16:55:43.116Z">
+<meta property="article:modified_time" content="2022-12-25T10:18:56.964Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2022/12/22/FreeRTOS-task-priority-and-interrupt-priority/ready-queue.jpg">
@@ -232,14 +232,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>6.9k</span>
+      <span>7.9k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>9 分钟</span>
+      <span>10 分钟</span>
     </span>
 </div>
 
@@ -277,7 +277,7 @@
 <p>当退出的<code>systick</code>中断处理函数后，就会进入<code>PendSV</code>中断（因为有中断“挂起”标记在）处理函数中，并执行实际的任务切换工作（选择当前最高优先级的就绪任务，并运行它）。<br><strong>这里的<code>PendSV</code>中断，其中断优先级也是 宏<code>configKERNEL_INTERRUPT_PRIORITY</code>定义的值</strong>。</p>
 <p><strong>即，<code>SysTick</code>和<code>PendSV</code>两个与内核任务调度相关的中断，它们的的中断优先级都是宏<code>configKERNEL_INTERRUPT_PRIORITY</code>定义的值。FreeRTOS默认都是将它们设置成最低中断优先级</strong>。</p>
 <p>在《ARM Cortex-m3&#x2F;m4权威指南》一书中，介绍的<code>SysTick</code>和<code>PendSV</code>配合实现任务切换，是将<code>SysTick</code>中断优先级设置成高优先级，<code>PendSV</code>设置成最低优先级。这里与FreeRTOS中实际使用设置的不同，往往给初学者造成困惑。</p>
-<p>首先结论是： <strong>书中的方案和FreeRTOS的方案，都是正确的，甚至即使是将PendSV的优先级设置为高优先级都是可以的，但是PendSV设置成高优先级虽然可以，但并不合理</strong>。所以，实际使用中都是将<code>PendSV</code>的中断优先级设置为最低。至于<code>SysTick</code>，可以设置为高优先级，也可以设置为低优先级，具体采用什么方案，开发者可以根据自己的实际应用需求而设定（例如，你没有额外的硬件定时器资源了，所以你复用了FreeRTOS内核使用的<code>SysTick</code>定时器，并在<code>SysTick</code>中断处理函数中添加一些自己的代码逻辑，而这些代码逻辑依赖精确的时间，所以需要将<code>SysTick</code>中断优先级调高，避免被其它中断抢占，导致响应延迟）。</p>
+<p>首先结论是： <strong>书中的方案和FreeRTOS的方案，都是正确的，甚至即使是将PendSV的优先级设置为高优先级都是可以的，但是PendSV设置成高优先级虽然可以，但并不合理</strong>。所以，实际使用中都是将<code>PendSV</code>的中断优先级设置为最低。至于<code>SysTick</code>，可以设置为高优先级（官网内核的<code>SysTick</code>中断处理函数，默认是基于最低优先级实现的，调高则需要一些改动，见后文描述），也可以设置为最低优先级，具体采用什么方案，开发者可以根据自己的实际应用需求而设定（例如，你没有额外的硬件定时器资源了，所以你复用了FreeRTOS内核使用的<code>SysTick</code>定时器，并在<code>SysTick</code>中断处理函数中添加一些自己的代码逻辑，而这些代码逻辑依赖精确的时间，所以需要将<code>SysTick</code>中断优先级调高，避免被其它中断抢占，导致响应延迟）。</p>
 <p><strong>那么，为什么FreeRTOS在默认都是将<code>SysTick</code>和<code>PendSV</code>中断优先级设置成最低呢</strong>？个人整理了以下一些原因。</p>
 <h5 id="2-1-PendSV优先级设置成最低的一些原因："><a href="#2-1-PendSV优先级设置成最低的一些原因：" class="headerlink" title="2.1 PendSV优先级设置成最低的一些原因："></a>2.1 <code>PendSV</code>优先级设置成最低的一些原因：</h5><ul>
 <li><p>首先，内核并不只是在每次<code>tick中断</code>发生时才执行任务切换。当我们使用抢占式调度时，新建一个高优先级的任务；调用<code>vTaskDelay</code>让任务延迟；等待某个资源（等待消息队列有消息，等待信号量可用等）；任务向消息队列中发送一个消息等等，很多操作都可能会触发任务切换工作，所以单独使用<code>PendSV</code>中断来做任务切换工作。这样在所有需要执行任务切换的地方，设置“挂起”<code>PendSV</code>中断，即可触发执行任务切换。</p>
@@ -295,10 +295,12 @@
 <h5 id="2-2-SyStick优先级设置成最低的一些原因："><a href="#2-2-SyStick优先级设置成最低的一些原因：" class="headerlink" title="2.2 SyStick优先级设置成最低的一些原因："></a>2.2 <code>SyStick</code>优先级设置成最低的一些原因：</h5><p>相比<code>PendSV</code>中断来说，<code>SysTick</code>中断的优先级就灵活很多，设置成高优先级或优先级都是可以的。<code>SysTick</code>中断处理函数中会更新内部“时间计数tick值”，变更一些任务状态等，最后时检查是否需要进行任务切换，需要任务切换的话，设置<code>PendSV</code>中断“挂起”就行了。</p>
 <p>但是，<code>SysTick</code>中断服务程序中做的这些工作，都是为FreeRTOS内核做的，并不是直接和我们要实现的功能关联。我们引入FreeRTOS只是为了提高开发效率和代码的可维护性，所以FreeRTOS是作为一个辅助工具（毕竟不用RTOS，直接裸机开发也是可以的）。 因此，如果我们将<code>SysTick</code>的中断优先级设置的比较高的话，由于<code>SysTick</code>周期触发，那么很可能会经常抢占我们自己使用的其它中断（我们自己使用的其它中断，肯定是为了处理一些需要即时响应的工作）。辅助工具的运作，可能会经常打断我们本身功能执行的“重要工作”，这是不合理的。因此，<strong>FreeRTOS 默认将<code>SysTick</code>中断设置为最低优先级，这样默认情况下FreeRTOS的运作对系统其它“重要工作”（我们自己使用的IRQ）的影响最小</strong>。</p>
 <p><code>SysTick</code>最低优先级可能导致<code>SysTick</code>的中断响应出现延迟，但这对FreeRTOS的正常运作并没有什么关系。<strong>如果你的功能依赖高精度的时间，首先考虑的应该是使用额外的硬件定时器来实现（并将其中断设置成高优先级）</strong>，而不是依赖FreeRTOS提供的一些时间相关API。例如，FreeRTOS提供的<a href="https://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/">软件定时器</a>，虽然它可以满足大部门的应用对定时器的需求，但对于一些需要严格依赖us级时间精度的功能，并不适用（甚至对于一些依赖 低ms级时间精度的功能也不适用）。毕竟软件定时器依赖内核的<code>Tick</code>周期，这就决定了软件定时器能识别的时间粒度。此外，软件定时器还依赖定时器服务任务（或称为daemon task）的优先级（优先级高，该任务才会优先调度，并执行设置的超时回调函数），涉及消息通信，甚至还会被其它软件定时器干扰（另一个超时时间更短的软件定时器超时触发后，在超时回调函数中调用了诸如<code>vTaskDelay</code>等会让当前任务进入阻塞态的API，那么软件定时器服务任务在阻塞期间都不会被内核调度了，这期间超时的定时器都无法即时执行超时回调函数，毕竟运行这些回调函数的定时器服务任务都处于阻塞状态中。<code>所以，不要在软件定时器的超时回调函数中调用会让任务阻塞的API</code>）。</p>
-<p>另一种情况是，没有额外的硬件定时器可用了。你复用了FreeRTOS用来产生<code>Tick</code>中断的定时器，（默认）即<code>SysTick</code>定时器。你在<code>SysTick</code>中断服务程序中添加了一些自己的功能代码，并且该功能依赖高精度的时间。这种情况下，你可以根据需要调高<code>SysTick</code>的中断优先级。</p>
+<p>另一种情况是，没有额外的硬件定时器可用了。你复用了FreeRTOS用来产生<code>Tick</code>中断的定时器，（默认）即<code>SysTick</code>定时器。你在<code>SysTick</code>中断服务程序中添加了一些自己的功能代码，并且该功能依赖高精度的时间。这种情况下，你可以根据需要调高<code>SysTick</code>的中断优先级。但是，<strong>FreeRTOS中有一个需要注意的点</strong>（我使用的内核是官网的V10.4.6，不清楚其它版本有没有考虑这个问题），<code>SysTick</code>中断处理函数中的实现其实并未考虑中断嵌套问题，即它没有考虑<code>SysTick</code>是高优先级，然后抢占低优先级中断的情况。这在Cortex-m3&#x2F;m4 的<code>SysTick</code>中断处理函数中也有注释：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">xPortSysTickHandler</span><span class="params">( <span class="type">void</span> )</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/* The SysTick runs at the lowest interrupt priority, so when this interrupt</span></span><br><span class="line"><span class="comment">     * executes all interrupts must be unmasked.  There is therefore no need to</span></span><br><span class="line"><span class="comment">     * save and then restore the interrupt mask value as its value is already</span></span><br><span class="line"><span class="comment">     * known. */</span></span><br><span class="line">    portDISABLE_INTERRUPTS();</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">/* Increment the RTOS tick. */</span></span><br><span class="line">        <span class="keyword">if</span>( xTaskIncrementTick() != pdFALSE )</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">/* A context switch is required.  Context switching is performed in</span></span><br><span class="line"><span class="comment">             * the PendSV interrupt.  Pend the PendSV interrupt. */</span></span><br><span class="line">            portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    portENABLE_INTERRUPTS();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> <strong>函数最开始的注释，就说明了该中断处理函数是是基于<code>SysTick</code>中断优先级是最低的情况</strong>。 这是因为它的屏蔽&#x2F;打开中断没有考虑，如果<code>SysTick</code>是打断低优先级中断的情况，这种情况下因该使用<code>portSET_INTERRUPT_MASK_FROM_ISR</code>来屏蔽中断，并保存返回的值，恢复中断时应该使用<code>portCLEAR_INTERRUPT_MASK_FROM_ISR</code>，并使用前面保存的返回值。如此，当返回到被打断的低优先级中断服务程序中时，才能保持中断屏蔽状态和被打断前是一样的。（具体可以全局搜<code>portSET_INTERRUPT_MASK_FROM_ISR</code>，看内核时如何使用这个宏的就清楚了）</p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>任务优先级与硬件没有任何关系，这是FreeRTOS自己抽象出来的概念。在FreeRTOS进行任务调度时，总是选择优先级最高的就绪任务来运行。</p>
 <p>FreeRTOS的任务调度需要使用硬件中断，涉及<code>SysTIck</code>定时器中断和<code>PendSV</code>中断。<br>对于<code>PendSV</code>中断，在处理器默认配置下（除了当前正在处理的中断，还有其它中断处于活动状态下时，只能从Handler模式转到Handler模式，不允许直接从Handler模式转到Thread模式），<code>PendSV</code>中断优先级必须设置为最低，否则，<code>PendSV</code>中断就有可能打断其它中断的处理，并在该中断还保持活动的状态下，（<code>PendSV</code>中断处理结束时）直接从Handler模式切换到Thread模式，从而触发异常。<br>虽然特殊配置下（<code>CCR寄存器</code>的<code>NONBASETHRDENA</code>位设置为 1），<code>PendSV</code>可以在还有其它中断处于活动状态下，直接从Handler模式转到Thread模式，但可能会导致其它IRQ运行效率很低（当<code>PendSV</code>抢占它们时），甚至功能异常（延迟太高，造成功能异常，如按键中断）。所以<code>PendSV</code>优先级设置最低是最好的选择。</p>
-<p>另一方面，FreeRTOS只是辅助开发的工具，为了让该工具的运行尽可能少的影响我们实际开发的功能，所以FreeRTOS默认将<code>SysTick</code>，设置为最低优先级，这样可以对系统的其它功能影响最少（对初级使用者更友好）。当然，如果你完全理解了上文所属的关于中断优先级变高会造成的影响，仍旧选择将<code>SysTick</code>优先级变高，这也是可以的，根据你的实际需求来设置即可！</p>
+<p>另一方面，FreeRTOS只是辅助开发的工具，为了让该工具的运行尽可能少的影响我们实际开发的功能，所以FreeRTOS默认将<code>SysTick</code>，设置为最低优先级，这样可以对系统的其它功能影响最少。当然，如果你完全理解了上文所述的关于中断优先级变高需要做的修改，和会造成的影响，仍旧选择将<code>SysTick</code>优先级变高，这也是可以的，根据你的实际需求来设置即可！</p>
 <br>
 FreeRTOS交流QQ群-663806972
 
@@ -338,8 +340,8 @@ FreeRTOS交流QQ群-663806972
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/12/25/FreeRTOS-interrupt-nesting/" rel="next" title="FreeRTOS-硬件中断嵌套模型">
-                  FreeRTOS-硬件中断嵌套模型 <i class="fa fa-chevron-right"></i>
+                <a href="/2022/12/25/FreeRTOS-interrupt-nesting/" rel="next" title="FreeRTOS-硬件中断嵌套模型和临界区">
+                  FreeRTOS-硬件中断嵌套模型和临界区 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -373,14 +375,14 @@ FreeRTOS交流QQ群-663806972
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">94k</span>
+    <span title="站点总字数">99k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:58</span>
+    <span title="站点阅读时长">2:04</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

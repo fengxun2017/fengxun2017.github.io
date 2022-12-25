@@ -193,7 +193,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2022/12/25/FreeRTOS-interrupt-nesting/" class="post-title-link" itemprop="url">FreeRTOS-硬件中断嵌套模型</a>
+          <a href="/2022/12/25/FreeRTOS-interrupt-nesting/" class="post-title-link" itemprop="url">FreeRTOS-硬件中断嵌套模型和临界区</a>
         </h2>
 
         <div class="post-meta-container">
@@ -223,14 +223,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>292</span>
+      <span>4.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>6 分钟</span>
     </span>
 </div>
 
@@ -242,7 +242,7 @@
     
     <div class="post-body" itemprop="articleBody">
           <center>
-
+cortex-m3/m4的硬件中断是可以嵌套的，即高优先级中断可以抢占正在处理的低优先级中断。在使用FreeRTOS时，该特性仍旧存在，但FreeRTOS为了在并发/并行访问资源的情况下，保护内核中的数据结构不被破坏，通过临界区做了一些限制，这使得并不是所有的高优先级中断都能抢占低优先级中断。
 </center>
           <!--noindex-->
             <div class="post-button">
@@ -325,14 +325,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>6.9k</span>
+      <span>7.9k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>9 分钟</span>
+      <span>10 分钟</span>
     </span>
 </div>
 
@@ -1219,14 +1219,14 @@ FreeRTOS提供了一个消息队列模块，通过消息队列，我们可以实
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">94k</span>
+    <span title="站点总字数">99k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">1:58</span>
+    <span title="站点阅读时长">2:04</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
