@@ -29,8 +29,9 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/cpu_structure.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/cpu_cache_line.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/cpu_cache_line_data_layout.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/LRU.png">
 <meta property="article:published_time" content="2022-12-17T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-19T12:53:58.447Z">
+<meta property="article:modified_time" content="2022-12-26T17:00:07.054Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2022/12/18/c++-memory-ordering/cpu_structure.png">
@@ -124,7 +125,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-CPU-cache%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1 CPU cache：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-Cache-line"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 Cache line</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-CPU-cache%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1 CPU cache：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-Cache-line"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 Cache line</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-Replacement-policies"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 Replacement policies</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -233,14 +234,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.1k</span>
+      <span>2.9k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>4 分钟</span>
     </span>
 </div>
 
@@ -260,7 +261,7 @@
 </ul>
 <span id="more"></span>
 <hr>
-<p>本文为个人阅读笔记，原作者文章链接：<a target="_blank" rel="noopener" href="http://gavinchou.github.io/summary/c++/memory-ordering/">memory ordering</a>，笔记中的图片也来自原作者文章中。</p>
+<p>本文为个人阅读笔记，笔记基于原作者文章：<a target="_blank" rel="noopener" href="http://gavinchou.github.io/summary/c++/memory-ordering/">memory ordering</a>，和<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Memory_ordering">wikipedia:Memory ordering</a>。笔记中的图片也来自原作者文章和 wikipedia。</p>
 <h4 id="1-CPU-cache："><a href="#1-CPU-cache：" class="headerlink" title="1 CPU cache："></a>1 CPU cache：</h4><p>CPU缓存是CPU使用的一种硬件缓存，该缓存的存储空间小，但访问速度很快。该缓存中存储的是经常访问的主存数据的副本，目的是为了减少CPU访问数据的平均时间成本。多数CPU中的 CPU cache 都是被组织成层次结构形式的多级缓存。<br>如下图所示：一个双核CPU中多级缓存的例子。<br><img src="/2022/12/18/c++-memory-ordering/cpu_structure.png"><br>（L1级缓存会再分为L1 指令缓存，和L1 数据缓存。L1拆成指令和数据两个独立的缓存，可以使得流水线在一个周期内同时取缓存中的指令和数据。此外，缓存如果满了，需要有替换策略，指令和数据的行为和访问热点区别较大，L1分成独立的指令缓存和数据缓存，可以方便各自使用不同的替换策略）</p>
 <p>其中：</p>
 <ul>
@@ -270,7 +271,7 @@
 <li>关于为什么以多层级的形式组织缓存结构，可以参考这篇文章：<a target="_blank" rel="noopener" href="https://toutiao.io/posts/zafunq/preview">为什么CPU有多层缓存</a></li>
 <li>多核CPU中的每个核心，有自己的私有cache（L1、L2），这增强了性能（访问私有cache时，不会和其它核心冲突，所以减少了访问冲突时的处理过程），但也引入了额外的使用复杂性（一个数据同时存在于多个核心的私有cache中，每个核心改变自己的L1 cache中的这个数据时，需要同步给其它核心）。</li>
 </ul>
-<h5 id="1-1-Cache-line"><a href="#1-1-Cache-line" class="headerlink" title="1.1 Cache line"></a>1.1 Cache line</h5><p>数据在内存和CPU 缓存之间传输时，是以固定大小的数据块为单位，称为<strong>缓存行（cache line）或缓存块（cache blocks）</strong>。当一个缓存行被从内存中复制到 cpu chache 中时，就会创建一个<strong>缓存条目（cache entry）</strong>。<strong>缓存条目</strong>中包含了从内存中复制的数据（cache line）、该数据在内存中的地址（tag，实际为地址中的一部分）、以及是否有效（flag）标记。<strong>缓存条目</strong>如下图所示：</p>
+<h5 id="1-1-Cache-line"><a href="#1-1-Cache-line" class="headerlink" title="1.1 Cache line"></a>1.1 Cache line</h5><p>数据在内存和CPU 缓存之间传输时，是以固定大小的数据块为单位，称为<strong>缓存行（cache line）或缓存块（cache blocks）</strong>。当一个缓存行被从内存中复制到 <code>cpu chache</code> 中时，就会创建一个<strong>缓存条目（cache entry）</strong>。<strong>缓存条目</strong>中包含了从内存中复制的数据（cache line）、该数据在内存中的地址（tag，实际为地址中的一部分）、以及是否有效（flag）标记。<strong>缓存条目</strong>如下图所示：</p>
 <table>
 <thead>
 <tr>
@@ -299,6 +300,14 @@
 <li><code>cache bouncing</code>：多核CPU中，当一个核心，在改写自己的 L1 cache 中的某个 cache line 中的一个数据后，CPU需要执行cache一致性算法，将该 cache line 同步给其它核（如果其它核上的cache 也有这个cache line），这个同步过程相比写 L1 cache 需要更多的处理时间。如果，多核CPU中，两个线程，频繁的修改同一个变量，这会使各自核心上该变量所在的cache line，需要不停的同步给其它核，这会额外引入大量同步时间。可以使用 thread_local来处理这种问题。</li>
 <li><code>cache false sharing</code>：如果多核CPU中两个线程，线程A 频繁的修改全局变量A；线程B 频繁的修改全局变量B，变量A 和变量B 在内存中刚好是连续的，在一个cache line中。那么，即使这两个线程访问的是不同的变量，还是会导致两个核心之间需要不停的相互同步cache line。可以使用<code>alignas(64)</code>让变量以cache line的长度对齐，避免它们处于同一个cache line中。</li>
 </ul>
+<h5 id="1-2-Replacement-policies"><a href="#1-2-Replacement-policies" class="headerlink" title="1.2 Replacement policies"></a>1.2 Replacement policies</h5><p><code>cpu cache</code>相对主存来说很小，一般从几十KB 到几十 MB。当<code>cpu cache</code>存满后，如果此时访问的一个数据不在<code>cpu cache中</code>，则需要将该数据所在<code>cache line</code>从主存加载到<code>cpu cache</code>中，因此需要从当前<code>cpu cache</code>中删除一条旧的<code>缓存条目</code>（cache entry），来存放新加载的条目。用来选择要删除的缓存条目的方法称为<code>替换策略（Replacement policies）</code>。所有替换策略，都面临一个基本问题：如何预测现有缓存条目中，哪一个在未来最不可能被使用。未来难以预测，所以没有完美的方法在各种可用的替换策略中进行选择。<br>一个比较流行替换策略，是最近最少使用（LRU）策略。该策略总是删除最近最少访问的那个缓存条目。如下图所示，假设 <code>cpu cache</code>中可以存放 4 个缓存条目，数据访问顺序为 A B C D E D F，并且每个数据在主存中属于不同的<code>cache line</code>中，图中数字表示时间信息，数字越小，表示访问的越早：<br><img src="/2022/12/18/c++-memory-ordering/LRU.png"></p>
+<center>
+
+<p>图片源自<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU">wikipedia</a></p>
+</center>
+
+<p>当缓存未满时，访问的 A B C D 会依次加载到 <code>cpu cache</code>中，并记录下时间信息。<br>当访问 E 时，<code>cpu cache</code>未命中，则需要将其从主存加载到<code>cpu cache</code>中。此时，A 是最近最少访问的，则替换掉 A。<br>当访问 D 时，<code>cpu cache</code>命中，此时，需要更新 D 的访问时间。<br>当访问 F 时，<code>cpu cache</code>未命中，则需要将其从主存加载到<code>cpu cache</code>中。此时，B 是最近最少访问的，则替换掉 B。</p>
+<p>如果某些内存区域的数据，几乎不会被再次访问，那么就没必要将其放入<code>cpu cache</code>中。因此，可以将这些内存区域标记为不可缓存，避免了在不会再次访问的情况下，将其数据内容加载到<code>cpu cache</code>中造成的额外开销，提高数据访问性能。</p>
 
     </div>
 
@@ -369,14 +378,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">99k</span>
+    <span title="站点总字数">101k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">2:04</span>
+    <span title="站点阅读时长">2:06</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
