@@ -19,29 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。">
+    <meta name="description" content="FreeRTOS提供的软件定时器，在使用上有两个需要开发者注意的事项。其一是软件定时器的时间粒度问题，其二是超时回调函数中不要使用会让当前任务进入阻塞态的FreeRTOS API。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="为什么使用嵌入式实时操作系统(RTOS)">
-<meta property="og:url" content="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/index.html">
+<meta property="og:title" content="FreeRTOS-软件定时器使用注意事项">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/12/26/FreeRTOS-note-on-timer-use/index.html">
 <meta property="og:site_name" content="fx">
-<meta property="og:description" content="在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。">
+<meta property="og:description" content="FreeRTOS提供的软件定时器，在使用上有两个需要开发者注意的事项。其一是软件定时器的时间粒度问题，其二是超时回调函数中不要使用会让当前任务进入阻塞态的FreeRTOS API。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/system_view.png">
-<meta property="article:published_time" content="2022-10-26T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-11-13T08:41:55.661Z">
+<meta property="article:published_time" content="2022-12-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-12-26T14:27:12.384Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/system_view.png">
 
 
-<link rel="canonical" href="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/">
+<link rel="canonical" href="http://fengxun2017.github.io/2022/12/26/FreeRTOS-note-on-timer-use/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/10/27/why-use-RTOS/","path":"2022/10/27/why-use-RTOS/","title":"为什么使用嵌入式实时操作系统(RTOS)"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/12/26/FreeRTOS-note-on-timer-use/","path":"2022/12/26/FreeRTOS-note-on-timer-use/","title":"FreeRTOS-软件定时器使用注意事项"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>为什么使用嵌入式实时操作系统(RTOS) | fx</title>
+<title>FreeRTOS-软件定时器使用注意事项 | fx</title>
   
 
 
@@ -109,7 +107,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -122,6 +120,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E5%AE%9A%E6%97%B6%E5%99%A8%E7%9A%84%E6%97%B6%E9%97%B4%E7%B2%92%E5%BA%A6"><span class="nav-number">1.</span> <span class="nav-text">软件定时器的时间粒度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E8%A6%81%E5%9C%A8%E8%B6%85%E6%97%B6%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0%E4%B8%AD"><span class="nav-number">2.</span> <span class="nav-text">不要在超时回调函数中</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -182,7 +181,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/12/26/FreeRTOS-note-on-timer-use/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -195,12 +194,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="为什么使用嵌入式实时操作系统(RTOS) | fx">
+      <meta itemprop="name" content="FreeRTOS-软件定时器使用注意事项 | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          为什么使用嵌入式实时操作系统(RTOS)
+          FreeRTOS-软件定时器使用注意事项
         </h1>
 
         <div class="post-meta-container">
@@ -211,7 +210,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-10-27 00:00:00" itemprop="dateCreated datePublished" datetime="2022-10-27T00:00:00+08:00">2022-10-27</time>
+      <time title="创建时间：2022-12-26 00:00:00" itemprop="dateCreated datePublished" datetime="2022-12-26T00:00:00+08:00">2022-12-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -230,14 +229,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.7k</span>
+      <span>200</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -249,28 +248,20 @@
     
     <div class="post-body" itemprop="articleBody">
         <center>
-在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。
+FreeRTOS提供的软件定时器，在使用上有两个需要开发者注意的事项。其一是软件定时器的时间粒度问题，其二是超时回调函数中不要使用会让当前任务进入阻塞态的FreeRTOS API。
+
 </center>
 <span id="more"></span>
 
 <hr>
-<p>这里我们只讨论支持多任务的嵌入式实时操作系统，如何理解多任务呢？以PC上的例子来说更容易理解。例如，你一边播放音乐，同时也在一边编辑文字。从体验上来看，这两个任务在你的PC上就像是在同时运行，这就是多任务的直观体现。</p>
-<p>那么在嵌入式系统上，基于FreeRTOS这类嵌入式多任务操作系统进行应用开发有什么好处呢？ 毕竟，操作系统内核本身需要占用存储和CPU资源的。</p>
-<p>以一个环境采集监控系统为例，不使用RTOS的裸机程序，通常就是在Main 函数中实现一个无线循环，周期性的采集诸如温度、湿度、气压、等传传感器的数据，再通过LCD等显示设备将数据进行展示。各个功能相互耦合，功能代码全部集中在一起。对于早期开发维护人员来说这并没有什么障碍，但随着功能迭代，会逐渐出现各种需求。例如,增加一个用户输入功能，用来实时配置采集传感器的参数，或用来修改显示模式。又例如，在检测到温度高于某个临界值后，以频率A闪烁红灯；在检测温度低于某个临界值后，以频率B闪烁红灯。当这种需求越来越多，你的代码就会逐渐变得混乱不堪，让其它人难以理解，因为它们全都耦合在一起，看起来太费劲了。</p>
-<p>基于FreeRTOS这类多任务操作系统，我们可以将上述应用拆分成多逻辑清晰的子任务。例如，一个温度采集任务，一个湿度采集任务，一个气压采集任务，一个中控任务，一个输入管理任务，一个输出管理任务。这样每个任务的功能划分就很清晰。并且，各个任务间进行隔离，通过RTOS提供的任务间通讯机制(例如<strong>消息队列</strong>)进行通讯，而不是直接调用其它任务中的功能函数，这样就实现了任务间的解耦。</p>
-<ul>
-<li><strong>采集任务</strong>只负责对相应传感器进行配置，以及对数据进行采集，并通过任务间通信机制(如<strong>消息队列</strong>)，将数据发送给中控任务。</li>
-<li><strong>输入管理任务</strong>只负责对输入设备进行配置，并获取用户输入，之后通过任务通信机制，将用户输入发送给中控任务。</li>
-<li><strong>输出管理任务</strong>只负责对显示设备进行配置，它从<strong>消息队列</strong>中提取需要显示的数据，并进行展示(任务只负责显示，并不关心要显示的内容)。</li>
-<li><strong>中控任务</strong>负责处理各种策略和逻辑。例如，它从<strong>消息队列A</strong>中提取数据(可能是采集任务发来的，也可能是输入管理任务发来的)，并解析，如果需要做下一步动作(例如显示)，则将相应的<strong>命令</strong>发送到<strong>消息队列B</strong>中，让下游任务执行。</li>
-</ul>
-<p>我们可以清晰地抽象出如下图所示的系统逻辑：<br><img src="/2022/10/27/why-use-RTOS/system_view.png" alt="系统逻辑图"></p>
-<p>通过多任务和消息队列，我们将”<strong>机制</strong>“和”<strong>策略</strong>“进行了拆分。</p>
-<p>像<strong>采集任务&#x2F;输入管理任务&#x2F;输出管理任务</strong>这种类型的任务只提供基本的”功能机制”(获取输入数据，输出显示数据)，它们并不关心数据本身是什么。它们只负责收集数据，再将数据丢到<strong>消息队列</strong>中(如采集任务)；或者从<strong>消息队列</strong>中提取数据，按原样配置到自己的寄存器中(如<strong>显示任务</strong>)。这样每个任务的代码就很清晰，职责也很明确，不会在这些模块中充斥着令人费解的业务相关”策略逻辑”(这些”策略逻辑”随着时间的推移，往往可能最后都没人清楚为什么要这样做，非常影响代码阅读)。</p>
-<p>另一方面，<strong>中控任务</strong>负责实现具体的业务相关的逻辑。它从<strong>消息队列</strong>中提取输入数据(可能是输入管理任务发来的数据，也可能是采集任务发来的数据)，针对不同的数据(例如，通过消息的type字段来区分)，进行一些业务逻辑上的处理，并可能进行一些数据展示(通过消息队列将要展示的数据发送给显示任务)。这样，我们就将业务相关的<strong>策略逻辑</strong>收敛到单个任务上进行集中处理，即使随着时间的推移我们丢失了某些<strong>策略逻辑</strong>的需求说明，但在中控任务中每个<strong>策略逻辑</strong>都有明确的输入和输出，所以在代码上还是很清晰的(我们丢失的信息只是为什么业务上当初要定”这个”输入的情况下做这个”策略逻辑”处理)。</p>
-<p>所以，基于FreeRTOS这类多任务操作系统，我们可以将需要实现的应用功能拆分成多个更简单清晰的子任务，再通过RTOS提供的任务间通信机制，将各个子任务进行解耦，避免相互直接调用功能函数。这让我们可以更轻松的开发中&#x2F;大型应用，也更利于产品的长期维护。</p>
+<h4 id="软件定时器的时间粒度"><a href="#软件定时器的时间粒度" class="headerlink" title="软件定时器的时间粒度"></a>软件定时器的时间粒度</h4><h4 id="不要在超时回调函数中"><a href="#不要在超时回调函数中" class="headerlink" title="不要在超时回调函数中"></a>不要在超时回调函数中</h4><p>通过文章<a href="https://fengxun2017.github.io/2022/11/27/FreeRTOS-principle_of_timer/">FreeRTOS-软件定时器的实现原理</a>和<a href="https://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/">FreeRTOS-软件定时器的使用</a></p>
 <br>
 FreeRTOS交流QQ群-663806972
+
+<br>
+
+
+<p>参考连接：<a target="_blank" rel="noopener" href="https://www.freertos.org/RTOS-software-timer-service-daemon-task.html">FreeRTOS software timers</a></p>
 
     </div>
 
@@ -288,7 +279,7 @@ FreeRTOS交流QQ群-663806972
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/" title="为什么使用嵌入式实时操作系统(RTOS)">http://fengxun2017.github.io/2022/10/27/why-use-RTOS/</a>
+      <a href="http://fengxun2017.github.io/2022/12/26/FreeRTOS-note-on-timer-use/" title="FreeRTOS-软件定时器使用注意事项">http://fengxun2017.github.io/2022/12/26/FreeRTOS-note-on-timer-use/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -301,14 +292,11 @@ FreeRTOS交流QQ群-663806972
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" rel="prev" title="基于crotex-m处理器新建FreeRTOS工程">
-                  <i class="fa fa-chevron-left"></i> 基于crotex-m处理器新建FreeRTOS工程
+                <a href="/2022/12/25/FreeRTOS-interrupt-nesting/" rel="prev" title="FreeRTOS-硬件中断嵌套模型和内核临界区">
+                  <i class="fa fa-chevron-left"></i> FreeRTOS-硬件中断嵌套模型和内核临界区
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" rel="next" title="FreeRTOS——创建任务">
-                  FreeRTOS——创建任务 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
