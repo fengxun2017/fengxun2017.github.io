@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/timer_reset.jpg">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/timer-trigger.png">
 <meta property="article:published_time" content="2022-11-15T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-26T13:51:51.170Z">
+<meta property="article:modified_time" content="2022-12-27T14:49:21.611Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/timer-task-schema.png">
@@ -270,7 +270,7 @@ FreeRTOS提供了一个软件定时器模块，通过软件定时器，我们可
 <ul>
 <li>用来配置定时器服务任务的优先级，一般将其设置的比 idle任务（内核自动创建的任务，可以参考<a href="https://fengxun2017.github.io/2022/11/14/FreeRTOS-kernal-hook/#2-1%EF%BC%9AIdle-Hook-Function">idle hook中相关的描述</a>） 的优先级大。 </li>
 <li>定时器启动后，当设置的时间到期后，会执行创建定时器时配置的<strong>回调函数</strong>，<strong>该回调函数是在 定时器服务任务TimerTask中被调用的</strong>。</li>
-<li>因此，如果你的系统中，存在一个比定时器服务任务 优先级更高的 任务A，并且任务A保持一直运行，不进入阻塞态（则不会让出CPU），那么定时器服务任务 就得不到运行（内核总是运行就绪的最高优先级的任务），那么即使你启动的 某个定时器时间到期了，相应的回调函数也不会执行（定时器服务任务都得不到机会运行，所以无法执行回调函数）。</li>
+<li>因此，如果你的系统中，存在一个比定时器服务任务 优先级更高的 任务A，并且任务A保持一直运行，不进入阻塞态，那么定时器服务任务 就得不到运行（任务A优先级更高，内核总是运行就绪的最高优先级的任务）。这种情况下，即使你启动的 某个定时器时间超时了，相应的超时回调函数也不会执行（定时器服务任务都得不到机会运行，所以无法执行回调函数）。</li>
 </ul>
 <p><strong>configTIMER_TASK_STACK_DEPTH：</strong></p>
 <ul>
@@ -448,14 +448,14 @@ FreeRTOS交流QQ群-663806972
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">101k</span>
+    <span title="站点总字数">105k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">2:06</span>
+    <span title="站点阅读时长">2:11</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
