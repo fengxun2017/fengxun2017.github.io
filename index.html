@@ -223,7 +223,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>4.7k</span>
+      <span>4.8k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -242,7 +242,7 @@
     
     <div class="post-body" itemprop="articleBody">
           <center>
-FreeRTOS提供的软件定时器，在使用上有两个需要开发者注意的事项。其一是软件定时器的时间粒度问题，其二是超时回调函数中不要使用会让当前任务进入阻塞态的FreeRTOS API。
+FreeRTOS提供的软件定时器，在使用上有几个需要开发者注意的事项。如软件定时器可以识别的基本时间单位，软件定时器服务任务的优先级设置的是否合适，以及软件定时器超时回调函数中不要使用会让当前任务（软件定时器服务任务）进入阻塞态的FreeRTOS API。
 
 </center>
           <!--noindex-->
