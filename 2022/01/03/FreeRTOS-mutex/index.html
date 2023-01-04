@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="FreeRTOS 为多任务可以，安全地并发访问共享数据，提供了多种数据保护方案。例如，简单直接的关中断；关闭内核调度器；使用信号量。但最推荐的，是使用FreeRTOS提供的互斥量（mutex）来保护共享数据。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FreeRTOS-使用mutex保护共享数据">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/01/03/FreeRTOS-mutex/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="FreeRTOS 为多任务可以，安全地并发访问共享数据，提供了多种数据保护方案。例如，简单直接的关中断；关闭内核调度器；使用信号量。但最推荐的，是使用FreeRTOS提供的互斥量（mutex）来保护共享数据。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/01/03/FreeRTOS-mutex/disassembly.png">
+<meta property="article:published_time" content="2022-01-02T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-01-04T16:43:28.075Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2022/01/03/FreeRTOS-mutex/disassembly.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2022/01/03/FreeRTOS-mutex/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/01/03/FreeRTOS-mutex/","path":"2022/01/03/FreeRTOS-mutex/","title":"FreeRTOS-使用mutex保护共享数据"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FreeRTOS-使用mutex保护共享数据 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BF%9D%E6%8A%A4%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE"><span class="nav-number">1.</span> <span class="nav-text">为什么要保护共享数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E6%8A%A4%E5%AF%B9%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE%E7%9A%84%E8%AE%BF%E9%97%AE"><span class="nav-number">2.</span> <span class="nav-text">如何保护对共享数据的访问</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/01/03/FreeRTOS-mutex/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FreeRTOS-使用mutex保护共享数据 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FreeRTOS-使用mutex保护共享数据
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-01-03 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-03T00:00:00+08:00">2022-01-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FreeRTOS/" itemprop="url" rel="index"><span itemprop="name">FreeRTOS</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+FreeRTOS 为多任务可以，安全地并发访问共享数据，提供了多种数据保护方案。例如，简单直接的关中断；关闭内核调度器；使用信号量。但最推荐的，是使用FreeRTOS提供的互斥量（mutex）来保护共享数据。
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h4 id="为什么要保护共享数据"><a href="#为什么要保护共享数据" class="headerlink" title="为什么要保护共享数据"></a>为什么要保护共享数据</h4><p>我们直接以一个测试用例，来演示，当任务并发访问某个共享的全局变量时，如果不对数据访问加以保护，会产生什么样的结果。</p>
+<p>首先，我们将工程配置文件FreeRTOSConfig.h中的<code>configTICK_RATE_HZ</code>设置大一点：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> configTICK_RATE_HZ			( ( TickType_t ) 100 )</span></span><br><span class="line">````</span><br><span class="line">这会让内核产生`Tick`中断频率更高，任务地切换会更频繁，更容易暴露出多任务并发访问共享数据导致的错误。</span><br><span class="line"></span><br><span class="line">我们定义一个任务：该任务就是对全局变量累加 `NUM` 次，然后输出结果。如下所示：</span><br><span class="line">```c</span><br><span class="line"><span class="type">int32_t</span> g_variable = <span class="number">0</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NUM (100)</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">task_func</span><span class="params">( <span class="type">void</span> *pvParameters )</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(;;) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 对g_variable 累加 NUM 次</span></span><br><span class="line">        <span class="keyword">if</span> (i &lt; NUM) &#123;</span><br><span class="line">            g_variable += <span class="number">1</span>;</span><br><span class="line">            i++;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 累加完了输出</span></span><br><span class="line">        <span class="keyword">if</span> ( i == NUM ) &#123;</span><br><span class="line">            SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;end, g_variable:%d\n&quot;</span>,g_variable);</span><br><span class="line">            i++;  <span class="comment">// 加个1 避免一直输出</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用上面的函数，创建3个任务，期望是3个任务对<code>g_variable</code>共累加 <code>3*NUM</code> 次。main 函数如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">if</span> (pdPASS == xTaskCreate(task_func, <span class="string">&quot;task_a&quot;</span>, <span class="number">100</span>, <span class="literal">NULL</span>, <span class="number">1</span>, <span class="literal">NULL</span>)</span><br><span class="line">        &amp;&amp; pdPASS == xTaskCreate(task_func, <span class="string">&quot;task_b&quot;</span>, <span class="number">100</span>, <span class="literal">NULL</span>, <span class="number">1</span>, <span class="literal">NULL</span>)</span><br><span class="line">        &amp;&amp; pdPASS == xTaskCreate(task_func, <span class="string">&quot;task_c&quot;</span>, <span class="number">100</span>, <span class="literal">NULL</span>, <span class="number">1</span>, <span class="literal">NULL</span>))&#123;</span><br><span class="line"></span><br><span class="line">        SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;start FreeRTOS\n&quot;</span>);</span><br><span class="line">        vTaskStartScheduler();</span><br><span class="line">    &#125; </span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 正常启动后不会运行到这里</span></span><br><span class="line">    SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;insufficient resource\n&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span>( ;; );</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>烧录运行后应该可以看到如下输出：当所有累加操作完成后，输出符合期望，即：<code>g_variable == 3*NUM</code> </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">start FreeRTOS</span><br><span class="line">end, g_variable:100</span><br><span class="line">end, g_variable:200</span><br><span class="line">end, g_variable:300</span><br></pre></td></tr></table></figure>
+
+<p>现在，我们将累加次数<code>NUM</code>调高：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> NUM (100000)</span></span><br></pre></td></tr></table></figure>
+<p>编译后，烧录运行。此时可以观察到，当所有累加操作完成后，输出的结果不符合期望：即：<code>g_variable != 3*NUM</code> </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">start FreeRTOS</span><br><span class="line">end, g_variable:206622</span><br><span class="line">end, g_variable:153253</span><br><span class="line">end, g_variable:206564</span><br></pre></td></tr></table></figure>
+<p>为什么会产生这样的结果？我们利用开发工具来查看下汇编代码（keil工具点击Debug进入调试，点击菜单栏的view-&gt;Disassembly Window可以看到汇编代码）：将编译优化等级设置为-O0，关闭优化。开启编译器优化后的代码，一般会有指令重排，看起来会比较乱，没有下图的好解释。<br><img src="/2022/01/03/FreeRTOS-mutex/disassembly.png"></p>
+<p>从上图，可以看到 <code>g_variable += 1</code>这条语句被翻译成了5 调汇编。<br>MOVW 和 MOVT 两条指令的最终结果是将寄存器 r1 设置为常量： 0x20000524<br>在keil的编译输出文件 xxx.map 中，搜索 <code>g_variable</code>，可以看到它的地址：就是 0x20000524</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">g_variable       0x20000524   Data    4  main.o(.bss.g_variable)</span><br></pre></td></tr></table></figure>
+<p>即，MOVW 和 MOVT 两条指令的作用是将 <code>g_variable</code> 的地址加载到 r1 寄存器中。<br>接着 LDR 就是从 r1中值所指示的地址处读取数据（即读取<code>g_variable</code>）并放入 r0 寄存器中。<br>之后 ADDS 指令，将 r0 寄存器中的值加1<br>最后 STR 指令，就 r0 中的值，写到 r1值所指示的地址处（即更新<code>g_variable</code>）。</p>
+<p>综上，c 语言的一个更新变量操作<code>g_variable += 1</code>。<br>在汇编层面，并不是一条指令就能完成，实际是由多条指令完成的：<br>1 从内存加载数据到寄存器<br>2 更新寄存器中的数据<br>3 寄存器中的数据写回内存</p>
+<p>而内核的任务调度，可能会在上述三条指令的，任意一条后发生。那么，就可能会发生<code>任务A</code>正在更新变量<code>g_variable</code>的值，但还未完成更新时，内核进行了任务切换，让另一个<code>任务B</code>开始运行。而<code>任务B</code>刚好也在更新这个值，那么会发生错误。如下图所示：</p>
+<h4 id="如何保护对共享数据的访问"><a href="#如何保护对共享数据的访问" class="headerlink" title="如何保护对共享数据的访问"></a>如何保护对共享数据的访问</h4><p>在<a href="https://fengxun2017.github.io/2022/12/25/FreeRTOS-interrupt-nesting/">FreeRTOS-硬件中断嵌套模型和内核临界区</a>一文中，我们介绍了FreeRTOS通过临时关闭中断的方式，实现了内核资源中的多任务安全访问。例如，当我们创建多个任务，当这些任务均会向同一个消息队列中发送&#x2F;提取 消息时，我们可以直接使用FreeRTOS的发送&#x2F;提取消息 API，不需要考虑多任务&#x2F;中断处理函数并发访问消息队列时，如何保证消息队列内部数据结构不被破坏，因为内核在这些API内部已经帮我们实现了对共享资源（共同访问的这个消息队列）地访问保护。内核的保护措施，就是临时关闭中断，这样可以避免任务切换，以及其它中断的抢占，实现对关键数据的互斥访问。</p>
+<p>待续</p>
+<p>关闭调度器期间不能 调用FreeRTOS api让任务阻塞</p>
+<p>例如，开发者自定义的某个<code>结构体对象</code>，每次访问该结构体对象涉及到内部多个成员的修改，如果该对象在多个任务或中断处理函数中被访问，如何保证这些访问不会冲突。<br>这种情况，就需要我们在访问该结构体对象前，自己主动调用<code>taskENTER_CRITICAL</code>（中断处理函数中应该使用<code>taskENTER_CRITICAL_FROM_ISR</code>）进入临界区，访问结束后，调用<code>taskEXIT_CRITICAL</code>（中断中应该使用<code>taskEXIT_CRITICAL_FROM_ISR</code>，并传入调用<code>taskENTER_CRITICAL_FROM_ISR</code>时的返回值）退出临界区。 并且，会访问该结构体对像的中断处理函数，其对应的中断优先级也需要设置小于等于<code>configMAX_SYSCALL_INTERRUPT_PRIORITY</code>表示的中断优先级，使得该中断能被纳入临界区会屏蔽的中断范围内，避免中断在任务进入临界区后在访问该结构体对象的时候，还能打断任务的执行，并也访问该结构体对象，形成访问冲突。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2022/01/03/FreeRTOS-mutex/" title="FreeRTOS-使用mutex保护共享数据">http://fengxun2017.github.io/2022/01/03/FreeRTOS-mutex/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/10/20/use-jlink-RTT/" rel="next" title="使用JLink-RTT输出调试信息">
+                  使用JLink-RTT输出调试信息 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">111k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:18</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
