@@ -30,7 +30,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/17/FreeRTOS-use-counting-semaphore/counting-time-line.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/17/FreeRTOS-use-counting-semaphore/manage_resource.png">
 <meta property="article:published_time" content="2022-12-16T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-17T12:43:30.913Z">
+<meta property="article:modified_time" content="2023-01-06T16:46:41.044Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2022/12/17/FreeRTOS-use-counting-semaphore/time_line.png">
@@ -124,7 +124,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E5%80%BC%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9A%84%E6%97%A0%E6%B3%95%E8%AE%B0%E5%BD%95%E4%BA%8B%E4%BB%B6%E6%AC%A1%E6%95%B0%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">二值信号量的无法记录事件次数的问题：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%A1%E6%95%B0%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">计数信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%AE%A1%E6%95%B0%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E6%95%B0%E9%87%8F%E7%9A%84%E8%B5%84%E6%BA%90"><span class="nav-number">3.</span> <span class="nav-text">使用计数信号量管理有限数量的资源</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BA%8C%E5%80%BC%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9A%84%E6%97%A0%E6%B3%95%E8%AE%B0%E5%BD%95%E4%BA%8B%E4%BB%B6%E6%AC%A1%E6%95%B0%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1 二值信号量的无法记录事件次数的问题：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E8%AE%A1%E6%95%B0%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">2 计数信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E4%BD%BF%E7%94%A8%E8%AE%A1%E6%95%B0%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%AE%A1%E7%90%86%E6%9C%89%E9%99%90%E6%95%B0%E9%87%8F%E7%9A%84%E8%B5%84%E6%BA%90"><span class="nav-number">3.</span> <span class="nav-text">3 使用计数信号量管理有限数量的资源</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -258,7 +258,7 @@
 <span id="more"></span>
 
 <hr>
-<h4 id="二值信号量的无法记录事件次数的问题："><a href="#二值信号量的无法记录事件次数的问题：" class="headerlink" title="二值信号量的无法记录事件次数的问题："></a>二值信号量的无法记录事件次数的问题：</h4><p>文章<a href="https://fengxun2017.github.io/2022/12/15/FreeRTOS-use-binary-semaphore/#more">FreeRTOS-使用二值信号量</a>的最后，描述了一个使用二值信号量，在中断处理函数和任务间进行“事件”同步的例子。<br>我们使用按键作为“中断源”，每当按键按下时，设置信号量。任务<code>button_pressed_handler</code>等待信号量（等待按键事件发生），一旦信号量可用，表示等待的“事件”（按键按下）发生了，则做一些相关的工作。</p>
+<h4 id="1-二值信号量的无法记录事件次数的问题："><a href="#1-二值信号量的无法记录事件次数的问题：" class="headerlink" title="1 二值信号量的无法记录事件次数的问题："></a>1 二值信号量的无法记录事件次数的问题：</h4><p>文章<a href="https://fengxun2017.github.io/2022/12/15/FreeRTOS-use-binary-semaphore/#more">FreeRTOS-使用二值信号量</a>的最后，描述了一个使用二值信号量，在中断处理函数和任务间进行“事件”同步的例子。<br>我们使用按键作为“中断源”，每当按键按下时，设置信号量。任务<code>button_pressed_handler</code>等待信号量（等待按键事件发生），一旦信号量可用，表示等待的“事件”（按键按下）发生了，则做一些相关的工作。</p>
 <p>但这个例子存在一个问题：<br>第一次按键事件发生后（中断处理函数中设置了信号量，信号量变为<code>可用</code>状态），任务<code>button_pressed_handler</code>获得信号量（<code>信号量被获取后，由可用状态再次变为不可用状态</code>），恢复运行，并开始执行一些相关处理动作。<br>如果任务<code>button_pressed_handler</code>在执行相关处理过程中，又连续发生了第二次、第三次按键动作（又触发了两次事件）。<br>由于二值信号量，只有<code>可用</code>和<code>不可用</code>状态，第二次按键事件发生时，信号量由<code>不可用</code>变为<code>可用</code>状态。仅接着的第三次按键事件发生后，中断处理函数中同样也是设置信号量，由于当前信号量已经是<code>可用</code>状态，所以设置操作并未起作用，信号量依旧保持<code>可用状态</code>。<br>当任务<code>button_pressed_handler</code>相关处理操作执行完成后，再次获取信号量，由于当前信号量为<code>可用</code>状态，因此可以立刻获取到信号量，并再次执行相关处理工作。但是，此时对于任务<code>button_pressed_handler</code>来说，它只感知到 “事件”发生了一次，但实际上在处理之前已经发生了两次“事件”。上述过程的时间线如下图所示：<br><img src="/2022/12/17/FreeRTOS-use-counting-semaphore/time_line.png"></p>
 <p>下面我们用代码复现上述问题，我们使用<code> vTaskDelay(pdMS_TO_TICKS(2000))</code>让任务<code>button_pressed_handler</code>在获取到信号量后等待2 秒，来模拟任务<code>button_pressed_handler</code>在处理相关工作。<br>任务代码为：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">button_pressed_handler</span><span class="params">( <span class="type">void</span> *pvParameters )</span> &#123;</span><br><span class="line"></span><br><span class="line">    SemaphoreHandle_t semaphore = (SemaphoreHandle_t)pvParameters;</span><br><span class="line">    <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">        <span class="comment">// 注意，使用portMAX_DELAY，表示如果信号量不可用，则会一直阻塞当前任务，知道信号量可用。</span></span><br><span class="line">        <span class="comment">// 使用portMAX_DELAY，需要在FreeRTOSConfig.h 文件中定义 INCLUDE_vTaskSuspend = 1</span></span><br><span class="line">        <span class="comment">// 正式产品代码最好使用一个超时值，这样异常发生时（中断有问题，没触发），至少能获得超时错误，可以在超时错误中做一些恢复操作。</span></span><br><span class="line">        xSemaphoreTake(semaphore, portMAX_DELAY);</span><br><span class="line">        SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;in task, do something\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 让任务延迟一会，模拟其在处理一些工作</span></span><br><span class="line">        vTaskDelay(pdMS_TO_TICKS(<span class="number">2000</span>));</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -271,7 +271,7 @@
 
 <p>上述这种情况，就是二值信号量存在的“弊端”，即无法记录“事件”发生的次数。如果上面例子中“事件”发生的“次数”也是一个重要的数据（例如，每次发生一次“事件”，任务<code>button_pressed_handler</code>都必须有一次对应的处理），那么二值信号量就不再适用。</p>
 <p>因此，二值信号量适用于事件发生频率“较低”的场景中，开发者能确定事件发生后，在后续的处理过程中，事件不会在此期间内，再发生超过一次。<br>更简单的情形，就是应用场景不关心事件发生的次数，只关心有没有发送过。这种场景下也可以使用二值信号量。</p>
-<h4 id="计数信号量"><a href="#计数信号量" class="headerlink" title="计数信号量"></a>计数信号量</h4><p>由于<code>二值信号量</code>的局限性，一般提供信号量功能的系统同时会提供<code>计数信号量</code>功能，其功能和二值信号量一致，但是多了计数功能。上文的问题，使用<code>计数信号量</code>就可以记录下按键事件发生的次数。<br>计数信号量的<strong>设置</strong>和<strong>获取</strong>API 和二值信号量是一样的，区别只是在创建API:</p>
+<h4 id="2-计数信号量"><a href="#2-计数信号量" class="headerlink" title="2 计数信号量"></a>2 计数信号量</h4><p>由于<code>二值信号量</code>的局限性，一般提供信号量功能的系统同时会提供<code>计数信号量</code>功能，其功能和二值信号量一致，但是多了计数功能。上文的问题，使用<code>计数信号量</code>就可以记录下按键事件发生的次数。<br>计数信号量的<strong>设置</strong>和<strong>获取</strong>API 和二值信号量是一样的，区别只是在创建API:</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SemaphoreHandle_t <span class="title function_">xSemaphoreCreateCounting</span><span class="params">( UBaseType_t uxMaxCount, </span></span><br><span class="line"><span class="params">                                            UBaseType_t uxInitialCount )</span></span><br></pre></td></tr></table></figure>
 <ul>
 <li>uxMaxCount：设置计数信号量在被获取前，可以保留的的最大计数值（以上文的例子解释，就是在任务<code>button_pressed_handler</code>执行处理工作期间，按键只要按下的次数小于<code>uxMaxCount</code>，信号量都可以记录下来）。</li>
@@ -291,7 +291,7 @@
 <p>程序运行后，在2秒内连续按键三次，可以发现按键按下了三次，任务<code>button_pressed_handler</code>也执行了三次处理。如下所示:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">start FreeRTOS</span><br><span class="line">in interrupt service function, button pressed       #第一次按键 </span><br><span class="line">in task, do something                               #任务获取到信号量，执行处理工作（原地延迟了2秒）</span><br><span class="line">in interrupt service function, button pressed       #第二次按键 </span><br><span class="line">in interrupt service function, button pressed       #第三次按键 </span><br><span class="line">in task, do something                               #任务延迟2秒结束后，再次成功获取信号量，再次执行处理工作。</span><br><span class="line">in task, do something                               #上一个延迟2秒结束后，再次获取信号量，仍旧能立刻获取到信号量，再次执行处理工作。</span><br></pre></td></tr></table></figure>
 <p>程序的执行时间线如下图所示：<br><img src="/2022/12/17/FreeRTOS-use-counting-semaphore/counting-time-line.png"></p>
-<h4 id="使用计数信号量管理有限数量的资源"><a href="#使用计数信号量管理有限数量的资源" class="headerlink" title="使用计数信号量管理有限数量的资源"></a>使用计数信号量管理有限数量的资源</h4><p>目前为止，我们使用的<code>二值信号量</code>以及<code>计数信号量</code>，都是用来作为任务和任务之间（或中断处理程序和任务）同步的工具。这种使用方式有一个明显的特征：<code>任务a</code>中使用<code>xSemaphoreTake</code>来等待信号量（等待某<code>事件A</code>发生），另一个<code>任务b</code>（或中断处理程序）中在<code>事件A</code>发生时使用<code>xSemaphoreGive</code>设置信号量（告诉<code>任务a</code>事件发生了）。</p>
+<h4 id="3-使用计数信号量管理有限数量的资源"><a href="#3-使用计数信号量管理有限数量的资源" class="headerlink" title="3 使用计数信号量管理有限数量的资源"></a>3 使用计数信号量管理有限数量的资源</h4><p>目前为止，我们使用的<code>二值信号量</code>以及<code>计数信号量</code>，都是用来作为任务和任务之间（或中断处理程序和任务）同步的工具。这种使用方式有一个明显的特征：<code>任务a</code>中使用<code>xSemaphoreTake</code>来等待信号量（等待某<code>事件A</code>发生），另一个<code>任务b</code>（或中断处理程序）中在<code>事件A</code>发生时使用<code>xSemaphoreGive</code>设置信号量（告诉<code>任务a</code>事件发生了）。</p>
 <p>但<code>信号量</code>不仅可以用来在多个任务间“同步事件”，还可以用来管理资源。<br>假设，我们有一个系统，该系统会收到外部访问请求，每次请求都会访问系统内部的某个<code>资源Z</code>。<br>假设我们有<code>2 个资源Z</code>，每次收到请求时，可以访问任意一个<code>资源Z</code>，假设访问<code>资源Z</code>需要<code>1秒</code>时间，<strong>资源Z 在被访问期间内是不允许再被另一个请求同时访问的</strong>。<br>当外部访问请求频率很低时，如1s一次，每次外部请求都能立刻访问到某个<code>资源Z</code>（2个中的任意一个）。<br>但某个时刻(1秒钟内)，突然有3个外部请求，由于系统只有2个<code>资源Z</code>，因此，只能有2个请求能立刻访问到<code>资源Z</code>，而第三个请求必须等前两个请求中的任意一个访问结束，才能去访问<code>资源Z</code>。</p>
 <p>诸如上述情况，对有限资源的互斥访问，就可以使用<code>计数信号量</code>来管理。<br>在创建<code>计数信号量</code>的API 中：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SemaphoreHandle_t <span class="title function_">xSemaphoreCreateCounting</span><span class="params">( UBaseType_t uxMaxCount, </span></span><br><span class="line"><span class="params">                                            UBaseType_t uxInitialCount )</span></span><br></pre></td></tr></table></figure>
@@ -388,14 +388,14 @@ FreeRTOS交流QQ群-663806972
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">112k</span>
+    <span title="站点总字数">115k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">2:20</span>
+    <span title="站点阅读时长">2:24</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
