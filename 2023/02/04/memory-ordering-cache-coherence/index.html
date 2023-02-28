@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="在多核CPU中，由于每个核心有自己独立的cpu cache（L1、L2 cache），所以当某个cpu核心修改了自己cache中的目标数据，但未及时同步给其它cpu核心的cache（同样包含目标数据），就会存在缓存一致性问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cache coherence">
+<meta property="og:url" content="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="在多核CPU中，由于每个核心有自己独立的cpu cache（L1、L2 cache），所以当某个cpu核心修改了自己cache中的目标数据，但未及时同步给其它cpu核心的cache（同样包含目标数据），就会存在缓存一致性问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/Cache_Coherency_Generic.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/load_data_to_cache.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/one_modify_var.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/load_old_var.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/write_propagation.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/read_trigger_sync.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/transaction_serialzation.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/bus-snooping.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/Full_bit_vector_format_diagram.jpg">
+<meta property="article:published_time" content="2023-02-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-18T11:43:21.921Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/Cache_Coherency_Generic.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/","path":"2023/02/04/memory-ordering-cache-coherence/","title":"cache coherence"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>cache coherence | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF-cache-coherence%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1 什么是 cache coherence：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7%E9%9C%80%E8%A6%81%E6%BB%A1%E8%B6%B3%E7%9A%84%E5%9F%BA%E6%9C%AC%E8%A6%81%E6%B1%82"><span class="nav-number">2.</span> <span class="nav-text">2 缓存一致性需要满足的基本要求</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-%E5%86%99%E4%BC%A0%E6%92%AD%EF%BC%88Write-Propagation%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 写传播（Write Propagation）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-%E4%BA%8B%E5%8A%A1%E4%B8%B2%E8%A1%8C%E5%8C%96%EF%BC%88Transaction-Serialization%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 事务串行化（Transaction Serialization）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E4%B8%80%E8%87%B4%E6%80%A7%E6%9C%BA%E5%88%B6%EF%BC%88Coherence-mechanisms%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">3 一致性机制（Coherence mechanisms）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-%E5%9F%BA%E4%BA%8E%E6%80%BB%E7%BA%BF%E5%97%85%E6%8E%A2%E6%9C%BA%E5%88%B6"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 基于总线嗅探机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2-%E5%9F%BA%E4%BA%8E%E7%9B%AE%E5%BD%95%E6%9C%BA%E5%88%B6"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 基于目录机制</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">参考连接：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="cache coherence | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          cache coherence
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-02-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-02-04T00:00:00+08:00">2023-02-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/memory-ordering%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">memory ordering相关</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+在多核CPU中，由于每个核心有自己独立的cpu cache（L1、L2 cache），所以当某个cpu核心修改了自己cache中的目标数据，但未及时同步给其它cpu核心的cache（同样包含目标数据），就会存在缓存一致性问题。
+</center>
+<span id="more"></span>
+
+<hr>
+<p>关于CPU cache的基础介绍，参考文章：<a href="https://fengxun2017.github.io/2022/12/18/memory-ordering-cpu-cache/">cpu cace</a></p>
+<h4 id="1-什么是-cache-coherence："><a href="#1-什么是-cache-coherence：" class="headerlink" title="1 什么是 cache coherence："></a>1 什么是 cache coherence：</h4><p>缓存一致性问题是一个通用概念，当系统中多个访问数据的客户端均对某些公享数据进行缓存时，各个客户端的缓存数据间就可能出现不一致的问题。如下图所示：</p>
+<p><img src="/2023/02/04/memory-ordering-cache-coherence/Cache_Coherency_Generic.png"></p>
+<center>
+图片来自wikipedia
+</center>
+<br>
+
+<p>现代cpu往往都是多核心的，每个核心可以看做上图的client，每个核心都有自己独立的cpu cache（L1、L2 cache）。当某个时刻<code>核心 A</code>和<code>核心 B</code>均访问内存中的某个数据<code>var</code>时，每个核心会将<code>var</code>加载到自己的 cpu cache中，如下图所示：</p>
+<p><img src="/2023/02/04/memory-ordering-cache-coherence/load_data_to_cache.png"></p>
+<p>此时，如果<code>核心A</code>修改变量<code>var</code>的值，会直接修改自己 cache中缓存的值。那么，<code>核心A</code>和<code>核心B</code>的cache中缓存的<code>var</code>就会不一致（并且<code>核心A</code>cache中的更新的<code>var</code>不一定会立刻写回内存中，例如使用了<a href="https://fengxun2017.github.io/2022/12/18/memory-ordering-cpu-cache/#4-1-%E5%BD%93%E8%A6%81%E5%86%99%E7%9A%84%E6%95%B0%E6%8D%AE%E5%91%BD%E4%B8%AD%E4%BA%86cpu-cache%EF%BC%9A">write-back</a>写回策略）。如下图所示：<br><img src="/2023/02/04/memory-ordering-cache-coherence/one_modify_var.png"><br>进一步，由于<code>核心A</code>的更新操作可能还没同步到内存中，如果此时另一个<code>核心C</code>也开始读取变量<code>var</code>（第一次读取），<code>核心C</code>会将<code>var</code>从内存加载到自己的 cpu cache中，那么此时读取到的就是<code>var</code>的旧值，并不是<code>核心A</code>更新后的最新的值。如下图所示：<br><img src="/2023/02/04/memory-ordering-cache-coherence/load_old_var.png"></p>
+<p>上述问题，就是由于共享数据在多处存在独立的缓存，从而造成缓存数据不一致问题。</p>
+<p><strong>而缓存一致性（cache coherence）就是是确保共享数据值的变化，在整个系统中及时传播的</strong>，使得某个cache中的数据发生更改时，其他也包含该数据的cache能及时感知该更改。</p>
+<h4 id="2-缓存一致性需要满足的基本要求"><a href="#2-缓存一致性需要满足的基本要求" class="headerlink" title="2 缓存一致性需要满足的基本要求"></a>2 缓存一致性需要满足的基本要求</h4><p>为了实现缓存一致性，首先需要满足下面两个要求：</p>
+<ul>
+<li>写传播（write propagation）:对任何缓存中的某个数据的更改，必须传播给该数据所在的其它所有缓存。</li>
+<li>事务串行化（Transaction Serialization）：对某个内存位置的多个读&#x2F;写操作（例如两个写操作：<code>核心A</code>写，之后<code>核心</code>B写），所有处理器核心应该看到相同的操作循序（所有处理器看到的写操作顺序，应该都是<code>核心A</code>写，之后<code>核心</code>B写）。</li>
+</ul>
+<h5 id="2-1-写传播（Write-Propagation）"><a href="#2-1-写传播（Write-Propagation）" class="headerlink" title="2.1 写传播（Write Propagation）"></a>2.1 写传播（Write Propagation）</h5><p>在<code>核心A</code>对<code>var</code> 的写操作之后，<code>核心B</code>对<code>var</code>进行读操作，并且在两次访问之间没有其它核心对<code>var</code>的写操作，那么<code>核心B</code>对<code>var</code>的读必须总是返回<code>核心A</code>所写的值。</p>
+<p>这个要求是在抽象逻辑层面上，对最终结果的要求（CPU内部可能为了获得最终结果，需要做额外的其它操作）：<code>核心A</code>更新了<code>var</code>的值之后，<code>核心B</code>读取<code>var</code>的值应该读取到<code>核心A</code>更新后的值（两个操作间无其它核心对<code>var</code>的写操作）。即对某一个缓存中的某个数据的更改操作，必须传播到该数据所在的所有缓存中。如下图所示：<br><img src="/2023/02/04/memory-ordering-cache-coherence/write_propagation.png"><br>操作1的写 和 操作2的读 指的是指令级别操作，要使得最终<code>核心B</code> 读取的结果是<code>核心A</code>更新后值，在操作1和操作2之间肯定还需要处理器进行cache间的信息同步操作（上图的例子，就是需要将核心A的cache的写操作的同步给核心B的cache），之后处理器根据数据的状态，来决定<code>核心B</code>怎么读取数据<code>var</code>。例如，当<code>核心A</code>使用的write-back策略时（<code>核心A</code>的cache更新没有立刻同步回主存），<code>核心B</code>的读操作会触发<code>核心A</code>将自己cache中的更新数据通过总线同时同步给<code>核心B</code>的cache以及主存。之后<code>核心B</code>就可以返回更新后的<code>var=4</code>了，如下图所示：<br><img src="/2023/02/04/memory-ordering-cache-coherence/read_trigger_sync.png"></p>
+<h5 id="2-2-事务串行化（Transaction-Serialization）"><a href="#2-2-事务串行化（Transaction-Serialization）" class="headerlink" title="2.2 事务串行化（Transaction Serialization）"></a>2.2 事务串行化（Transaction Serialization）</h5><p>写传播（Write Propagation）是针对单次更新的要求，即一次对CPU cache的更新操作，应该传播给包含该更新数据的所有cpu cache。但仅保证写传播，不足以实现缓存一致性。 </p>
+<p>考虑 <code>核心A</code>和<code>核心B</code>都对同一和变量更新值，那么<code>核心C</code>和<code>核心D</code>如果看到更新顺序不一致，还是会导致缓存间数据不一致问题，一个wikipedia中的例子如下：<br>核心A、B、C和D，各自的cpu cache中都包含共享变量<code>var</code>的缓存副本。<br><code>核心A</code>将<code>var</code>的值(在它自己的cache中)更改为10，<br>随后，<code>核心B</code>将<code>var</code>的值（在它自己的cache中）更改为20。<br>如果只保证写传播（write propagation），那么<code>核心C</code>和<code>核心D</code>可以保证都能看到<code>核心A</code>和<code>核心B</code>对<code>var</code>所做的更改。<br>但是，<code>核心C</code>可能是先看到<code>核心B</code>的更改操作，之后再看到<code>核心A</code>的更改操作，因此<code>核心C</code>在之后的读取返回10。<br>而<code>核心D</code>可能是先看到<code>核心A</code>的更改操作，之后在看到<code>核心B</code>的更改操作，因此<code>核心D</code>在之后的读取返回20。<br>即，仅保证写传播，仍旧会导致cache间的数据不一致问题，如下图所示：下图重点是核心C、D感知核心A、B两个写操作的顺序（图中没画核心A&#x2F;B感知B&#x2F;A的更新）<br><img src="/2023/02/04/memory-ordering-cache-coherence/transaction_serialzation.png"></p>
+<p>因此，事务（操作）串行化也是实现缓存一致性的必要要求。<br>实现事务串行化，就需要对同一位置的写入操作必须进行排序（串行化，将写入顺序固定，这样所有其它核心看到的写入操作顺序都是一致的）。<br>对某个内存位置 X 的多个写操作（上图的<code>核心A</code>写10，之后<code>核心B</code>写20），所有处理器核心应该看到相同的写顺序（例如，所有核心看到的树顺序都是位置 X 先被写10，之后被写20），不能出现某个<code>核心C</code>能从位置 X 先读出 20，然后又读出 10 的情况（即<code>核心C</code>先看到了写20，后看到写10）。</p>
+<h4 id="3-一致性机制（Coherence-mechanisms）"><a href="#3-一致性机制（Coherence-mechanisms）" class="headerlink" title="3 一致性机制（Coherence mechanisms）"></a>3 一致性机制（Coherence mechanisms）</h4><p>一致性机制，是CPU为了实现缓存一致性而提供的基本硬件机制。两种常见的机制有基于总线嗅探（Bus snooping）的机制和基于目录（Directory-based）的机制。</p>
+<h5 id="3-1-基于总线嗅探机制"><a href="#3-1-基于总线嗅探机制" class="headerlink" title="3.1 基于总线嗅探机制"></a>3.1 基于总线嗅探机制</h5><p>每个核心对自己cpu cache操作，会传播到总线上。同时，每个核心的cpu cache会监听总线，如下图所示：<br><img src="/2023/02/04/memory-ordering-cache-coherence/bus-snooping.png"><br>当监听到修改操作时，会判断当前修改的数据是否也在自己的cpu cache中，如果在则依据采用的缓存一致性协议执行对应的动作，例如让自己的cpu cache中相应的数据变为无效（当数据在其它核心的cpu cache中被更新时）。</p>
+<h5 id="3-2-基于目录机制"><a href="#3-2-基于目录机制" class="headerlink" title="3.2 基于目录机制"></a>3.2 基于目录机制</h5><p>在基于目录的系统中，共享数据的所在位置和状态被放在一个公共目录中，数据在哪几个核心的cpu cache中存在副本，可以通过该目录查找。如下图所示：</p>
+<p>其中，Nodes中对应的位为1，表示对应核心的cpu cache中存在该数据。 Location表示该数据在内存中的位置，访问数据就是访问内存中的某个位置。<br>状态标记分别为：E&#x3D;Exclusive, S&#x3D;Shared, M&#x3D;Modified, and U&#x3D;Uncached<br>P1、P2、P3 看做CPU中的多个核心<br><img src="/2023/02/04/memory-ordering-cache-coherence/Full_bit_vector_format_diagram.jpg"></p>
+<center>图片来自参考[3]</center>
+<br>
+因此，该机制会多一个目录查找过程。但另一方面对数据的修改操作可以直接通过该目录知道会影响哪几个核心的cpu cache，而基于总线，由于不清楚会影响哪几个核心的cpu cache，因此操作都要广播到总线上，让其它核心去检测是否与自己cpu cache中的数据有关。
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>总线嗅探机制 或 基于目录的机制，是实现缓存一致性的硬件基础。基于该基础，还需要提出一套具体的协议规范，来满足<strong>写传播</strong>和<strong>事务串行化</strong>要求，从而最终实现多个缓存间数据的一直性。例如 <a href="https://fengxun2017.github.io/2023/02/16/memory-ordering-MESI/">MESI协议</a>，就是基于总线嗅探实现的缓存一致性协议。</p>
+<br>
+<br>
+
+<h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cache_coherence">https://en.wikipedia.org/wiki/Cache_coherence</a><br>【2】<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/MESI_protocol">https://en.wikipedia.org/wiki/MESI_protocol</a><br>【3】<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Directory-based_cache_coherence">https://en.wikipedia.org/wiki/Directory-based_cache_coherence</a><br>【4】<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Bus_snooping">https://en.wikipedia.org/wiki/Bus_snooping</a><br>【5】<a target="_blank" rel="noopener" href="https://xiaolincoding.com/os/1_hardware/cpu_mesi.html">https://xiaolincoding.com/os/1_hardware&#x2F;cpu_mesi.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/" title="cache coherence">http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/01/31/FreeRTOS-use-event-group/" rel="prev" title="FreeRTOS-使用 event groups">
+                  <i class="fa fa-chevron-left"></i> FreeRTOS-使用 event groups
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/07/FreeRTOS-task-notification/" rel="next" title="FreeRTOS-Task Notification">
+                  FreeRTOS-Task Notification <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">167k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:29</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
