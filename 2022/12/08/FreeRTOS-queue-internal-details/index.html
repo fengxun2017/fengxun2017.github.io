@@ -31,7 +31,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/08/FreeRTOS-queue-internal-details/queue-task-list.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2022/12/08/FreeRTOS-queue-internal-details/task-status.png">
 <meta property="article:published_time" content="2022-12-07T16:00:00.000Z">
-<meta property="article:modified_time" content="2022-12-11T08:42:09.355Z">
+<meta property="article:modified_time" content="2023-03-04T13:28:41.878Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2022/12/08/FreeRTOS-queue-internal-details/queue_size.png">
@@ -138,7 +138,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -284,7 +284,7 @@
 <p>上述发送和接收函数都存在第三个参数<code>xTicksToWait</code>。<br><code>xQueueSend</code>函数中的<code>xTicksToWait</code> ，表示如果当前消息队列中消息存满了，那么就等待其有空闲位置（存在其它地方从消息队列中提取消息了，则会出现空闲位置），等待的超时时间就是<code>xTicksToWait</code>（<code>使用pdMS_TO_TICKS(ms)将时间转换成tick数</code>）。为0表示不等待，立刻返回。</p>
 <p><code>xQueueReceive</code>函数中的<code>xTicksToWait</code> ，表示如果当前消息队列中没有可提取的消息，那么就等待其有消息（当有其它地方向消息队列中发送消息），等待的超时时间就是<code>xTicksToWait</code>（<code>使用pdMS_TO_TICKS(ms)将时间转换成tick数</code>）。为0表示不等待，立刻返回。</p>
 <p>当涉及到需要等待一段时间，当前任务（当前调用<code>xQueueSend/xQueueReceive</code>的任务）就会进入阻塞态，之后内核会选择当前系统中优先级最高的就绪任务进行调度，让其运行。<br>那么，如果超时时间还未到，但消息队列有空闲位置了&#x2F;有消息了，任务是如何恢复运行的？或者超时时间到了，任务如何恢复运行？</p>
-<p>这就涉及到消息队列数据结构中的两个成员：<br><strong>xTasksWaitingToSend</strong>：等待消息队列有空闲位置的任务链表（即，当某个任务在消息队列满时，调用<code>xQueueSend</code>发送消息数据，如果设定了等待时间，那么该任务就会被挂到该任务链表中）。<br><strong>xTasksWaitingToReceive</strong>：等待消息队列有消息的任务链表（即，当某个任务在消息队列为空时，调用<code>xQueueReceive</code>获取消息，如果设定了等待时间，那么该任务就会被挂到该任务链表中）。<br>如下图所示：<br><img src="/2022/12/08/FreeRTOS-queue-internal-details/queue-task-list.png"></p>
+<p>这就涉及到消息队列数据结构中的两个成员：<br><strong>xTasksWaitingToSend</strong>：等待消息队列有空闲位置的任务链表（即，当某个任务在消息队列满时，调用<code>xQueueSend</code>发送消息数据，如果设定了等待时间，那么该任务就会被挂到该任务链表中）。<br><strong>xTasksWaitingToReceive</strong>：等待消息队列有消息的任务链表（即，当某个任务在消息队列为空时，调用<code>xQueueReceive</code>获取消息，如果设定了等待时间，那么该任务就会被挂到该任务链表中）。<br>如下图所示：（下图只是演示，实际队列不会是又满又空的状态，所以不会出现<code>xTasksWaitingToSend</code>和<code>xTasksWaitingToReceive</code>中都挂有任务）<br><img src="/2022/12/08/FreeRTOS-queue-internal-details/queue-task-list.png"></p>
 <p>并且，这两个链表是按照任务的优先级排序的，优先级高的任务在链表的前面。这样当消息队列有空闲位置&#x2F;有数据时，就能直接通知最高优先级的等待任务（链表第一个）。</p>
 <p>挂在<strong>xTasksWaitingToSend</strong> 链表中的任务，都是在等待消息队列有空闲位置可以放下新消息。因此，一旦有其它任务（或中断服务程序）从该消息队列中取走数据了，那么消息队列就会从<strong>xTasksWaitingToSend</strong>链表中找到第一个最高优先级的任务，让其恢复就绪态（有空闲位置可以发送消息了），如果该恢复就绪态的任务的优先级，是当前所有处于就绪态任务中优先级最高的，那么该任务就能立刻恢复运行。</p>
 <p>同理，挂在<strong>xTasksWaitingToReceive</strong> 链表中的任务，都是在等待消息队列有消息可提取。因此，一旦有其它任务（或中断服务程序）向该消息队列中发送数据了，那么消息队列就会从<strong>xTasksWaitingToReceive</strong>链表中找到第一个最高优先级的任务，让其恢复就绪态（有消息可以提取了），如果该恢复就绪态的任务的优先级，是当前所有处于就绪态任务中优先级最高的，那么该任务就能立刻恢复运行。</p>
@@ -365,14 +365,14 @@ FreeRTOS交流QQ群-663806972
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">167k</span>
+    <span title="站点总字数">172k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">3:29</span>
+    <span title="站点阅读时长">3:35</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
