@@ -27,7 +27,7 @@
 <meta property="og:description" content="BLE 从机设备协议栈实现——链路层相关。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-03-06T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-03-07T16:23:50.077Z">
+<meta property="article:modified_time" content="2023-03-09T16:52:03.525Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
@@ -229,14 +229,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.9k</span>
+      <span>3.9k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>5 分钟</span>
     </span>
 </div>
 
@@ -283,6 +283,36 @@ BLE 从机设备协议栈实现——链路层相关。
 </ul>
 <p>PACKET FORMAT FOR THE LE UNCODED PHYS：<br>preamble：前导数据1（1M PHY）或2(2M PYH)字节，硬件用来进行频率同步的。交替的0&#x2F;1 bit流，其最低位需要和access address的LSB保持一致。<br>Access Address：BEL使用的通道有限（40）个，而一个区域内可能会存在很多BLE设备，为了减少物理通道上的数据冲突，每个空中数据包在前导字节后，是4字节的Access Address。<br>                对于广播，使用固定的值0x8E89BED6。<br>                对于连接，每次连接时，master在发起连接时命令中会带有这个值，后续该连接的所有交互包都使用这个access address。<br>PDU：协议数据单元，具体协议数据。里面放的是广播协议数据，或连接后的协议数据。<br>CRC：校验码。<br>Constant Tone Extension：与定位的AOA,AOD相关。</p>
 <p>PACKET FORMAT FOR THE LE CODED PHY：  符号率是1Msym&#x2F;s, 1个Symbol是1 bit<br>增加了前向纠错，所以需要更多的bit来传输同样的数据，在S&#x3D;2时，2个Symbol传输1 bit，数据率是500Kbps；在S&#x3D;8时，8个Symbol传输1 bit，数据率是125Kbps</p>
+<p>BIT STREAM PROCESSING：<br>CRC generation：用来校验数据的完整性，确认接收到的一个数据包，其内容是完整的。应用在PDU上，crc计算需要一个初始值。</p>
+<ul>
+<li>对于连接后的数据，计算crc的初始值由 连接请求中的指定。</li>
+<li>对于广播数据，初始值为固定的0x555555</li>
+</ul>
+<p>DATA WHITENING：用来放置连续的0或1导致 ，应用在 PDU和CRC上。使用linear feedback shift register (LFSR)进行白化。其初值：</p>
+<ul>
+<li>Position 0 is set to one.</li>
+<li>Positions 1 to 6 are set to the channel index of the channel used when<br>transmitting or receiving, from the most significant bit in position 1 to the<br>least significant bit in position 6.</li>
+</ul>
+<p>4 AIR INTERFACE PROTOCOL：<br>T_IFS：帧间隔，150us，同一通道上的两个连续数据包间的间隔，前一个包的最后一bit 和下一个包的 第一个bit 间的间隔。</p>
+<p>TIMING REQUIREMENTS：ble的“间歇性”通信的，双方都需要知道下次通信的“时间点”，因为时钟精度是个需要考虑的参数。<br>            例如， 如果使用的时钟的精度是2000 ppm（长期），短期抖动是45us，那么如果约定 1s后通信， 接收方需要提前 2045 µs快开始监听，并持续到延后的 2045 µs。</p>
+<ul>
+<li>master(Central)的时钟精度在 连接请求中指示</li>
+<li>slave(Peripheral)使用的精度应等于 +-500ppm 或更好。</li>
+</ul>
+<p><strong>注意</strong>：最终需要提前和延后的窗口，需要考虑主&#x2F;从两边</p>
+<p>Window widening： 由于时钟精度导致需要额外监听的时间（监听时间点的前后都要加），称为窗口扩展。</p>
+<p>Advertising interval:<br>  T_advEvent &#x3D; advInterval + advDelay<br>  advDelay：目的是加一个随机扰动，如果两个设备刚好同时广播，且广播interval也一直，如果没有这个随机延迟，就会一直冲突。<br>  advertising interval (advInterval) shall be an integer multiple of 0.625 ms in the range 20 ms to 10,485.759375 s.</p>
+<p>Connection events：BLE周期性通信，在每个连接事件中，主从设备会交替发送&#x2F;接收数据。主&#x2F;从设备任意一方都可以结束本次连接事件。</p>
+<ul>
+<li>connEventCounter：连接事件计数，连接建立后为0，每次连接事件到来加1（即使因为一些原因，本次事件主&#x2F;从设备未通信上，例如干扰）。</li>
+</ul>
+<p>连接事件的时间，实际由connection interval (connInterval), subrate base event (connSubrateBaseEvent), subrate factor (connSubrateFactor), continuation number (connContinuationNumber), and Peripheral latency (connPeripheralLatency) 共同决定。<br>connInterval shall be a multiple of 1.25 ms in the range 7.5 ms to 4.0 s.</p>
+<p>亚速率是为了使主从设备可以使用更少了连接事件（减少同步次数，节省功耗），中央设备仅在亚速率连接事件上发送数据，<br>The value of connSubrateFactor shall be in the range 1 to 500 and shall be set  to 1 for a new connection.<br>The value of connContinuationNumber shall be in the range 0 to connSubrateFactor - 1 and shall be set to zero for a new connection.</p>
+<p>Peripheral latency also allows a Peripheral to use a reduced number of connection events： 允许从机可以跳过几个亚速率连接事件，减少从机功耗。<br>connPeripheralLatency shall be an integer such that connSubrateFactor × (connPeripheralLatency + 1) is less than or equal to 500 and connInterval × connSubrateFactor × (connPeripheralLatency + 1) is less than half connSupervisionTimeout<br>注意：</p>
+<ul>
+<li>如果从机在某个亚速率连接事件中收到了一个有效数据包，它应该监听下一个亚速率连接事件前的所有连续的连接事件（很可能还有后续数据要发过来）。</li>
+<li>如果在应用peripheral latency后，</li>
+</ul>
 
     </div>
 
@@ -350,14 +380,14 @@ BLE 从机设备协议栈实现——链路层相关。
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">174k</span>
+    <span title="站点总字数">176k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">3:38</span>
+    <span title="站点阅读时长">3:40</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
