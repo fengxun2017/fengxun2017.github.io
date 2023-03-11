@@ -2536,7 +2536,7 @@ ul.breadcrumb li:last-child {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #60e0ff;
+  background: #d7e578;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);

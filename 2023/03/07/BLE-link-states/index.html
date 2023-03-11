@@ -27,7 +27,7 @@
 <meta property="og:description" content="BLE 从机设备协议栈实现——链路层相关。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-03-06T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-03-09T16:52:03.525Z">
+<meta property="article:modified_time" content="2023-03-09T17:05:52.568Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
@@ -133,7 +133,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">33</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -308,10 +308,9 @@ BLE 从机设备协议栈实现——链路层相关。
 </ul>
 <p>连接事件的时间，实际由connection interval (connInterval), subrate base event (connSubrateBaseEvent), subrate factor (connSubrateFactor), continuation number (connContinuationNumber), and Peripheral latency (connPeripheralLatency) 共同决定。<br>connInterval shall be a multiple of 1.25 ms in the range 7.5 ms to 4.0 s.</p>
 <p>亚速率是为了使主从设备可以使用更少了连接事件（减少同步次数，节省功耗），中央设备仅在亚速率连接事件上发送数据，<br>The value of connSubrateFactor shall be in the range 1 to 500 and shall be set  to 1 for a new connection.<br>The value of connContinuationNumber shall be in the range 0 to connSubrateFactor - 1 and shall be set to zero for a new connection.</p>
-<p>Peripheral latency also allows a Peripheral to use a reduced number of connection events： 允许从机可以跳过几个亚速率连接事件，减少从机功耗。<br>connPeripheralLatency shall be an integer such that connSubrateFactor × (connPeripheralLatency + 1) is less than or equal to 500 and connInterval × connSubrateFactor × (connPeripheralLatency + 1) is less than half connSupervisionTimeout<br>注意：</p>
+<p>Peripheral latency ：允许从机可以跳过几个亚速率连接事件，减少从机功耗。<br>connPeripheralLatency shall be an integer such that connSubrateFactor × (connPeripheralLatency + 1) is less than or equal to 500 and connInterval × connSubrateFactor × (connPeripheralLatency + 1) is less than half connSupervisionTimeout<br>注意：</p>
 <ul>
-<li>如果从机在某个亚速率连接事件中收到了一个有效数据包，它应该监听下一个亚速率连接事件前的所有连续的连接事件（很可能还有后续数据要发过来）。</li>
-<li>如果在应用peripheral latency后，</li>
+<li>如果在应用peripheral latency后，在某个从机应该监听的连接事件上，没收到主机发送过来的有效包，那么从机后续应该监听每一个亚速率事件（期间关闭应用peripheral latency），直到收到一个有效包。</li>
 </ul>
 
     </div>
@@ -380,14 +379,14 @@ BLE 从机设备协议栈实现——链路层相关。
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">176k</span>
+    <span title="站点总字数">178k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">3:40</span>
+    <span title="站点阅读时长">3:43</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

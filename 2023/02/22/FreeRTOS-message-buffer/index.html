@@ -19,29 +19,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。">
+    <meta name="description" content="message buffer 是基于stream buffer构建的一种轻量级消息传递方式，因此使用message buffer和使用stream buffer存在相同的限制：只有一个写，并且也只有一个读。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="为什么使用嵌入式实时操作系统(RTOS)">
-<meta property="og:url" content="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/index.html">
+<meta property="og:title" content="FreeRTOS-stream buffer">
+<meta property="og:url" content="http://fengxun2017.github.io/2023/02/22/FreeRTOS-message-buffer/index.html">
 <meta property="og:site_name" content="fx">
-<meta property="og:description" content="在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。">
+<meta property="og:description" content="message buffer 是基于stream buffer构建的一种轻量级消息传递方式，因此使用message buffer和使用stream buffer存在相同的限制：只有一个写，并且也只有一个读。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/system_view.png">
-<meta property="article:published_time" content="2022-10-26T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-03-04T04:46:47.524Z">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/22/FreeRTOS-message-buffer/diff_sb_mb.jpg">
+<meta property="article:published_time" content="2023-02-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-03-10T15:46:53.854Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/system_view.png">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2023/02/22/FreeRTOS-message-buffer/diff_sb_mb.jpg">
 
 
-<link rel="canonical" href="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/">
+<link rel="canonical" href="http://fengxun2017.github.io/2023/02/22/FreeRTOS-message-buffer/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/10/27/why-use-RTOS/","path":"2022/10/27/why-use-RTOS/","title":"为什么使用嵌入式实时操作系统(RTOS)"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/02/22/FreeRTOS-message-buffer/","path":"2023/02/22/FreeRTOS-message-buffer/","title":"FreeRTOS-stream buffer"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>为什么使用嵌入式实时操作系统(RTOS) | fx</title>
+<title>FreeRTOS-stream buffer | fx</title>
   
 
 
@@ -183,7 +183,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2023/02/22/FreeRTOS-message-buffer/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -196,12 +196,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="为什么使用嵌入式实时操作系统(RTOS) | fx">
+      <meta itemprop="name" content="FreeRTOS-stream buffer | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          为什么使用嵌入式实时操作系统(RTOS)
+          FreeRTOS-stream buffer
         </h1>
 
         <div class="post-meta-container">
@@ -212,7 +212,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2022-10-27 00:00:00" itemprop="dateCreated datePublished" datetime="2022-10-27T00:00:00+08:00">2022-10-27</time>
+      <time title="创建时间：2023-02-22 00:00:00" itemprop="dateCreated datePublished" datetime="2023-02-22T00:00:00+08:00">2023-02-22</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -231,14 +231,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.7k</span>
+      <span>1.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -250,35 +250,24 @@
     
     <div class="post-body" itemprop="articleBody">
         <center>
-在嵌入式开发中合理的使用操作系统，可以更高效的开发应用，并十分有利于产品的迭代和维护。
+message buffer 是基于stream buffer构建的一种轻量级消息传递方式，因此使用message buffer和使用stream buffer存在相同的限制：只有一个写，并且也只有一个读。
 </center>
+
 <span id="more"></span>
 
 <hr>
-<p>这里我们只讨论支持多任务的嵌入式实时操作系统（RTOS），如何理解多任务呢？以PC上的例子来说更容易理解。例如，你一边播放音乐，同时也在一边编辑文字。不管底层它们到底是真的并行，还是分时复用（并发），从体验上来看，这两个任务在你的PC上就像是在同时运行，这就是多任务的直观体现。</p>
-<p>那么在嵌入式系统上，基于FreeRTOS这类嵌入式多任务操作系统进行应用开发有什么好处呢？ 毕竟，RTOS本身是需要占用存储和CPU资源的。<br>一个简单粗糙的解释，多任务操作系统，是将任务，通信机制等基础功能实现好了，开发者基于这一套框架，可以将更多的精力集中在业务功能上，加速产品的开发。</p>
-<p>以一个环境采集监控系统为例，不使用RTOS的裸机程序，通常就是在Main 函数中实现一个无线循环，周期性的采集诸如温度、湿度、气压、等传传感器的数据，再通过LCD等显示设备将数据进行展示。功能代码全部集中在一起。对于早期开发维护人员来说或许这并没有什么障碍，但随着功能迭代，会逐渐出现各种新增需求。例如,增加一个用户输入功能（用来实时配置采集传感器的参数，或用来修改显示模式）。又例如，在检测到温度高于某个临界值后，闪烁红灯；在检测温度低于某个临界值后，闪烁绿灯。当这种需求越来越多，你的代码就会逐渐变得混乱不堪，让其它人难以理解，因为它们全都耦合在一起。</p>
-<p>基于FreeRTOS这类多任务操作系统，我们可以将上述应用拆分成多个逻辑清晰的子任务。例如，一个温度采集任务，一个湿度采集任务，一个气压采集任务，一个中控任务，一个输入管理任务，一个输出管理任务等。这样每个任务的功能划分就很清晰。并且，各个任务间在代码实现上可以实现隔离，如果它们需要通信，可以通过RTOS提供的任务间通讯机制（例如<strong>消息队列</strong>）进行通讯，而不是直接调用其它任务中的功能函数，这样就实现了任务间的隔离和解耦。同时，后期维护，当需要修改某个功能的代码（例如修改温度采集相关功能的代码），可以不影响其它功能的逻辑（因为各个功能任务之间已经隔离）。而传统的裸机开发中，你修改的部分代码，可能所有功能逻辑都会涉及到这份代码（可能和其它功能无关，但是执行路径会经过它们），这种情况下，就容易造成对单个功能的改动影响到其它无关功能。</p>
-<p>所谓“耦合”，个人理解是将业务“策略”和基础“机制”关联起来了（或是进行了某种“绑定”）。<br>例如上文说的，“当检测到温度高于某个临界值时，闪烁红灯”，这就是一种业务策略。 而其中“闪烁红灯”就是一种基础“机制”。<br>如果将“当检测到温度高于某个临界值时，闪烁红灯” 看做一个整体来实现这个功能，所有类似“当XXX时，闪烁XXX”的需求，我们都要去实现一套类似的代码。<br>而解耦，就是将策略和机制分离。例如：</p>
-<ul>
-<li>温度采集和阈值判断放在一个任务中实现——业务相关策略任务</li>
-<li>各种指示灯的控制放在另一个任务中来实现——基础机制任务</li>
-</ul>
-<p>当业务策略任务，根据业务逻辑，判断要执行某一个动作时（以频率A闪烁某个指示灯），只需要通过RTOS提供的通信机制（如消息队列）向“指示灯控制任务”发送一个定义好的命令即可，指示灯控制任务根据收到的命令，控制相应的指示灯。<br>如此，对于“指示灯控制任务”来说，它不并不关心具体的业务逻辑，它只需要接收定义好的命令，并根据命令控制相应的指示灯即可。对于温度采集和阈值判断这个业务策略相关的任务，它只需要负责实现业务上定义好的各种判断逻辑，最终要执行的动作（温度过高&#x2F;过低，闪烁红灯&#x2F;绿灯），通过通信机制发送给“指示灯控制任务”即可。甚至， “温度采集和阈值判断”这个任务本身也可以拆分成两个更独立的任务，一个<code>温度采集任务</code>，一个<code>中控任务</code>。采集任务只管从硬件传感器中采集数据，并将数据发送给<code>中控任务</code>。而<code>中控任务</code>接收到数据后，执行相关业务逻辑判断（温度过高&#x2F;过低？），最终再将要执行的动作发送给<code>指示灯控制任务</code>。 </p>
-<p>例如，上文提到的环境采集监控系统，可以拆分成如下各个任务。</p>
-<ul>
-<li><strong>采集任务</strong>只负责对相应传感器进行配置，以及对数据进行采集，并通过任务间通信机制(如<strong>消息队列</strong>)，将数据发送给中控任务。<br>采集任务可以根据功能的复杂度来决定，是每个采集任务都用一个独立的任务，还是用单个任务来采集所有数据。</li>
-<li><strong>输入管理任务</strong>只负责对输入设备进行配置，并获取用户输入，之后通过任务通信机制，将用户输入发送给中控任务。</li>
-<li><strong>输出管理任务</strong>只负责对显示设备进行配置，它从<strong>消息队列</strong>中获取需要显示的数据，并进行展示（任务只负责显示，并不关心要显示的内容）。</li>
-<li><strong>中控任务</strong>负责处理各种策略和逻辑。例如，它从<strong>消息队列A</strong>中提取数据（可能是采集任务发来的，也可能是输入管理任务发来的），并解析，如果需要做下一步动作（例如显示），则将相应的<strong>命令</strong>发送到<strong>消息队列B</strong>中，让下游任务（输出管理任务）执行具体的动作。</li>
-</ul>
-<p>我们可以清晰地抽象出如下图所示的系统逻辑：<br><img src="/2022/10/27/why-use-RTOS/system_view.png" alt="系统逻辑图"></p>
-<p>通过多任务和消息队列，我们将”<strong>机制</strong>“和”<strong>策略</strong>“进行了拆分。</p>
-<p>像<strong>采集任务&#x2F;输入管理任务&#x2F;输出管理任务</strong>，这种类型的任务只提供基本的”功能机制”（采集传感器数据，获取用户输入数据，输出显示数据），它们并不关心数据本身是什么。<br>如采集任务，它们只负责收集数据，再将数据丢到相应<strong>消息队列</strong>中由下游任务来处理。<br>又如显示任务，它从相应<strong>消息队列</strong>中获取要显示数据，并进行显示。<br>如此，每个任务的代码就很清晰，职责也很明确，不会在这些模块中充斥着令人费解的业务相关”策略逻辑”（这些”策略逻辑”随着时间的推移，往往可能最后都没人清楚当初为什么要这样做，如果它们掺杂在基础功能代码中会非常影响代码阅读）。</p>
-<p>另一方面，<strong>中控任务</strong>负责实现具体的业务相关的逻辑。它从<strong>消息队列</strong>中提取输入数据（可能是输入管理任务发来的数据，也可能是采集任务发来的数据），针对不同的数据（例如，通过消息的type字段来区分），进行一些业务逻辑上的处理，并可能进行一些数据展示（通过消息队列将要展示的数据发送给显示任务）。这样，我们就将业务相关的<strong>策略逻辑</strong>收敛到单个任务上进行集中处理，即使随着时间的推移我们丢失了某些<strong>策略逻辑</strong>的需求说明，但在中控任务中每个<strong>策略逻辑</strong>都有明确的输入和输出，所以在代码结构上还是比较清晰的。</p>
-<p>所以，基于FreeRTOS这类多任务操作系统，我们可以将需要实现的应用功能拆分成多个更简单清晰的子任务，再通过RTOS提供的任务间通信机制，将各个子任务进行解耦，避免相互直接调用功能函数。这让我们可以更轻松的开发中&#x2F;大型应用，也更利于产品的长期维护。</p>
+<p><a href="https://fengxun2017.github.io/2023/02/22/FreeRTOS-stream-buffer/">stream buffer</a>提供了一种轻量级的数据流传递方式，所谓数据流，即数据的收发都是以字节为单位的。例如，<br><code>stream buffer</code>的发送数据API：<code>xStreamBufferSend</code>，当我们需要发送<code>N</code>个字节时，当前<code>buffer</code>空间如果不够写入<code>N</code>字节，该API仍旧会根据当前可用空间来写入尽可能多的字节，并返回最终成功写入的字节数。<br><code>stream buffer</code>的获取数据API：<code>xStreamBufferReceive</code>，当我们尝试最大获取<code>N</code>字节数据时，即使当前Buffer并没有那么多的数据，该API 仍旧会根据当前buffer内的数据量返回尽可能多的数据，并最终返回成功获取到的字节数。</p>
+<p>这是因为数据流，是没有数据“边界”的概念，发送时会尽可能的发送，没空间了就结束发送。获取数据时，也是尽可能的获取数据多的数据，能获取多少就获取多少。发送和接收过程可能会在任意一个字节发送&#x2F;接收完成后结束。</p>
+<p><code>message buffer</code>是基于<code>stream buffer</code>来实现的。<br>与<code>stream buffer</code>相比，<code>message buffer</code>就提供了数据“边界的概念”。其发送&#x2F;获取数据都是以消息为单位的（一个消息的长度可以任意）。例如：<br>对于发送数据API：<code>xMessageBufferSend</code>，同样是发送<code>N</code>个字节，该API 要么是将<code>N</code>字节全部发送成功，要么就一个字节也不发送（buffer内空间不够了）。我们称为发送了一个大小为<code>N</code>的“消息”。<br>对于获取数据API：<code>xMessageBufferReceive</code>，每次调用要么获取数据为0（buffer为空，没有消息），要么获取的数据是之前发送的一个大小为<code>N</code>的消息。</p>
+<p>对于<code>stream buffer</code>和<code>message buffer</code>的区别，假设我们使用<code>stream buffer</code>的API，发送了两次数据，一次是3字节，一次是4字节。<br>同样的数据量，使用<code>message buffer</code>，一次是发送了一个3字节的消息，一次是发送了一个4字节的消息<br>它们的区别如下图所示：<br><img src="/2023/02/22/FreeRTOS-message-buffer/diff_sb_mb.jpg"></p>
+<p>对于<code>stream buffer</code>来说，数据是无边界的，存在buffer里的就是字节流，对于上图存在<code>stream buffer</code>中的 7 个字节，<code>stream buffer</code>可以通过一次获取数据API 全部读出来。<br>而对于<code>message buffer</code>来说，其中存储的数据是有边界的，一个是3字节的消息，另一个是4字节的消息。一次调用获取数据API，我们只能获得第一个3字节数据，再次调用一次获取数据API，才能获得剩下的 4 字节数据（<code>message buffer</code>不能通过一个API一次性获取这7字节，因为它们是两个消息）。 </p>
 <br>
-FreeRTOS交流QQ群-663806972
+ps：需要注意文章代码中的日志输出函数，产品代码中如果需要使用的话，需要考虑线程安全性（多任务安全性），因为中断/任务切换可能发生在另一个任务正在输出日志但还未输出完的时候，这就可能造成日志错乱
+
+
+
+
+
 
     </div>
 
@@ -296,7 +285,7 @@ FreeRTOS交流QQ群-663806972
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2022/10/27/why-use-RTOS/" title="为什么使用嵌入式实时操作系统(RTOS)">http://fengxun2017.github.io/2022/10/27/why-use-RTOS/</a>
+      <a href="http://fengxun2017.github.io/2023/02/22/FreeRTOS-message-buffer/" title="FreeRTOS-stream buffer">http://fengxun2017.github.io/2023/02/22/FreeRTOS-message-buffer/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -309,13 +298,13 @@ FreeRTOS交流QQ群-663806972
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" rel="prev" title="基于crotex-m处理器新建FreeRTOS工程">
-                  <i class="fa fa-chevron-left"></i> 基于crotex-m处理器新建FreeRTOS工程
+                <a href="/2023/02/22/FreeRTOS-stream-buffer/" rel="prev" title="FreeRTOS-stream buffer">
+                  <i class="fa fa-chevron-left"></i> FreeRTOS-stream buffer
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2022/10/29/FreeRTOS-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1/" rel="next" title="FreeRTOS——创建任务">
-                  FreeRTOS——创建任务 <i class="fa fa-chevron-right"></i>
+                <a href="/2023/03/04/FreeRTOS-stream-buffer-details/" rel="next" title="FreeRTOS-stream buffer内部细节">
+                  FreeRTOS-stream buffer内部细节 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
