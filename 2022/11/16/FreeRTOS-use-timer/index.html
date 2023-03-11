@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="FreeRTOS提供了一个软件定时器模块，通过软件定时器，我们可以很方便的实现：让某个函数在一段时间后执行一次，或者让某个函数周期性的重复执行。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FreeRTOS-软件定时器的使用">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="FreeRTOS提供了一个软件定时器模块，通过软件定时器，我们可以很方便的实现：让某个函数在一段时间后执行一次，或者让某个函数周期性的重复执行。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/timer-task-schema.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/timer_reset.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/timer-trigger.png">
+<meta property="article:published_time" content="2022-11-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-02T14:00:58.766Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/timer-task-schema.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/","path":"2022/11/16/FreeRTOS-use-timer/","title":"FreeRTOS-软件定时器的使用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FreeRTOS-软件定时器的使用 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#FreeRTOS-%E8%BD%AF%E4%BB%B6%E5%AE%9A%E6%97%B6%E5%99%A8%E6%A6%82%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">FreeRTOS 软件定时器概要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FreeRTOS-%E8%BD%AF%E4%BB%B6%E5%AE%9A%E6%97%B6%E5%99%A8%E4%BD%BF%E7%94%A8%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">FreeRTOS 软件定时器使用介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%91%A8%E6%9C%9F%E5%AE%9A%E6%97%B6%E5%99%A8%E4%BD%BF%E7%94%A8%E6%A0%B7%E4%BE%8B%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">周期定时器使用样例：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%87%8D%E7%BD%AE%E5%AE%9A%E6%97%B6%E5%99%A8%E4%BD%BF%E7%94%A8%E6%A0%B7%E4%BE%8B%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">重置定时器使用样例：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E5%AE%9A%E6%97%B6%E5%99%A8%E8%B6%85%E6%97%B6%E5%91%A8%E6%9C%9F%E6%A0%B7%E4%BE%8B%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">更新定时器超时周期样例：</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FreeRTOS-软件定时器的使用 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FreeRTOS-软件定时器的使用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-11-16 00:00:00" itemprop="dateCreated datePublished" datetime="2022-11-16T00:00:00+08:00">2022-11-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FreeRTOS/" itemprop="url" rel="index"><span itemprop="name">FreeRTOS</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>12k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>15 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+FreeRTOS提供了一个软件定时器模块，通过软件定时器，我们可以很方便的实现：让某个函数在一段时间后执行一次，或者让某个函数周期性的重复执行。
+</center>
+<span id="more"></span>
+
+<hr>
+<p>FreeRTOS软件定时器的实现原理，可以参考：<a href="https://fengxun2017.github.io/2022/11/27/FreeRTOS-principle_of_timer/">FreeRTOS-软件定时器的实现原理</a></p>
+<h4 id="FreeRTOS-软件定时器概要"><a href="#FreeRTOS-软件定时器概要" class="headerlink" title="FreeRTOS 软件定时器概要"></a>FreeRTOS 软件定时器概要</h4><p>FreeRTOS的软件定时器不依赖于任何额外的硬件定时器，完全由内核通过软件来实现的。<br>使用FreeRTOS 的软件定时器（timer）,需要在工程中包含 <code>FreeRTOS/Source/timers.c</code>文件，并且在<code>FreeRTOSConfig.h</code>文件中定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> configUSE_TIMERS				1</span></span><br></pre></td></tr></table></figure>
+<p>FreeRTOS 为了实现软件定时器功能，在内核调度器启动时，会自动创建（当定义了configUSE_TIMERS &#x3D; 1 时） 定时器服务任务 <strong>TimerTask</strong>，该任务常驻于内核中，并实际负责处理所有与软件定时器相关的工作。</p>
+<p>当我们调用定时器相关的 API （例如，如启动定时器）时，实际是通过消息队列，发送了特定的消息（要起启动的定时器句柄+START命令打包成消息）给<strong>TimerTask</strong>任务，<strong>TimerTask</strong>任务根据发送过来的 定时器句柄（软件定时器可以创建多个，软件定时器模块内部通过句柄来识别特定定时器）和命令执行相应的动作。 </p>
+<p>如下图所示：在自定义任务app_task中，使用软件定时器 API <code>xTimerCreate</code>创建一个软件定时器，该函数会返回一个<strong>用来识别当前创建的这个定时器的句柄 timer_A</strong>，当我们调用 <code>xTimerStart</code> 启动定时器 <strong>timer_A</strong>时，函数内部实际是将<strong>START命令</strong> 和 <strong>定时器句柄timer_A</strong>封装成一个消息体，并放入软件定时器模块专用的<strong>消息队列</strong>中，而<strong>定时器服务 任务TimerTask</strong>则从该消息队列中提取消息，并根据消息中的命令执行相应的动作。<br><img src="/2022/11/16/FreeRTOS-use-timer/timer-task-schema.png"></p>
+<p>也就是说，与软件定时器相关的还有一个<strong>定时器服务任务</strong>，该任务实际执行软件定时器相关工作；一个软件定时器模块专用的<strong>消息队列</strong>，该消息队列用来存储定时器相关命令。因此，我们还需要如下相关的配置：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configTIMER_TASK_PRIORITY		( 2 )</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configTIMER_QUEUE_LENGTH		10</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> configTIMER_TASK_STACK_DEPTH	( configMINIMAL_STACK_SIZE * 2 )</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>configTIMER_TASK_PRIORITY：</strong></p>
+<ul>
+<li>用来配置定时器服务任务的优先级，一般将其设置的比 idle任务（内核自动创建的任务，可以参考<a href="https://fengxun2017.github.io/2022/11/14/FreeRTOS-kernal-hook/#2-1%EF%BC%9AIdle-Hook-Function">idle hook中相关的描述</a>） 的优先级大。 </li>
+<li>定时器启动后，当设置的时间到期后，会执行创建定时器时配置的<strong>回调函数</strong>，<strong>该回调函数是在 定时器服务任务TimerTask中被调用的</strong>。</li>
+<li>因此，如果你的系统中，存在一个比定时器服务任务 优先级更高的 任务A，并且任务A保持一直运行，不进入阻塞态，那么定时器服务任务 就得不到运行（任务A优先级更高，内核总是运行就绪的最高优先级的任务）。这种情况下，即使你启动的 某个定时器时间超时了，相应的超时回调函数也不会执行（定时器服务任务都得不到机会运行，所以无法执行回调函数）。</li>
+</ul>
+<p><strong>configTIMER_TASK_STACK_DEPTH：</strong></p>
+<ul>
+<li>内核在创建定时器服务任务时，不仅需要设置该任务的优先级，还需要设置 该任务的<strong>任务栈大小</strong>，如果你的 定时器的回调函数中都不会有较大的临时数组，那么默认配置的大小都是够的。否则，就需要根据实际情况来设置一个更大的值。具体可以参考<a href="configTIMER_TASK_STACK_DEPTH">FreeRTOS如何确定任务栈的大小</a>以及<a href="https://fengxun2017.github.io/2022/11/14/FreeRTOS-kernal-hook/#2-4-Stack-Overflow-Hook-Function">任务栈溢出检测</a></li>
+</ul>
+<p><strong>configTIMER_QUEUE_LENGTH：</strong></p>
+<ul>
+<li>定时器服务任务 使用的专用消息队列的大小，表示可以同时存在的消息个数。 </li>
+<li><strong>该消息队列中的消息都有由 定时器服务任务TimerTask 来消费</strong>。</li>
+<li>因此，如果系统中存在多个<strong>更高优先级的任务</strong>，并且都执行了 定时器相关API，那么命令发送到 消息队列中后是不会被立刻消费掉的（定时器服务任务优先级低，还未得到运行，则无法消费刚放进来的消息），因此就会缓存在消息队列中。 所以，这里配置的大小就是在上述场景出现时，消息队列可以缓存的最大消息个数（命令个数）。 </li>
+<li>所以该值需要根据你的系统情况来设置，如果存在多个更高优先级的任务，会频繁调用 定时器相关API，那么就需要考虑设置的更大。</li>
+</ul>
+<h4 id="FreeRTOS-软件定时器使用介绍"><a href="#FreeRTOS-软件定时器使用介绍" class="headerlink" title="FreeRTOS 软件定时器使用介绍"></a>FreeRTOS 软件定时器使用介绍</h4><p>使用软件定时器，需要先创建出一个软件定时器实例，并将该实例和一个要延后执行（或周期执行）的函数进行绑定。</p>
+<p>FreeRTOS 创建一个 软件定时器的 API如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">TimerHandle_t <span class="title function_">xTimerCreate</span><span class="params">( <span class="type">const</span> <span class="type">char</span> * <span class="type">const</span> pcTimerName, </span></span><br><span class="line"><span class="params">                            <span class="type">const</span> TickType_t xTimerPeriodInTicks,</span></span><br><span class="line"><span class="params">                            <span class="type">const</span> UBaseType_t uxAutoReload,</span></span><br><span class="line"><span class="params">                            <span class="type">void</span> * <span class="type">const</span> pvTimerID,</span></span><br><span class="line"><span class="params">                            TimerCallbackFunction_t pxCallbackFunction )</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>pcTimerName：创建的软件定时器名字，可以方便调试的时候识别 不同的定时器。定时器创建成功后，可以使用<code>const char * pcTimerGetName( TimerHandle_t xTimer )</code>从定时器句柄中提取创建时设置的名字。</p>
+</li>
+<li><p>xTimerPeriodInTicks：定时器启动后多久到期，需要使用 宏<strong>pdMS_TO_TICKS</strong>将时间转换成内核可以识别的tick个数，例如 1秒钟：pdMS_TO_TICKS(1000)</p>
+</li>
+<li><p>uxAutoReload：是否是周期定时器，传入<strong>pdTRUE</strong>则为周期定时器，定时器到期后会自动重新计时；传入pdFALSE，则只执行一次。例如，使用周期定时器实现周期为 1s 为翻转LED灯功能。</p>
+</li>
+<li><p>pvTimerID：该值是用户使用的，可以理解成 与这个创建的软件定时器关联的一个参数。创建的时候可以设置成任意的值，当你再想用这个值时，使用<code>void *pvTimerGetTimerID( TimerHandle_t xTimer )</code> API 就能提取出来。</p>
+</li>
+<li><p>pxCallbackFunction：定时器启动后，到达超时时间后执行的回调函数，该函数的原型必须为：<code>void ATimerCallback( TimerHandle_t xTimer )</code>。例如，当你创建的定时器A ，启动后到达了超时时间，定时器服务任务就会执行创建定时器时设置的这个回调函数，并将定时器A 作为参数传进去。</p>
+</li>
+<li><p><strong>返回值：</strong> 如果由于堆内存不足（使用该api时，是由内核负责在api内部，动态申请定时器控制结构所需的内存），创建失败了就会返回 <strong>NULL</strong>。否则，返回的就是用来识别该定时器的句柄（handle）。</p>
+</li>
+</ul>
+<p>定时创建成功后，并没有实际启动，需要主动调用 start 函数后，定时器才开始实际倒计时：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BaseType_t <span class="title function_">xTimerStart</span><span class="params">( TimerHandle_t xTimer, TickType_t xTicksToWait )</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>xTimer：即上文创建定时器API 返回的定时器句柄，用来唯一识别一个定时器。</p>
+</li>
+<li><p>xTicksToWait：命令发送到消息队列的最长等待时间。上文提到，定时器相关操作API是向<strong>定时器服务任务专用消息队列</strong>中发送操作命令，<code>xTimerStart</code>这个函数实际是个宏定义：</p>
+  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> xTimerStart( xTimer, xTicksToWait ) \</span></span><br><span class="line"><span class="meta">xTimerGenericCommand( ( xTimer ), tmrCOMMAND_START, ( xTaskGetTickCount() ), NULL, ( xTicksToWait ) )</span></span><br></pre></td></tr></table></figure>
+<p> <code>xTimerGenericCommand</code>函数内部实现，就是将命令和定时器xTimer打包成一个消息体，并发送给消息队列。但如果当前消息队列满了（上文提到的很多高优先级任务频繁调用定时器API的场景），那么这个发送消息操作就会让当前任务阻塞，以等待消息队列有空闲位置可以放下当前这个消息。这个等待消息队列有空闲位置的时间就是由<code>xTicksToWait</code>决定的。时间数值同样也应该通过宏<code>pdMS_TO_TICKS()</code>转换成内核可以识别的tick数值。</p>
+</li>
+<li><p><strong>返回值：</strong> 命令消息体成功发送到消息队列中则返回<strong>pdPASS</strong>。否则，就是等待了<code>xTicksToWait</code>设置的时间，但消息队列仍旧没有空闲位置可以放 命令消息体，此时就会超时返回<strong>pdFALSE</strong>。</p>
+</li>
+</ul>
+<h5 id="周期定时器使用样例："><a href="#周期定时器使用样例：" class="headerlink" title="周期定时器使用样例："></a>周期定时器使用样例：</h5><p>基于 <code>xTimerCreate</code>和<code>xTimerStart</code>，我们实现一个周期定时器的样例程序：创建两个定时器，实现让两个 LED 灯以不同的频率闪烁。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;SEGGER_RTT.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;FreeRTOS.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;timers.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;task.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LED_1   (13)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LED_2   (14)</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">    TimerHandle_t led1_flash_timer = <span class="literal">NULL</span>;</span><br><span class="line">    TimerHandle_t led2_flash_timer = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// led1 以500ms 周期闪烁</span></span><br><span class="line">    TickType_t led1_flash_period = pdMS_TO_TICKS(<span class="number">500</span>);</span><br><span class="line">    <span class="comment">// led2 以 1000ms 周期闪烁</span></span><br><span class="line">    TickType_t led2_flash_period = pdMS_TO_TICKS(<span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 硬件相关初始化，替换成自己的</span></span><br><span class="line">    bsp_init();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 用来反转led灯的 定时器1</span></span><br><span class="line">    led1_flash_timer = xTimerCreate(<span class="string">&quot;LED_1 Timer&quot;</span>,      <span class="comment">// 定时器名字</span></span><br><span class="line">                                    led1_flash_period,  <span class="comment">// 定时器超时时间为500ms</span></span><br><span class="line">                                    pdTRUE,             <span class="comment">// 为true，表示定时器超时后，会自动重新开始计时。</span></span><br><span class="line">                                    (<span class="type">void</span> *)LED_1,      <span class="comment">// pvTimerID，根据自己的需要使用，这里将其设置成关联的 led 引脚编号。 </span></span><br><span class="line">                                     led_flash);        <span class="comment">// 定时器到期后执行的回调函数 </span></span><br><span class="line">    </span><br><span class="line">    led2_flash_timer = xTimerCreate(<span class="string">&quot;LED_2 Timer&quot;</span>, led2_flash_period, pdTRUE, (<span class="type">void</span> *)LED_2, led_flash);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动定时器。当前定时器模块专用消息队列是空的，命令肯定能发送成功，超时参数设置为0即可</span></span><br><span class="line">    xTimerStart(led1_flash_timer, <span class="number">0</span>);</span><br><span class="line">    xTimerStart(led2_flash_timer, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动内核调度，内核启动调度后，定时器服务才能得到运行，定时器功能才能正常运转。</span></span><br><span class="line">    vTaskStartScheduler();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 正常启动后不会运行到这里</span></span><br><span class="line">    <span class="keyword">for</span>( ;; );</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述代码创建的两个定时器，使用了相同的回调函数<code>led_flash</code>，所以我们通过参数 <code>pvTimerID</code> 来识别需要操作的<strong>LED</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定时器超时后，内核就会调用该回调函数，并将超时的 定时器作为参数传入。</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">led_flash</span><span class="params">( TimerHandle_t timer )</span> &#123;</span><br><span class="line">    <span class="comment">// 通过GetName 获取超时的这个定时器，在创建时设置的名字，方便调试</span></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *name = pcTimerGetName(timer);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取创建定时器时，设置的pvTimerID，这里是用该值来识别需要操作的硬件引脚</span></span><br><span class="line">    <span class="type">uint32_t</span> led_id = (<span class="type">uint32_t</span>)pvTimerGetTimerID(timer);</span><br><span class="line"></span><br><span class="line">    SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;%s timeout\n&quot;</span>, name);</span><br><span class="line">    <span class="comment">// 翻转 led 灯</span></span><br><span class="line">    LED_TOGGLE(led_id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+
+<h5 id="重置定时器使用样例："><a href="#重置定时器使用样例：" class="headerlink" title="重置定时器使用样例："></a>重置定时器使用样例：</h5><p>FreeRTOS官网介绍了一个比较典型的，需要使用重置定时器的例子。<br>对于嵌入式设备来说，往往需要考虑功耗问题。例如一个带有 LCD的设备，一般都是在用户操作时，才亮起LCD背光灯，当用户一段时间不操作时就会自动熄灭背光等，从而节省功耗。例如，当用户持续5s都没有操作，就关闭LCD的背光灯。该功能可以通过定时器来实现，创建一个5s超时的定时器，每当用户操作时，则重置定时器让其重新开始计时，只有用户持续5s都没操作时，定时器才会超时，并触发关闭LCD背光灯的操作。</p>
+<p>如下图所示：定时器在第 1秒时启动，此时超时会在第 6秒发生，但第 4秒时，用户按下了设备按键（操作设备），则重置定时器，定时器开始重新计时。如果之后再没有其它操作，定时器的将在第 9秒后超时，并触发关闭LCD背光灯的操作<br><img src="/2022/11/16/FreeRTOS-use-timer/timer_reset.jpg"></p>
+<p>FreeRTOS提供的定时器重置API为:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BaseType_t <span class="title function_">xTimerReset</span><span class="params">( TimerHandle_t xTimer, TickType_t xTicksToWait )</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>xTimer：定时器句柄，用来指示要重置哪一个定时器。</li>
+<li>xTicksToWait：如上文所述，该API同样是将定时器句柄+reset命令 封装成一个消息体，并发送到定时器模块专用的消息队列上，如果消息队列中满了，那么就需要等待其有空闲位置，xTicksToWait即表示这种情况下愿意等待多久。</li>
+</ul>
+<p><strong>实际上，FreeRTOS中的<code>xTimerStart</code>和<code>xTimerReset</code> 在内部实现上只是发送的命令不一样（一个start，一个reset），但在接收命令的 定时器服务任务TimerTask中，对于这两个命令的处理是完全一样的。</strong><br><br></p>
+<p>我们实现一个5秒内没有按键按下，则关闭背光灯的功能，代码样例如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;SEGGER_RTT.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;FreeRTOS.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;timers.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;task.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;semphr.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 这个例子里使用了信号量来同步按键按下事件，避免按键任务去轮训按键是否按下，浪费cpu资源</span></span><br><span class="line">SemaphoreHandle_t semaphore = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 背光灯关闭定时器</span></span><br><span class="line">TimerHandle_t backlight_timer = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 5000ms 没有按键按下就关闭 背光灯</span></span><br><span class="line">    TickType_t backlight_off_time = pdMS_TO_TICKS(<span class="number">5000</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 硬件相关初始化</span></span><br><span class="line">    bsp_init();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//开机时应该点亮背光灯</span></span><br><span class="line">    BACKLIGHT_ON();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建关闭背光灯 定时器，该定时器为单次定时器，如果超时就是关闭背光灯，并不需要重新开始计时。</span></span><br><span class="line">    <span class="comment">// 所以uxAutoReload = pdFALSE。这里也不需要参数pvTimerID，所以设置为NULL</span></span><br><span class="line">    backlight_timer = xTimerCreate(<span class="string">&quot;bccklight off Timer&quot;</span>, backlight_off_time, pdFALSE, <span class="literal">NULL</span>, backlight_off);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 定义一个二值信号量，用来同步按键按下事件</span></span><br><span class="line">    semaphore = xSemaphoreCreateBinary();</span><br><span class="line">    <span class="keyword">if</span>(<span class="literal">NULL</span> != backlight_timer &amp;&amp; <span class="literal">NULL</span> != semaphore) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 创建一个按键任务，当有按键按下后，在这个任务中重置定时器。</span></span><br><span class="line">        <span class="keyword">if</span> (pdPASS == xTaskCreate(button_press_detect_task, <span class="string">&quot;button_press_detect_task&quot;</span>, <span class="number">100</span>, <span class="literal">NULL</span>, <span class="number">1</span>, <span class="literal">NULL</span>))&#123;</span><br><span class="line">            </span><br><span class="line">            SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;start FreeRTOS\n&quot;</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 启动定时器，如果开机后5s内没有按键按下，就会超时，并触发关闭背光灯的操作</span></span><br><span class="line">            xTimerStart(backlight_timer, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 启动内核调度</span></span><br><span class="line">            vTaskStartScheduler();</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 正常启动后不会运行到这里</span></span><br><span class="line">    SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;insufficient resource\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>( ;; );</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>上面的程序主体，创建了一个超时时间为5s的定时器，初始化完成后，就会启动该定时器，如果5s内没有按键操作就会超时，并执行回调函数<code>backlight_off</code>。回调函数中实现关闭背光灯的操作，如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">backlight_off</span><span class="params">( TimerHandle_t timer )</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *name = pcTimerGetName(timer);</span><br><span class="line">    SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;%s timeout\n&quot;</span>, name);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 持续5s 没操作，关闭背光灯</span></span><br><span class="line">    BACKLIGHT_OFF();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+
+<p>剩下的就是按键检测任务<code>button_press_detect_task</code>，检测按键最简单的实现就是不停的轮训按键的引脚，看是否电平有变化，但是这种方式效率太低，即使没有按键时任务也要占用cpu，浪费cpu资源。这里我们使用信号量来作为按键按下通知信号，按键检测任务等待一个信号量可用，而信号量在按键中断处理程序中才会被设置，这样按键检测任务在没有按键按下时就是处于阻塞状态，并不会占用任何cpu资源。</p>
+<p>其逻辑如下图所示：当按键按下时，触发硬件中断，硬件中断程序中检测到按键按下，则设置信号量。信号量一旦被设置，则等待该信号量的按键检测任务<code>button_press_detect_task</code>就会恢复为就绪状态，在任务被重新调度后（获得cpu），就会执行后续的处理过程。<br><img src="/2022/11/16/FreeRTOS-use-timer/timer-trigger.png"></p>
+<p>具体的代码实现如下，按键中断处理程序需要根据自己的硬件来实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">GPIOTE_IRQHandler</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">    BaseType_t higher_task_woken = pdFALSE;</span><br><span class="line">    <span class="keyword">if</span> ( NRF_GPIOTE-&gt;EVENTS_PORT == <span class="number">1</span> )&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//中断处理函数中要清除event,不然会导致一直产生中断</span></span><br><span class="line">        NRF_GPIOTE-&gt;EVENTS_PORT = <span class="number">0</span>;      </span><br><span class="line">        <span class="keyword">if</span>(IS_BUTTON_PRESSED(BUTTON_1)) &#123;</span><br><span class="line">            xSemaphoreGiveFromISR(semaphore, &amp;higher_task_woken);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    portYIELD_FROM_ISR(higher_task_woken);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码，当检测到按键按下后，设置信号量，由于是处于中断处理函数中，所以需要使用<code>xSemaphoreGiveFromISR</code> （中断环境中必须使用带FromISR后缀的API）。<br>此外，在中断处理程序最后使用了 <code>portYIELD_FROM_ISR</code>，这是因为我们在中断处理程序中使用<code>xSemaphoreGiveFromISR</code>设置信号量后，如果另一个优先级更高的任务（比当前运行的任务优先级高，在这里就是<code>button_press_detect_task</code>任务）在等待该信号量，那么由于信号量可用了，等待该信号量的高优先级任务（<code>button_press_detect_task</code>）就会变为就绪状态（信号量可用，使得另一个等待该信号量的更高优先级的任务变为就绪态，则<code>higher_task_woken</code>会被自动设置为<code>pdTRUE</code>）。我们使用的是抢占式调度的实时操作系统，当存在比当前任务优先级更高的任务就绪时，应该让其立刻被调度，而<code>portYIELD_FROM_ISR</code>的作用就是如果存在更高优先级任务就绪了，就会设置任务切换中断（PendSV中断），这样在中断服务程序<code>GPIOTE_IRQHandler</code>结束后，就会立刻触发任务切换，使得更高优先级的就绪任务（<code>button_press_detect_task</code>）被调度运行。</p>
+<p>按键检测任务实现如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">button_press_detect_task</span><span class="params">( <span class="type">void</span> *pvParameters )</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">        <span class="comment">// 等待信号量可用，这里使用portMAX_DELAY，表示一直阻塞任务，直到信号量可用。</span></span><br><span class="line">        <span class="comment">// 注意，使用portMAX_DELAY，需要在FreeRTOSConfig.h 文件中定义 INCLUDE_vTaskSuspend = 1</span></span><br><span class="line">        xSemaphoreTake(semaphore, portMAX_DELAY);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 再次确认按键按下，作为防抖处理</span></span><br><span class="line">        <span class="comment">// 这里需要根据实际情况决定是否在这里再次判断按键，如果你的系统中存在多个更高优先级的任务。</span></span><br><span class="line">        <span class="comment">// 那么按键按下后，可能更高优先级的任务会在button_press_detect_task任务之前运行，</span></span><br><span class="line">        <span class="comment">// 等轮到button_press_detect_task任务运行时，可能已经过了很久（按键已经释放了），那么这里就检测不到按键了。</span></span><br><span class="line">        <span class="keyword">if</span>(IS_BUTTON_PRESSED(BUTTON_1))&#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 检测到按键，打开背光灯</span></span><br><span class="line">            BACKLIGHT_ON();</span><br><span class="line">            <span class="comment">// 每次有按键，就重置定时器，这样只有连续5s 没有操作时，才会关闭背光灯。</span></span><br><span class="line">            xTimerReset(backlight_timer, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+
+<h5 id="更新定时器超时周期样例："><a href="#更新定时器超时周期样例：" class="headerlink" title="更新定时器超时周期样例："></a>更新定时器超时周期样例：</h5><p>实际应用中，存在一种场景，例如设备存在一个状态指示灯，当设备在正常运转时，该指示灯以一个较低的频率闪烁；当设备出现故障时，该指示灯以一个较高的频率闪烁。FreeRTOS提供了<code> xTimerChangePeriod</code> API，来应对这种应用场景。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BaseType_t <span class="title function_">xTimerChangePeriod</span><span class="params">( TimerHandle_t xTimer, </span></span><br><span class="line"><span class="params">                                TickType_t xNewTimerPeriodInTicks,</span></span><br><span class="line"><span class="params">                                TickType_t xTicksToWait )</span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>xTimer: 创建定时器时返回的句柄。</li>
+<li>xNewTimerPeriodInTicks：定时器新的超时周期</li>
+<li>xTicksToWait：该API 同样是发送命令到定时器模块专用消息队列中，所以也需要这个 命令发送到消息队列的最长等待时间 参数。</li>
+</ul>
+<br>
+
+<p>使用样例，这里就基于上面的按键例子进行修改。创建一个定时器用来反转LED的状态，并根据检测到的不同的按键按下事件，将定时器的超时周期修改成不同的值（即修改了LED的闪烁频率）</p>
+<p>main 函数整体不变，创建定时器<code>led1_flash_timer</code>，默认周期为1s。创建按键检测任务<code>button_press_detect_task</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">SemaphoreHandle_t semaphore = <span class="literal">NULL</span>;</span><br><span class="line">TimerHandle_t led1_flash_timer = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line"></span><br><span class="line">    TickType_t led1_flash_period = pdMS_TO_TICKS(<span class="number">1000</span>);</span><br><span class="line"></span><br><span class="line">    bsp_init();</span><br><span class="line">    BACKLIGHT_ON();</span><br><span class="line"></span><br><span class="line">    led1_flash_timer = xTimerCreate(<span class="string">&quot;LED_1 Timer&quot;</span>, led1_flash_period, pdTRUE, (<span class="type">void</span> *)LED_1, led_flash);</span><br><span class="line">    semaphore = xSemaphoreCreateBinary();</span><br><span class="line">    <span class="keyword">if</span>(<span class="literal">NULL</span> != led1_flash_timer &amp;&amp; <span class="literal">NULL</span> != semaphore) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (pdPASS == xTaskCreate(button_press_detect_task, <span class="string">&quot;button_press_detect_task&quot;</span>, <span class="number">100</span>, <span class="literal">NULL</span>, <span class="number">1</span>, <span class="literal">NULL</span>))&#123;</span><br><span class="line">            </span><br><span class="line">            SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;start FreeRTOS\n&quot;</span>);</span><br><span class="line">            xTimerStart(led1_flash_timer, <span class="number">0</span>);</span><br><span class="line">            vTaskStartScheduler();</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 正常启动后不会运行到这里</span></span><br><span class="line">    SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;insufficient resource\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>( ;; );</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+
+<p>定时器<code>led1_flash_timer</code> 的超时回调函数就是反转 LED灯状态：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">led_flash</span><span class="params">( TimerHandle_t timer )</span> &#123;</span><br><span class="line">    <span class="type">const</span> <span class="type">char</span> *name = pcTimerGetName(timer);</span><br><span class="line">    <span class="type">uint32_t</span> led_id = (<span class="type">uint32_t</span>)pvTimerGetTimerID(timer);</span><br><span class="line"></span><br><span class="line">    SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;%s timeout\n&quot;</span>, name);</span><br><span class="line">    nrf_gpio_pin_toggle(led_id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+
+<p>按键检测任务<code>button_press_detect_task</code>修改成检测两个按键，检测到BUTTON_1按下时，将定时器<code>led1_flash_timer</code>的周期更新为200ms，检测到BUTTON_2按下时，则将定时器<code>led1_flash_timer</code>的周期更新为2000ms。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">button_press_detect_task</span><span class="params">( <span class="type">void</span> *pvParameters )</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">        <span class="comment">// 等待信号量可用，这里使用portMAX_DELAY，表示一直阻塞任务，直到信号量可用。</span></span><br><span class="line">        <span class="comment">// 注意，使用portMAX_DELAY，需要在FreeRTOSConfig.h 文件中定义 INCLUDE_vTaskSuspend = 1</span></span><br><span class="line">        xSemaphoreTake(semaphore, portMAX_DELAY);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 再次确认按键按下，作为防抖处理</span></span><br><span class="line">        <span class="comment">// 这里需要根据实际情况决定是否在这里再次判断按键，如果你的系统中存在多个更高优先级的任务。</span></span><br><span class="line">        <span class="comment">// 那么按键按下后，可能更高优先级的任务会在button_press_detect_task任务之前运行，</span></span><br><span class="line">        <span class="comment">// 等轮到button_press_detect_task任务运行时，可能已经过了很久（按键已经释放了），那么这里就检测不到按键了。</span></span><br><span class="line">        <span class="keyword">if</span>(IS_BUTTON_PRESSED(BUTTON_1))&#123;</span><br><span class="line">            <span class="comment">// 检测到按键，重置定时器周期</span></span><br><span class="line">            SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;button1 pressed\n&quot;</span>);</span><br><span class="line">            xTimerChangePeriod(led1_flash_timer, pdMS_TO_TICKS(<span class="number">200</span>), <span class="number">0</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (IS_BUTTON_PRESSED(BUTTON_2)) &#123;</span><br><span class="line">            SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;button2 pressed\n&quot;</span>);</span><br><span class="line">            xTimerChangePeriod(led1_flash_timer, pdMS_TO_TICKS(<span class="number">2000</span>), <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<br>
+
+<p>最后的中断处理程序，也是修改成检测两个按键：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">GPIOTE_IRQHandler</span><span class="params">(<span class="type">void</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">    BaseType_t higher_task_woken = pdFALSE;</span><br><span class="line">    <span class="keyword">if</span> ( NRF_GPIOTE-&gt;EVENTS_PORT == <span class="number">1</span> )&#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//中断处理函数中要清除event,不然会导致一直产生中断</span></span><br><span class="line">        NRF_GPIOTE-&gt;EVENTS_PORT = <span class="number">0</span>;      </span><br><span class="line">        <span class="keyword">if</span>(IS_BUTTON_PRESSED(BUTTON_1) || IS_BUTTON_PRESSED(BUTTON_2)) &#123;</span><br><span class="line">            xSemaphoreGiveFromISR(semaphore, &amp;higher_task_woken);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    portYIELD_FROM_ISR(higher_task_woken);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+<br>
+ps：需要注意文章代码中的日志输出函数，产品代码中如果需要使用的话，需要考虑线程安全性（多任务安全性），因为中断/任务切换可能发生在另一个任务正在输出日志但还未输出完的时候，这就可能造成日志错乱
+
+<br>
+<br>
+FreeRTOS交流QQ群-663806972
+
+<br>
+<br>
+
+
+<p>参考连接：<a target="_blank" rel="noopener" href="https://www.freertos.org/RTOS-software-timer-service-daemon-task.html">FreeRTOS software timers</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/" title="FreeRTOS-软件定时器的使用">http://fengxun2017.github.io/2022/11/16/FreeRTOS-use-timer/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/14/FreeRTOS-kernal-hook/" rel="prev" title="FreeRTOS-内核中的钩子(Hook)函数">
+                  <i class="fa fa-chevron-left"></i> FreeRTOS-内核中的钩子(Hook)函数
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/11/27/FreeRTOS-principle_of_timer/" rel="next" title="FreeRTOS-软件定时器的实现原理">
+                  FreeRTOS-软件定时器的实现原理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">182k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:47</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

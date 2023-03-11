@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="J-Link RTT 可以更快速、便捷的输出调试信息，并支持调试信息导出到文件中。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用JLink-RTT输出调试信息">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="J-Link RTT 可以更快速、便捷的输出调试信息，并支持调试信息导出到文件中。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/picture1.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/picture2.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/picture3.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/picture5.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/picture6.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/picture7.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/picture8.jpg">
+<meta property="article:published_time" content="2022-10-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-05T07:21:17.362Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/picture1.jpg">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/","path":"2022/10/20/use-jlink-RTT/","title":"使用JLink-RTT输出调试信息"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>使用JLink-RTT输出调试信息 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8J-Link-RTT%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">为什么使用J-Link RTT？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E7%A7%BB%E6%A4%8D%E5%88%B0%E5%B7%A5%E7%A8%8B%E4%B8%AD%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">如何移植到工程中：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%98%BE%E7%A4%BA%E8%BE%93%E5%87%BA%E7%9A%84%E6%97%A5%E5%BF%97%E4%BF%A1%E6%81%AF%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">如何显示输出的日志信息：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RTT-Real-Time-Transfer-%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">RTT(Real Time Transfer)是如何工作的：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%A2%9D%E5%A4%96%E8%A1%A5%E5%85%85%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">额外补充：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA%E5%88%B0%E6%96%87%E4%BB%B6%E4%B8%AD%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">数据导出到文件中：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#channel-0-%E5%88%86%E4%B8%8D%E5%90%8C-terminal-%E6%98%BE%E7%A4%BA%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">channel 0 分不同 terminal 显示：</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="使用JLink-RTT输出调试信息 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用JLink-RTT输出调试信息
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-10-20 00:00:00" itemprop="dateCreated datePublished" datetime="2022-10-20T00:00:00+08:00">2022-10-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%B7%A5%E5%85%B7/" itemprop="url" rel="index"><span itemprop="name">工具</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+J-Link RTT 可以更快速、便捷的输出调试信息，并支持调试信息导出到文件中。
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h4 id="为什么使用J-Link-RTT？"><a href="#为什么使用J-Link-RTT？" class="headerlink" title="为什么使用J-Link RTT？"></a>为什么使用J-Link RTT？</h4><p>开发调试过程中通常需要输出程序运行日志信息，以供排查问题。一般我们使用芯片自带的UART，将调试进行信息输出到PC串口工具进行排查。但如果芯片UART被占用了，则无法再用来作为调试信息输出工具。<br>J-Link RTT 同样具有输出信息的功能，并且速度更快，同时J-Link RTT也支持 MCU-&gt;PC以及PC-&gt;MCU双向发送数据。</p>
+<h4 id="如何移植到工程中："><a href="#如何移植到工程中：" class="headerlink" title="如何移植到工程中："></a>如何移植到工程中：</h4><p>首先确定自己现有的工程能编译，烧录到开发板后可以正常运行。在系统的J-Link驱动安装目录xxx\SEGGER\JLink\Samples\RTT\SEGGER_RTT_V782 中，有对应版本的RTT样例代码。<br>移植到自己的工程中也很简单，在自己的工程中新建一个目录，将SEGGER\JLink\Samples\RTT\SEGGER_RTT_V782\RTT 目录中的几个文件，以及SEGGER\JLink\Samples\RTT\SEGGER_RTT_V782\Config 中的配置文件拷贝到自己的目录中。</p>
+<ul>
+<li>SEGGER_RTT.c</li>
+<li>SEGGER_RTT.h</li>
+<li>SEGGER_RTT_Conf.h</li>
+<li>SEGGER_RTT_printf.c</li>
+</ul>
+<p>使用也很简单：引入头文件后，就可以使用输出函数了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;SEGGER_RTT.h&quot;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    SEGGER_RTT_Init();</span><br><span class="line">    <span class="keyword">for</span>(;;) &#123;</span><br><span class="line">        SEGGER_RTT_WriteString(<span class="number">0</span>, <span class="string">&quot;Hello World from SEGGER!\n&quot;</span>);</span><br><span class="line">        SEGGER_RTT_printf(<span class="number">0</span>, <span class="string">&quot;Test formatted output, %s:%d\n&quot;</span>,<span class="string">&quot;test_key&quot;</span>, <span class="number">3</span>);</span><br><span class="line">        your_delay_ms(<span class="number">500</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果需要格式化输出字符串，可以使用 <code>SEGGER_RTT_printf(0, xxxx)</code>，除了需要在前面加一个通道 id&#x3D;0，其它写法和标准库的printf一致。编译工程，烧录到开发板上。</p>
+<h4 id="如何显示输出的日志信息："><a href="#如何显示输出的日志信息：" class="headerlink" title="如何显示输出的日志信息："></a>如何显示输出的日志信息：</h4><p>使用Jlink连接开发板和电脑<br>电脑安装J-Link驱动后，系统中会存在一个<code>J-Link RTT Viewer</code>工具，打开工具，有如下配置选项。选择自己的板载目标芯片，其它配置默认即可。<br><img src="/2022/10/20/use-jlink-RTT/picture1.jpg"></p>
+<br>
+确认后，即可在工具界面中看到输出信息：
+
+<p><img src="/2022/10/20/use-jlink-RTT/picture2.jpg"></p>
+<p><strong>备注：</strong></p>
+<ul>
+<li><ol>
+<li>如果没有日志输出，可能是连接丢失了，可以在RTT Viewer工具左上角的File中点击Connect再次弹出配置界面，点击确认后即可连接上。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>可以在keil工程配置中设置烧录后自动复位重启，避免手动复位后丢失jlink连接。<br>  <img src="/2022/10/20/use-jlink-RTT/picture3.jpg"></li>
+</ol>
+</li>
+</ul>
+<br> 
+
+<h4 id="RTT-Real-Time-Transfer-是如何工作的："><a href="#RTT-Real-Time-Transfer-是如何工作的：" class="headerlink" title="RTT(Real Time Transfer)是如何工作的："></a>RTT(Real Time Transfer)是如何工作的：</h4><p>J-link直接访问MCU的内存，将其中的数据转发到PC端工具(如RTT Viewer)进行显示。<br><img src="/2022/10/20/use-jlink-RTT/picture5.jpg"><br>整体逻辑可以分为如下几步：</p>
+<ul>
+<li>1：MCU中的代码使用SEGGER_RTT_printf 将日志信息写入一个特定的ram区域。</li>
+<li>2：J-Link直接访问这段特定内存，读出其中数据</li>
+<li>3：J-Link将读到的数据发往PC工具。</li>
+</ul>
+<p>J-Link如何知道MCU将日志写到内存哪里去了？<br>在RTT文件SEGGER_RTT.c中定义了一个全局结构体变量：<code>SEGGER_RTT_CB _SEGGER_RTT</code>，这个结构体变量即 RTT控制块，它维护了 RTT相关的控制信息。</p>
+<p>如MCU-&gt;PC 方向发送数据时应该写入的buffer地址。以及PC-&gt;MCU方向发送数据时，数据缓存在MCU上的buffer地址。<br>其逻辑如下图所示：<br><img src="/2022/10/20/use-jlink-RTT/picture6.jpg"></p>
+<ul>
+<li>Up Buffer即MCU-&gt;PC方向的buffer，MCU将日志信息写入这里，J-Link会从这里读取。</li>
+<li>Down Buffer即PC-&gt;MCU方向的buffer，PC发的数据会写入这里，MCU可以通过RTT提供的SEGGER_RTT_Read 函数从其中读出数据。</li>
+</ul>
+<p>Up Buffer和Down Buffer在RTT的中都是实现为循环数组，所以需要维护各自的读写指针。</p>
+<p>在<code>SEGGER_RTT_CB _SEGGER_RTT</code> 结构体中：</p>
+<ul>
+<li><p>成员ID是一个16字节的数组(即上图中的ID)，这个数组的内容会被初始化成“SEGGER RTT”字符串。</p>
+</li>
+<li><p>成员aUp就是 MCU-&gt;PC方向的buffer信息，其本身是一个数组，初始化时会默认配置其第0个buffer,即通道0。(所以使用SEGGER_RTT_printf 时，第一个参数要指定0)，buffer的大小在SEGGER_RTT_Conf.h中配置(BUFFER_SIZE_UP)</p>
+</li>
+<li><p>成员aDown就是 PC-&gt;方向的buffer信息，其本身是一个数组，初始化时会默认配置其第0个buffer,即通道0。buffer的大小在SEGGER_RTT_Conf.h中配置(BUFFER_SIZE_DOWN)</p>
+</li>
+</ul>
+<p>使用J-Link和MCU连接后，就是通过在内存范围内寻找“SEGGER RTT”这个字符串，从而确定 RTT 控制块的地址。并通过其中的 aUp成员确定MCU写的日志所存放的buffer地址，并从中提取出数据，在PC端的RTT Viewer进行显示。</p>
+<h4 id="额外补充："><a href="#额外补充：" class="headerlink" title="额外补充："></a>额外补充：</h4><p>J-Link RTT Viewer支持 <code>Channel 0</code>和<code>Channel 1</code>。<br><code>Chaneel 0</code>在初始化时已经默认配置了。<br><code>Channel 1</code>如果需要使用需要自己配置其<code>Up</code>和<code>Down</code>的buffer，例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SEGGER_RTT_ConfigUpBuffer(<span class="number">1</span>, <span class="string">&quot;channel 1&quot;</span>, up_buffer, <span class="number">512</span>, SEGGER_RTT_MODE_DEFAULT);</span><br><span class="line">SEGGER_RTT_ConfigDownBuffer(<span class="number">1</span>, <span class="string">&quot;channel 1&quot;</span>, down_buffer, <span class="number">16</span>, SEGGER_RTT_MODE_DEFAULT);</span><br></pre></td></tr></table></figure>
+<p>使用SEGGER_RTT_printf时指定 <code>channel 1</code>即可。</p>
+<h5 id="数据导出到文件中："><a href="#数据导出到文件中：" class="headerlink" title="数据导出到文件中："></a>数据导出到文件中：</h5><p><code>channel 1</code>的数据无法在<code>rtt viewer</code>中展示，但是可以将<code>channel 1</code>的日志保存在文件中。如下图，点击 <code>start data logging</code>后会弹出保存文件命名，设置后<code>channel 1</code>输出的数据都会保存在该文件中。<br>（ <strong>channel 0 的数据也可以保存到文件中，下图中的 start terminal logging就是保存channel 0的输出的数据</strong>）</p>
+<p><img src="/2022/10/20/use-jlink-RTT/picture7.jpg"></p>
+<br>
+
+<h5 id="channel-0-分不同-terminal-显示："><a href="#channel-0-分不同-terminal-显示：" class="headerlink" title="channel 0 分不同 terminal 显示："></a>channel 0 分不同 terminal 显示：</h5><p>此外，<code>Channel 0</code>还支持分开显示，<code>channel 0</code>有16个terminal，通过使用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SEGGER_RTT_SetTerminal(<span class="number">0</span>);<span class="comment">// 让通道0的输出显示在rtt viewer 的terminal 0中</span></span><br><span class="line">SEGGER_RTT_WriteString(<span class="number">0</span>, <span class="string">&quot;Hello World from SEGGER terminal 0\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">SEGGER_RTT_SetTerminal(<span class="number">1</span>);<span class="comment">// 让通道0的输出显示在rtt viewer 的terminal 1中</span></span><br><span class="line">SEGGER_RTT_WriteString(<span class="number">0</span>, <span class="string">&quot;Hello World from SEGGER terminal 1\r\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">SEGGER_RTT_SetTerminal(<span class="number">2</span>);<span class="comment">// 让通道0的输出显示在rtt viewer 的terminal 2中</span></span><br><span class="line">SEGGER_RTT_WriteString(<span class="number">0</span>, <span class="string">&quot;Hello World from SEGGER terminal 2\r\n&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p>可以让<code>channel 0</code>的输出信息在不同的 <code>terminal</code> 中显示。如下图所示，<code>All Terminals</code>会显示<code>chaneel 0</code>的所有<code>terminal</code>的数据，各个<code>terminal</code>会显示自己的：<br><img src="/2022/10/20/use-jlink-RTT/picture8.jpg"></p>
+<br>
+
+<p><strong>注意</strong> ! <code>channel 0</code>的16个<code>terminal</code>，只是逻辑上的区分，其物理存储都是用的<code>channel 0</code>的那个 <code>Up buffer</code>，只是 <code>rtt viewer</code>在逻辑上将它们进行了显示区分。从RTT的源码上可以看到：<br>例如，<code>SEGGER_RTT_SetTerminal(1)</code>; 其作用是设置在<code>terminal 1</code>进行显示，其内部就是将 <code>&#123;0xff, ‘1’&#125;</code> 这两个字节写到<code>Up buffer</code>中， J-Link检查到这两个字节后，就会让后续的日志信息显示在<code>terminal 1</code>上。</p>
+<br>
+<br>
+<br>
+<br>
+
+<p>参考连接：<a target="_blank" rel="noopener" href="https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer">https://www.segger.com/products/debug-probes/j-link/technology/about-real-time-transfer</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/" title="使用JLink-RTT输出调试信息">http://fengxun2017.github.io/2022/10/20/use-jlink-RTT/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/10/25/%E5%9F%BA%E4%BA%8Ecrotex-m%E5%A4%84%E7%90%86%E5%99%A8%E6%96%B0%E5%BB%BAFreeRTOS%E5%B7%A5%E7%A8%8B/" rel="next" title="基于crotex-m处理器新建FreeRTOS工程">
+                  基于crotex-m处理器新建FreeRTOS工程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">182k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:47</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

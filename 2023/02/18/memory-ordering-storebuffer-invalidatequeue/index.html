@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Memory Barriers 和 store buffers、invalidate queues">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Memory Barriers 和 store buffers、invalidate queues">
+<meta property="og:url" content="http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="Memory Barriers 和 store buffers、invalidate queues">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/req-from.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/write-process.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/store-buffer.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/invalidate-queue.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/read-invalid-data.jpg">
+<meta property="article:published_time" content="2023-02-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-23T16:06:42.647Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/req-from.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/","path":"2023/02/18/memory-ordering-storebuffer-invalidatequeue/","title":"Memory Barriers 和 store buffers、invalidate queues"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Memory Barriers 和 store buffers、invalidate queues | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Store-Buffers"><span class="nav-number">1.</span> <span class="nav-text">1 Store Buffers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Memory-Barriers-%E4%B9%8B-store-barrier"><span class="nav-number">2.</span> <span class="nav-text">2 Memory Barriers 之 store barrier</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Invalidate-Queues"><span class="nav-number">3.</span> <span class="nav-text">3 Invalidate Queues</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Memory-Barriers-%E4%B9%8B-read-barrier"><span class="nav-number">4.</span> <span class="nav-text">4 Memory Barriers 之 read barrier</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">参考连接：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Memory Barriers 和 store buffers、invalidate queues | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Memory Barriers 和 store buffers、invalidate queues
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-02-18 00:00:00" itemprop="dateCreated datePublished" datetime="2023-02-18T00:00:00+08:00">2023-02-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/memory-ordering%E7%9B%B8%E5%85%B3/" itemprop="url" rel="index"><span itemprop="name">memory ordering相关</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+Memory Barriers 和 store buffers、invalidate queues
+</center>
+<span id="more"></span>
+
+<hr>
+<p><a href="https://fengxun2017.github.io/2023/02/16/memory-ordering-MESI/">MESI一致性协议</a>一文中，介绍了cpu cache中的<a href="https://fengxun2017.github.io/2022/12/18/memory-ordering-cpu-cache/#2-Cache-line">cache line</a>（<code>cpu cache中所存储数据的基本单位，现代CPU中一般为主存中的64字节组成一行放在cpu cache中</code>）的各种状态，以及状态间转换规则。</p>
+<p>对于应用 MESI一致性协议的cpu cache来说，它要感知两个方向的请求（操作）。一个是cpu侧，即本cpu核心发送过来的请求；另一个是总线侧，即其它cpu 发送过来的请求（操作）。如下图所示：<br><img src="/2023/02/18/memory-ordering-storebuffer-invalidatequeue/req-from.png"></p>
+<h4 id="1-Store-Buffers"><a href="#1-Store-Buffers" class="headerlink" title="1 Store Buffers"></a>1 Store Buffers</h4><p>先看一个具体的例子，假设当前 CPU 中存在两个核心<code>P1</code>和<code>P2</code><br><code>P1</code>需要写目标数据，但该数据所在<code>cache line</code>在 <code>P1</code>的 <code>cpu cache</code>中为<code>invalid</code>状态。因此，<code>P1 cache</code>需要先获得数据所在的整行<code>cache line</code>数据，再修改其中的目标数据并放入自己<code>cache</code>中。<br>为了获得目标数据所在<code>cache line</code>，<code>P1 cache</code>需要向总线发送<code>BusRdx</code>，等待从<code>P2</code>的<code>cpu cache</code>中获得相应的<code>cache line</code>（如果<code>P2 cache</code>中有的话）或主存（内存）中获得相应的<code>cache line</code>。</p>
+<p>上述写操作的流程可以看做如下几个步骤：</p>
+<ul>
+<li><code>P1核心</code>的写操作使得<code>P1 cache</code>向总线发送<code>BusRdx</code>。(<code>P2</code>看到后会将自己cache中的对应<code>cache line</code>设置为invalid，并将该<code>cache line</code>发送到总线上)</li>
+<li>等待<code>P2 cache</code>（或主存）将目标数据所在cache line发送到总线上</li>
+<li><code>P1 cache</code>从总线上获得响应，修改数据并放入自己的cache中</li>
+</ul>
+<p>如下图所示：<br><img src="/2023/02/18/memory-ordering-storebuffer-invalidatequeue/write-process.jpg"><br>其中，第二步等待数据响应比较耗时。</p>
+<p>如果一个操作序列是：写、写、读、读、读。 对于后续的三个读来说，必须等前面两个写完成，而写操作本身可能涉及等待响应数据（等待数据时，没事做），因此效率低。</p>
+<p>改进的方案是，将写操作异步化，在<code>cpu核心</code>和<code>cpu cache</code>中间增加一个<code>store buffer</code>，用来缓存需要写的数据，如下图：<br><img src="/2023/02/18/memory-ordering-storebuffer-invalidatequeue/store-buffer.png"></p>
+<p>增加了 <code>store buffer</code> 后，对于操作序列：写、写、读、读、读<br>前面写操作，<code>cpu核心</code>会将需要写入的数据会先放入<code>store buffer</code>，同时<code>cpu cache</code>通过总线请求从其它核心的<code>cache</code>中（或主存）获得目标数据所在<code>cache line</code>。此时，就可以执行后续的读操作了（尽管前面的写操作还未实际完成）。<br>之后一段时间，当之前写操作请求的<code>cache line</code>从总线上返回后，<code>store buffer</code>再执行其中缓存的写操作。<br>因此，通过引入<code>store buffer</code>后，提高了系统的运行效率。</p>
+<p>引入 <code>store buffer</code>后，虽然提高了系统的运行效率。但是<code>cpu核心</code>提交的写操作可能没有及时写入<code>cpu cache</code>中（仍在<code>store buffer</code>中）。考虑下面这两行代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a = <span class="number">1</span>;</span><br><span class="line">b = a + <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p>假设：运行这段代码的cpu核心的cache中并没有缓存<code>a</code>。<br>那么访问<code>a</code>就命中不了自己cache中的数据，因此<code>a = 1</code>会放到<code>store buffer</code>中延后执行。<br>之后，执行<code>b = a + 1</code>时，此时需要读（加载）<code>a</code>的值，如果仅从cache中读，就获得不到cache中的值（已经假设不在本<code>cpu cache</code>中）。因此，使用了<code>store buffer</code>后，当<code>cpu核心</code>需要读取（加载）数据时，不仅需要查看自己的<code>cpu cache</code>，还要查看自己的<code>store buffer</code>，看是否有更新的数据在<code>store buffer</code>中，还未写入cache。</p>
+<h4 id="2-Memory-Barriers-之-store-barrier"><a href="#2-Memory-Barriers-之-store-barrier" class="headerlink" title="2 Memory Barriers 之 store barrier"></a>2 Memory Barriers 之 store barrier</h4><p><code>store barrier</code>的存在和 <code>store buffer</code>有关。在使用了<code>store buffer</code>后，由于写入的数据可能没有及时刷新到cache 上，造成多核心处理器中多线程间的数据依赖出现问题：</p>
+<p>考虑下面一段代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//该函数在核心 P1 上运行</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    a = <span class="number">1</span>;</span><br><span class="line">    b = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 该函数在核心 P2 上运行</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">bar</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (b == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">    <span class="comment">// 逻辑上 b=1了，a应该也等于1</span></span><br><span class="line">    <span class="comment">// 但由于store buffer的存在会导致P2 此时看到的 a 不一定等于 1.</span></span><br><span class="line">    assert(a == <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设条件：<br>a，b 初始值都为 0。<br>函数foo 在核心 <code>P1</code> 上运行，并且<code>P1 cache</code>中没有缓存<code>a</code>，但缓存了<code>b</code>。<br>函数bar在核心 <code>P2</code> 上运行，并且<code>P2 cache</code>中没有缓存<code>b</code>，但缓存了<code>a</code>。</p>
+<p>一种可能导致运行断言错误的执行序列：<br>1：P1 执行 a &#x3D; 1，由于a 不在自己的cache 中，a&#x3D;1放到store buffer中，并向总线发送BusRdx。（P1会在之后某个时间收到该指令时，会将自己的cache中对应的cache line设置为invalid，并且将该cache line发送到总线中，P1就能通过总线获得）<br>2：P1 执行 b &#x3D; 1，由于b 在自己的cacha 中，直接修改。<br>3：P2 执行 b&#x3D;&#x3D;0 判断，由于b 不在自己的cache中，P2向总线发送 BusRd，P1看到后将自己cache中的发送到总线，P2从总线获得该数据。此时获得的是b &#x3D; 1，判断不成立跳出循环。<br>4：P2：执行assert(a &#x3D;&#x3D; 1)，<strong>此时如果P2 还没看到 P1之前向总线发送的 BusRdx，那么P2就会使用自己cache中的a &#x3D; 0。 那么断言就出错了</strong>。<br>（或者P2看到了，自己cache中的<code>a</code>变为无效了，于是又请求P1 cache发过来，但p1 cache中此时还是旧的，store buffer还未写入？）</p>
+<p>这就需要在软件层面上，处理由于<code>store buffer</code>的缓存效果，导致数据生效顺序不满足“期望”的问题。<br>对于<code>a = 1; b = 1;</code>我们期望的目标是，b&#x3D;1生效了，那么a&#x3D;1也应该生效（能被其它cpu看到）。这就要用到<code>store barrier</code><br><code>store barrier</code> 是一条指令（写屏障指令， 不同系统提供的指令名不一样，这里就用store barrier代替），该指令的作用是<strong>将当前<code>store buffer</code>中的数据刷新到cache之后，再执行<code>store barrier</code>指令之后的写操作</strong>。<br>将 foo 函数中添加写屏障指令</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//该函数在核心 P1 上运行</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    a = <span class="number">1</span>;</span><br><span class="line">    store_barrier;   <span class="comment">// 确保在 写 b 之前，a 的写操作已生效到cache中</span></span><br><span class="line">    b = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如此，就能确保 P1中对a 的修改，能及时被P2 看到（使P2能看到b&#x3D;1，就一定能看到a &#x3D; 1）。</p>
+<h4 id="3-Invalidate-Queues"><a href="#3-Invalidate-Queues" class="headerlink" title="3 Invalidate Queues"></a>3 Invalidate Queues</h4><p><code>store buffer</code>是在<code>cpu 核心</code>和<code>cpu cache</code>之间的一个更小的缓存。<br>而<code>invalidate queue</code>则是在<code>cpu cache</code>和总线之间的一个更小的缓存。如下图所示：<br><img src="/2023/02/18/memory-ordering-storebuffer-invalidatequeue/invalidate-queue.png"></p>
+<p><code>invalidate queue</code>的目的是为了临时缓存”使无效请求”。考虑下面的一个例子：</p>
+<p>两个核心<code>P1</code>，<code>P2</code>的cache中都存在某个变量<code>var</code>的缓存（状态都是Shared）。当<code>P1</code>修改<code>var</code>时，需要通知<code>P2</code>让其将自己cache中的<code>var</code>所在的cache line设置为invalid 状态。其过程如下：</p>
+<ul>
+<li><code>P1</code>修改<code>var</code>时，会向总线发送<code>BusUpgr </code>。</li>
+<li><code>P2</code>在总线上看到<code>BusUpgr</code>后，需要将自己cache 中的目标cache line设置为invalid状态（因为P1要修改了），并回复 ack。</li>
+<li><code>P1</code>看到ack 后，就可以修改自己cache中的数据了。</li>
+</ul>
+<p>这里<code>P2</code>在总线上看到的<code>BusUpgr</code>，就相当于一个“使无效请求”，因为看到看信息，就需要将自己cache 中的目标cache line 设置为invalid 状态。</p>
+<p>但上述过程的第二步，<code>P2</code>将自己cache 中的目标cache line设置为invalid状态，再回复 ack。<br>当<code>P2</code>的cache 比较繁忙时，设置目标cache line设置为invalid状态，这个操作可能不能立刻执行，会被延后，那么就不能及时回复ack ，导致<code>P1</code>需要原地等 ack。</p>
+<p><code>invalidate queue</code>就是针对上述情况，当<code>P2</code>从总线上收到“使无效请求”时，会先缓存在<code>invalidate queue</code>中，并立刻回复 ack，这样<code>P1</code>就能很快收到ack，并执行后续动作了。 而<code>invalidate queue</code>中缓存的“使无效请求”会在cache 不忙时执行。如此，提高了系统的运行效率。</p>
+<p>如同在引入 <code>store buffer</code>后，本核心读数据时，需要先查自己的<code>store buffer</code>。<br>引入<code>invalidate queue</code>后，本cpu cache在修改自己cache line的状态时，也需要查看下自己的<code>invalidate queue</code>。因为，可能要修改的cache line都已经无效了，只是还在<code>invalidate queue</code>中还未同步到cache 上。</p>
+<h4 id="4-Memory-Barriers-之-read-barrier"><a href="#4-Memory-Barriers-之-read-barrier" class="headerlink" title="4 Memory Barriers 之 read barrier"></a>4 Memory Barriers 之 read barrier</h4><p><code>read barrier</code>和<code>invalidate queue</code>相关<br>当“使无效请求”  被缓存在<code>invalidate queue</code>中，可能使得cache 中本该被设置为invalid的cache line，被本核心误认为是有效的。如下图所示：<br><img src="/2023/02/18/memory-ordering-storebuffer-invalidatequeue/read-invalid-data.jpg"></p>
+<p>仍旧考虑之前的样例代码：（已经针对store buffer添加了 store barrier）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//该函数在核心 P1 上运行</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">foo</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    a = <span class="number">1</span>;</span><br><span class="line">    store_barrier;   <span class="comment">// 确保在 写 b 之前，a 的写操作已生效到cache中</span></span><br><span class="line">    b = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 该函数在核心 P2 上运行</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">bar</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (b == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">    assert(a == <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>假设条件：<br>a，b 初始值都为 0。<br>P1、P1的cache 中都有缓存 <code>a</code>，因此状态都为Shared。<br>但 <code>b</code> 仅在 P1 的 cpu cache 中。</p>
+<p>一种可能导致运行断言错误的执行序列：<br>1：P1 执行 a &#x3D; 1，由于a 在自己的cache中，这种情况虽然不用从P2 的cache（或主存）获取数据，但还是需要向总线发送<code>BusUpgr</code>，告知P2，自己修改数据了。（对P2 来说，看到的<code>BusUpgr</code>就是“使无效请求”）<br>2：P2 从总线上看到<code>BusUpgr</code>，但放入invalidate queue 中了，并回复ack。（此时P2 cache中的a 仍旧是旧值0）<br>3：P1 执行 b &#x3D; 1，由于b 在自己的cacha 中，直接修改。<br>4：P2 执行 b&#x3D;&#x3D;0 判断，由于b 不在自己的cache中，P2向总线发送 BusRd，P1看到后将自己cache中的相应cache line发送到总线，P2从总线获得该数据。此时获得的是b &#x3D; 1，判断不成立跳出循环。<br>5：P2：执行assert(a &#x3D;&#x3D; 1)，<strong>此时如果P2 的invalidate queue还未执行其中缓存的“使无效请求”，那么P2就会以为自己cache中的a 还是有效的，于是获取到 a &#x3D; 0。 那么断言就出错了</strong>。</p>
+<p>因此，同样需要在软件层面上添加额外处理，避免由于<code>invalidate queue</code>的缓存效果，cpu 核心获得到自己cache 中本该已经无效的数据。</p>
+<p>对于<code>assert(a == 1)；</code>，我们期望在判断前，本核心的<code>invalidate queue</code>中缓存的“使无效请求”都能被执行，使得本核心能够确保感知到其它核心执行的写操作（正是由于其它核心的写操作，才会使得本核心cache 中响应数据需要变为无效）。这就要用到<code>read barrier</code><br><code>read barrier</code> 同样也是一条指令（读屏障指令， 不同系统提供的指令名不一样，这里就用read barrier代替），该指令的作用是<strong>将当前<code>invalidate queue</code>中“使无效请求”全部执行完，再执行<code>read barrier</code>指令之后的读操作</strong>。</p>
+<p>将 bar 函数中添加读屏障指令：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 该函数在核心 P2 上运行</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">bar</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span> (b == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">    <span class="comment">// 执行invalidate queue中的使无效请求</span></span><br><span class="line">    <span class="comment">// 使得 P2 能看到 P1 的写操作，从而使得自己cache中的a 变为无效</span></span><br><span class="line">    read_barrier; </span><br><span class="line">    <span class="comment">// 如此，这里读的a就不能命中缓存了，只能向总线发送BusRd，</span></span><br><span class="line">    <span class="comment">// 之后P1 将其更新后的a 发送到总线上，P2 就能获得最新的 a = 1了 </span></span><br><span class="line">    assert(a == <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+<br>
+
+<h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cache_coherence">https://en.wikipedia.org/wiki/Cache_coherence</a><br>【2】<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/MESI_protocol">https://en.wikipedia.org/wiki/MESI_protocol</a><br>【3】<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Directory-based_cache_coherence">https://en.wikipedia.org/wiki/Directory-based_cache_coherence</a><br>【4】<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Bus_snooping">https://en.wikipedia.org/wiki/Bus_snooping</a><br>【5】<a target="_blank" rel="noopener" href="https://xiaolincoding.com/os/1_hardware/cpu_mesi.html">https://xiaolincoding.com/os/1_hardware&#x2F;cpu_mesi.html</a><br>【6】Memory Barriers: a Hardware View for Software Hackers</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/" title="Memory Barriers 和 store buffers、invalidate queues">http://fengxun2017.github.io/2023/02/18/memory-ordering-storebuffer-invalidatequeue/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/16/memory-ordering-MESI/" rel="prev" title="缓存一致性协议MESI">
+                  <i class="fa fa-chevron-left"></i> 缓存一致性协议MESI
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/02/22/FreeRTOS-stream-buffer/" rel="next" title="FreeRTOS-stream buffer">
+                  FreeRTOS-stream buffer <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">182k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:47</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

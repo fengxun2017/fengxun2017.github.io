@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文介绍几个 stream buffer 内部的实现细节。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FreeRTOS-stream buffer内部细节">
+<meta property="og:url" content="http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="本文介绍几个 stream buffer 内部的实现细节。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/circular-array.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/circular-array.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/circular-array2.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/circular-array.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/resource-internal-queue-a.png">
+<meta property="article:published_time" content="2023-03-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-03-10T12:17:35.700Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/circular-array.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/","path":"2023/03/04/FreeRTOS-stream-buffer-details/","title":"FreeRTOS-stream buffer内部细节"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FreeRTOS-stream buffer内部细节 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%9F%BA%E4%BA%8E%E5%BE%AA%E7%8E%AF%E6%95%B0%E7%BB%84%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%EF%BC%8C%E5%8F%AF%E8%AF%BB%E6%95%B0%E6%8D%AE%E5%A4%A7%E5%B0%8F%EF%BC%8C%E5%8F%AF%E5%86%99%E7%A9%BA%E9%97%B4%E5%A4%A7%E5%B0%8F%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">1 基于循环数组如何判断，可读数据大小，可写空间大小？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-stream-buffer%E7%9A%84%E8%AF%BB%E5%86%99%E8%BF%87%E7%A8%8B%E6%98%AF%E5%90%A6%E9%9C%80%E8%A6%81%E4%B8%B4%E7%95%8C%E5%8C%BA%E4%BF%9D%E6%8A%A4%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">2 stream buffer的读写过程是否需要临界区保护？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-stream-buffer%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%A9%BA%E9%97%B4%E4%B8%8D%E5%A4%9F%E5%86%99%E5%85%A5%E6%9C%AC%E6%AC%A1%E6%95%B0%E6%8D%AE%E6%97%B6%EF%BC%8C%E8%AE%A9%E4%BB%BB%E5%8A%A1%E9%98%BB%E5%A1%9E%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">3 stream buffer如何实现空间不够写入本次数据时，让任务阻塞？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stream-buffer%E4%B8%AD%E7%9A%84%E4%B8%B4%E7%95%8C%E5%8C%BA%E6%98%AF%E5%B9%B2%E5%98%9B%E7%94%A8%E7%9A%84%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">stream buffer中的临界区是干嘛用的？</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FreeRTOS-stream buffer内部细节 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FreeRTOS-stream buffer内部细节
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-03-04 00:00:00" itemprop="dateCreated datePublished" datetime="2023-03-04T00:00:00+08:00">2023-03-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FreeRTOS/" itemprop="url" rel="index"><span itemprop="name">FreeRTOS</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+本文介绍几个 stream buffer 内部的实现细节。
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p>使用 <code>stream buffer</code>的前提，一定要明确使用场景中只有一个<code>writer</code>（中断服务或任务），也只有一个<code>reader</code>（中断服务或任务）。正是因为在只有一个<code>writer</code>，一个<code>reader</code>的前提下，使得<code>stream buffer</code>在内部实现中不必对读&#x2F;写数据过程进行临界区保护。<br>PS：当然，非要存在多个写&#x2F;读的应用场景下使用<code>stream buffer</code>也是可以的，但是需要开发者使用临界区对调用的相关API 进行保护，并且不能使用API 中的等待超时参数（需要设置为0）。</p>
+<p><code>stream buffer</code>的底层是基于一个循环数据来实现的：<br><img src="/2023/03/04/FreeRTOS-stream-buffer-details/circular-array.png"></p>
+<p>其中，<strong>Head</strong>指向第一个可写的位置，<strong>Tail</strong>指向第一个可读的位置，当它们移动到数组结尾时，会回转到数组开头。</p>
+<h4 id="1-基于循环数组如何判断，可读数据大小，可写空间大小？"><a href="#1-基于循环数组如何判断，可读数据大小，可写空间大小？" class="headerlink" title="1 基于循环数组如何判断，可读数据大小，可写空间大小？"></a>1 基于循环数组如何判断，可读数据大小，可写空间大小？</h4><p>情况1： Tail 在左边，Head 在右边<br><img src="/2023/03/04/FreeRTOS-stream-buffer-details/circular-array.png"></p>
+<p>这种情形下，<br>可读数据的大小 &#x3D; Head - Tail<br>可写空间大小 &#x3D; Length - (可读数据大小) &#x3D; Length + Tail - Head</p>
+<p>情况2： Head 在左边，Tail 在右边<br><img src="/2023/03/04/FreeRTOS-stream-buffer-details/circular-array2.png"><br>这种情况下，<br>可写空间大小 &#x3D; Tail - Head<br>可读数据大小 &#x3D; Length - (可写空间大小) &#x3D; Length + Head - Tail</p>
+<p>综上两种情况，<br>计算可写空间大小时，我们总是可以计算：<br><strong>可写空间大小 &#x3D; Length + Tail - Head</strong><br>之后，再加一个后置判断， 如果 可写空间大小 &gt;&#x3D; Length，说明就是情况1，此时可写空间大小-Length 就是最终可写空间大小。</p>
+<p>同理，计算可读数据大小时，我们总是可以直接计算：<br><strong>可读数据大小 &#x3D; Length + Head - Tail</strong><br>之后，再加一个后置判断， 如果 可读数据大小 &gt;&#x3D; Length，说明就是情况2，此时可读数据大小-Length 就是最终可读数据大小。</p>
+<p>使用循环数组的一个问题是如何判断数组满和空？ 按照上面的逻辑，当数据被填满时，Tail和Head指针会指向相同的位置，这和判空条件一致了。因此，FreeRTOS用了一个trick，在申请数组空间时，申请的实际大小为外部传过来的大小参数 + 1，如下所示：</p>
+<p>xStreamBufferGenericCreate函数中的代码段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if( xBufferSizeBytes &lt; ( xBufferSizeBytes + 1 + sizeof( StreamBuffer_t ) ) )</span><br><span class="line">&#123;</span><br><span class="line">    xBufferSizeBytes++; // 这里额外加的1，就是内部添加的1字节。</span><br><span class="line">    pucAllocatedMemory = ( uint8_t * ) pvPortMalloc( xBufferSizeBytes + sizeof( StreamBuffer_t ) ); /*lint !e9079 malloc() only returns void*. */</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而判断可用空间大小时，会将计算获得的减 1 再返回，如下所示：<br>xStreamBufferSpacesAvailable函数中的代码段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">do</span><br><span class="line">&#123;</span><br><span class="line">    xOriginalTail = pxStreamBuffer-&gt;xTail;</span><br><span class="line">    xSpace = pxStreamBuffer-&gt;xLength + pxStreamBuffer-&gt;xTail;</span><br><span class="line">    xSpace -= pxStreamBuffer-&gt;xHead;</span><br><span class="line">&#125; while( xOriginalTail != pxStreamBuffer-&gt;xTail );</span><br><span class="line"></span><br><span class="line">xSpace -= ( size_t ) 1; // 这里额外减一，就是减掉内部添加的那1字节</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p> 因此，最终数组满的条件（即判断可用空间大小为0），实际是数组内部还剩1字节空间（内部额外添加的1字节）。</p>
+<h4 id="2-stream-buffer的读写过程是否需要临界区保护？"><a href="#2-stream-buffer的读写过程是否需要临界区保护？" class="headerlink" title="2 stream buffer的读写过程是否需要临界区保护？"></a>2 stream buffer的读写过程是否需要临界区保护？</h4><p>仅从读，写这两件事本身来讨论，<code>stream buffer</code>是完全不需要临界区来保护读写过程的。<br>例如，<code>stream buffer</code>的当前状态如下图所示：<br><img src="/2023/03/04/FreeRTOS-stream-buffer-details/circular-array.png"></p>
+<p>对于<code>writer</code>来说，它在写数据时仅会移动<strong>Head</strong>指针，并且由于只有一个<code>writer</code>，也不会存在竞争。<br>对于<code>reader</code>来说，它在读数据时仅会移动<strong>Tail</strong>指针，并且由于只有一个<code>reader</code>，也不会存在竞争。</p>
+<p>剩下的就是，判断可读数据&#x2F;可写空间大小时，需要同时访问<strong>Head</strong>指针，和<strong>Tail</strong>指针，此时是否需要临界区保护？</p>
+<p>考虑内核中判断可读数据大小的具体实现代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> xCount = pxStreamBuffer-&gt;xLength + pxStreamBuffer-&gt;xHead;</span><br><span class="line"><span class="number">2</span> xCount -= pxStreamBuffer-&gt;xTail;</span><br><span class="line"></span><br><span class="line"><span class="number">3</span> <span class="keyword">if</span>( xCount &gt;= pxStreamBuffer-&gt;xLength )</span><br><span class="line">&#123;</span><br><span class="line">    xCount -= pxStreamBuffer-&gt;xLength;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于没有临界区保护，<code>reader</code>任务在执行这段代码时，是可能被<code>writer</code>给打断的。<br>如果在<code>reader</code>在执行完<code>第一行</code>代码后，此时内核执行任务切换，<code>writer</code>开始执行，并向<code>stream buffer</code>中写入了数据（<strong>Head</strong>指针被“推进”了），之后当内核再次切换回<code>reader</code>继续执行时，会发送什么？<br>此时由于<code>第一行</code>已经执行过了（获得的是旧的<strong>Head</strong>值），那么最终计算出来的可读数据大小（<strong>writer</strong>在中间写入的没算进去）是小于当前<code>stream buffer</code>中实际所存数据大小的。</p>
+<p>不过，这样并没有什么关系，<code>stream buffer</code>的API 会明确告知本次读取获取了多少数据，剩下的数据下次再获取就可以了。<br>也就是说，不使用临界区保护，当判断可读数据大小时，获得的值可能会比实际小，但这不会影响程序运行，下次还是可以读到该数据。只要不发生获得的值比实际所存数据量大这种错误情况，程序就没问题。</p>
+<p>同理，内核中判断可写空间大小的代码也是不需要加临界区保护的，虽然可能会导致有时获得的可写空间比实际的少（使得<code>writer</code>只能将部分数据写入到<code>stream buffer</code>中），但同样<code>stream buffer</code>的API 会返回本次成功写入了多少数据，剩下的数据下次发送即可。 只要不发生获得的可写空间比实际可写空间大这种错误情况，程序的运行就没问题。</p>
+<h4 id="3-stream-buffer如何实现空间不够写入本次数据时，让任务阻塞？"><a href="#3-stream-buffer如何实现空间不够写入本次数据时，让任务阻塞？" class="headerlink" title="3 stream buffer如何实现空间不够写入本次数据时，让任务阻塞？"></a>3 stream buffer如何实现空间不够写入本次数据时，让任务阻塞？</h4><p>在介绍<a href="https://fengxun2017.github.io/2022/12/08/FreeRTOS-queue-internal-details/">消息队列</a>的文章中的，我们提到消息队列结构中存在两个任务链表成员：</p>
+<ul>
+<li>等待发送数据任务链表：消息队列满时，当任务向该消息队列发送数据，就会被挂到该任务链表上（如果设置了超时等待）。</li>
+<li>等待接收数据任务链表：消息队列空时，当任务从该消息队列中获取消息，就会被挂到该任务链表上。</li>
+</ul>
+<p>如下图所示：<br><img src="/2023/03/04/FreeRTOS-stream-buffer-details/resource-internal-queue-a.png"></p>
+<p>由于<code>stream buffer</code>也支持发送（或获取）数据时，如果<code>stream buff</code>空间不足（或没有数据），则任务可以阻塞等待。<br>因此，<code>stream buffer</code>中也有两个如上类似的成员，不过它们不是链表，只是任务句柄（成员<code>xTaskWaitingToSend</code>和成员<code>xTaskWaitingToReceive</code>）。因为<code>stream buffer</code>只有一个<code>writer</code>和一个<code>reader</code>，所以不需要链表。</p>
+<p>由于只有一个<code>reader</code>，当<code>reader</code>从<code>stream buffer</code>获取数据，而<code>stream buffer</code>为空时，任务如果设置了等待超时参数，任务就会阻塞，并且<code>reader</code>的任务句柄会被保存到<code>stream buffer</code>的成员<code>xTaskWaitingToReceive</code>中。<br>如此当<code>writer</code>向该<code>stream buffer</code>中发送数据时，就可以通过<code>xTaskWaitingToReceive</code>找到等待数据的那个任务（<code>reader</code>），从而唤醒它。<br>从这里可以发现，要唤醒的目标任务是明确的（等待数据的<code>reader</code>），这符合<a href="https://fengxun2017.github.io/2023/02/07/FreeRTOS-task-notification/">task notification</a>的使用场景。<br>因此，当<code>stream buffer</code>为空时，<code>reader</code>无法获取数据，此时就会调用<code>xTaskNotifyWait</code>来阻塞自己。 当<code>writer</code>向<code>stream buffer</code>中发送了数据后，就会通过<code>xTaskNotify</code>来唤醒<code>reader</code>（有数据了），</p>
+<p>对于<code>writer</code>，当<code>stream buffer</code>中的空间不够写入时，也可让任务进入阻塞态，同样也是使用<code>task notification</code>来实现的。原理同上。</p>
+<h4 id="stream-buffer中的临界区是干嘛用的？"><a href="#stream-buffer中的临界区是干嘛用的？" class="headerlink" title="stream buffer中的临界区是干嘛用的？"></a>stream buffer中的临界区是干嘛用的？</h4><p>如第二小节所述，由于只有一个<code>reader</code>和一个<code>writer</code>，因此<code>stream buffer</code>的读写并不需要临界区来保护，但无论是获取数据的API：<code>xStreamBufferReceive</code>，还是发送数据的API：<code>xStreamBufferSend</code>，其内部实现中都存在临界区代码段。</p>
+<p>例如，<code>xStreamBufferSend</code>中的临界区代码段：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">taskENTER_CRITICAL();</span><br><span class="line">&#123;</span><br><span class="line">    xSpace = xStreamBufferSpacesAvailable( pxStreamBuffer );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>( xSpace &lt; xRequiredSpace )</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">/* Clear notification state as going to wait for space. */</span></span><br><span class="line">        ( <span class="type">void</span> ) xTaskNotifyStateClear( <span class="literal">NULL</span> );</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* Should only be one writer. */</span></span><br><span class="line">        configASSERT( pxStreamBuffer-&gt;xTaskWaitingToSend == <span class="literal">NULL</span> );</span><br><span class="line">        pxStreamBuffer-&gt;xTaskWaitingToSend = xTaskGetCurrentTaskHandle();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        taskEXIT_CRITICAL();</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">taskEXIT_CRITICAL();</span><br><span class="line">( <span class="type">void</span> ) xTaskNotifyWait( ( <span class="type">uint32_t</span> ) <span class="number">0</span>, ( <span class="type">uint32_t</span> ) <span class="number">0</span>, <span class="literal">NULL</span>, xTicksToWait );</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>发送数据函数中的这段临界区代码的作用，其目的并不是为了保护写的过程不被读打断。<br>它是为了让：“当写空间不够时，清除<code>notify</code>状态，以及设置<code>pxStreamBuffer-&gt;xTaskWaitingToSend</code>” ，即如下几个操作</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span> xSpace = xStreamBufferSpacesAvailable( pxStreamBuffer );</span><br><span class="line"><span class="number">2</span> ( <span class="type">void</span> ) xTaskNotifyStateClear( <span class="literal">NULL</span> );</span><br><span class="line"><span class="number">3</span> pxStreamBuffer-&gt;xTaskWaitingToSend =xTaskGetCurrentTaskHandle();</span><br></pre></td></tr></table></figure>
+<p>整体成为一个“原子操作”。 </p>
+<p>否则，没有临界区保护的话，可能发生如下情况：<br>在<code>writer</code>任务在执行<code>1</code>后内核可能刚进行任务调度，并切换到<code>reader</code>并读取了一批数据（此时可写空间有了），<code>reader</code>执行完后会调用<code>sbRECEIVE_COMPLETED</code>，该宏的实现是调用<code>xTaskNotify（pxStreamBuffer-&gt;xTaskWaitingToSend）</code>通知<code>writer</code>，但本次通知不会成功，因为此时<code>pxStreamBuffer-&gt;xTaskWaitingToSend = NULL</code>（<code>writer被打断了，还没执行到 3 处的赋值代码</code>）。<br>之后，内核再次执行任务切换，并切换回<code>writer</code>任务，此时实际上可能已经有足够的可写空间了（中间切换成<code>reader</code>任务时被读走了一批数据），但由于<code>reader</code>的<code>notification</code>丢失了，导致<code>writer</code>出了临界区后，执行<code>xTaskNotifyWait</code>时，检测不到<code>notification</code>，导致<code>writer</code>进入阻塞休眠（实际上此时可写空间可能已经满足需求了）。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/" title="FreeRTOS-stream buffer内部细节">http://fengxun2017.github.io/2023/03/04/FreeRTOS-stream-buffer-details/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/02/22/FreeRTOS-stream-buffer/" rel="prev" title="FreeRTOS-stream buffer">
+                  <i class="fa fa-chevron-left"></i> FreeRTOS-stream buffer
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/03/07/BLE-link-states/" rel="next" title="从机设备协议栈——链路层——草稿">
+                  从机设备协议栈——链路层——草稿 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">182k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:47</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

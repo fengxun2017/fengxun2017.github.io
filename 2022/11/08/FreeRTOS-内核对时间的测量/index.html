@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="FreeRTOS 内核的时间测量功能，是内核能够实现多任务调度的基础条件。例如，当一个高优先级A，任务调用Delay（1秒）后，内核调度器选择了另一个低优先级的任务B开始运行，那么内核就需要感知 1秒时间的流逝，从而在1秒后，再次调度 高优先级的任务A，让其恢复运行。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FreeRTOS-内核对时间的测量">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/11/08/FreeRTOS-%E5%86%85%E6%A0%B8%E5%AF%B9%E6%97%B6%E9%97%B4%E7%9A%84%E6%B5%8B%E9%87%8F/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="FreeRTOS 内核的时间测量功能，是内核能够实现多任务调度的基础条件。例如，当一个高优先级A，任务调用Delay（1秒）后，内核调度器选择了另一个低优先级的任务B开始运行，那么内核就需要感知 1秒时间的流逝，从而在1秒后，再次调度 高优先级的任务A，让其恢复运行。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-11-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-12-24T04:12:52.129Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2022/11/08/FreeRTOS-%E5%86%85%E6%A0%B8%E5%AF%B9%E6%97%B6%E9%97%B4%E7%9A%84%E6%B5%8B%E9%87%8F/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/11/08/FreeRTOS-%E5%86%85%E6%A0%B8%E5%AF%B9%E6%97%B6%E9%97%B4%E7%9A%84%E6%B5%8B%E9%87%8F/","path":"2022/11/08/FreeRTOS-内核对时间的测量/","title":"FreeRTOS-内核对时间的测量"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FreeRTOS-内核对时间的测量 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#FreeRTOS%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%97%B6%E9%97%B4%E6%B5%8B%E9%87%8F%E7%9A%84"><span class="nav-number">1.</span> <span class="nav-text">FreeRTOS是如何实现时间测量的</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/11/08/FreeRTOS-%E5%86%85%E6%A0%B8%E5%AF%B9%E6%97%B6%E9%97%B4%E7%9A%84%E6%B5%8B%E9%87%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FreeRTOS-内核对时间的测量 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FreeRTOS-内核对时间的测量
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-11-08 00:00:00" itemprop="dateCreated datePublished" datetime="2022-11-08T00:00:00+08:00">2022-11-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FreeRTOS/" itemprop="url" rel="index"><span itemprop="name">FreeRTOS</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+FreeRTOS 内核的时间测量功能，是内核能够实现多任务调度的基础条件。例如，当一个高优先级A，任务调用Delay（1秒）后，内核调度器选择了另一个低优先级的任务B开始运行，那么内核就需要感知 1秒时间的流逝，从而在1秒后，再次调度 高优先级的任务A，让其恢复运行。
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h4 id="FreeRTOS是如何实现时间测量的"><a href="#FreeRTOS是如何实现时间测量的" class="headerlink" title="FreeRTOS是如何实现时间测量的"></a>FreeRTOS是如何实现时间测量的</h4><p>嵌入式操作系统的基本运行方式是，系统需要周期性地进入任务调度函数中，检查当前是否有任务需要切换为就绪态（例如，delay的时间到期了，等待某个事件超时了），以及是否需要进行任务切换（有更高优先级的任务处于就绪状态了）。<br>定时器中断天然具有周期性，所以操作系统内核将定时器中断作为系统运行的“心跳”（FreeRTOS称为 <strong>tick 中断</strong>），从而实现周期性的检查任务状态。对于 cortex-m 处理器，硬件中都存在一个SysTick定时器，所以FreeRTOS在cortex-m处理器上的实现都是使用systick定时器中断来作为内核运行的“心跳”。</p>
+<p><code>注意：内核并不是只在tick 中断中才进行任务状态检查和任务切换。在FreeRTOS的内核实现中，总是会尽可能的让处于最高优先级的就绪任务立刻运行，如果只在tick中断才检查是否需要进行任务切换，那么就可能存在一个比较大的延迟（一个tick中断处理刚结束，这时创建了一个新的最高优先级任务，那就得等到下个tick中断到来才能被调度）。所以，FreeRTOS内核中有多处地方会检查是否需要进行任务切换。例如，FreeRTOS的创建任务函数，在创建一个新任务时，如果新任务的优先级是最高的，那么就会立刻运行这个新创建的新任务（任务切换）。又如，有一个高优先级任务A 处于阻塞态，正在等待某个消息队列有数据，如果此时正在运行的低优先级任务B 向该消息队列中发送了一条消息，那么任务A 就会立刻被“唤醒”，并运行（任务切换，抢占了任务B的运行）。</code></p>
+<p>基于定时器实现<strong>tick 中断</strong>，那么就需要明确定义多久产生一次中断。内核对 tick 频率的定义，在 FreeRTOSConfig.h 文件中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> configTICK_RATE_HZ		( ( TickType_t ) 100 )</span></span><br></pre></td></tr></table></figure>
+<p>如上所示，定义了 tick 中断频率为 100，即每秒产生 100次中断。那么就需要设置systick的硬件，让其每 10 ms (<code>1/configTICK_RATE_HZ 秒</code>) 产生一次中断。</p>
+<p>定时器都需要一个时钟源来驱动，cortex-m 处理器上 FreeRTOS 内核默认使用MCU中的内核时钟作为 sysytick的时钟源，所以还需要明确MCU 的内核运行时钟（即CPU运行频率）。其定义同样在 FreeRTOSConfig.h 文件中，例如我的CPU运行频率是64M：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> configCPU_CLOCK_HZ			( ( unsigned long ) 64000000 )	 <span class="comment">// 64M运行频率</span></span></span><br></pre></td></tr></table></figure>
+<p>根据定时器内部的计时原理，使用上述cpu运行时钟作为其输入源时，systick每1&#x2F;64000000（<code>1/configCPU_CLOCK_HZ</code>）秒就会产生一次计数。</p>
+<p>现在我们希望让systick 每 10 ms (<code>1/configTICK_RATE_HZ 秒</code>) 产生一次中断，就要配置 systick 每次计数到：<br> (1&#x2F;configTICK_RATE_HZ) &#x2F; (1&#x2F;configCPU_CLOCK_HZ) &#x3D;  configCPU_CLOCK_HZ &#x2F; configTICK_RATE_HZ<br>就产生一次中断。 该配置可以在 port.c 文件的 <code>vPortSetupTimerInterrupt</code>函数中找到。</p>
+<p><code>注意：cortex-m中的systick定时器，实际是一个递减计数器，即减到0时产生中断。上面只是为了方便描述成了递增计数器。此外systick的定时器是24 bit，所以最大值为2^24-1 ,所以configCPU_CLOCK_HZ / configTICK_RATE_HZ 的结果应该在这个范围内</code></p>
+<p>配置好了 systick 周期性产生中断，那么整个系统就有了一个基本的时间单位了，即<code>1/configCPU_CLOCK_HZ 秒</code>。所以，在FreeRTOS中提供的一些API，其中的时间参数，并不是以<strong>秒</strong>或<strong>毫秒</strong>等实际时间为单位，而是以tick（<code>1/configCPU_CLOCK_HZ 秒</code>）为单位的。例如，FreeRTOS 提供的延迟函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">vTaskDelay</span><span class="params">( <span class="type">const</span> TickType_t xTicksToDelay )</span></span><br></pre></td></tr></table></figure>
+<p>我们在使用该函数时，就需要将 实际的延迟时间转换成 tick 数。 在FreeRTOS中可以自己转换，也可以调用提供的宏，如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 延迟2秒，自己将时间转换成tick 数</span></span><br><span class="line"><span class="type">const</span> TickType_t delay = <span class="number">2000</span> / portTICK_PERIOD_MS;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 延迟2秒，直接使用FreeRTOS宏，优先使用这个宏</span></span><br><span class="line">vTaskDelay( pdMS_TO_TICKS(<span class="number">2000</span>))</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>portTICK_PERIOD_MS</code>定义在文件<code>portmacro.h</code>中，其定义为每个tick有少个ms：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> portTICK_PERIOD_MS    ( ( TickType_t ) 1000 / configTICK_RATE_HZ )</span></span><br></pre></td></tr></table></figure>
+
+<p>而 <code>pdMS_TO_TICKS</code> 定义在文件<code>projdefs.h</code>中，直接将ms数转换成tick数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> pdMS_TO_TICKS( xTimeInMs )    ( ( TickType_t ) ( ( ( TickType_t ) ( xTimeInMs ) * ( TickType_t ) configTICK_RATE_HZ ) / ( TickType_t ) 1000U ) )</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>FreeRTOS 根据配置的两个宏定义<code>configTICK_RATE_HZ, configCPU_CLOCK_HZ</code>，设置 systick定时器（cortex-m处理器上）的相关定时器，使其以 <strong>configTICK_RATE_HZ</strong> 频率产生中断，并作为内核运作的“心跳”。<br>对于内核来说，其对时间的概念是以 <strong>1&#x2F;configTICK_RATE_HZ 秒</strong> 为单位的。所以，配置的内核运行频率（configTICK_RATE_HZ）越高，内核能感知的时间精度就越高。<br>例如，configTICK_RATE_HZ &#x3D; 100 时，内核感知的时间单位是10ms，让任务delay5ms（vTaskDelay( pdMS_TO_TICKS(5))）是不起作用的(函数不会生效)。</p>
+<p>但另一方面，配置的内核运行频率越高，就会频繁的产生内核tick中断。如果你的系统对功耗敏感，并且设置了在任务没有事情可做时进入休眠状态。那么更高的tick中断，会让MCU频繁进出休眠，反而会消耗更多的功耗（该问题可以通过配置configUSE_TICKLESS_IDLE来缓解，但并不是所有硬件平台上都支持）。</p>
+<p>所以系统运行的频率需要根据实际应用选择一个合适的值。多数情况下 100HZ 的内核tick 频率足够了，如果实际应用的正确运行依赖于高精确的时间测量（例如，收到某个“信号”后，必须在某个时间点（要求误差是几十us）做出一些操作），那么应该考虑使用另一个高精度的定时器，并将其硬件中断优先级设置高于FreeRTOS系统（FreeRTOS系统不能屏蔽该中断，中断发生时，无论FreeRTOS在干什么都会优先响应中断）。</p>
+<br>
+FreeRTOS交流QQ群-663806972
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2022/11/08/FreeRTOS-%E5%86%85%E6%A0%B8%E5%AF%B9%E6%97%B6%E9%97%B4%E7%9A%84%E6%B5%8B%E9%87%8F/" title="FreeRTOS-内核对时间的测量">http://fengxun2017.github.io/2022/11/08/FreeRTOS-内核对时间的测量/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/04/FreeRTOS-kernel-list/" rel="prev" title="FreeRTOS-内核链表数据结构">
+                  <i class="fa fa-chevron-left"></i> FreeRTOS-内核链表数据结构
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/11/14/FreeRTOS-kernal-hook/" rel="next" title="FreeRTOS-内核中的钩子(Hook)函数">
+                  FreeRTOS-内核中的钩子(Hook)函数 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">182k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:47</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

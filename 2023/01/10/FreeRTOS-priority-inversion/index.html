@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文介绍 FreeRTOS 中互斥量（mutex）的优先级继承特性，以及 FreeRTOS 是如何通过互斥量的优先级继承特性，来最小化优先级反转问题带来的负面影响">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FreeRTOS-优先级反转问题">
+<meta property="og:url" content="http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="本文介绍 FreeRTOS 中互斥量（mutex）的优先级继承特性，以及 FreeRTOS 是如何通过互斥量的优先级继承特性，来最小化优先级反转问题带来的负面影响">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/lock.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/inversion.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/inversion-2.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/inherit.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/disinherit.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/inversion-3.png">
+<meta property="article:published_time" content="2023-01-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-01-12T16:37:59.526Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/lock.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/","path":"2023/01/10/FreeRTOS-priority-inversion/","title":"FreeRTOS-优先级反转问题"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FreeRTOS-优先级反转问题 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BC%98%E5%85%88%E7%BA%A7%E5%8F%8D%E8%BD%AC%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1 优先级反转问题：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E4%BC%98%E5%85%88%E7%BA%A7%E7%BB%A7%E6%89%BF"><span class="nav-number">2.</span> <span class="nav-text">2 优先级继承</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FreeRTOS-优先级反转问题 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FreeRTOS-优先级反转问题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-01-10 00:00:00" itemprop="dateCreated datePublished" datetime="2023-01-10T00:00:00+08:00">2023-01-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FreeRTOS/" itemprop="url" rel="index"><span itemprop="name">FreeRTOS</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.8k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+本文介绍 FreeRTOS 中互斥量（mutex）的优先级继承特性，以及 FreeRTOS 是如何通过互斥量的优先级继承特性，来最小化优先级反转问题带来的负面影响
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h4 id="1-优先级反转问题："><a href="#1-优先级反转问题：" class="headerlink" title="1 优先级反转问题："></a>1 优先级反转问题：</h4><p>在<a href="https://fengxun2017.github.io/2023/01/03/FreeRTOS-mutex/">使用互斥量（mutex）保护共享数据</a>一文中，介绍了互斥量的作用是构建一个用来保护共享数据访问过程的临界区，在这个临界区内，任何时候，只允许一个任务进入这个临界区访问共享数据，该任务没退出临界区前，其它任务无法进入临界区中访问数据。<br>所以，互斥量可以看作是一把钥匙，所有想进入临界区访问共享数据的任务，都需要先获取到这把钥匙，访问完成以后，归还这把钥匙。因此，即使系统中的多个任务是并行&#x2F;并发的，但访问临界区却是串行的，如下图所示：<br><img src="/2023/01/10/FreeRTOS-priority-inversion/lock.png"></p>
+<p>因此，互斥量的一个基本特性是：当一个任务<code>task_a</code>持有互斥量<code>mutex</code>后，其它任务在<code>task_a</code>释放互斥量之前，无法再获得互斥量，调用请求互斥量 api，会使当前任务进入阻塞状态（如果设置了等待时间，后文都按此假设）。</p>
+<p>基于该基本特性，考虑一个情景，<code>task_a</code>优先级为 1，当它成功获取到互斥量<code>mutex</code>后，正在访问被保护的数据。此时，系统发生了某个事件（如按键事件），导致另一个优先级为3 的任务<code>task_c</code>进入就绪状态（之前处于阻塞态，在等待事件发生），并开始运行（在<code>task_a</code>已经持有互斥量<code>mutex</code>的情况下抢占了cpu）。<br>如果此时高优先级的<code>task_c</code>也要获取互斥量<code>mutex</code>（为了安全访问共享数据）会怎样？ 由于<code>mutex</code>已经被低优先级任务<code>task_a</code>持有，因此高优先级任务<code>task_c</code>无法获得该互斥量，并进入阻塞状态（如果设置了等待时间参数）。内核之后再次调度低优先级任务<code>task_a</code>，当<code>task_a</code>访问数据结束，释放mutex后，高优先级任务<code>task_c</code>才能恢复运行。<br>这种状态就是<strong>优先级反转状态</strong>，即高优先级任务，由于获取不到已经被低优先级任务提前获取的互斥量，导致高优先级任务不得不阻塞，先等待低优先级任务运行，并释放互斥量后，才能运行。如下图所示：</p>
+<p><strong>注意</strong>：下图是基于mutex只能被一个任务持有的特性来讨论的，并未考虑优先级继承特性！</p>
+<p><img src="/2023/01/10/FreeRTOS-priority-inversion/inversion.png"></p>
+<p>如上图所示的优先级反转状态，并不是那么严重，至少优先级反转状态的持续时间是可预知的（有上界的），因为临界区的基本要求是尽量小，任务应该尽快退出临界区（释放互斥量）。<br>因此，虽然低优先级任务持有互斥量后，会导致这期间请求同一互斥量的高优先级任务阻塞，但低优先级任务很快会完成数据访问，并释放持有的互斥量，之后高优先级任务就可以恢复运行。</p>
+<p><strong>但更糟糕的情况，发生在此时还存在一个中优先级的任务处于就绪状态</strong>：<br>低优先级的任务<code>task_a</code>获得互斥量<code>mutex</code>，之后发生了某个事件导致高优先级任务<code>task_c</code>开始运行，并且<code>task_c</code>也请求获取<code>mutex</code>，由于<code>mutex</code>已经被<code>task_a</code>持有，则<code>task_c</code>进入阻塞态。<br>此时，如果还存在一个中优先级的<code>task_b</code>处于就绪状态，那么<code>task_c</code>阻塞后，内核会先调度中优先级的就绪任务<code>task_b</code>。只要<code>task_b</code>一直运行，<code>task_a</code>就无法得到调度（因为优先级比<code>task_b</code>低），那么被<code>task_a</code>持有的互斥量<code>mutex</code>就不会被释放，结果就导致等待互斥量<code>mutex</code>的高优先级任务<code>task_c</code>一直阻塞（请求<code>mutex</code>时设置了无限等待），无法运行。并且高优先级任务<code>task_c</code>的阻塞时间是没有上界的，因为不确定何时<code>task_b</code>会进入阻塞态，使得内核可以调度任务<code>task_a</code>。甚至，如果有更多的中优先级任务，那么<code>task_a</code>可能会一直得不到运行，使得<code>task_c</code>也一直得不到运行（因为无法获取到<code>mutex</code>）。如下图所示：</p>
+<p><strong>注意</strong>：下图是基于mutex只能被一个任务持有的特性来讨论的，并未考虑优先级继承！<br><img src="/2023/01/10/FreeRTOS-priority-inversion/inversion-2.png"></p>
+<h4 id="2-优先级继承"><a href="#2-优先级继承" class="headerlink" title="2 优先级继承"></a>2 优先级继承</h4><p>前文讨论的优先级反转问题，都是只基于互斥量只能被一个任务持有的特性来说明的。这种情况下，可以认为 互斥量就是一个普通的<a href="https://fengxun2017.github.io/2022/12/15/FreeRTOS-use-binary-semaphore/">二值信号量</a>。</p>
+<p>但 FreeRTOS 的 互斥量，本质是 二值信号量 + 优先级继承特性。通过优先级继承特征，FreeRTOS提供的互斥量，可以尽量减少任务反转状态的持续时间（有上界）。以之前的例子来解释优先级继承特性：</p>
+<p>当低优先级任务<code>task_a</code>获取到互斥量<code>mutex</code>后，<code>mutex</code>的持有者就是<code>task_a</code>（互斥量的内核数据结构中存在一个<code>xMutexHolder</code>成员，当互斥量被某个任务成功获取到，<code>xMutexHolder</code>就被赋值为该任务的句柄）。此时，发生某个事件使得高优先级任务<code>task_c</code>开始运行，并请求获取<code>mutex</code>。<br>这种情况下，由于<code>mutex</code>已经被持有，<code>task_c</code>无法获取到互斥量，所以<code>task_c</code>会阻塞。并且，内核判断出当前请求<code>mutex</code>的任务<code>task_c</code>的优先级，大于<code>mutex</code>的持有者（<code>task_a</code>）的优先级。因此，内核会临时调整持有者<code>task_a</code>的任务优先级（通过互斥量的<code>xMutexHolder</code>成员，找到持有该互斥量的任务，进而修改该任务优先级），让其优先级升高为<code>task_c</code>的优先级。即继承了<code>task_c</code>的任务优先级，如下图所示：<br><img src="/2023/01/10/FreeRTOS-priority-inversion/inherit.png"></p>
+<p>互斥量只能被一个任务持有，当<code>task_a</code>持有互斥量并完成数据访问后，需要释放互斥量，使其它任务可以获取到该互斥量。当<code>task_a</code>释放互斥量时，内核会发现该互斥量的持有者<code>task_a</code>的<strong>当前任务优先级</strong>（前面被临时提升了）和<code>task_a</code>的<strong>真实任务优先级</strong>不同（任务的内核数据结构中存在一个<code>uxBasePriority</code>，该成员记录着任务的真实优先级），因此内核会恢复<code>task_a</code>的任务优先级。如下图所示：<br><img src="/2023/01/10/FreeRTOS-priority-inversion/disinherit.png"></p>
+<p>通过优先级继承特性，FreeRTOS的互斥量可以使得优先级反转状态尽快结束（持续时间有上界），减少优先级反转带来的影响。再次考虑前文存在中级优先级任务的例子：<br>低优先级的任务<code>task_a</code>获得互斥量<code>mutex</code>，之后发生了某个事件导致高优先级任务<code>task_c</code>开始运行（抢占了<code>task_a</code>），并且<code>task_c</code>也请求获取<code>mutex</code>，由于<code>mutex</code>已经被持有，则<code>task_c</code>进入阻塞态，同时<code>mutex</code>的持有者<code>task_a</code>的优先级被临时升高。此时，即使还存在一个中优先级的<code>task_b</code>处于就绪状态，内核仍旧会先调度<code>task_a</code>（因为继承了<code>task_c</code>的高优先级）。当任务<code>task_a</code>释放<code>mutex</code>时，内核会同时恢复<code>task_a</code>的优先级为低优先级。之后，内核调度高优先级任务<code>task_c</code>（<code>mutex</code>可用了），当<code>task_c</code>运行一段时间后，因为等待某个其它事件进入阻塞态，内核就会调用目前就绪的最高优先级任务<code>task_b</code>。该过程如下图所示：<br><img src="/2023/01/10/FreeRTOS-priority-inversion/inversion-3.png"></p>
+<p>最后，需要注意的是，在内核层面，mutex 只能尽量较少优先级反转的持续时间，无法根本解决优先级反转问题。如果，你的系统不希望发生优先级反转状态（不管持续时间是长还是短），就需要从软件设计本身上解决——不要让两个不同优先级的任务去获取同一个互斥量。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/" title="FreeRTOS-优先级反转问题">http://fengxun2017.github.io/2023/01/10/FreeRTOS-priority-inversion/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/01/03/FreeRTOS-mutex/" rel="prev" title="FreeRTOS-使用互斥量（mutex）保护共享数据">
+                  <i class="fa fa-chevron-left"></i> FreeRTOS-使用互斥量（mutex）保护共享数据
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2023/01/13/FreeRTOS-event-group/" rel="next" title="FreeRTOS-event group 实现原理">
+                  FreeRTOS-event group 实现原理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">182k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:47</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

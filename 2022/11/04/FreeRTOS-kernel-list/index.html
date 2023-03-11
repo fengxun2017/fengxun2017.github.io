@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="链表是FreeRTOS内核中最重要的数据结构，内核的任务管理都是基于链表数据结构来实现的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FreeRTOS-内核链表数据结构">
+<meta property="og:url" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="链表是FreeRTOS内核中最重要的数据结构，内核的任务管理都是基于链表数据结构来实现的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/list.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/just-node.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/node-in-data.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/insert.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/cur-index.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/task-insert.png">
+<meta property="article:published_time" content="2022-11-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-12-19T16:27:43.002Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/list.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/","path":"2022/11/04/FreeRTOS-kernel-list/","title":"FreeRTOS-内核链表数据结构"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>FreeRTOS-内核链表数据结构 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E6%97%B6%E4%BD%BF%E7%94%A8%E7%9A%84%E9%93%BE%E8%A1%A8%E7%BB%93%E6%9E%84%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">学习时使用的链表结构：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FreeRTOS%E5%86%85%E6%A0%B8%E4%B8%AD%E7%9A%84%E9%93%BE%E8%A1%A8%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">FreeRTOS内核中的链表结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="FreeRTOS-内核链表数据结构 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          FreeRTOS-内核链表数据结构
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-11-04 00:00:00" itemprop="dateCreated datePublished" datetime="2022-11-04T00:00:00+08:00">2022-11-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/FreeRTOS/" itemprop="url" rel="index"><span itemprop="name">FreeRTOS</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+
+<p><strong>链表</strong>是FreeRTOS内核中最重要的数据结构，内核的任务管理都是基于链表数据结构来实现的。 </p>
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h4 id="学习时使用的链表结构："><a href="#学习时使用的链表结构：" class="headerlink" title="学习时使用的链表结构："></a>学习时使用的链表结构：</h4><p>在学习数据结构时，我们学习的链表结构基本都是数据本身和链表结构耦合在一起的。如下图所示的两个链表：一个是存储结构体数据的链表，一个是存储 int 数据的链表<br><img src="/2022/11/04/FreeRTOS-kernel-list/list.png"></p>
+<p>两个链表的结构完全一样，涉及的操作也一致，都是通用的链表插入，删除，查找等操作。</p>
+<p>但是一个链表中，每个链表节点存储的是结构体数据。而另一个链表中，每个链表节点中存储的是 int 数据。仅仅因为保存的数据不一样，我们就需要为此实现两套操作一样的链表代码。</p>
+<p>在实际的应用产品中，往往存在多种数据类型，需要以链表的形式来存储。如果为每种数据类型都实现一套链表数据结构相关的操作，肯定是不可取的。</p>
+<br>
+
+<h4 id="FreeRTOS内核中的链表结构"><a href="#FreeRTOS内核中的链表结构" class="headerlink" title="FreeRTOS内核中的链表结构"></a>FreeRTOS内核中的链表结构</h4><p>在 <strong>C++</strong> 标准库中，利用模板功能，实现了一套标准的链表结构 <strong>std::list</strong>，并可以存储任意类型的数据。<br>但在 <strong>C</strong> 中没有模板功能，所以为了实现一套通用的链表结构，并可以适用于任意数据类型，FreeRTOS将链表结构本身和需要存储的数据进行了解耦。<br>以一个简单的<strong>单向链表</strong>来解释，如下所示（linux内核实现中也是如此将链表结构和数据进行解耦的）：</p>
+<p>首先，定义一个简单的单向链表节点结构体，其中不保存数据内容，只保存指向下个节点的指针。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> * <span class="title">pNext</span>;</span>     </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>由上述节点组成的链表，就是一个只有节点关系的链表，没有实际的数据，如下图所示：<br><img src="/2022/11/04/FreeRTOS-kernel-list/just-node.png"></p>
+<p>假设，我们有一个如下精简的<strong>任务信息</strong>结构体数据类型（仅仅是为了演示）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TaskInfo</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">int</span> priority;    <span class="comment">// 优先级</span></span><br><span class="line">    <span class="type">char</span> name[<span class="number">20</span>];   <span class="comment">// 任务名 </span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>如果我们希望将其以链表的形式进行组织，则只需要将<strong>链表节点</strong>作为<strong>TaskInfo</strong>的成员，如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">TaskInfo</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">int</span> priority;   <span class="comment">// 优先级</span></span><br><span class="line">    <span class="type">char</span> name[<span class="number">20</span>];  <span class="comment">// 任务名  </span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> <span class="title">list_node</span>;</span>  <span class="comment">// 链表节点作为一个成员</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>基于该定义，<strong>TaskInfo</strong>数据类型的链表结构可以表示成下图所示：<br><img src="/2022/11/04/FreeRTOS-kernel-list/node-in-data.png"></p>
+<p><strong>注意</strong>：指针指向的都是TaskInfo内部的链表节点，而不是TaskInfo本身。</p>
+<p>实际上，我们是将链表插入到数据中了（而普通的链表可以认为是将数据插入到链表中，使得每种数据都要定义一套链表），每个链表节点指向的并不是数据，而是下一个链表节点，而链表节点本身又属于数据的成员，所以也就可以间接找到数据了。</p>
+<p>通过上述定义，我们只需要实现一套标准的链表操作即可，并且与任何数据类型都无关。而当需要将某种数据类型以链表的形式进行组织时，我们只需要在数据的类型定义中添加一个<strong>链表节点结构体类型</strong>的成员即可。</p>
+<p>剩下的问题就是<strong>如何通过链表节点来找到它关联的数据</strong>。linux内核中是通过计算结构体成员的偏移来获得数据地址的。<br>而在FreeRTOS中，则更加直观一点，FreeRTOS在链表节点结构体中添加了一个指针成员，让其指向该节点关联的实际数据，形如下面代码所示，我们在前面的<strong>链表节点结构体</strong>中加入了一个指针变量，该指针变量会指向该链表节点关联的数据：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> * <span class="title">next</span>;</span>     </span><br><span class="line">    <span class="type">void</span> * owner;    <span class="comment">// 让其指向节点关联的实际数据</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>如此，我们在创建<strong>TaskInfo</strong>类型的变量 <strong>A</strong> 时，只需将其成员 <strong>list_node</strong> 的 <strong>owner</strong> 指向 <strong>A</strong> 自己，即可将链表节点和数据进行关联。下图以单链表演示一个具体的链表节点插入的过程：<br><img src="/2022/11/04/FreeRTOS-kernel-list/insert.png"></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>以上内容以简单的单链表为例，描述了FreeRTOS内核链表结构的核心思想。FreeRTOS中所有的任务队列都是都过这种链表结构来管理的（参考文章：<a href="https://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>）。<br>当然，内核需要处理的任务信息和逻辑更复杂，所以FreeRTOS内核中的链表实际实现会有一些差别，但思想是一致的（链表结构本身和数据解耦）。例如，一些具体差异有：</p>
+<ul>
+<li>内核中的链表为<strong>双向链表</strong>，所以链表的插入、删除更复杂一点。</li>
+<li>内核中实现的<strong>链表节点</strong>除了<strong>owner指针</strong>指向关联数据。还有一个<strong>container指针</strong>，container指针用来指向这个链表节点所属的<strong>链表</strong>，这个指针的目的是为了当任务A（一个链表节点）挂载在某个任务队列上(即链表)，而我们想将任务A其移出该任务队列，除了需要修改任务队列（结构为链表）中任务A前后节点(任务)的next，prev指针，还需要修改队列内部记录信息（如队列包含的任务数量），通过container即可直接找到该任务所在的队列，继而修改相关信息。</li>
+<li>内核中的<strong>链表节点</strong>还存在一个 <strong>ItemValue</strong>，不是说<strong>链表节点</strong>本身不存储信息吗？那这个值是干嘛用的？ 这个值通常赋值为任务的优先级。添加这个值是为了方便内核实现<strong>资源就绪时优先通知高优先级的任务</strong>。例如，文章<a href="https://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>中描述了，当任务从一个空的<strong>消息队列Q</strong>中请求数据时，就会被挂载到<strong>消息队列Q</strong>内部的等待数据任务队列（一个链表）上，多个任务都向空的消息队列Q请求数据，就都会被挂载到<strong>消息队列Q</strong>的等待数据任务队列上。而当<strong>消息队列Q</strong>有数据时，会优先通知优先级高的任务来取。怎么实现优先通知高优先级的任务？就是在将任务挂载到<strong>消息队列Q</strong>的等待数据队列上时，是按 节点的ItemValue（被赋值成任务优先级了）来排序的，使得优先级高的任务会排在队列的最前面。</li>
+</ul>
+<p>此外，FreeRTOS内核链表还提供了很多自定义的链表操作，和各种宏定义。</p>
+<p>例如，内核任务队列中存在一个<code>当前索引</code>，在最高优先级就绪任务队列中，它总是指向当前正在运行的那个任务（正在占用cpu）。而在其它优先级就绪任务队列中，<code>当前索引</code>则指向本队列中上一次运行的那个任务（本队列中最近一次运行过的那个任务，之后由于有更高优先级任务就绪，被高优先级任务抢占了CPU）。<br><code>当前索引</code>存在的意义，是为了方便内核实现在相同优先级的任务上轮流调度（通过顺序移动“当前索引”，轮流调度相同优先级的任务）。</p>
+<p>如下图所示（以简单的单链表解释）：每次需要任务切换时，会从最高优先级(3)的就绪任务队列中，通过<code>当前索引</code>来找到下一个要调度的任务，从而实现相同优先级任务的“轮流调度”(内核的默认配置)。(优先级队列2中就绪任务运行的前提是没有更高优先级的任务处于就绪状态了，参考：<a href="https://fengxun2017.github.io/2022/11/01/FreeRTOS-task-status-management/">FreeRTOS的任务管理逻辑</a>)<br><img src="/2022/11/04/FreeRTOS-kernel-list/cur-index.png"><br> 上图的 <code>end_node</code>为一个尾节点(FreeRTOS内存链表也存在这个尾节点)，队列创建时就默认存在一个尾节点了。它存在的意义是为了更简单的实现链表的插入和删除，因为不用考虑链表为空的特殊情况了（尾节点总是存在）。</p>
+<p>通过“当前索引”，可以顺利找到下一个需要调度的相同优先级任务。为了保持这个顺序，当一个新任务需要插入到某个优先级就绪任务队列上时，会插入的“当前索引的”prev指针指向的位置，内核是通过移动“当前索引”的next指针实现轮流调度同一优先级的任务，而新插入的就绪任务由于插入到“当前索引”的prev指针指向的位置，所以新插入的任务会最后一个调度，如下图所示（FreeRTOS内核实际实现为双链表）：<br><img src="/2022/11/04/FreeRTOS-kernel-list/task-insert.png"></p>
+<br>
+FreeRTOS交流QQ群-663806972
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/" title="FreeRTOS-内核链表数据结构">http://fengxun2017.github.io/2022/11/04/FreeRTOS-kernel-list/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/01/FreeRTOS-task-status-management/" rel="prev" title="FreeRTOS的任务调度和管理">
+                  <i class="fa fa-chevron-left"></i> FreeRTOS的任务调度和管理
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/11/08/FreeRTOS-%E5%86%85%E6%A0%B8%E5%AF%B9%E6%97%B6%E9%97%B4%E7%9A%84%E6%B5%8B%E9%87%8F/" rel="next" title="FreeRTOS-内核对时间的测量">
+                  FreeRTOS-内核对时间的测量 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">182k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:47</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
