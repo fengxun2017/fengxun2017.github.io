@@ -1,0 +1,23 @@
+---
+title: cpu cache
+date: 2023/1/10
+categories: 
+- memory ordering相关
+---
+<center>
+</center>
+<!--more-->
+
+***
+
+##### CPU stalls
+
+Memory ordering is the order in which memory operations (loads and stores) are performed.
+There are two ways that memory ordering might be changed:
+ The compiler might change memory ordering as a result of some compile-time optimizations.
+ The processor might change memory ordering at run time.
+
+#### 参考连接：
+【1】[http://gavinchou.github.io/summary/c++/memory-ordering/](http://gavinchou.github.io/summary/c++/memory-ordering/)
+【2】[https://en.wikipedia.org/wiki/Memory_ordering](https://en.wikipedia.org/wiki/Memory_ordering)
+【3】[https://en.wikipedia.org/wiki/CPU_cache](https://en.wikipedia.org/wiki/CPU_cache)

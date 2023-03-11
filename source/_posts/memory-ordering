@@ -1,0 +1,16 @@
+---
+title: memory ordering
+date: 2022/12/18
+categories: 
+- memory ordering相关
+---
+
+
+**memory ordering** 描述的是：CPU对计算机内存的访问顺序。该术语既可以指编译器在编译时生成的内存访问排序，也可以指CPU在运行时生成的内存访问排序。
+本文涉及以下几个方面：
+- 处理器如何重新排序指令
+- 什么是内存模型和内存顺序
+- 如何从更高的抽象层次理解memory ordering
+- 如何使用它（无锁编程）
+  
+<!--more-->
