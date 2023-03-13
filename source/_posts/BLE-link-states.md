@@ -94,6 +94,8 @@ Advertising interval:
   advDelay：目的是加一个随机扰动，如果两个设备刚好同时广播，且广播interval也一直，如果没有这个随机延迟，就会一直冲突。
   advertising interval (advInterval) shall be an integer multiple of 0.625 ms in the range 20 ms to 10,485.759375 s.
 
+connection created：主机发送了发起连接指令，从机收到了该指令
+connection established：主从收到对方发过来的第一个数据通道的数据包。
 
 Connection events：BLE周期性通信，在每个连接事件中，主从设备会交替发送/接收数据。主/从设备任意一方都可以结束本次连接事件。
 - connEventCounter：连接事件计数，连接建立后为0，每次连接事件到来加1（即使因为一些原因，本次事件主/从设备未通信上，例如干扰）。
@@ -101,11 +103,58 @@ Connection events：BLE周期性通信，在每个连接事件中，主从设备
 连接事件的时间，实际由connection interval (connInterval), subrate base event (connSubrateBaseEvent), subrate factor (connSubrateFactor), continuation number (connContinuationNumber), and Peripheral latency (connPeripheralLatency) 共同决定。
 connInterval shall be a multiple of 1.25 ms in the range 7.5 ms to 4.0 s.
 
+connection interval:The connInterval shall be a multiple of 1.25 ms in the range 7.5 ms to 4.0 s.
+
 亚速率是为了使主从设备可以使用更少了连接事件（减少同步次数，节省功耗），中央设备仅在亚速率连接事件上发送数据，
 The value of connSubrateFactor shall be in the range 1 to 500 and shall be set  to 1 for a new connection.
 The value of connContinuationNumber shall be in the range 0 to connSubrateFactor - 1 and shall be set to zero for a new connection.
+The Central shall only transmit on subrated connection  events and, if the continuation number is non-zero, continuation events.
 
 Peripheral latency ：允许从机可以跳过几个亚速率连接事件，减少从机功耗。
 connPeripheralLatency shall be an integer such that connSubrateFactor × (connPeripheralLatency + 1) is less than or equal to 500 and connInterval × connSubrateFactor × (connPeripheralLatency + 1) is less than half connSupervisionTimeout
 注意：
 - 如果在应用peripheral latency后，在某个从机应该监听的连接事件上，没收到主机发送过来的有效包，那么从机后续应该监听每一个亚速率事件（期间关闭应用peripheral latency），直到收到一个有效包。
+
+Supervision timeout: 
+- 发起连接后， 6 * connInterval 都没有建立连接，则认为连接丢失，并结束连接过程。
+- connSupervisionTimeout: multiple of 10 ms in the range 100 ms to  32.0 s and it shall be larger than
+    (1 + connPeripheralLatency) × connSubrateFactor × connInterval × 2.
+- transmit window：central(master)：central 发起连接指令后，第一条数据包会在该窗口内发出。
+  第一条数据包的到达时间： transmitWindowDelay + transmitWindowOffset <=  t  <= transmitWindowDelay + transmitWindowOffset +transmitWindowSize
+
+Closing connection events：
+- 当主/从数据包中，都没有MD 标记（没有更多数据了），结束本次连接事件。否则，master接可能继续发送数据（本事件内）
+  
+PS： MD 是用来指示一个连接事件内主从还要不要继续交互，而前面的connContinuationNumber是用来指示主机还要不要在下一个（几个）连接事件交互。
+
+Sleep clock accuracy：由于时钟精度的问题，从机应该在每个连接事件发生时进行重新同步。
+
+
+Channel Selection：
+  unmappedChannel = (lastUnmappedChannel + hopIncrement) mod 37
+  remappingIndex = unmappedChannel mod numUsedChannels
+
+
+Acknowledgment and flow control：
+- transmitSeqNum：用来标识链路层所发出的包，进入连接态后初值为0。
+                  对于每个新发送的数据包，链路header中的SN设置为该值。
+                  对于接受的数据包，如果SN和nextExpectedSeqNum不同，表明这是一个重发的包，nextExpectedSeqNum值保持不变。如果SN 和该值相同，说明是一个新包，nextExpectedSeqNum+=1 
+
+- nextExpectedSeqNum：给对方上一个包的ack，或是让对方重传上一个包，初值为0。
+                      发送数据包时，链路header中的NESN设置为该值。
+                      当收到一个数据包，如果NESN和 transmitSeqNum 相同，表明自己上一次发送的包没有被ack，需要重发。如果不同，表明上一个发送的包被对方ack了。transmitSeqNum+=1
+- 当收到一个CRC校验错误的数据包，我们期望对方重发这个包，所以自己的nextExpectedSeqNum 不应该改变。此外，由于这个包crc错了，包里的NESN也是不置信的，所以我们需要重发自己上一次发过的包，transmitSeqNum不变。
+
+
+Flow control：
+链路层可能因为CRC校验不过，需要对方重发，所以不改变自己的nextExpectedSeqNum。
+另一方面，如果当前接收buffer满了，不能放数据了，也可以不改变nextExpectedSeqNum，让对方之后再重发该包，从而缓解当前Buffer满的问题。
+
+Data PDU length management：
+-  If either value is not 27 then the Controller should initiate the Data Length Update procedure  at the earliest practical opportunity.
+
+
+Connection Update procedure：
+- 连接参数更新时，subrate factor需要重置为1，continuation number 重置为0
+- 主机可能会自动发起连接参数更新（为了协同其它连接）
+- At the start of the transmit window, the Link Layer shall reset TLLconnSupervision.
