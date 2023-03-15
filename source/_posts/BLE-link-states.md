@@ -158,3 +158,8 @@ Connection Update procedure：
 - 连接参数更新时，subrate factor需要重置为1，continuation number 重置为0
 - 主机可能会自动发起连接参数更新（为了协同其它连接）
 - At the start of the transmit window, the Link Layer shall reset TLLconnSupervision.
+
+
+Channel Selection algorithm #1
+- unmappedChannel = (lastUnmappedChannel + hopIncrement) mod 37
+- 如果unmappedChannel 是当前可用通道，则直接使用。否则通过remappingIndex = unmappedChannel mod numUsedChannels 获得重映射后的可使用通道。
