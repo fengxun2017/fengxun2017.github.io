@@ -19,18 +19,20 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="实现一个精简的BLE从机协议栈——硬件基础">
+    <meta name="description" content="本文描述 BLE 广播、连接通信的基本模式，并讨论了在实现中比较重要的细节。基于nrf52840 实现了协议栈需要的定时器驱动和radio驱动，并利用定时器和radio的基本功能，实现了在单通道上进行广播。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="实现一个精简的BLE从机协议栈—1—依赖的相关硬件">
+<meta property="og:title" content="实现一个精简的BLE从机协议栈—1—基础概念和硬件驱动实现">
 <meta property="og:url" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/index.html">
 <meta property="og:site_name" content="fx">
-<meta property="og:description" content="实现一个精简的BLE从机协议栈——硬件基础">
+<meta property="og:description" content="本文描述 BLE 广播、连接通信的基本模式，并讨论了在实现中比较重要的细节。基于nrf52840 实现了协议栈需要的定时器驱动和radio驱动，并利用定时器和radio的基本功能，实现了在单通道上进行广播。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/ble-adv.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/communication-mode.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/anchor-point.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/windowWidening.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/re-synchronize.png">
 <meta property="article:published_time" content="2023-03-24T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-03-30T16:55:32.748Z">
+<meta property="article:modified_time" content="2023-04-01T04:46:40.613Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/ble-adv.png">
@@ -40,10 +42,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/","path":"2023/03/25/BleStack-hardware-driver/","title":"实现一个精简的BLE从机协议栈—1—依赖的相关硬件"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/","path":"2023/03/25/BleStack-hardware-driver/","title":"实现一个精简的BLE从机协议栈—1—基础概念和硬件驱动实现"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>实现一个精简的BLE从机协议栈—1—依赖的相关硬件 | fx</title>
+<title>实现一个精简的BLE从机协议栈—1—基础概念和硬件驱动实现 | fx</title>
   
 
 
@@ -112,7 +114,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -125,6 +127,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E2%80%94%E2%80%94BLE%E5%B9%BF%E6%92%AD%E5%92%8C%E8%BF%9E%E6%8E%A5%E5%9F%BA%E6%9C%AC%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">1——BLE广播和连接基本概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%E2%80%94%E2%80%94%E5%AE%9E%E7%8E%B0%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%86%E8%8A%82%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">2——实现中的一些细节问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%E2%80%94%E2%80%94nrf52840-%E7%A1%AC%E4%BB%B6%E5%87%86%E5%A4%87"><span class="nav-number">3.</span> <span class="nav-text">3——nrf52840 硬件准备</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -198,12 +201,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="实现一个精简的BLE从机协议栈—1—依赖的相关硬件 | fx">
+      <meta itemprop="name" content="实现一个精简的BLE从机协议栈—1—基础概念和硬件驱动实现 | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          实现一个精简的BLE从机协议栈—1—依赖的相关硬件
+          实现一个精简的BLE从机协议栈—1—基础概念和硬件驱动实现
         </h1>
 
         <div class="post-meta-container">
@@ -233,14 +236,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2k</span>
+      <span>3.8k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>5 分钟</span>
     </span>
 </div>
 
@@ -252,7 +255,7 @@
     
     <div class="post-body" itemprop="articleBody">
         <center>
-实现一个精简的BLE从机协议栈——硬件基础
+本文描述 BLE 广播、连接通信的基本模式，并讨论了在实现中比较重要的细节。基于nrf52840 实现了协议栈需要的定时器驱动和radio驱动，并利用定时器和radio的基本功能，实现了在单通道上进行广播。
 </center>
 
 <span id="more"></span>
@@ -260,25 +263,31 @@
 <hr>
 <ul>
 <li>本系列文章，基于<code>nordic nrf52840</code> MCU，来实现一个精简的 BLE 从机协议栈。</li>
-<li>已经实现的协议栈地址：<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/tree/dev">https://github.com/fengxun2017/dh_ble&#x2F;tree&#x2F;dev</a>，早期是基于<code>nrf51822</code>实现了<code>BLE 4.0</code>规范中从机协议栈中的必要部分，实现了可以和手机连接并传输数据。目前手上只有<code>nrf52840</code>了，当前基于<code>nrf52840</code>实现底层需要的驱动，并通过该系列文章，逐步修改一些上层不合理的地方。</li>
-<li>该系列文章，涉及到的协议部分会基于<code>BLE 5.3</code>规范进行描述，但本协议并且仍旧只实现最简单、必要的部分（能连上手机，进行通信即可），基于 iphone进行测试。因此，android会由于发送一些我没实现的指令，出现兼容性问题。</li>
+<li>已经实现的协议栈地址：<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/tree/dev">https://github.com/fengxun2017/dh_ble&#x2F;tree&#x2F;dev</a>，目前在dev分支进行更新开发。早期是基于<code>nrf51822</code>实现了<code>BLE 4.0</code>规范中从机协议栈中的必要部分，实现了可以和手机连接并传输数据。目前手上只有<code>nrf52840</code>了，当前基于<code>nrf52840</code>实现底层需要的驱动，并通过该系列文章，逐步修改一些上层不合理的地方。</li>
+<li>该系列文章，涉及到的协议部分会基于<code>BLE 5.3</code>规范进行描述，但仍旧只实现<strong>最简单、必要</strong>的部分（能连上手机，进行通信即可），并基于<code>iphone</code>进行测试。因此，<code>android</code>可能会由于发送一些我没实现的指令，出现兼容性问题。</li>
 <li>本系列文章，只是用来作为学习 BLE 协议的参考，从硬件层驱动，链路层，到上层协议，都以最直接，简单的方式来实现。</li>
 </ul>
-<p>本文描述与实现 <code>BLE</code> 相关的底层硬件相关基础。</p>
-<p><code>BLE</code>的普通广播（可连接、可扫描）形式如下图所示：<br><img src="/2023/03/25/BleStack-hardware-driver/ble-adv.png"></p>
+<h4 id="1——BLE广播和连接基本概述"><a href="#1——BLE广播和连接基本概述" class="headerlink" title="1——BLE广播和连接基本概述"></a>1——BLE广播和连接基本概述</h4><p><code>BLE</code>的普通广播（可连接、可扫描），其工作形式如下图所示：<br><img src="/2023/03/25/BleStack-hardware-driver/ble-adv.png"></p>
 <p>广播启动后，设备会周期性的进行广播。每次广播事件，设备会在37，38，39三个信道上，将广播数据广播一次（如上图左下所示），规范要求三个信道的广播数据发出间隔要小于10ms。</p>
 <p>并且，每个信道发送完数据后，需要持续监听一个很短的时间（规范定义为F_IFS&#x3D;150us），看是否有其它设备（扫描者，例如手机）发送了扫描请求（或连接请求）。<br>如上图右下所示，设备在37信道广播后，没有监听到数据。之后开始在38信道上广播，广播完后监听到了扫描方发送的<code>扫描请求</code>，设备回复<code>扫描相应</code>。之后，设备继续在39信道上广播。</p>
 <p>上图中 T_advEvent可以看做是广播间隔，它的实际值是：<code>T_advEvent = advInterval + advDelay</code><br><code>advDelay</code>是一个0-10ms的随机值。为什么要有这个随机值？ 因为范围内可能存在很多个设备都在广播，如果两个设备刚好同时启动，刚好广播周期又是一致，那么它们的物理信道就会一直冲突（同时使用同一个物理信道）。<br>通过引入的这个随机延迟<code>advDelay</code>，可以极大缓解物理信道冲突问题。</p>
 <p>了解了广播的基本机制，再来看下<code>BLE</code>连接后的基本通讯模式：<br><img src="/2023/03/25/BleStack-hardware-driver/communication-mode.png"></p>
 <p>连接建立后，<code>central</code>（发起连接的设备）和 <code>peripheral</code>（被连接设备）会周期性（以连接间隔为周期）的进行数据交互。（上图每次<code>central</code>和<code>peripheral</code>只交互了一次数据，实际是可以交互多包数据的）</p>
-<p>从上图可以发现，<code>BLE</code> 的每次数据交互都是由<code>central</code>先发起的，从机再回复数据包。连接建立以后，<code>central</code>和<code>peripheral</code>会按照这个模式周期性的交互，即使我们没有数据需要发送，<code>central</code>和<code>peripheral</code>也会周期交互空包，这是为了维持连接，保持它们的同步关系。</p>
+<p>从上图可以发现，<code>BLE</code> 的每次数据交互都是由<code>central</code>先发起的，<code>peripheral</code>收到<code>central</code>数据包后再回复自己的数据包。连接建立以后，<code>central</code>和<code>peripheral</code>会按照这个模式周期性的交互，即使我们没有数据需要发送，<code>central</code>和<code>peripheral</code>也会周期交互空包，这是为了维持连接，保持它们的同步关系。</p>
 <p>无论是广播状态，还是连接状态。<code>BLE</code>的通讯模式都是“周期性”的。这也是<code>BLE</code>为什么低功耗的原因，对于 1 秒需要交互一次数据，每次只交互几十字节数据的设备来说。1秒钟的时间内，只有几百us的时间是处于工作作态的，其它时间设备都可以处于休眠状态，因此整体功耗可以做到非常低。</p>
-<p>了解了<code>BLE</code>广播&#x2F;连接状态下的基本情况，如何来实现它？<br>2.4G Radio是必备的，它是数据收发的载体。<br>其次，我们需要一个定时器，来实现周期广播，以及连接后的周期交互。</p>
-<p>利用定时器，就可以做到不需要数据交互时（交互周期还没到），让设备休眠。当交互周期到达时（定时器超时），唤醒设备，进行数据收发。之后再次进入休眠状态，等待下一次定时器超时。如下图所示：<br><img src="/2023/03/25/BleStack-hardware-driver/anchor-point.png"></p>
-<p>但现实中存在问题是，时钟都是有误差的。例如，假设<code>central</code>设备和<code>peripheral</code>设备上的时钟精度都是<code>100ppm</code>，即 1秒钟会存在 <strong>±100us</strong> 的误差。<br>因此，站在<code>peripheral</code>的角度，连接间隔 1秒 的情况下，我们不能不能刚好在 1秒 后才让设备唤醒让其监听（<code>central</code>）数据，而是需要考虑这个最大可能的误差，并根据这个最大可能误差提前唤醒设备。</p>
-<p>这个最大可能的误差应该是 <strong>central误差 + peipheral误差</strong>（最大误差发送在两个设备的时间误差方向相反时），因此对于 1秒 连接间隔，<code>central</code>&#x2F;<code>peripheral</code> 时钟误差都为<code>100ppm</code>的条件下，整体误差最大为<code>1000000us  *(100+100)/1000000 = ±200us</code>。<br>因此，实际实现时，需要在理论时间点上提前<strong>200us</strong>唤醒，如果没监听到数据，也需要持续监听到理论时间点之后<strong>200us</strong>的时间，如下图所示：</p>
-<p>每次重新同步</p>
-<p>rc震荡，无校准1s误差8ms， 有校准100us以内。<br>外部晶振产生HFCLK，驱动timer时钟源的源头就是来自HFCLK，2s 定时器的误差在10us内。</p>
+<h4 id="2——实现中的一些细节问题"><a href="#2——实现中的一些细节问题" class="headerlink" title="2——实现中的一些细节问题"></a>2——实现中的一些细节问题</h4><p>了解了<code>BLE</code>广播&#x2F;连接状态下的基本情况，如何来实现它？<br>2.4G Radio是必备的，它是数据收发的载体。<br>其次，我们需要一个定时器，来实现周期广播，以及连接后的周期交互。</p>
+<p>利用定时器，可以实现周期性的唤醒设备，进行数据收发。<br>设备大部分可以处于休眠状态，当交互周期到达时（定时器超时），唤醒设备，进行数据收发。之后再次进入休眠状态，等待下一次定时器超时。<br>例如，对于<code>peripheral</code>设备来说，只需要在每次连接间隔（connection interval）到期时，唤醒设备并开始监听<code>central</code>发送过来的数据，如下图所示：<br><img src="/2023/03/25/BleStack-hardware-driver/anchor-point.png"></p>
+<p>但现实中存在问题是，定时器都是有误差的。例如，用来实现周期唤醒设备的 RTC定时器，在其时钟精度为<code>100ppm</code>的条件下，1秒钟的定时，会存在 <strong>±100us</strong> 的误差。</p>
+<p>因此，对于<code>peripheral</code>设备，连接间隔 1秒 的情况下，我们不能刚好在 第1秒 这个理论时间点（假设0秒是第一次交互）才唤醒设备，让其监听（<code>central</code>）数据，而是需要考虑定时器误差问题，并根据这个误差提前唤醒设备，或监听额外的时间。</p>
+<p>并且，这个误差需要考虑连接双方误差的总和，即实际误差应该是 <strong>central的误差 + peripheral的误差</strong>（这是最大误差，发送在两个设备的时间误差方向相反时）。对于 1秒 连接间隔，在<code>central</code>&#x2F;<code>peripheral</code> 时钟误差都为<code>100ppm</code>的条件下，整体误差最大为<code>1000000us  *(100+100)/1000000 = ±200us</code>。<br>这种情况下，在实现<code>peripheral</code>的链路层时，需要在理论唤醒时间点（<strong>anchor point</strong>）之前<strong>200us</strong>就唤醒设备，如果一直没监听到数据，也需要持续监听直到理论时间点之后<strong>200us</strong>的时间（即额外监听时间），如下图所示：<br><img src="/2023/03/25/BleStack-hardware-driver/windowWidening.png"><br>PS：这也是规范中的连接请求<strong>CONNECT_IND</strong>为什么会有SCA参数（Sleep clock accuracy），因为<code>peripheral</code>需要知道<code>central</code>的时钟误差，并结合自己的时钟误差，从而得到可能的最大误差。</p>
+<p>理论唤醒的时间点，协议规范称为<strong>anchor point</strong>，如上图所示。<br>由于上述时钟误差的原因，<code>peripheral</code>是无法准确知道这个<strong>anchor point</strong>实际发生时间点（即<code>central</code>发送的数据包的到达时间）。所以<code>peripheral</code>在每次连接事件中收到<code>central</code>的数据包，都可以看做是一次重新同步，并更新下一次唤醒的理论时间点。其逻辑如下图所示：<br><img src="/2023/03/25/BleStack-hardware-driver/re-synchronize.png"><br>因此，实际实现定时器周期唤醒时，我们使用的是单次定时，每次收到数据包后，再启动下一次连接事件的定时。</p>
+<h4 id="3——nrf52840-硬件准备"><a href="#3——nrf52840-硬件准备" class="headerlink" title="3——nrf52840 硬件准备"></a>3——nrf52840 硬件准备</h4><p>基于前文所述，我们需要使用 nrf52840 的 radio外设，作为数据收发载体。<br>需要注意的是，nrf52840 的 radio 是由高频时钟（HFCLK）驱动的，对高频时钟的精度有要求（否则信号频率不准），因此需要使用外部晶振作为高频时钟输入源，来提供较为精确的HFCLK。在源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfClockDrv.c">nrf52840&#x2F;NrfClockDrv.c</a>中实现了<code>HFCLK</code>配置输入源为外部晶振。</p>
+<p>此外，我们还使用了 RTC 硬件定时器，来实现周期广播，以及连接后的周期交互。基于前文第二节所述，在源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfRtcDrv.c">nrf52840&#x2F;NrfRtcDrv.c</a>的实现中，我们实现的是单次 RTC定时器（每次超时中断发生后，在中断里关闭超时事件）。<br><strong>需要注意</strong>，RTC 的驱动源来自 MCU 内部的低频时钟（LFCLK——32768 HZ），低频时钟的输入源可以是外部晶振，也可以是内部RC 振荡器产生，源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfClockDrv.c">nrf52840&#x2F;NrfClockDrv.c</a>中启动LFCLK时可以配置。<br>我的开发板上没有外部晶振，因此配置的使用内部 RC 振荡器作为输入源。<br>RC 振荡器作为输入源，会使得LFCK的精度比较低，进而导致RTC定时器精度低，不适合用来作为协议栈的时序同步时钟。因此需要对RC 振荡器进行周期校准，这部分功能实现在<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfClockDrv.c">nrf52840&#x2F;NrfClockDrv.c</a>中。 一般1s 校准一次就可以了。</p>
+<p>PS: 自测结果，rc 振荡器作为LFCLK输入源，无校准时1s误差8ms， 有校准时误差在100us以内。 所以是否校准影响很大。因为BLE 的核心是低功耗！ 低功耗就是要让设备尽量高效地唤醒（理想的情况是，唤醒后立刻就能接收到数据，然后发送完自己的数据后立刻进入休眠）,而RTC 误差越大，如上一节所述，我们就要提前更多的时间来唤醒设备，让其开始监听数据，这会使设备工作效率很低，并增加功耗。</p>
+<p>测试代码<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/test/test_rtc0_timer0.c">test&#x2F;test_rtc0_timer0.c</a>中，测试了 RTC硬件定时器的基本定时功能。<br>（代码中还测试了timer硬件定时器，以前的实现中使用了timer硬件定时器，随本系列文章更新，后面会修改协议栈内部实现，不在使用timer定时器。驱动timer的时钟源头是来自HFCLK，在使用外部32M晶振产生HFCLK的条件下，2s 定时的误差在10us内）</p>
+<p>源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfRadioDrv.c">nrf52840&#x2F;NrfRadioDrv.c</a>中，实现了 radio的基本操作，如何radio 配置成 BLE的使用方式，源码中有详细的注释。<br>nordic nrf52840的芯片手册中，对radio的收&#x2F;发状态转换描述的很详细，这里不再赘述。</p>
+<p>源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/test/test_radio.c">test&#x2F;test_radio.c</a>，基于上述 RTC定时器和 radio驱动，实现了周期广播（只在37通道上，不可被连接，不可被主动扫描），使用手机可以看到该设备的广播信息。<br>下一篇文章，会基于这个简单的广播功能，来详述 BLE 的链路层数据包基本格式，和在nrf52840上如何配置。</p>
+<p>PS：测试代码中使用了 systemview作为调试工具，这个后面再单独写个这个工具的基本使用文章。</p>
 
     </div>
 
@@ -296,7 +305,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/" title="实现一个精简的BLE从机协议栈—1—依赖的相关硬件">http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/</a>
+      <a href="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/" title="实现一个精简的BLE从机协议栈—1—基础概念和硬件驱动实现">http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -346,14 +355,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">186k</span>
+    <span title="站点总字数">188k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">3:52</span>
+    <span title="站点阅读时长">3:55</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
