@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/windowWidening.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/re-synchronize.png">
 <meta property="article:published_time" content="2023-03-24T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-05T09:55:25.860Z">
+<meta property="article:modified_time" content="2023-04-06T16:33:24.305Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/ble-adv.png">
@@ -140,7 +140,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -269,7 +269,7 @@
 </ul>
 <h4 id="1——BLE广播和连接基本概述"><a href="#1——BLE广播和连接基本概述" class="headerlink" title="1——BLE广播和连接基本概述"></a>1——BLE广播和连接基本概述</h4><p><code>BLE</code>的普通广播（可连接、可扫描），其工作形式如下图所示：<br><img src="/2023/03/25/BleStack-hardware-driver/ble-adv.png"></p>
 <p>广播启动后，设备会周期性的进行广播。每次广播事件，设备会在37，38，39三个信道上，将广播数据广播一次（如上图左下所示），规范要求三个信道的广播数据发出间隔要小于10ms。</p>
-<p>并且，每个信道发送完数据后，需要持续监听一个很短的时间（规范定义为F_IFS&#x3D;150us），看是否有其它设备（扫描者，例如手机）发送了扫描请求（或连接请求）。<br>如上图右下所示，设备在37信道广播后，没有监听到数据。之后开始在38信道上广播，广播完后监听到了扫描方发送的<code>扫描请求</code>，设备回复<code>扫描相应</code>。之后，设备继续在39信道上广播。</p>
+<p>并且，每个信道发送完数据后，需要持续监听一个很短的时间（规范定义为T_IFS&#x3D;150us），看是否有其它设备（扫描者，例如手机）发送了扫描请求（或连接请求）。<br>如上图右下所示，设备在37信道广播后，没有监听到数据。之后开始在38信道上广播，广播完后监听到了扫描方发送的<code>扫描请求</code>，设备回复<code>扫描相应</code>。之后，设备继续在39信道上广播。</p>
 <p>上图中 T_advEvent可以看做是广播间隔，它的实际值是：<code>T_advEvent = advInterval + advDelay</code><br><code>advDelay</code>是一个0-10ms的随机值。为什么要有这个随机值？ 因为范围内可能存在很多个设备都在广播，如果两个设备刚好同时启动，刚好广播周期又是一致，那么它们的物理信道就会一直冲突（同时使用同一个物理信道）。<br>通过引入的这个随机延迟<code>advDelay</code>，可以极大缓解物理信道冲突问题。</p>
 <p>了解了广播的基本机制，再来看下<code>BLE</code>连接后的基本通讯模式：<br><img src="/2023/03/25/BleStack-hardware-driver/communication-mode.png"></p>
 <p>连接建立后，<code>central</code>（发起连接的设备）和 <code>peripheral</code>（被连接设备）会周期性（以连接间隔为周期）的进行数据交互。（上图每次<code>central</code>和<code>peripheral</code>只交互了一次数据，实际是可以交互多包数据的）</p>
@@ -366,7 +366,7 @@
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:02</span>
+    <span title="站点阅读时长">4:03</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

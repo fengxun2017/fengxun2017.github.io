@@ -21,7 +21,7 @@
 
     <meta name="description" content="本文描述 BLE 链路层数据包的具体格式，并解析如何在 nordic nrf52840 硬件上配置 BLE 数据包。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="实现一个精简的BLE从机协议栈—2—链路层包格式和nrd52840上的配置">
+<meta property="og:title" content="实现一个精简的BLE从机协议栈—2—链路层包格式和nrf52840上的配置">
 <meta property="og:url" content="http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/index.html">
 <meta property="og:site_name" content="fx">
 <meta property="og:description" content="本文描述 BLE 链路层数据包的具体格式，并解析如何在 nordic nrf52840 硬件上配置 BLE 数据包。">
@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/nrf52840-packet.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/radio-packet-ble-packet.png">
 <meta property="article:published_time" content="2023-04-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-05T14:56:05.645Z">
+<meta property="article:modified_time" content="2023-04-08T07:54:03.118Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/le-uncoded-packet.png">
@@ -43,10 +43,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/","path":"2023/04/03/BleStack-link-packet/","title":"实现一个精简的BLE从机协议栈—2—链路层包格式和nrd52840上的配置"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/","path":"2023/04/03/BleStack-link-packet/","title":"实现一个精简的BLE从机协议栈—2—链路层包格式和nrf52840上的配置"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>实现一个精简的BLE从机协议栈—2—链路层包格式和nrd52840上的配置 | fx</title>
+<title>实现一个精简的BLE从机协议栈—2—链路层包格式和nrf52840上的配置 | fx</title>
   
 
 
@@ -141,7 +141,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">37</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -202,12 +202,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="实现一个精简的BLE从机协议栈—2—链路层包格式和nrd52840上的配置 | fx">
+      <meta itemprop="name" content="实现一个精简的BLE从机协议栈—2—链路层包格式和nrf52840上的配置 | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          实现一个精简的BLE从机协议栈—2—链路层包格式和nrd52840上的配置
+          实现一个精简的BLE从机协议栈—2—链路层包格式和nrf52840上的配置
         </h1>
 
         <div class="post-meta-container">
@@ -330,7 +330,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/" title="实现一个精简的BLE从机协议栈—2—链路层包格式和nrd52840上的配置">http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/</a>
+      <a href="http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/" title="实现一个精简的BLE从机协议栈—2—链路层包格式和nrf52840上的配置">http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -348,6 +348,9 @@
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2023/04/06/BleStack-link-advertising/" rel="next" title="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现">
+                  实现一个精简的BLE从机协议栈—3—链路层广播状态机实现 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -387,7 +390,7 @@
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:02</span>
+    <span title="站点阅读时长">4:03</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
