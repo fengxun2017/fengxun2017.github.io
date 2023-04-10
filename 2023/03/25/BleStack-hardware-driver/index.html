@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/windowWidening.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/re-synchronize.png">
 <meta property="article:published_time" content="2023-03-24T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-06T16:33:24.305Z">
+<meta property="article:modified_time" content="2023-04-10T15:23:19.211Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/ble-adv.png">
@@ -284,7 +284,7 @@
 <h4 id="3——nrf52840-硬件准备"><a href="#3——nrf52840-硬件准备" class="headerlink" title="3——nrf52840 硬件准备"></a>3——nrf52840 硬件准备</h4><p>基于前文所述，我们需要使用 nrf52840 的 radio外设，作为数据收发载体。<br>需要注意的是，nrf52840 的 radio 是由高频时钟（HFCLK）驱动的，对高频时钟的精度有要求（否则信号频率不准），因此需要使用外部晶振作为高频时钟输入源，来提供较为精确的HFCLK。在源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfClockDrv.c">nrf52840&#x2F;NrfClockDrv.c</a>中实现了<code>HFCLK</code>配置输入源为外部晶振。</p>
 <p>此外，我们还使用了 RTC 硬件定时器，来实现周期广播，以及连接后的周期交互。基于前文第二节所述，在源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfRtcDrv.c">nrf52840&#x2F;NrfRtcDrv.c</a>的实现中，我们实现的是单次 RTC定时器（每次超时中断发生后，在中断里关闭超时事件）。<br><strong>需要注意</strong>，RTC 的驱动源来自 MCU 内部的低频时钟（LFCLK——32768 HZ），低频时钟的输入源可以是外部晶振，也可以是内部RC 振荡器产生，源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfClockDrv.c">nrf52840&#x2F;NrfClockDrv.c</a>中启动LFCLK时可以配置。<br>我的开发板上没有外部晶振，因此配置的使用内部 RC 振荡器作为输入源。<br>RC 振荡器作为输入源，会使得LFCK的精度比较低，进而导致RTC定时器精度低，不适合用来作为协议栈的时序同步时钟。因此需要对RC 振荡器进行周期校准，这部分功能实现在<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfClockDrv.c">nrf52840&#x2F;NrfClockDrv.c</a>中。 一般1s 校准一次就可以了。</p>
 <p>PS: 自测结果，rc 振荡器作为LFCLK输入源，无校准时1s定时器误差在8ms， 有校准时（每秒校准一次）误差在100us以内。 所以是否校准影响很大。因为BLE 的核心是低功耗！ 低功耗就是要让设备尽量高效地唤醒（理想的情况是，唤醒后立刻就能接收到数据，然后发送完自己的数据后立刻进入休眠）,而RTC 误差越大，如上一节所述，我们就要提前更多的时间来唤醒设备，让其开始监听数据，这会使设备工作效率很低，并增加功耗。<br><strong>注意</strong>：如果校准周期比较长（例如4秒校准一次），那么还需要考虑短时间内温度变化大的精度的影响（例如，通过片上温度传感器感知到温度短时间内有0.5度的变化，应该立刻进行一次校准）。这里实现就不考虑了。</p>
-<p>测试代码<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/test/test_rtc0_timer0.c">test&#x2F;test_rtc0_timer0.c</a>中，测试了 RTC硬件定时器的基本定时功能。<br>（代码中还测试了timer硬件定时器，以前的实现中使用了timer硬件定时器，随本系列文章更新，后面会修改协议栈内部实现，不在使用timer定时器。驱动timer的时钟源头是来自HFCLK，在使用外部32M晶振产生HFCLK的条件下，2s 定时的误差在10us内）</p>
+<p>测试代码<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/test/test_rtc0_timer0.c">test&#x2F;test_rtc0_timer0.c</a>中，测试了 RTC硬件定时器的基本定时功能。<br>（代码中还测试了timer0硬件定时器，以前的实现中使用了timer0硬件定时器，随本系列文章更新，后面会修改协议栈内部实现，不在使用timer定时器。驱动timer的时钟源头是来自HFCLK，在使用外部32M晶振产生HFCLK的条件下，2s 定时的误差在10us内）</p>
 <p>源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfRadioDrv.c">nrf52840&#x2F;NrfRadioDrv.c</a>中，实现了 radio的基本操作，如何radio 配置成 BLE的使用方式，源码中有详细的注释。<br>nordic nrf52840的芯片手册中，对radio的收&#x2F;发状态转换描述的很详细，这里不再赘述。</p>
 <p>源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/test/test_radio.c">test&#x2F;test_radio.c</a>，基于上述 RTC定时器和 radio驱动，实现了周期广播（只在37通道上，不可被连接，不可被主动扫描），使用手机可以看到该设备的广播信息。</p>
 <p>下一篇文章，会详述 BLE 的链路层数据包基本格式，和在nrf52840上如何配置。</p>
@@ -359,14 +359,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">196k</span>
+    <span title="站点总字数">197k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:06</span>
+    <span title="站点阅读时长">4:07</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
