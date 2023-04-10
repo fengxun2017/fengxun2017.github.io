@@ -155,7 +155,7 @@ write-through 和 no-write allocate 的组合方式，读操作很快（只有�
 
 
 
-#### 参考连接：
+#### 参考资料：
 【1】[http://gavinchou.github.io/summary/c++/memory-ordering/](http://gavinchou.github.io/summary/c++/memory-ordering/)
 【2】[https://en.wikipedia.org/wiki/Memory_ordering](https://en.wikipedia.org/wiki/Memory_ordering)
 【3】[https://en.wikipedia.org/wiki/CPU_cache](https://en.wikipedia.org/wiki/CPU_cache)

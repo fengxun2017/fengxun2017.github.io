@@ -126,7 +126,7 @@ step7：核心P2 读该数据，向总线发送BusUpgr，P1或P3感知到后，�
 <br>
 <br>
 
-#### 参考连接：
+#### 参考资料：
 【1】[https://en.wikipedia.org/wiki/Cache_coherence](https://en.wikipedia.org/wiki/Cache_coherence)
 【2】[https://en.wikipedia.org/wiki/MESI_protocol](https://en.wikipedia.org/wiki/MESI_protocol)
 【3】[https://en.wikipedia.org/wiki/Directory-based_cache_coherence](https://en.wikipedia.org/wiki/Directory-based_cache_coherence)
