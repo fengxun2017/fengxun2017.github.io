@@ -21,31 +21,32 @@
 
     <meta name="description" content="本文描述 BLE 链路层广播状态下的状态机实现。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--待完成">
-<meta property="og:url" content="http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/index.html">
+<meta property="og:title" content="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中">
+<meta property="og:url" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/index.html">
 <meta property="og:site_name" content="fx">
 <meta property="og:description" content="本文描述 BLE 链路层广播状态下的状态机实现。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/framework.png">
-<meta property="og:image" content="http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/ble-link-layer.png">
-<meta property="og:image" content="http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/base-state.png">
-<meta property="og:image" content="http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/ble-adv.png">
-<meta property="og:image" content="http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/adv-states.png">
-<meta property="article:published_time" content="2023-04-05T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-13T16:20:01.922Z">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/framework.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/ble-link-layer.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/base-state.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/ble-adv.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/adv_idle.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/adv-states.png">
+<meta property="article:published_time" content="2023-04-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-04-23T16:28:52.720Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/framework.png">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/framework.png">
 
 
-<link rel="canonical" href="http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/">
+<link rel="canonical" href="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/","path":"2023/04/06/BleStack-link-advertising/","title":"实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--待完成"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/","path":"2023/04/24/BleStack-link-advertising/","title":"实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--待完成 | fx</title>
+<title>实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中 | fx</title>
   
 
 
@@ -188,7 +189,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -201,12 +202,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--待完成 | fx">
+      <meta itemprop="name" content="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中 | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--待完成
+          实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中
         </h1>
 
         <div class="post-meta-container">
@@ -217,7 +218,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2023-04-06 00:00:00" itemprop="dateCreated datePublished" datetime="2023-04-06T00:00:00+08:00">2023-04-06</time>
+      <time title="创建时间：2023-04-24 00:00:00" itemprop="dateCreated datePublished" datetime="2023-04-24T00:00:00+08:00">2023-04-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -236,7 +237,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.3k</span>
+      <span>2.7k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -268,23 +269,23 @@
 <li>本系列文章，只是用来作为学习 BLE 协议的参考，从硬件层驱动，链路层，到上层协议，都以最直接，简单的方式来实现。</li>
 </ul>
 <h4 id="1：一个简单的隔离层："><a href="#1：一个简单的隔离层：" class="headerlink" title="1：一个简单的隔离层："></a>1：一个简单的隔离层：</h4><p>在文章<a href="https://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/">基础概念和硬件驱动实现</a>一文中，我们介绍了实现<code>BLE</code>从机协议栈，需要的基本硬件外设：<code>Radio</code>以及硬件定时器<code>RTC0</code>和<code>Timer0</code>（硬件定时器<code>timer0</code>后面不一定会用）。</p>
-<p>如果我们直接在这些外设的驱动基础上来实现<code>BLE</code>协议栈，容易将一些硬件特性引入到<code>BLE</code>协议内部实现中，形成一定耦合。<br>因此，我们加了一个简单的抽象层，这个抽象层基于底层硬件相关的<code>radio</code>、<code>RTC0</code>等驱动，来实现<code>BLE</code>需要的射频收&#x2F;发功能，以及低功耗定时器功能。如下图所示：<br><img src="/2023/04/06/BleStack-link-advertising/framework.png"></p>
+<p>如果我们直接在这些外设的驱动基础上来实现<code>BLE</code>协议栈，容易将一些硬件特性引入到<code>BLE</code>协议内部实现中，形成一定耦合。<br>因此，我们加了一个简单的抽象层，这个抽象层基于底层硬件相关的<code>radio</code>、<code>RTC0</code>等驱动，来实现<code>BLE</code>需要的射频收&#x2F;发功能，以及低功耗定时器功能。如下图所示：<br><img src="/2023/04/24/BleStack-link-advertising/framework.png"></p>
 <p>通过引入一个抽象驱动层，实现向上提供通用、简单、统一的接口(基本射频收发、低功耗定时器）。这样BLE协议栈的实现就不用关心最底层使用的是什么硬件，实现和硬件解耦。<br>当我们替换其它硬件时，只需要根据芯片特性，在抽象驱动层中添加一些芯片特定的处理即可，而更上层的<code>BLE</code>协议栈则不需要做改动（前提是抽象驱动层保持对上层的接口不变）。<br>在源码目录<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/tree/dev/source/BleDrv">source&#x2F;BleDrv</a>下，我们就是基于nrf51840&#x2F;nrf51822 <code>mcu</code>的硬件外设<code>radio</code>、<code>rtc0</code>、以及<code>timer0</code>。实现了<code>BLE</code>协议栈需要使用的<code>BleRadio</code>以及低功耗定时器<code>BleLowerTimer</code>以及高精度定时器<code>BleHAccuaryTimer</code>。从而实现将协议栈的实现与底层具体硬件进行分离。</p>
-<h4 id="2：BLE-链路层广播的基本状态机"><a href="#2：BLE-链路层广播的基本状态机" class="headerlink" title="2：BLE 链路层广播的基本状态机"></a>2：BLE 链路层广播的基本状态机</h4><p>了解了上图的基本架构，我们开始讨论<code>BLE</code>协议栈内部的具体实现。本系列文章会从<code>BLE</code>协议栈的链路层开始逐渐向上讨论各层的功能和实现，本文介绍链路层的细节和实现。即下图所示部分：<br><img src="/2023/04/06/BleStack-link-advertising/ble-link-layer.png"></p>
+<h4 id="2：BLE-链路层广播的基本状态机"><a href="#2：BLE-链路层广播的基本状态机" class="headerlink" title="2：BLE 链路层广播的基本状态机"></a>2：BLE 链路层广播的基本状态机</h4><p>了解了上图的基本架构，我们开始讨论<code>BLE</code>协议栈内部的具体实现。本系列文章会从<code>BLE</code>协议栈的链路层开始逐渐向上讨论各层的功能和实现，本文介绍链路层的细节和实现。即下图所示部分：<br><img src="/2023/04/24/BleStack-link-advertising/ble-link-layer.png"></p>
 <br>
 
 <p>由于我们实现的是从机协议栈（被连接的设备），因此<strong>我们不考虑与连接发起端相关的几个状态。简单起见，我们也不考周期广播&#x2F;同步通道的特性</strong>。<br>因此，对于我们需要实现的从机协议栈来说，链路状态机可简化为下图所示：</p>
-<p><img src="/2023/04/06/BleStack-link-advertising/base-state.png"></p>
+<p><img src="/2023/04/24/BleStack-link-advertising/base-state.png"></p>
 <p>有了上图所述的基本状态间关系，我们就可以实现链路层对应的状态机。</p>
 <p>通常<code>MCU</code>的<code>radio</code>外设，其内部含有一个状态寄存器，来指示当前<code>radio</code>是处于什么状态（如发送状态、接收状态等），为了尽量减少对硬件的依赖，我们不使用这种状态寄存器，而是在底层自己维护状态。</p>
-<p>我们只使用<code>radio</code>外设的<code>DISABLED</code>中断事件，至于<code>radio</code>是发送完后被关闭的，还是接收完后被关闭的，由我们自己实现的状态机来记录。</p>
+<p>我们只使用<code>radio</code>外设的<code>DISABLED</code>中断事件，至于<code>radio</code>是发送完后被关闭的，还是接收完后被关闭的，由我们自己实现的状态机来记录。<br><code>PS：这里使用DISABLED中断事件的考虑是，早期MCU射频（nrf51822）发送结束后，必需先关闭，才能再控制进入接收状态。而当前更好的MCU（nrf2840）的射频部分，发送结束后，可以直接控制进行接收，而不用先关闭。 不关闭，直接进行发送/接收状态的相互转换肯定效率更高，不过为了更具一般性，我们还是考虑使用：发送-&gt;关闭-&gt;接收-&gt;关闭-&gt;发送....这种收/发的切换模式。由于</code>BLE<code>规定的空中数据包之间的间隔为150us，这个时间足够硬件进行这种状态的转变。</code></p>
 <p>因此，从我们目前讨论到的简单情况来看，我们至少要在链路层中维持两个状态：广播态（advertising）、连接态（connection）。</p>
 <p>每次<code>radio</code>发送完并关闭后，或者接收完并关闭后，进入中断处理函数中，根据当前的状态来决定所需执行的动作。例如：</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">LinkRadioEvtHandler</span><span class="params">(EnBleRadioEvt evt)</span></span><br><span class="line">&#123;</span><br><span class="line">    ....</span><br><span class="line">    <span class="comment">// 获取当前链路状态</span></span><br><span class="line">	state = CURRENT_STATE;	</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (state == ADVERTISING) &#123;</span><br><span class="line">        <span class="comment">// 广播状态下的相关处理</span></span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (state == CONNECTION) &#123;</span><br><span class="line">        <span class="comment">// 连接状态下的相关处理</span></span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <br>
 <br>
 
-<p>我们对上述代码中，广播态下的相关处理进行细节展开，分析其内部更细致的状态机。<br>在 BLE <a href="https://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/">基础概念</a>一文中，我们介绍了普通广播的基本通讯模式形式如下图所示：<br><img src="/2023/04/06/BleStack-link-advertising/ble-adv.png"></p>
+<p>我们对上述代码中，广播态下的相关处理进行细节展开，分析其内部更细致的状态机。<br>在 BLE <a href="https://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/">基础概念</a>一文中，我们介绍了普通广播的基本通讯模式形式如下图所示：<br><img src="/2023/04/24/BleStack-link-advertising/ble-adv.png"></p>
 <p>即在普通广播（可连接，可扫描）状态下，存在的情形有：</p>
 <ol>
 <li>没有扫描，也没有连接请求：则设备每次广播周期时间到达时，依次在三个广播通道上进行广播。左下图所示。</li>
@@ -293,16 +294,17 @@
 </ol>
 <p>根据上述情形，在代码实现上我们，需要考虑：</p>
 <ol>
-<li><p>设备启动并开始广播后，首先应该进入广播—发送状态（ADV_TX）</p>
+<li><p>设备启动并开始广播后，首先应该进入广播—发送状态（<strong>ADV_TX</strong>）</p>
 </li>
-<li><p>收到完成事件（发送）后，应该进入广播—接收状态（ADV_RX），并启动接收等待超时定时器（按规范定义，如果对方有数据包，应该在150us的样子，就会发过来）<br>   2.1 超时前，收到连接请求时，进入连接态，执行连接建立相关过程（本文不涉及）<br>   2.2 超时前，收到扫描请求时，进入广播—发送扫描相应状态（ADV_TX_SCANRSP）</p>
+<li><p>收到完成事件（发送）后，应该进入广播—接收状态（<strong>ADV_RX</strong>），并启动接收等待超时定时器（按规范定义，如果对方有数据包，应该在150us的样子，就会发过来）<br>   2.1 超时前，收到连接请求时，进入连接态，执行连接建立相关过程（本文不涉及）<br>   2.2 超时前，收到扫描请求时，进入广播—发送扫描相应状态（<strong>ADV_TX_SCANRSP</strong>）</p>
 <ul>
-<li>当扫描响应数据发送完成后，需要再在下一个通道上继续广播，因此会再次进入广播—发送状态（ADV_TX）</li>
+<li>当扫描响应数据发送完成后，需要再在下一个通道上继续广播，因此会再次进入广播—发送状态（<strong>ADV_TX</strong>）</li>
 </ul>
-<p>2.3 接收等待超时了，则切换到下一个通道继续广播，因此会再次进入广播—发送状态（ADV_TX）</p>
+<p>2.3 接收等待超时了（没有收到扫描请求，也没有收到连接请求），则切换到下一个通道继续广播，因此会再次进入广播—发送状态（<strong>ADV_TX</strong>）</p>
 </li>
 </ol>
-<p>概括下来，可以用下图所示的状态机来表示：<br><img src="/2023/04/06/BleStack-link-advertising/adv-states.png"></p>
+<p>上述描述的都是，广播间隔到了后，我们需要执行的动作。但设备绝大部分时间都是空闲的，不发送数据也没有接收数据。因此，我们还需要一个广播空闲（<strong>ADV_IDLE</strong>）状态。如下图所示：<br><img src="/2023/04/24/BleStack-link-advertising/adv_idle.png"></p>
+<p>概括下来，可以用下图所示的状态机来表示：<br><img src="/2023/04/24/BleStack-link-advertising/adv-states.png"></p>
 
     </div>
 
@@ -320,7 +322,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/" title="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--待完成">http://fengxun2017.github.io/2023/04/06/BleStack-link-advertising/</a>
+      <a href="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/" title="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中">http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -333,14 +335,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/04/03/BleStack-link-packet/" rel="prev" title="实现一个精简的BLE从机协议栈—2—链路层包格式和nrf52840上的配置">
-                  <i class="fa fa-chevron-left"></i> 实现一个精简的BLE从机协议栈—2—链路层包格式和nrf52840上的配置
+                <a href="/2023/04/15/performance-optimization-sunnmary/" rel="prev" title="性能优化核心思想：个人笔记">
+                  <i class="fa fa-chevron-left"></i> 性能优化核心思想：个人笔记
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/04/15/performance-optimization-sunnmary/" rel="next" title="性能优化核心思想：个人笔记">
-                  性能优化核心思想：个人笔记 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
@@ -373,14 +372,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">199k</span>
+    <span title="站点总字数">200k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:09</span>
+    <span title="站点阅读时长">4:10</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
