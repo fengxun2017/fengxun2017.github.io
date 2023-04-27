@@ -21,7 +21,7 @@
 
     <meta name="description" content="本文描述 BLE 链路层广播状态下的状态机实现。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中">
+<meta property="og:title" content="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现">
 <meta property="og:url" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/index.html">
 <meta property="og:site_name" content="fx">
 <meta property="og:description" content="本文描述 BLE 链路层广播状态下的状态机实现。">
@@ -32,8 +32,11 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/ble-adv.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/adv_idle.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/adv-states.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/IFS.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/auto-switch.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/insert-IFS.png">
 <meta property="article:published_time" content="2023-04-23T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-23T16:28:52.720Z">
+<meta property="article:modified_time" content="2023-04-27T12:56:53.194Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/framework.png">
@@ -43,10 +46,10 @@
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/","path":"2023/04/24/BleStack-link-advertising/","title":"实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/","path":"2023/04/24/BleStack-link-advertising/","title":"实现一个精简的BLE从机协议栈—3—链路层广播状态机实现"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中 | fx</title>
+<title>实现一个精简的BLE从机协议栈—3—链路层广播状态机实现 | fx</title>
   
 
 
@@ -128,7 +131,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%EF%BC%9A%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E9%9A%94%E7%A6%BB%E5%B1%82%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1：一个简单的隔离层：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%EF%BC%9ABLE-%E9%93%BE%E8%B7%AF%E5%B1%82%E5%B9%BF%E6%92%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">2：BLE 链路层广播的基本状态机</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%EF%BC%9A%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E9%9A%94%E7%A6%BB%E5%B1%82%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1：一个简单的隔离层：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%EF%BC%9ABLE-%E9%93%BE%E8%B7%AF%E5%B1%82%E5%B9%BF%E6%92%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">2.</span> <span class="nav-text">2：BLE 链路层广播的基本状态机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%EF%BC%9A%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">3：具体实现</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -202,12 +205,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中 | fx">
+      <meta itemprop="name" content="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现 | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中
+          实现一个精简的BLE从机协议栈—3—链路层广播状态机实现
         </h1>
 
         <div class="post-meta-container">
@@ -237,14 +240,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.7k</span>
+      <span>5.9k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
+      <span>7 分钟</span>
     </span>
 </div>
 
@@ -270,22 +273,22 @@
 </ul>
 <h4 id="1：一个简单的隔离层："><a href="#1：一个简单的隔离层：" class="headerlink" title="1：一个简单的隔离层："></a>1：一个简单的隔离层：</h4><p>在文章<a href="https://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/">基础概念和硬件驱动实现</a>一文中，我们介绍了实现<code>BLE</code>从机协议栈，需要的基本硬件外设：<code>Radio</code>以及硬件定时器<code>RTC0</code>和<code>Timer0</code>（硬件定时器<code>timer0</code>后面不一定会用）。</p>
 <p>如果我们直接在这些外设的驱动基础上来实现<code>BLE</code>协议栈，容易将一些硬件特性引入到<code>BLE</code>协议内部实现中，形成一定耦合。<br>因此，我们加了一个简单的抽象层，这个抽象层基于底层硬件相关的<code>radio</code>、<code>RTC0</code>等驱动，来实现<code>BLE</code>需要的射频收&#x2F;发功能，以及低功耗定时器功能。如下图所示：<br><img src="/2023/04/24/BleStack-link-advertising/framework.png"></p>
-<p>通过引入一个抽象驱动层，实现向上提供通用、简单、统一的接口(基本射频收发、低功耗定时器）。这样BLE协议栈的实现就不用关心最底层使用的是什么硬件，实现和硬件解耦。<br>当我们替换其它硬件时，只需要根据芯片特性，在抽象驱动层中添加一些芯片特定的处理即可，而更上层的<code>BLE</code>协议栈则不需要做改动（前提是抽象驱动层保持对上层的接口不变）。<br>在源码目录<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/tree/dev/source/BleDrv">source&#x2F;BleDrv</a>下，我们就是基于nrf51840&#x2F;nrf51822 <code>mcu</code>的硬件外设<code>radio</code>、<code>rtc0</code>、以及<code>timer0</code>。实现了<code>BLE</code>协议栈需要使用的<code>BleRadio</code>以及低功耗定时器<code>BleLowerTimer</code>以及高精度定时器<code>BleHAccuaryTimer</code>。从而实现将协议栈的实现与底层具体硬件进行分离。</p>
-<h4 id="2：BLE-链路层广播的基本状态机"><a href="#2：BLE-链路层广播的基本状态机" class="headerlink" title="2：BLE 链路层广播的基本状态机"></a>2：BLE 链路层广播的基本状态机</h4><p>了解了上图的基本架构，我们开始讨论<code>BLE</code>协议栈内部的具体实现。本系列文章会从<code>BLE</code>协议栈的链路层开始逐渐向上讨论各层的功能和实现，本文介绍链路层的细节和实现。即下图所示部分：<br><img src="/2023/04/24/BleStack-link-advertising/ble-link-layer.png"></p>
+<p>通过引入一个抽象驱动层，实现向上提供通用、简单、统一的接口(基本射频收发、低功耗定时器）。这样BLE协议栈的实现就不用关心最底层使用的是什么硬件，实现和硬件解耦。<br>当我们替换其它硬件时，只需要根据芯片特性，在抽象驱动层中添加一些芯片特定的处理即可，而更上层的<code>BLE</code>协议栈则不需要做改动（前提是抽象驱动层保持对上层的接口不变）。<br>在源码目录<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/tree/dev/source/BleDrv">source&#x2F;BleDrv</a>下，我们就是基于nrf52840&#x2F;nrf51822 <code>mcu</code>的硬件外设<code>radio</code>、<code>rtc0</code>、以及<code>timer0</code>。实现了<code>BLE</code>协议栈需要使用的<code>BleRadio</code>以及低功耗定时器<code>BleLowerTimer</code>以及高精度定时器<code>BleHAccuaryTimer</code>。从而实现将协议栈的实现与底层具体硬件进行分离。</p>
+<h4 id="2：BLE-链路层广播的基本状态机"><a href="#2：BLE-链路层广播的基本状态机" class="headerlink" title="2：BLE 链路层广播的基本状态机"></a>2：BLE 链路层广播的基本状态机</h4><p>了解了上图的基本架构，我们开始讨论<code>BLE</code>协议栈内部的具体实现。本系列文章会从<code>BLE</code>协议栈的链路层开始逐渐向上讨论各层的功能和实现，本文介绍链路层广播相关的细节和实现。即下图所示部分：<br><img src="/2023/04/24/BleStack-link-advertising/ble-link-layer.png"></p>
 <br>
 
-<p>由于我们实现的是从机协议栈（被连接的设备），因此<strong>我们不考虑与连接发起端相关的几个状态。简单起见，我们也不考周期广播&#x2F;同步通道的特性</strong>。<br>因此，对于我们需要实现的从机协议栈来说，链路状态机可简化为下图所示：</p>
+<p>由于我们实现的是从机协议栈（被连接的设备），因此<strong>我们不考虑与连接发起端相关的几个状态。简单起见，我们也不考周期广播&#x2F;同步通道的特性</strong>。<br>因此，对于我们需要实现的从机协议栈来说，链路层状态机可简化为下图所示：</p>
 <p><img src="/2023/04/24/BleStack-link-advertising/base-state.png"></p>
 <p>有了上图所述的基本状态间关系，我们就可以实现链路层对应的状态机。</p>
 <p>通常<code>MCU</code>的<code>radio</code>外设，其内部含有一个状态寄存器，来指示当前<code>radio</code>是处于什么状态（如发送状态、接收状态等），为了尽量减少对硬件的依赖，我们不使用这种状态寄存器，而是在底层自己维护状态。</p>
 <p>我们只使用<code>radio</code>外设的<code>DISABLED</code>中断事件，至于<code>radio</code>是发送完后被关闭的，还是接收完后被关闭的，由我们自己实现的状态机来记录。<br><code>PS：这里使用DISABLED中断事件的考虑是，早期MCU射频（nrf51822）发送结束后，必需先关闭，才能再控制进入接收状态。而当前更好的MCU（nrf2840）的射频部分，发送结束后，可以直接控制进行接收，而不用先关闭。 不关闭，直接进行发送/接收状态的相互转换肯定效率更高，不过为了更具一般性，我们还是考虑使用：发送-&gt;关闭-&gt;接收-&gt;关闭-&gt;发送....这种收/发的切换模式。由于</code>BLE<code>规定的空中数据包之间的间隔为150us，这个时间足够硬件进行这种状态的转变。</code></p>
 <p>因此，从我们目前讨论到的简单情况来看，我们至少要在链路层中维持两个状态：广播态（advertising）、连接态（connection）。</p>
 <p>每次<code>radio</code>发送完并关闭后，或者接收完并关闭后，进入中断处理函数中，根据当前的状态来决定所需执行的动作。例如：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">LinkRadioEvtHandler</span><span class="params">(EnBleRadioEvt evt)</span></span><br><span class="line">&#123;</span><br><span class="line">    ....</span><br><span class="line">    <span class="comment">// 获取当前链路状态</span></span><br><span class="line">	state = CURRENT_STATE;	</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (state == ADVERTISING) &#123;</span><br><span class="line">        <span class="comment">// 广播状态下的相关处理</span></span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (state == CONNECTION) &#123;</span><br><span class="line">        <span class="comment">// 连接状态下的相关处理</span></span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">LinkRadioEvtHandler</span><span class="params">(EnBleRadioEvt evt)</span></span><br><span class="line">&#123;</span><br><span class="line">    ....</span><br><span class="line">    <span class="comment">// 获取当前链路状态</span></span><br><span class="line">    state = CURRENT_STATE;	</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (state == ADVERTISING) &#123;</span><br><span class="line">        <span class="comment">// 广播状态下的相关处理</span></span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (state == CONNECTION) &#123;</span><br><span class="line">        <span class="comment">// 连接状态下的相关处理</span></span><br><span class="line">        ......</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <br>
 <br>
 
-<p>我们对上述代码中，广播态下的相关处理进行细节展开，分析其内部更细致的状态机。<br>在 BLE <a href="https://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/">基础概念</a>一文中，我们介绍了普通广播的基本通讯模式形式如下图所示：<br><img src="/2023/04/24/BleStack-link-advertising/ble-adv.png"></p>
+<p>我们对上述代码中，广播态下的相关处理进行细节展开，分析其内部更细致的状态机。<br>在 BLE <a href="https://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/">基础概念</a>一文中，我们介绍了普通广播的基本通讯模式形式如下图所示：<br><img src="/2023/04/24/BleStack-link-advertising/ble-adv.png"><br>PS：图中的T_IFS表示帧间间隔（150us）</p>
 <p>即在普通广播（可连接，可扫描）状态下，存在的情形有：</p>
 <ol>
 <li>没有扫描，也没有连接请求：则设备每次广播周期时间到达时，依次在三个广播通道上进行广播。左下图所示。</li>
@@ -296,7 +299,7 @@
 <ol>
 <li><p>设备启动并开始广播后，首先应该进入广播—发送状态（<strong>ADV_TX</strong>）</p>
 </li>
-<li><p>收到完成事件（发送）后，应该进入广播—接收状态（<strong>ADV_RX</strong>），并启动接收等待超时定时器（按规范定义，如果对方有数据包，应该在150us的样子，就会发过来）<br>   2.1 超时前，收到连接请求时，进入连接态，执行连接建立相关过程（本文不涉及）<br>   2.2 超时前，收到扫描请求时，进入广播—发送扫描相应状态（<strong>ADV_TX_SCANRSP</strong>）</p>
+<li><p>收到完成发送事件后，应该进入广播—接收状态（<strong>ADV_RX</strong>），并启动接收等待超时定时器（按规范定义，如果对方有数据包，应该在150us的样子，就会发过来）<br>   2.1 超时前，收到连接请求时，进入连接态，执行连接建立相关过程（本文不涉及）<br>   2.2 超时前，收到扫描请求时，进入广播—发送扫描相应状态（<strong>ADV_TX_SCANRSP</strong>）</p>
 <ul>
 <li>当扫描响应数据发送完成后，需要再在下一个通道上继续广播，因此会再次进入广播—发送状态（<strong>ADV_TX</strong>）</li>
 </ul>
@@ -305,6 +308,22 @@
 </ol>
 <p>上述描述的都是，广播间隔到了后，我们需要执行的动作。但设备绝大部分时间都是空闲的，不发送数据也没有接收数据。因此，我们还需要一个广播空闲（<strong>ADV_IDLE</strong>）状态。如下图所示：<br><img src="/2023/04/24/BleStack-link-advertising/adv_idle.png"></p>
 <p>概括下来，可以用下图所示的状态机来表示：<br><img src="/2023/04/24/BleStack-link-advertising/adv-states.png"></p>
+<h4 id="3：具体实现"><a href="#3：具体实现" class="headerlink" title="3：具体实现"></a>3：具体实现</h4><p>链路层广播态相关的代码实现在文件<code>source/BleStack/BleLink/BleLinkAdvertising.c</code>中。<br>在函数<code>LinkAdvStateInit</code>中，我们注册了广播态使用的事件处理函数<code>LinkAdvRadioEvtHandler</code>，每当传输（发送&#x2F;接收）完成后，会根据当前状态来决定执行的动作，其逻辑如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//链路层广播态下的事件处理函数</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">LinkAdvRadioEvtHandler</span><span class="params">(EnBleRadioEvt evt)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 发送完成或接收完成</span></span><br><span class="line">    <span class="keyword">if</span>( BLE_RADIO_EVT_TRANS_DONE == evt )	</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 发送完成</span></span><br><span class="line">        <span class="keyword">if</span>( ADV_TX == s_blkAdvStateInfo.m_enAdvSubState ||  ADV_TX_SCANRSP == s_blkAdvStateInfo.m_enAdvSubState)</span><br><span class="line">        &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 收到完成事件，说明数据发送完了，启动发送的时候我们设置了radio disable后自动切换到接收模式。</span></span><br><span class="line">            <span class="comment">// 所以这里要关掉AutoToRx 的机制，不然接收完 radio进入disable后，又会再自动进入Rx模式</span></span><br><span class="line">            BleAutoToRxDisable();</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 处理发送完成事件</span></span><br><span class="line">            HandleAdvTxDone();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 接收完成</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( ADV_RX == s_blkAdvStateInfo.m_enAdvSubState)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 收到完成事件，说明数据接收完了，启动接收的时候我们设置了radio disable后自动切换到发送模式</span></span><br><span class="line">            <span class="comment">// 所以这里要关掉AutoToTx 的机制，不然接收完 radio进入disable后，又会再自动进入Tx模式</span></span><br><span class="line">            BleAutoToTxDisable();</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 处理接收完成事件</span></span><br><span class="line">            HandleAdvRxDone();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 接收等待超时（没收到扫描请求或连接请求）</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>( ADV_RX_TIMEOUT == s_blkAdvStateInfo.m_enAdvSubState )</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 切换到下一个通道继续广播</span></span><br><span class="line">            SwitchToNextChannel(ADV_CHANNEL_SWITCH_TO_NEXT);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述代码中有两个特别的函数：<code>BleAutoToRxDisable</code>和<code>BleAutoToTxDisable</code>。<br>这两个函数，与<code>Nordic</code>的自动收发切换，以及自动 TIFS 延迟特性有关。<br>PS：实际上这是属于硬件相关的特性，nordic系列的蓝牙芯片具有这个硬件特。该特性本不该引入到协议栈层面，但是这个硬件特性对于协议栈的实现很有用，可以简化很多操作，因此还是使用了。</p>
+<p>了解这个<code>Nordic</code>硬件特性之前，我们需要知道，BLE 规范定义了，空中两个连续的数据包之间需要有一个帧间间隔（IFS &#x3D; 150us），如下图所示：<br><img src="/2023/04/24/BleStack-link-advertising/IFS.png"><br>其中，C-&gt;P 表示<code>central</code>发送给<code>peripheral</code>的数据包。P-&gt;C 表示<code>peripheral</code>发送给<code>central</code>的数据包。</p>
+<p>如果用软件来实现帧间间隔，需要使用定时器来实现收到数据后，启动 150us 的定时器，定时器到期后再将数据发送出去。如果发送完后，对方可能还有数据包过来，那么发送数据后还要再起定时器，并在 150us 后超时，开始监听对方数据包。</p>
+<p>软件实现，在细节上比较麻烦。<code>Nordic</code>在硬件上有一个自动延迟特性。在源文件<code>source/ChipDrv/NrfDrv/nrf52840/NrfRadioDrv.c</code>中的函数<code>NrfRadioInit</code>里，有一个<code>NRF_RADIO-&gt;TIFS = TIFS_VALUE;</code>配置，该配置的作用就是使能硬件自动延迟特性。使能该特性后，硬件会自动在帧间延迟150us。<br>但是使能该硬件特性的另一个必要条件是：使能<code>Nordic</code>的自动收&#x2F;发（或发&#x2F;收）状态转换特性。<br>所谓自动收发切换，就是在接收（发送）完成后，硬件<code>Radio</code>自动启动进入发送（接收）模式，抽象描述如下图所示：<br><img src="/2023/04/24/BleStack-link-advertising/auto-switch.png"></p>
+<p>综上，当使能<code>Nordic</code>的自动收发状态转换特性，并且配置了<code>NRF_RADIO-&gt;TIFS = TIFS_VALUE</code>后，<code>Nordic</code>硬件就会自动在帧间插入延迟（IFS），如下图所示：<br><img src="/2023/04/24/BleStack-link-advertising/insert-IFS.png"></p>
+<p>该特性可以简化我们的协议栈实现。<br>当我们需要发送数据时，在启动发送前配置<code>完成后自动切换到接收</code>。当我们需要接收数据时，在启动接收前配置<code>完成后自动切换到发送</code>。</p>
+<p>例如，在源码文件<code>source/BleStack/BleLink/BleLinkAdvertising.c</code>中的切换到下一个通道进行广播的函数<code>SwitchToNextChannel</code>，其每次发送前会使能<strong>发送完成后自动切换到接收模式</strong>，这样发送完成后，<code>Radio</code>就自动进入接收模式了（进入接收模式看是否有连接请求或扫描请求）。如下所示：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">__INLINE <span class="type">static</span> <span class="type">void</span>  <span class="title function_">SwitchToNextChannel</span><span class="params">( u1 startFlag )</span></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 使能发送结束后自动进入接收模式</span></span><br><span class="line">    BleAutoToRxEnable();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 发送数据</span></span><br><span class="line">    BleRadioTxData(channel, s_blkAdvStateInfo.m_pu1LinkTxData, BLE_PDU_LENGTH);	</span><br><span class="line">    DEBUG_INFO(<span class="string">&quot;tx adv on channel:%d&quot;</span>, channel);</span><br><span class="line">    ....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上述配置，当我们收到发送完成事件后，硬件<code>Radio</code>就会自动切换到接收模式。广播态下，发送完成后，可能收到扫描请求（或连接请求），收到扫描请求需要发送预设的扫描响应数据。因此，在处理发送完成事件时（此时硬件已经自动开始切换到接收模式），我们可以设置，<strong>接收完成后再自动切换到发送模式</strong>（方便直接发送可能需要的扫描响应数据）。例如，源码文件<code>BleLinkAdvertising.c</code>中的<code>HandleAdvTxDone</code>函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">__INLINE <span class="type">static</span> <span class="type">void</span> <span class="title function_">HandleAdvTxDone</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 发送完成后在当前通道上开始接收（扫描请求/连接请求）</span></span><br><span class="line">    <span class="comment">// 发送前配置过发送完成自动切换到接收模式，因此，此刻硬件已经在切换接收模式了。</span></span><br><span class="line">    LinkAdvSubStateSwitch(ADV_RX);</span><br><span class="line">    DEBUG_INFO(<span class="string">&quot;switch to ADV_RX&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使能接收完成后自动切换发送模式（如果是扫描请求，就可以发送扫描响应数据了）</span></span><br><span class="line">    BleAutoToTxEnable();</span><br><span class="line">    <span class="comment">// 配置接收数据的buffer地址</span></span><br><span class="line">    BleRadioSimpleRx(s_blkAdvStateInfo.m_pu1LinkRxData);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动接收等待超时定时器</span></span><br><span class="line">    BleLPowerTimerStart(BLE_ADV_RX_TIMER, ADV_RX_WAIT_TIMEOUT, AdvRxWaitTimeoutHandler, <span class="literal">NULL</span>);		</span><br><span class="line">    DEBUG_INFO(<span class="string">&quot;rx on channel:%d&quot;</span>,s_blkAdvStateInfo.m_u1CurrentChannel);</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>理解了<code>Nordic</code>的<code>radio</code>模式自动切换机制，就能明白本节最开始介绍的链路层广播态下的事件处理函数<code>LinkAdvRadioEvtHandler</code>中的<code>BleAutoToRxDisable</code>和<code>BleAutoToTxDisable</code>的作用了。</p>
 
     </div>
 
@@ -322,7 +341,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/" title="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中">http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/</a>
+      <a href="http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/" title="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现">http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -372,14 +391,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">200k</span>
+    <span title="站点总字数">203k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:10</span>
+    <span title="站点阅读时长">4:14</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
