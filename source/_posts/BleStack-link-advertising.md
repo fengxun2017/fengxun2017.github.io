@@ -1,5 +1,5 @@
 ---
-title: 实现一个精简的BLE从机协议栈—3—链路层广播状态机实现--更新中
+title: 实现一个精简的BLE从机协议栈—3—链路层广播状态机实现
 date: 2023/4/24
 categories: 
 - BLE协议栈
@@ -30,18 +30,18 @@ categories:
 
 通过引入一个抽象驱动层，实现向上提供通用、简单、统一的接口(基本射频收发、低功耗定时器）。这样BLE协议栈的实现就不用关心最底层使用的是什么硬件，实现和硬件解耦。
 当我们替换其它硬件时，只需要根据芯片特性，在抽象驱动层中添加一些芯片特定的处理即可，而更上层的`BLE`协议栈则不需要做改动（前提是抽象驱动层保持对上层的接口不变）。
-在源码目录[source/BleDrv](https://github.com/fengxun2017/dh_ble/tree/dev/source/BleDrv)下，我们就是基于nrf51840/nrf51822 `mcu`的硬件外设`radio`、`rtc0`、以及`timer0`。实现了`BLE`协议栈需要使用的`BleRadio`以及低功耗定时器`BleLowerTimer`以及高精度定时器`BleHAccuaryTimer`。从而实现将协议栈的实现与底层具体硬件进行分离。
+在源码目录[source/BleDrv](https://github.com/fengxun2017/dh_ble/tree/dev/source/BleDrv)下，我们就是基于nrf52840/nrf51822 `mcu`的硬件外设`radio`、`rtc0`、以及`timer0`。实现了`BLE`协议栈需要使用的`BleRadio`以及低功耗定时器`BleLowerTimer`以及高精度定时器`BleHAccuaryTimer`。从而实现将协议栈的实现与底层具体硬件进行分离。
 
 
 #### 2：BLE 链路层广播的基本状态机
 
-了解了上图的基本架构，我们开始讨论`BLE`协议栈内部的具体实现。本系列文章会从`BLE`协议栈的链路层开始逐渐向上讨论各层的功能和实现，本文介绍链路层的细节和实现。即下图所示部分：
+了解了上图的基本架构，我们开始讨论`BLE`协议栈内部的具体实现。本系列文章会从`BLE`协议栈的链路层开始逐渐向上讨论各层的功能和实现，本文介绍链路层广播相关的细节和实现。即下图所示部分：
 ![](./BleStack-link-advertising/ble-link-layer.png)
 
 <br>
 
 由于我们实现的是从机协议栈（被连接的设备），因此**我们不考虑与连接发起端相关的几个状态。简单起见，我们也不考周期广播/同步通道的特性**。
-因此，对于我们需要实现的从机协议栈来说，链路状态机可简化为下图所示：
+因此，对于我们需要实现的从机协议栈来说，链路层状态机可简化为下图所示：
 
 ![](./BleStack-link-advertising/base-state.png)
 
@@ -60,7 +60,7 @@ void LinkRadioEvtHandler(EnBleRadioEvt evt)
 {
     ....
     // 获取当前链路状态
-	state = CURRENT_STATE;	
+    state = CURRENT_STATE;	
 
     if (state == ADVERTISING) {
         // 广播状态下的相关处理
@@ -78,7 +78,7 @@ void LinkRadioEvtHandler(EnBleRadioEvt evt)
 我们对上述代码中，广播态下的相关处理进行细节展开，分析其内部更细致的状态机。
 在 BLE [基础概念](https://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/)一文中，我们介绍了普通广播的基本通讯模式形式如下图所示：
 ![](./BleStack-link-advertising/ble-adv.png)
-
+PS：图中的T_IFS表示帧间间隔（150us）
 
 即在普通广播（可连接，可扫描）状态下，存在的情形有：
  1. 没有扫描，也没有连接请求：则设备每次广播周期时间到达时，依次在三个广播通道上进行广播。左下图所示。
@@ -88,7 +88,7 @@ void LinkRadioEvtHandler(EnBleRadioEvt evt)
 
 根据上述情形，在代码实现上我们，需要考虑：
  1. 设备启动并开始广播后，首先应该进入广播—发送状态（**ADV_TX**）
- 2. 收到完成事件（发送）后，应该进入广播—接收状态（**ADV_RX**），并启动接收等待超时定时器（按规范定义，如果对方有数据包，应该在150us的样子，就会发过来）
+ 2. 收到完成发送事件后，应该进入广播—接收状态（**ADV_RX**），并启动接收等待超时定时器（按规范定义，如果对方有数据包，应该在150us的样子，就会发过来）
    2.1 超时前，收到连接请求时，进入连接态，执行连接建立相关过程（本文不涉及）
    2.2 超时前，收到扫描请求时，进入广播—发送扫描相应状态（**ADV_TX_SCANRSP**）
     - 当扫描响应数据发送完成后，需要再在下一个通道上继续广播，因此会再次进入广播—发送状态（**ADV_TX**）
@@ -101,5 +101,111 @@ void LinkRadioEvtHandler(EnBleRadioEvt evt)
 
 概括下来，可以用下图所示的状态机来表示：
 ![](./BleStack-link-advertising/adv-states.png)
+
+
+#### 3：具体实现
+
+链路层广播态相关的代码实现在文件`source/BleStack/BleLink/BleLinkAdvertising.c`中。
+在函数`LinkAdvStateInit`中，我们注册了广播态使用的事件处理函数`LinkAdvRadioEvtHandler`，每当传输（发送/接收）完成后，会根据当前状态来决定执行的动作，其逻辑如下所示：
+```c
+//链路层广播态下的事件处理函数
+static void LinkAdvRadioEvtHandler(EnBleRadioEvt evt)
+{
+    // 发送完成或接收完成
+    if( BLE_RADIO_EVT_TRANS_DONE == evt )	
+    {
+
+        // 发送完成
+        if( ADV_TX == s_blkAdvStateInfo.m_enAdvSubState ||  ADV_TX_SCANRSP == s_blkAdvStateInfo.m_enAdvSubState)
+        {
+            
+            // 收到完成事件，说明数据发送完了，启动发送的时候我们设置了radio disable后自动切换到接收模式。
+            // 所以这里要关掉AutoToRx 的机制，不然接收完 radio进入disable后，又会再自动进入Rx模式
+            BleAutoToRxDisable();
+            
+            // 处理发送完成事件
+            HandleAdvTxDone();
+        }
+        // 接收完成
+        else if( ADV_RX == s_blkAdvStateInfo.m_enAdvSubState)
+        {
+            // 收到完成事件，说明数据接收完了，启动接收的时候我们设置了radio disable后自动切换到发送模式
+            // 所以这里要关掉AutoToTx 的机制，不然接收完 radio进入disable后，又会再自动进入Tx模式
+            BleAutoToTxDisable();
+
+            // 处理接收完成事件
+            HandleAdvRxDone();
+        }
+        // 接收等待超时（没收到扫描请求或连接请求）
+        else if( ADV_RX_TIMEOUT == s_blkAdvStateInfo.m_enAdvSubState )
+        {
+            // 切换到下一个通道继续广播
+            SwitchToNextChannel(ADV_CHANNEL_SWITCH_TO_NEXT);
+        }
+    }
+}
+```
+
+上述代码中有两个特别的函数：`BleAutoToRxDisable`和`BleAutoToTxDisable`。
+这两个函数，与`Nordic`的自动收发切换，以及自动 TIFS 延迟特性有关。
+PS：实际上这是属于硬件相关的特性，nordic系列的蓝牙芯片具有这个硬件特。该特性本不该引入到协议栈层面，但是这个硬件特性对于协议栈的实现很有用，可以简化很多操作，因此还是使用了。
+
+了解这个`Nordic`硬件特性之前，我们需要知道，BLE 规范定义了，空中两个连续的数据包之间需要有一个帧间间隔（IFS = 150us），如下图所示：
+![](./BleStack-link-advertising/IFS.png)
+其中，C->P 表示`central`发送给`peripheral`的数据包。P->C 表示`peripheral`发送给`central`的数据包。
+
+如果用软件来实现帧间间隔，需要使用定时器来实现收到数据后，启动 150us 的定时器，定时器到期后再将数据发送出去。如果发送完后，对方可能还有数据包过来，那么发送数据后还要再起定时器，并在 150us 后超时，开始监听对方数据包。
+
+软件实现，在细节上比较麻烦。`Nordic`在硬件上有一个自动延迟特性。在源文件`source/ChipDrv/NrfDrv/nrf52840/NrfRadioDrv.c`中的函数`NrfRadioInit`里，有一个`NRF_RADIO->TIFS = TIFS_VALUE;`配置，该配置的作用就是使能硬件自动延迟特性。使能该特性后，硬件会自动在帧间延迟150us。
+但是使能该硬件特性的另一个必要条件是：使能`Nordic`的自动收/发（或发/收）状态转换特性。
+所谓自动收发切换，就是在接收（发送）完成后，硬件`Radio`自动启动进入发送（接收）模式，抽象描述如下图所示：
+![](./BleStack-link-advertising/auto-switch.png)
+
+综上，当使能`Nordic`的自动收发状态转换特性，并且配置了`NRF_RADIO->TIFS = TIFS_VALUE`后，`Nordic`硬件就会自动在帧间插入延迟（IFS），如下图所示：
+![](./BleStack-link-advertising/insert-IFS.png)
+
+该特性可以简化我们的协议栈实现。
+当我们需要发送数据时，在启动发送前配置`完成后自动切换到接收`。当我们需要接收数据时，在启动接收前配置`完成后自动切换到发送`。
+
+例如，在源码文件`source/BleStack/BleLink/BleLinkAdvertising.c`中的切换到下一个通道进行广播的函数`SwitchToNextChannel`，其每次发送前会使能**发送完成后自动切换到接收模式**，这样发送完成后，`Radio`就自动进入接收模式了（进入接收模式看是否有连接请求或扫描请求）。如下所示：
+
+```c
+__INLINE static void  SwitchToNextChannel( u1 startFlag )
+{
+    ...
+    // 使能发送结束后自动进入接收模式
+    BleAutoToRxEnable();
+
+    // 发送数据
+    BleRadioTxData(channel, s_blkAdvStateInfo.m_pu1LinkTxData, BLE_PDU_LENGTH);	
+    DEBUG_INFO("tx adv on channel:%d", channel);
+    ....
+}
+```
+
+通过上述配置，当我们收到发送完成事件后，硬件`Radio`就会自动切换到接收模式。广播态下，发送完成后，可能收到扫描请求（或连接请求），收到扫描请求需要发送预设的扫描响应数据。因此，在处理发送完成事件时（此时硬件已经自动开始切换到接收模式），我们可以设置，**接收完成后再自动切换到发送模式**（方便直接发送可能需要的扫描响应数据）。例如，源码文件`BleLinkAdvertising.c`中的`HandleAdvTxDone`函数：
+```c
+__INLINE static void HandleAdvTxDone(void)
+{
+    ...
+    // 发送完成后在当前通道上开始接收（扫描请求/连接请求）
+    // 发送前配置过发送完成自动切换到接收模式，因此，此刻硬件已经在切换接收模式了。
+    LinkAdvSubStateSwitch(ADV_RX);
+    DEBUG_INFO("switch to ADV_RX");
+
+    // 使能接收完成后自动切换发送模式（如果是扫描请求，就可以发送扫描响应数据了）
+    BleAutoToTxEnable();
+    // 配置接收数据的buffer地址
+    BleRadioSimpleRx(s_blkAdvStateInfo.m_pu1LinkRxData);
+
+    // 启动接收等待超时定时器
+    BleLPowerTimerStart(BLE_ADV_RX_TIMER, ADV_RX_WAIT_TIMEOUT, AdvRxWaitTimeoutHandler, NULL);		
+    DEBUG_INFO("rx on channel:%d",s_blkAdvStateInfo.m_u1CurrentChannel);
+    ...
+}
+```
+
+理解了`Nordic`的`radio`模式自动切换机制，就能明白本节最开始介绍的链路层广播态下的事件处理函数`LinkAdvRadioEvtHandler`中的`BleAutoToRxDisable`和`BleAutoToTxDisable`的作用了。
+
 
 
