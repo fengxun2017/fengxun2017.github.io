@@ -63,7 +63,7 @@ categories:
 并且，这个误差需要考虑连接双方误差的总和，即实际误差应该是 **central的误差 + peripheral的误差**（这是最大误差，发送在两个设备的时间误差方向相反时）。对于 1秒 连接间隔，在`central`/`peripheral` 时钟误差都为`100ppm`的条件下，整体误差最大为`1000000us  *(100+100)/1000000 = ±200us`。
 这种情况下，在实现`peripheral`的链路层时，需要在理论唤醒时间点（**anchor point**）之前**200us**就唤醒设备，如果一直没监听到数据，也需要持续监听直到理论时间点之后**200us**的时间（即额外监听时间），如下图所示：
 ![](./BleStack-hardware-driver/windowWidening.png)
-PS：这也是规范中的连接请求**CONNECT_IND**为什么会有SCA参数（Sleep clock accuracy），因为`peripheral`需要知道`central`的时钟误差，并结合自己的时钟误差，从而得到可能的最大误差。
+PS：这也是规范中的连接请求**CONNECT_IND**为什么会有SCA参数（Sleep clock accuracy），因为`peripheral`需要知道`central`的时钟误差，并结合自己的时钟误差，从而得到可能的最大误差。这个额外的监听时间就是规范中的`window widening`
 
 理论唤醒的时间点，协议规范称为**anchor point**，如上图所示。
 由于上述时钟误差的原因，`peripheral`是无法准确知道这个**anchor point**实际发生时间点（即`central`发送的数据包的到达时间）。所以`peripheral`在每次连接事件中收到`central`的数据包，都可以看做是一次重新同步，并更新下一次唤醒的理论时间点。其逻辑如下图所示：
