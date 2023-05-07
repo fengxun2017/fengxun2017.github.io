@@ -19,28 +19,29 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
-<meta property="og:type" content="website">
-<meta property="og:title" content="fx">
-<meta property="og:url" content="http://fengxun2017.github.io/categories/index.html">
+    <meta name="description" content="本文描述 BLE 链路层连接的建立。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实现一个精简的BLE从机协议栈—4—链路层连接建立过程——待完成">
+<meta property="og:url" content="http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/index.html">
 <meta property="og:site_name" content="fx">
-<meta property="og:description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+<meta property="og:description" content="本文描述 BLE 链路层连接的建立。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-10-29T09:38:56.000Z">
-<meta property="article:modified_time" content="2022-11-05T06:39:11.454Z">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/connection-created.png">
+<meta property="article:published_time" content="2023-05-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-05-07T13:59:27.580Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/connection-created.png">
 
 
-<link rel="canonical" href="http://fengxun2017.github.io/categories/">
+<link rel="canonical" href="http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":false,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/categories/index.html","path":"categories/index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/","path":"2023/05/07/BleStack-link-connection/","title":"实现一个精简的BLE从机协议栈—4—链路层连接建立过程——待完成"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>分类 | fx
-</title>
+<title>实现一个精简的BLE从机协议栈—4—链路层连接建立过程——待完成 | fx</title>
   
 
 
@@ -109,7 +110,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -122,6 +123,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%EF%BC%9A%E8%BF%9E%E6%8E%A5%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">1：连接的创建</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -171,41 +173,146 @@
 </noscript>
 
 
-    <div class="main-inner page posts-expand">
+    <div class="main-inner post posts-expand">
 
 
-    
-    
-    
-    <div class="post-block" lang="zh-CN"><header class="post-header">
+  
 
-<h1 class="post-title" itemprop="name headline">
-</h1>
 
-<div class="post-meta-container">
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="实现一个精简的BLE从机协议栈—4—链路层连接建立过程——待完成 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          实现一个精简的BLE从机协议栈—4—链路层连接建立过程——待完成
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-05-07 00:00:00" itemprop="dateCreated datePublished" datetime="2023-05-07T00:00:00+08:00">2023-05-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/BLE%E5%8D%8F%E8%AE%AE%E6%A0%88/" itemprop="url" rel="index"><span itemprop="name">BLE协议栈</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>787</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
 </div>
 
-</header>
+        </div>
+      </header>
 
-      
-      
-      <div class="post-body"><div class="category-all-page">
-  <div class="category-all-title">
-    目前共计 7 个分类
-  </div>
-  <div class="category-all">
-    <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/BLE%E5%8D%8F%E8%AE%AE%E6%A0%88/">BLE协议栈</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/FreeRTOS/">FreeRTOS</a><span class="category-list-count">27</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/TCP-IP/">TCP/IP</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/memory-ordering%E7%9B%B8%E5%85%B3/">memory ordering相关</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/my-life/">my life</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">性能优化</a><span class="category-list-count">1</span></li></ul>
-  </div>
-</div>
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+本文描述 BLE 链路层连接的建立。
+</center>
 
-      </div>
-      
-      
-      
+<span id="more"></span>
+
+<hr>
+<ul>
+<li>本系列文章，基于<code>nordic nrf52840</code> MCU，来实现一个精简的 BLE 从机协议栈。</li>
+<li>已经实现的协议栈地址：<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/tree/dev">https://github.com/fengxun2017/dh_ble&#x2F;tree&#x2F;dev</a>，目前在dev分支进行更新开发。早期是基于<code>nrf51822</code>实现了<code>BLE 4.0</code>规范中从机协议栈中的必要部分，实现了可以和手机连接并传输数据。目前手上只有<code>nrf52840</code>了，当前基于<code>nrf52840</code>实现底层需要的驱动，并通过该系列文章，逐步修改一些上层不合理的地方。</li>
+<li>该系列文章，涉及到的协议部分会基于<code>BLE 5.3</code>规范进行描述，但仍旧只实现<strong>最简单、必要</strong>的部分（能连上手机，进行通信即可），并基于<code>iphone</code>进行测试。因此，<code>android</code>可能会由于发送一些我没实现的指令，出现兼容性问题。</li>
+<li>本系列文章，只是用来作为学习 BLE 协议的参考，从硬件层驱动，链路层，到上层协议，都以最直接，简单的方式来实现。</li>
+</ul>
+<br>
+
+<p><strong>因为我们实现的是从机协议栈，因此本文介绍的链路层连接建立过程，都是基于从机角度来描述的。</strong></p>
+<h4 id="1：连接的创建"><a href="#1：连接的创建" class="headerlink" title="1：连接的创建"></a>1：连接的创建</h4><p>在<a href="https://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/">链路层广播状态机实现</a>一文中，我们介绍了设备在每次再某个通道广播一个数据包后，都会在当前通道上再监听一会（IFS&#x3D;150us），看是否有设备发起连接请求，如下图所示：<br><img src="/2023/05/07/BleStack-link-connection/connection-created.png"><br>PS：图中的T_IFS表示帧间间隔（150us）</p>
+<p>在上图中，设备在 38 通道广播完数据包后，监听到了连接请求数据包，则设备进入连接态，并作为从机角色（或称为Peripheral）。</p>
+<p>BLE协议中，对于连接发起端的设备，只要它发出了连接请求指令（ CONNECT_IND），就认为设备就进入了<strong>连接创建</strong>状态，并作为主机角色（或称为Central）；对于被连接的设备，只要它接收到了连接请求，就认为设备进入了<strong>连接创建</strong>状态，并作为从机角色（或称为Peripheral）。</p>
+
     </div>
 
     
     
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/" title="实现一个精简的BLE从机协议栈—4—链路层连接建立过程——待完成">http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/05/03/my-life/" rel="prev" title="life">
+                  <i class="fa fa-chevron-left"></i> life
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
 
 
 </div>

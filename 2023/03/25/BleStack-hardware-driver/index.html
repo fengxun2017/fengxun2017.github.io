@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/windowWidening.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/re-synchronize.png">
 <meta property="article:published_time" content="2023-03-24T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-04-10T15:23:19.211Z">
+<meta property="article:modified_time" content="2023-05-04T15:08:44.608Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/ble-adv.png">
@@ -140,7 +140,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-count">40</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -279,7 +279,7 @@
 <p>利用定时器，可以实现周期性的唤醒设备，进行数据收发。<br>设备大部分可以处于休眠状态，当交互周期到达时（定时器超时），唤醒设备，进行数据收发。之后再次进入休眠状态，等待下一次定时器超时。<br>例如，对于<code>peripheral</code>设备来说，只需要在每次连接间隔（connection interval）到期时，唤醒设备并开始监听<code>central</code>发送过来的数据，如下图所示：<br><img src="/2023/03/25/BleStack-hardware-driver/anchor-point.png"></p>
 <p>但现实中存在问题是，定时器都是有误差的。例如，用来实现周期唤醒设备的 RTC定时器，在其时钟精度为<code>100ppm</code>的条件下，1秒钟的定时，会存在 <strong>±100us</strong> 的误差。</p>
 <p>因此，对于<code>peripheral</code>设备，连接间隔 1秒 的情况下，我们不能刚好在 第1秒 这个理论时间点（假设0秒是第一次交互）才唤醒设备，让其监听（<code>central</code>）数据，而是需要考虑定时器误差问题，并根据这个误差提前唤醒设备，或监听额外的时间。</p>
-<p>并且，这个误差需要考虑连接双方误差的总和，即实际误差应该是 <strong>central的误差 + peripheral的误差</strong>（这是最大误差，发送在两个设备的时间误差方向相反时）。对于 1秒 连接间隔，在<code>central</code>&#x2F;<code>peripheral</code> 时钟误差都为<code>100ppm</code>的条件下，整体误差最大为<code>1000000us  *(100+100)/1000000 = ±200us</code>。<br>这种情况下，在实现<code>peripheral</code>的链路层时，需要在理论唤醒时间点（<strong>anchor point</strong>）之前<strong>200us</strong>就唤醒设备，如果一直没监听到数据，也需要持续监听直到理论时间点之后<strong>200us</strong>的时间（即额外监听时间），如下图所示：<br><img src="/2023/03/25/BleStack-hardware-driver/windowWidening.png"><br>PS：这也是规范中的连接请求<strong>CONNECT_IND</strong>为什么会有SCA参数（Sleep clock accuracy），因为<code>peripheral</code>需要知道<code>central</code>的时钟误差，并结合自己的时钟误差，从而得到可能的最大误差。</p>
+<p>并且，这个误差需要考虑连接双方误差的总和，即实际误差应该是 <strong>central的误差 + peripheral的误差</strong>（这是最大误差，发送在两个设备的时间误差方向相反时）。对于 1秒 连接间隔，在<code>central</code>&#x2F;<code>peripheral</code> 时钟误差都为<code>100ppm</code>的条件下，整体误差最大为<code>1000000us  *(100+100)/1000000 = ±200us</code>。<br>这种情况下，在实现<code>peripheral</code>的链路层时，需要在理论唤醒时间点（<strong>anchor point</strong>）之前<strong>200us</strong>就唤醒设备，如果一直没监听到数据，也需要持续监听直到理论时间点之后<strong>200us</strong>的时间（即额外监听时间），如下图所示：<br><img src="/2023/03/25/BleStack-hardware-driver/windowWidening.png"><br>PS：这也是规范中的连接请求<strong>CONNECT_IND</strong>为什么会有SCA参数（Sleep clock accuracy），因为<code>peripheral</code>需要知道<code>central</code>的时钟误差，并结合自己的时钟误差，从而得到可能的最大误差。这个额外的监听时间就是规范中的<code>window widening</code></p>
 <p>理论唤醒的时间点，协议规范称为<strong>anchor point</strong>，如上图所示。<br>由于上述时钟误差的原因，<code>peripheral</code>是无法准确知道这个<strong>anchor point</strong>实际发生时间点（即<code>central</code>发送的数据包的到达时间）。所以<code>peripheral</code>在每次连接事件中收到<code>central</code>的数据包，都可以看做是一次重新同步，并更新下一次唤醒的理论时间点。其逻辑如下图所示：<br><img src="/2023/03/25/BleStack-hardware-driver/re-synchronize.png"><br>因此，实际实现定时器周期唤醒时，我们使用的是单次定时，每次收到数据包后，再启动下一次连接事件的定时。</p>
 <h4 id="3——nrf52840-硬件准备"><a href="#3——nrf52840-硬件准备" class="headerlink" title="3——nrf52840 硬件准备"></a>3——nrf52840 硬件准备</h4><p>基于前文所述，我们需要使用 nrf52840 的 radio外设，作为数据收发载体。<br>需要注意的是，nrf52840 的 radio 是由高频时钟（HFCLK）驱动的，对高频时钟的精度有要求（否则信号频率不准），因此需要使用外部晶振作为高频时钟输入源，来提供较为精确的HFCLK。在源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfClockDrv.c">nrf52840&#x2F;NrfClockDrv.c</a>中实现了<code>HFCLK</code>配置输入源为外部晶振。</p>
 <p>此外，我们还使用了 RTC 硬件定时器，来实现周期广播，以及连接后的周期交互。基于前文第二节所述，在源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfRtcDrv.c">nrf52840&#x2F;NrfRtcDrv.c</a>的实现中，我们实现的是单次 RTC定时器（每次超时中断发生后，在中断里关闭超时事件）。<br><strong>需要注意</strong>，RTC 的驱动源来自 MCU 内部的低频时钟（LFCLK——32768 HZ），低频时钟的输入源可以是外部晶振，也可以是内部RC 振荡器产生，源码文件<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfClockDrv.c">nrf52840&#x2F;NrfClockDrv.c</a>中启动LFCLK时可以配置。<br>我的开发板上没有外部晶振，因此配置的使用内部 RC 振荡器作为输入源。<br>RC 振荡器作为输入源，会使得LFCK的精度比较低，进而导致RTC定时器精度低，不适合用来作为协议栈的时序同步时钟。因此需要对RC 振荡器进行周期校准，这部分功能实现在<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/blob/dev/source/ChipDrv/NrfDrv/nrf52840/NrfClockDrv.c">nrf52840&#x2F;NrfClockDrv.c</a>中。 一般1s 校准一次就可以了。</p>
@@ -359,14 +359,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">203k</span>
+    <span title="站点总字数">204k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:14</span>
+    <span title="站点阅读时长">4:15</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
