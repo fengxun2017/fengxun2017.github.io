@@ -1,6 +1,6 @@
 ---
-title: 实现一个精简的BLE从机协议栈—4—链路层连接建立过程
-date: 2023/5/10
+title: 实现一个精简的BLE从机协议栈—4—链路层连接建立过程——未完成
+date: 2023/5/7
 categories: 
 - BLE协议栈
 ---
@@ -29,7 +29,12 @@ categories:
 ![](./BleStack-link-connection/connection-created.png)
 PS：图中的T_IFS表示帧间间隔（150us）
 
-在上图中，设备在 38 通道广播完数据包后，监听到了连接请求数据包，则设备进入连接态，并作为从机角色（或称为Peripheral）。
+在上图中，设备在 38 通道广播完数据包后，监听到了连接请求数据包，则设备**进入连接态**，并作为从机角色（或称为Peripheral）。
 
-BLE协议中，对于连接发起端的设备，只要它发出了连接请求指令（ CONNECT_IND），就认为设备就进入了**连接创建**状态，并作为主机角色（或称为Central）；对于被连接的设备，只要它接收到了连接请求，就认为设备进入了**连接创建**状态，并作为从机角色（或称为Peripheral）。
+需要注意的一个概念是：在BLE协议中，对于连接发起端的设备，只要它发出了连接请求指令（ CONNECT_IND），就认为设备就进入了**连接创建**状态，并作为主机角色（或称为Central）；对于被连接的设备，只要它接收到了连接请求，就认为设备进入了**连接创建**状态，并作为从机角色（或称为Peripheral）。
 
+为了更详细的了解BLE连接相关内容，有必要详细介绍连接请求（CONNECT_IND）中的内容。在文章[BLE链路层包格式](https://fengxun2017.github.io/2023/04/03/BleStack-link-packet/)中，我们介绍了BLE广播通道的空中数据包的基本形式，如下图所示：（不考虑 LE Coded和 CTE）
+![](./BleStack-link-connection/base-packet.png)
+
+
+连接请求指令（CONNECT_IND）是在广播通道下发送的，所以其数据包结构和上图一致。对于连接请求，则 `type` = CONNECT_IND(4bits值为：0101)，`Payload` 中包含了 CONNECT_IND 的具体信息，CONNECT_IND完整的数据包内容如下图所示：

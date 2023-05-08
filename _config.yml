@@ -111,10 +111,18 @@ symbols_count_time:
 theme: next
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
-deploy:
-  type: git
-  repository: 
-    git@github.com:fengxun2017/fengxun2017.github.io.git,main
-    git@gitee.com:fengxun2023/fengxun2023.git,master
+#deploy:
+  #type: git
+  #repository: 
+    #github: git@github.com:fengxun2017/fengxun2017.github.io.git,main
+    #gitee: git@gitee.com:fengxun2017/fengxun2017.git,master
 
   #branch: main
+
+deploy:
+  - type: git
+    repository: git@github.com:fengxun2017/fengxun2017.github.io.git
+    branch: main
+  - type: git
+    repository: git@gitee.com:fengxun2017/fengxun2017.git
+    branch: master
