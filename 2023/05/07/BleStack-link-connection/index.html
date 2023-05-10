@@ -27,8 +27,10 @@
 <meta property="og:description" content="本文描述 BLE 链路层连接的建立。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/connection-created.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/base-packet.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/connect-ind.png">
 <meta property="article:published_time" content="2023-05-06T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-05-07T14:59:03.842Z">
+<meta property="article:modified_time" content="2023-05-09T16:07:27.690Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/connection-created.png">
@@ -232,7 +234,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>787</span>
+      <span>1k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -267,8 +269,10 @@
 
 <p><strong>因为我们实现的是从机协议栈，因此本文介绍的链路层连接建立过程，都是基于从机角度来描述的。</strong></p>
 <h4 id="1：连接的创建"><a href="#1：连接的创建" class="headerlink" title="1：连接的创建"></a>1：连接的创建</h4><p>在<a href="https://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/">链路层广播状态机实现</a>一文中，我们介绍了设备在每次再某个通道广播一个数据包后，都会在当前通道上再监听一会（IFS&#x3D;150us），看是否有设备发起连接请求，如下图所示：<br><img src="/2023/05/07/BleStack-link-connection/connection-created.png"><br>PS：图中的T_IFS表示帧间间隔（150us）</p>
-<p>在上图中，设备在 38 通道广播完数据包后，监听到了连接请求数据包，则设备进入连接态，并作为从机角色（或称为Peripheral）。</p>
-<p>BLE协议中，对于连接发起端的设备，只要它发出了连接请求指令（ CONNECT_IND），就认为设备就进入了<strong>连接创建</strong>状态，并作为主机角色（或称为Central）；对于被连接的设备，只要它接收到了连接请求，就认为设备进入了<strong>连接创建</strong>状态，并作为从机角色（或称为Peripheral）。</p>
+<p>在上图中，设备在 38 通道广播完数据包后，监听到了连接请求数据包，则设备<strong>进入连接态</strong>，并作为从机角色（或称为Peripheral）。</p>
+<p>需要注意的一个概念是：在BLE协议中，对于连接发起端的设备，只要它发出了连接请求指令（ CONNECT_IND），就认为设备就进入了<strong>连接创建</strong>状态，并作为主机角色（或称为Central）；对于被连接的设备，只要它接收到了连接请求，就认为设备进入了<strong>连接创建</strong>状态，并作为从机角色（或称为Peripheral）。</p>
+<p>为了更详细的了解BLE连接相关内容，有必要详细介绍连接请求（CONNECT_IND）中的内容。在文章<a href="https://fengxun2017.github.io/2023/04/03/BleStack-link-packet/">BLE链路层包格式</a>中，我们介绍了BLE广播通道的空中数据包的基本形式，如下图所示：（不考虑 LE Coded和 CTE）<br><img src="/2023/05/07/BleStack-link-connection/base-packet.png"></p>
+<p>连接请求指令（CONNECT_IND）是在广播通道下发送的，所以其数据包结构和上图一致。对于连接请求，则 <code>type</code> &#x3D; CONNECT_IND(4bits值为：0101)，<code>Payload</code> 中包含了 CONNECT_IND 的具体信息，CONNECT_IND完整的数据包内容如下图所示：<br><img src="/2023/05/07/BleStack-link-connection/connect-ind.png"></p>
 
     </div>
 
