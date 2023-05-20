@@ -15,7 +15,7 @@
     "hexo": "^6.3.0",
     "hexo-asset-image": "github:CodeFalling/hexo-asset-image",
     "hexo-baidu-url-submit": "^0.0.6",
-    "hexo-bridge": "^1.0.9",
+    "hexo-bridge": "^1.2.0",
     "hexo-deployer-git": "^3.0.0",
     "hexo-filter-image": "^1.2.3",
     "hexo-generator-archive": "^2.0.0",
