@@ -72,7 +72,7 @@ BLE 链路层数据包的基本格式（LE Uncoded）如下所示：
 **ChSel：** BLE5.0 新增了低功耗通道选择算法#2（ LE Channel Selection Algorithm #2），该位就是指示是否支持这个新的通道选择算法。 这个算法更复杂，我们不实现这个通道选择，只支持以前的 Algorithm #1，实现中我们会配置为 ChSel = 0
 **TxAdd，RxAdd：** 如果后面的 payload 中携带了地址信息，TxAdd/RxAdd指明发送/接收地址的类型（0表示public，1表示random ）
 **length：** 表明后面的 payload 长度
-**payload：** 根据type类型而定，例如type类型是可连接可扫描的普通广播时，payload中的数据就是设备地址+广播数据。如下图所示：
+**payload：** 根据type而定，例如type=0（表示可连接可扫描的普通广播）时，payload中的数据就是设备地址+广播数据。如下图所示：
 ![](./BleStack-link-packet/ADV_IND.jpg)
 
 
