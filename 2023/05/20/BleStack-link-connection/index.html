@@ -36,7 +36,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2023/05/20/BleStack-link-connection/chm-hop.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/05/20/BleStack-link-connection/first-packet-time.png">
 <meta property="article:published_time" content="2023-05-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-05-20T08:48:17.338Z">
+<meta property="article:modified_time" content="2023-05-20T09:26:56.066Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2023/05/20/BleStack-link-connection/three-steps.png">
@@ -317,8 +317,8 @@
 <p>如上图，当主机（central）发出连接请求后，主&#x2F;从设备第一次交互（连接事件）过程为：</p>
 <ul>
 <li>首先经过一个固定的延迟 transmitWindowDelay（1.25ms）</li>
-<li>再经过一个延迟 transmitWindowOffset （central 决定）</li>
-<li>之后是一个 Transmit Window，central的第一个数据包在这个窗口内发出即可，窗口大小为 transmitWindowSize。</li>
+<li>再经过一个延迟 transmitWindowOffset （由CONNECT_IND中的 <strong>WinOffset</strong> 决定）</li>
+<li>之后是一个 Transmit Window，central的第一个数据包在这个窗口内发出即可，窗口大小为 transmitWindowSize（由CONNECT_IND中的 <strong>WinSize</strong>决定）。</li>
 </ul>
 <p>由于 Transmit Window 的存在，从机（peripheral）接收到第一个数据包的时间是不确定的。因此，从机需要在 transmitWindowDelay + transmitWindowOffset 之后一直保持监听，直到收到central发送过来的第一个数据包。 即：<br> transmitWindowOffset &lt;&#x3D; <strong>first pack time</strong> &lt;&#x3D; transmitWindowOffset + transmitWindowSize。<br> 当完成第一次数据交互后，后续的交互都按照连接间隔（connection interval）周期进行。</p>
 <p>上文提到的：</p>
