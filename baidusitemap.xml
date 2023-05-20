@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://fengxun2017.github.io/2022/10/27/why-use-RTOS/</loc>
-    <lastmod>2023-05-13</lastmod>
+    <loc>http://fengxun2017.github.io/2023/05/20/BleStack-link-connection/</loc>
+    <lastmod>2023-05-20</lastmod>
   </url>
   <url>
-    <loc>http://fengxun2017.github.io/2023/05/07/BleStack-link-connection/</loc>
-    <lastmod>2023-05-09</lastmod>
+    <loc>http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/</loc>
+    <lastmod>2023-05-15</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2022/10/27/why-use-RTOS/</loc>
+    <lastmod>2023-05-13</lastmod>
   </url>
   <url>
     <loc>http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/</loc>
@@ -31,10 +35,6 @@
   <url>
     <loc>http://fengxun2017.github.io/2023/04/02/TCPIP-basic-conception/</loc>
     <lastmod>2023-04-09</lastmod>
-  </url>
-  <url>
-    <loc>http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/</loc>
-    <lastmod>2023-04-08</lastmod>
   </url>
   <url>
     <loc>http://fengxun2017.github.io/2023/02/04/memory-ordering-cache-coherence/</loc>
