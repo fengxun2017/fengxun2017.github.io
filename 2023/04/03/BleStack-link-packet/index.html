@@ -33,7 +33,7 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/nrf52840-packet.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/radio-packet-ble-packet.png">
 <meta property="article:published_time" content="2023-04-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-05-15T16:03:10.715Z">
+<meta property="article:modified_time" content="2023-06-05T13:42:35.300Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2023/04/03/BleStack-link-packet/le-uncoded-packet.png">
@@ -141,7 +141,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-count">41</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -265,7 +265,7 @@
 <ul>
 <li>本系列文章，基于<code>nordic nrf52840</code> MCU，来实现一个精简的 BLE 从机协议栈。</li>
 <li>已经实现的协议栈地址：<a target="_blank" rel="noopener" href="https://github.com/fengxun2017/dh_ble/tree/dev">https://github.com/fengxun2017/dh_ble&#x2F;tree&#x2F;dev</a>，目前在dev分支进行更新开发。早期是基于<code>nrf51822</code>实现了<code>BLE 4.0</code>规范中从机协议栈中的必要部分，实现了可以和手机连接并传输数据。目前手上只有<code>nrf52840</code>了，当前基于<code>nrf52840</code>实现底层需要的驱动，并通过该系列文章，逐步修改一些上层不合理的地方。</li>
-<li>该系列文章，涉及到的协议部分会基于<code>BLE 5.3</code>规范进行描述，但仍旧只实现<strong>最简单、必要</strong>的部分（能连上手机，进行通信即可），并基于<code>iphone</code>进行测试。因此，<code>android</code>可能会由于发送一些我没实现的指令，出现兼容性问题。</li>
+<li>该系列文章，涉及到的协议部分会基于<code>BLE 5.3</code>规范进行描述，但仍旧只实现<strong>最简单、必要</strong>的部分（能连上手机，进行通信即可），并基于<code>iphone</code>进行测试。因此，<code>android</code>可能会由于发送一些我没实现的指令，出现兼容性问题。并且由于没有充分的错误场景测试，一些实现本身可能存在缺陷。</li>
 <li>本系列文章，只是用来作为学习 BLE 协议的参考，从硬件层驱动，链路层，到上层协议，都以最直接，简单的方式来实现。</li>
 </ul>
 <p><strong>我们目前没有实现定期广播（Periodical Advertising），后文不描述定期广播相关部分。只实现一些必备的简单广播&#x2F;连接指令。也不涉及为 LE Audio 而设计的同步通道（ Isochronous Channels ）相关信息</strong>。</p>
@@ -383,14 +383,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">208k</span>
+    <span title="站点总字数">212k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:20</span>
+    <span title="站点阅读时长">4:26</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
