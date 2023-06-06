@@ -124,11 +124,11 @@ path: baidusitemap.xml
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   - type: git
-    repository: 
-        github: git@github.com:fengxun2017/fengxun2017.github.io.git,main
+    repository: git@github.com:fengxun2017/fengxun2017.github.io.git
+    branch: main
   - type: git
-    repository: 
-        gitee: git@gitee.com:fengxun2017/fengxun2017.git,master
+    repository: git@gitee.com:fengxun2017/fengxun2017.git
+    branch: master
   - type: baidu_url_submitter
 
 

@@ -6,7 +6,7 @@ categories:
 ---
 
 <center>
-本文描述 BLE 链路层连接的建立。
+本文描述 BLE 链路层连接的建立过程。
 </center>
 
 <!--more-->
@@ -16,12 +16,12 @@ categories:
 
 - 本系列文章，基于`nordic nrf52840` MCU，来实现一个精简的 BLE 从机协议栈。
 - 已经实现的协议栈地址：[https://github.com/fengxun2017/dh_ble/tree/dev](https://github.com/fengxun2017/dh_ble/tree/dev)，目前在dev分支进行更新开发。早期是基于`nrf51822`实现了`BLE 4.0`规范中从机协议栈中的必要部分，实现了可以和手机连接并传输数据。目前手上只有`nrf52840`了，当前基于`nrf52840`实现底层需要的驱动，并通过该系列文章，逐步修改一些上层不合理的地方。
-- 该系列文章，涉及到的协议部分会基于`BLE 5.3`规范进行描述，但仍旧只实现**最简单、必要**的部分（能连上手机，进行通信即可），并基于`iphone`进行测试。因此，`android`可能会由于发送一些我没实现的指令，出现兼容性问题。
+- 该系列文章，涉及到的协议部分会基于`BLE 5.3`规范进行描述，但仍旧只实现**最简单、必要**的部分（能连上手机，进行通信即可），并基于`iphone`进行测试。因此，`android`可能会由于发送一些我没实现的指令，出现兼容性问题。并且由于没有充分的错误场景测试，一些实现本身可能存在缺陷。
 - 本系列文章，只是用来作为学习 BLE 协议的参考，从硬件层驱动，链路层，到上层协议，都以最直接，简单的方式来实现。
 
 <br/>
 
-**因为我们实现的是从机协议栈，因此本文介绍的链路层连接建立过程，都是基于从机角度来描述的。**
+**我们实现的是从机协议栈，因此本文介绍的链路层连接建立过程，都是基于从机角度来描述的。本文也只讨论最常见的，普通广播状态下，接收到连接请求（CONNECT_IND）后，连接的建立过程**
 
 #### 1：连接建立的总体过程：
 一个简单的`BLE`连接建立的过程，可以大致分为 3 个步骤：
@@ -96,11 +96,12 @@ PS：图中的T_IFS表示帧间间隔（150us），按照规范定义，连续�
 
 第一次数据交互的时序如下图所示： 时序图来自规范V5.3
 ![](./BleStack-link-connection/first-packet-time.png)
+其中，**C->P**表示central发送给peripheral的数据包。**P->C**表示peripheral发送给central的数据包。
 
 如上图，当主机（central）发出连接请求后，主/从设备第一次交互（连接事件）过程为：
 - 首先经过一个固定的延迟 transmitWindowDelay（1.25ms）
-- 再经过一个延迟 transmitWindowOffset （central 决定）
-- 之后是一个 Transmit Window，central的第一个数据包在这个窗口内发出即可，窗口大小为 transmitWindowSize。
+- 再经过一个延迟 transmitWindowOffset （由CONNECT_IND中的 **WinOffset** 决定）
+- 之后是一个 Transmit Window，central的第一个数据包在这个窗口内发出即可，窗口大小为 transmitWindowSize（由CONNECT_IND中的 **WinSize**决定）。
   
 由于 Transmit Window 的存在，从机（peripheral）接收到第一个数据包的时间是不确定的。因此，从机需要在 transmitWindowDelay + transmitWindowOffset 之后一直保持监听，直到收到central发送过来的第一个数据包。 即：
  transmitWindowOffset <= **first pack time** <= transmitWindowOffset + transmitWindowSize。
@@ -119,7 +120,7 @@ WinSize * 1.25 ms，这里的 WinSize 就是连接请求（CONNECT_IND）中的 
 在源码文件 source/BleStack/BleLink/BleLinkAdvertising.c 中，函数 `HandleAdvRxDone` 会处理广播状态下接收到的数据（扫描请求 或 连接请求）。
 当收到连接请求后，函数 `HandleAdvRxDone` 内部会调用source/BleStack/BleLink/BleLinkConnect.c 中的 `LinkConnReqHandle` 函数来处理连接请求。
 
-如同前文所述，完整的连接建立过程，需要经过多个阶段，因此链路层连接态下也需要实现一个子状态机，来处理连接建立过程中的各个阶段。下一篇文章再介绍连接建立的代码实现过程。
+如同前文所述，完整的连接建立过程，需要经过多个阶段，因此链路层连接态下也需要实现一个子状态机，来处理连接建立过程中的各个阶段，下一篇文章再继续介绍。
 
   
 
