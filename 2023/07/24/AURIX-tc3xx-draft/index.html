@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="草稿笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="infineon AURIX-TC3xx——草稿笔记">
+<meta property="og:url" content="http://fengxun2017.github.io/2023/07/24/AURIX-tc3xx-draft/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="草稿笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2023/07/24/AURIX-tc3xx-draft/clock-use-case.png">
+<meta property="article:published_time" content="2023-07-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-23T16:05:46.659Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2023/07/24/AURIX-tc3xx-draft/clock-use-case.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2023/07/24/AURIX-tc3xx-draft/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/07/24/AURIX-tc3xx-draft/","path":"2023/07/24/AURIX-tc3xx-draft/","title":"infineon AURIX-TC3xx——草稿笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>infineon AURIX-TC3xx——草稿笔记 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">内核架构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Startup-Software"><span class="nav-number">1.1.</span> <span class="nav-text">Startup Software</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#sri%EF%BC%88System-Resource-Interconnect%EF%BC%89%E6%80%BB%E7%BA%BF%E4%BB%B2%E8%A3%81"><span class="nav-number">1.2.</span> <span class="nav-text">sri（System Resource Interconnect）总线仲裁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.3.</span> <span class="nav-text">核心寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#contex-management"><span class="nav-number">1.4.</span> <span class="nav-text">contex management</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Interrupt-system"><span class="nav-number">1.5.</span> <span class="nav-text">Interrupt system</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Trap-system"><span class="nav-number">1.6.</span> <span class="nav-text">Trap system</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TirCore-Protection-System"><span class="nav-number">1.7.</span> <span class="nav-text">TirCore Protection System</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Temporal-protection-system-problem"><span class="nav-number">1.8.</span> <span class="nav-text">Temporal protection system problem</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reset"><span class="nav-number">2.</span> <span class="nav-text">Reset</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#clock"><span class="nav-number">3.</span> <span class="nav-text">clock</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#watchdog-timers"><span class="nav-number">4.</span> <span class="nav-text">watchdog timers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#startup-and-initialisation"><span class="nav-number">5.</span> <span class="nav-text">startup and initialisation</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Boot-Firmware"><span class="nav-number">5.1.</span> <span class="nav-text">Boot Firmware</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#application-start-up-software"><span class="nav-number">5.2.</span> <span class="nav-text">application start-up software</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%98%E5%82%A8"><span class="nav-number">6.</span> <span class="nav-text">存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#RAM"><span class="nav-number">6.1.</span> <span class="nav-text">RAM</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">42</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2023/07/24/AURIX-tc3xx-draft/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="infineon AURIX-TC3xx——草稿笔记 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          infineon AURIX-TC3xx——草稿笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-07-24 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-24T00:00:00+08:00">2023-07-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/infineon/" itemprop="url" rel="index"><span itemprop="name">infineon</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>8.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>11 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+草稿笔记
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h3 id="内核架构"><a href="#内核架构" class="headerlink" title="内核架构"></a>内核架构</h3><h4 id="Startup-Software"><a href="#Startup-Software" class="headerlink" title="Startup Software"></a>Startup Software</h4><p>复位后，PC寄存器的值被设置为BootROM中存储的SSW 起始地址，startup software（这里指firmware boot）是第一个执行的软件。</p>
+<p>在启动期间，SSW 在cpu0上执行，其它核为 halt状态，随后由用户代码启动。</p>
+<ul>
+<li>SSW软件在BootROM中，上电复位后，PC寄存器中的复位值就是SSW的入口地址。</li>
+<li>SSW的最后一条指令会执行跳转到用户代码。用户代码的入口地址可以配置（BMHD）。</li>
+</ul>
+<p>startup software 会根据以下条件初始化设备：</p>
+<ul>
+<li>之前存在特定地址的信息</li>
+<li>特定寄存器的某些特定位的当前状态</li>
+<li>导致复位事件的原因</li>
+<li>外部引脚的状态</li>
+</ul>
+<h4 id="sri（System-Resource-Interconnect）总线仲裁"><a href="#sri（System-Resource-Interconnect）总线仲裁" class="headerlink" title="sri（System Resource Interconnect）总线仲裁"></a>sri（System Resource Interconnect）总线仲裁</h4><p>sri总线上有多个master和多个slave，可能存在多个master同时访问某个slave，因此需要对master的请求进行仲裁。</p>
+<p>仲裁机制中存在两种优先级，高优先级和低优先级，每个master可以加入其中一个。</p>
+<p>每类优先级内部都是轮训仲裁，而高优先级组的请求会优于低优先级组的请求先执行。<br>为了避免低优先级组中的请求得不到响应，存在一个可配置HPRS（high priority round share）参数，该参数指定了最多经过HPRS次的高优先级组调度后，需要执行一次低优先级组中的请求（低优先级组中选出那个优先级最高的）。</p>
+<h4 id="核心寄存器"><a href="#核心寄存器" class="headerlink" title="核心寄存器"></a>核心寄存器</h4><p>通用寄存器</p>
+<ul>
+<li>D0-D15 数据寄存器，A0-A15 地址寄存器。 分开可以使得数据运算和地址运算并行</li>
+<li>A10 同时也为栈指针寄存器</li>
+<li>A11 同时也为返回地址寄存器</li>
+<li>D15寄存器，在发生trap时会保存TIN</li>
+</ul>
+<p>系统寄存器：</p>
+<ul>
+<li>PC</li>
+<li>PSW：程序状态寄存器</li>
+<li>SYSCON 系统控制寄存器</li>
+<li>PCXI：previous context infomation，保存了前一个任务的CSA地址</li>
+</ul>
+<p>上下文管理寄存器：</p>
+<ul>
+<li>FCX：free csa list head pointer，未使用的CSA都保存在链表结构中，FCX指向这个链表。</li>
+<li>LCX：free csa list limit pointer，指向最后一个空闲csa，用来识别csa即将耗尽。</li>
+</ul>
+<p><code>CSA——context save area：用来保存上下文信息，程序执行过程中发生interrupt、trap、function call时，需要保存上下文信息</code></p>
+<p>CPU中断和 trap 控制寄存器：</p>
+<ul>
+<li>ICR：中断控制寄存器，指示已悬起的中断优先级数值，以及当前处理的中断优先级数值。</li>
+<li>BIV：中断向量表基地址</li>
+<li>BTV：trap向量表基地址</li>
+</ul>
+<p>栈管理寄存器：</p>
+<ul>
+<li>ISP：interrupt stack pointer，当被中断打断的任务使用的是私有栈（PSW.IS&#x3D;0）时，保存的upper context是被打断任务的，并且，A<a href="sp">10</a>加载 ISP 中的值作为新栈；当被中断打断的任务使用的是中断栈（PSW.IS&#x3D;1）时，A<a href="sp">10</a>也不需要加载 ISP 值，中断服务程序继续使用当前栈。</li>
+</ul>
+<p><strong>读&#x2F;写核心寄存器需要特殊指令</strong>：<br>MTCR：move to core register<br>MFCR：move from core register</p>
+<h4 id="contex-management"><a href="#contex-management" class="headerlink" title="contex management"></a>contex management</h4><p>arm内核的上下文切换都是存在栈中的。<br>tircore 存在一个 CSA，当发生 interrupt&#x2F;trap&#x2F;function call时，硬件自动保存upper context。如果后续操作需要使用更多寄存器，需要执行SVLCX（save lower context）来保存lower context<br><strong>upper context</strong>:A10-A15，PSW，PCXI，D8-D15<br><strong>lower context</strong>:A2-A7，A11，PCXI，D0-D7</p>
+<ul>
+<li>每个 csa 为16个字大小，可以存储一个upper context 或 一个lower context</li>
+<li>每个 csa 都是16字对齐的</li>
+<li>多个csa 以链表的形式维护</li>
+<li>未使用的 csa 保存在 free context list中</li>
+<li>当前执行任务的csa保存在 previous context list中</li>
+<li>硬件处理 csa 的分配和释放</li>
+</ul>
+<p>CSA的存储区域可通过软件配置：DSPR，DLMU</p>
+<h4 id="Interrupt-system"><a href="#Interrupt-system" class="headerlink" title="Interrupt system"></a>Interrupt system</h4><p>每个 interrupt service provider（CPU，DMA）有独立的中断系统，255级中断优先级。</p>
+<p><strong>service requests</strong>: interrupt requests<br><strong>SRN</strong>：service request node</p>
+<ul>
+<li>每个中断请求源必须连接到一个SRN</li>
+<li>每个外设中断必须连接到一个专用SRN</li>
+<li>每个SRN 可编程优先级，255 level</li>
+<li>每个SRN 有一个SRC(service request control register)，用来配置优先级、TOS等。</li>
+</ul>
+<p><strong>ICU</strong>：interrupt control unit</p>
+<ul>
+<li>处理优先级仲裁，以及CPU&#x2F;DMA间的通信。（每个CPU都有一个icu）</li>
+</ul>
+<p>TC1.6.2架构：</p>
+<ul>
+<li>最多支持1024个service requests</li>
+<li>每个ICU&#x2F;service provider 最多支持255个优先级</li>
+<li>支持最多8个 ICUs&#x2F;service providers</li>
+<li>低延迟仲裁：从收到service request到仲裁并发给service provider只要3、4个时钟周期。</li>
+<li>每个CPU有8个 GPSR（general purpose service requests）可以作为软中断。（实际作用的还是SRN，只是部分SRN分配给GPSR了，可以用来作为内核间通信使用）</li>
+<li>service request broadcast registers(SRB)可以向多个service provider同时发出GPSR</li>
+<li>8个SRN用来处理外部中断。</li>
+<li>当TOS&#x3D;DMA时，SRN中的优先级即为DMA的通道，并且多个DMA请求发生时，DMA通道值最大的获得服务。</li>
+</ul>
+<p><strong>进入中断服务</strong>：</p>
+<ul>
+<li>保存upper context</li>
+<li>将PC值保存到 A11（return address）</li>
+<li>ICR.IE &#x3D; 0，屏蔽全部中断</li>
+<li>如果PSW.IS&#x3D;0，A10更新为ISP的值</li>
+<li>PSW.IO &#x3D; 10B，设置为特权模式</li>
+<li>ICR.CCPN（current cpu priority number）保存到 PCXI.PCPN（previous cpu priority number）中</li>
+<li>ICR.PIPN（pending interrupt priority number）保存到 ICR.CCPN（current cpu priority number）</li>
+</ul>
+<p><strong>退出中断服务</strong>：</p>
+<ul>
+<li>恢复被打断任务（中断服务）的 upper context</li>
+<li>PCXI.PCPN写回ICR.CCPN，以恢复被中断前的cpu优先级</li>
+<li>PCXI.PIE写回ICR.IE，恢复之前中断屏蔽状态</li>
+<li>PC &#x3D; A[11]，继续执行</li>
+</ul>
+<h4 id="Trap-system"><a href="#Trap-system" class="headerlink" title="Trap system"></a>Trap system</h4><p>程序异常时发生：</p>
+<ul>
+<li>非法访问</li>
+<li>Non maskable interrupts</li>
+<li>对保护地址的违法访问</li>
+<li>等等</li>
+</ul>
+<p>trap system总是处于活动状态，无法关闭。<br>当trap发生时，有两个相关的识别码</p>
+<ul>
+<li>trap class number (TCN)</li>
+<li>trap identification number (TIN)——trap发生时，硬件会自动将该值放在D15中</li>
+</ul>
+<p>trap发生时，类似中断，也是会中断当前执行流程，并根据trap类型跳转到Trap Vector Table中的相应位置。</p>
+<p><strong>Synchronous</strong>：同步trap与执行或尝试执行特定指令有关，引起trap的指令时已知的，trap会被立即响应。<br>trap发生时，导致trap发生的指令的会被保存在A11中。但对于SYS trap，SYSCALL 指令的下一条指令会被保存到A11。</p>
+<p><strong>Asynchronous</strong>：异步trap与外部检测到的硬件条件相关联，并向核心发送信号。有些结果是由先前执行的指令间接产生的，当trap发生时，已经不是之前的现场了。</p>
+<p><strong>Trap进入流程</strong>：几个需要注意的操作</p>
+<ul>
+<li>upper context被保存</li>
+<li>返回地址A11 被更新</li>
+<li>IO 特权模式更新为特权级</li>
+<li>屏蔽全局中断（ICR.IE&#x3D;0）</li>
+<li>D15 被更新为 TIN</li>
+<li>根据 BTV 和 TCN 找trap的第一条执行指令</li>
+</ul>
+<h4 id="TirCore-Protection-System"><a href="#TirCore-Protection-System" class="headerlink" title="TirCore Protection System"></a>TirCore Protection System</h4><p>保护系统基于 trap机制，permission levels和memory protection，以实现：</p>
+<ul>
+<li>保护核心OS功能</li>
+<li>保护应用间不会相互干扰</li>
+<li>提供测试和调试功能</li>
+</ul>
+<p>permission levels:</p>
+<ul>
+<li>user-0:不允许访问外设寄存器（Segment 14、15）,不允许执行特权级指令，不允许enable&#x2F;disable 中断系统</li>
+<li>user-1:不允许执行特权级指令</li>
+<li>supervisor：全部权限</li>
+</ul>
+<p>memory protection：</p>
+<ul>
+<li>18个 data 区域</li>
+<li>10个 code 区域</li>
+<li>6 个 memory protection register sets</li>
+</ul>
+<h4 id="Temporal-protection-system-problem"><a href="#Temporal-protection-system-problem" class="headerlink" title="Temporal protection system problem"></a>Temporal protection system problem</h4><p>在一个实时系统中，每个任务被赋予确定的内存资源和允许时间资源。如果任务运行超过时间限制，或者使用内存资源超出限制都会导致应用整体上的失败。<br>memory protection可以防止任务使用的内存资源超限。</p>
+<p>temporal protection system可以用来防止任务使用的时间资源超限。</p>
+<ul>
+<li>3个独立、递减的32Bit 计数器<ul>
+<li>计数器被写入非0值时激活</li>
+<li>计数器被写入0，会停止</li>
+<li>计数器减到0时，会产生TAE trap</li>
+</ul>
+</li>
+<li>exception timer system<ul>
+<li>用来检测exception handler 的超时</li>
+</ul>
+</li>
+</ul>
+<h3 id="Reset"><a href="#Reset" class="headerlink" title="Reset"></a>Reset</h3><p>Monitoring and Reset Pins 图：AURIX TC3xx Family User’s Manual Part 1 :840页</p>
+<p>PORST：双向引脚</p>
+<ul>
+<li>上电过程中为MCU的输出引脚</li>
+<li>上电完成后为MCU的输入引脚</li>
+</ul>
+<p>下面解释引自：<a target="_blank" rel="noopener" href="https://icv.51cto.com/posts/1883">https://icv.51cto.com/posts/1883</a><br><code>刚上电的时候，MCU的电压是从0往上升的，所以刚开始的时候MCU处于一个under voltage的状态，MCU主要监控VEXT, VDDP3, VDD三个输入电源，在刚开始的时候只要这三个电源有一个处于under voltage状态，或门（OR）就会输出点平导通MOS管，PORST就会被拉低到地。所以在电源上升的过程中这三个电源有一个处于LBD Reset Hold（电源监控阈值）以下，MOS管就会被导通，PORST就会被一直拉低到地（输出状态，输出低电平）。 电压起来后（大于监控阈值），MOS管关断，PORST变为输入状态，如果PORST外接了一个IC或者复位按钮给了一个低电平，也会对MCU产生Reset（Warm Power On Reset）</code></p>
+<p>ESR0 默认为复位输出引脚（受输出状态的PORST的影响），可重新配置输入、输出<br>ESR1 默认为 NMI 引脚，可重新配置输入、输出</p>
+<p>从上到下，MCU内部reset的模块逐渐减少，具体见606页</p>
+<ul>
+<li>cold reset：没电的状态下，上电复位即cold reset， </li>
+<li>warm reset：系统已经供上电稳定后，通过PORST引脚触发reset</li>
+<li>system reset、application reset：sw reset，smu触发reset，ESR0也可配置产生</li>
+</ul>
+<p><strong>RSTSTAT</strong>：复位原因指示寄存器，一些复位触发源见604</p>
+<ul>
+<li>其中，cold power-on reset状态指示（STBYR、SWD、EVR33、EVRC）需要通过软件对RSTCON2.CLRC主动清除，否则状态会一直保留（即使后续复位了也会存在）。</li>
+<li>其它复位状态指示位，在下一次reset时会被清掉。</li>
+</ul>
+<p>PS：例如，上电后，主动清除cold reset标记，然后软件触发复位，应该只有 SW 的复位标记。</p>
+<h3 id="clock"><a href="#clock" class="headerlink" title="clock"></a>clock</h3><p>时钟源：</p>
+<ul>
+<li>外部晶振</li>
+<li>外部时钟输入</li>
+<li>内部 back-up clock(100M, +-2%)，standby clock(70KHZ，休眠时用的)</li>
+</ul>
+<p>使用样例：<br><img src="/2023/07/24/AURIX-tc3xx-draft/clock-use-case.png"></p>
+<center> 图片来自infineon </center>
+
+<p>外部时钟输出：EXTCLK0、EXTCLK1，可将内部时钟源通过这两个引脚输出，可以用来做时钟频率验证，或当时输出时钟给其它模块用。</p>
+<p>oscillator watchdog：硬件电路监控F_osc经过分频后是否在某个误差内</p>
+<p>PLL配置原则：<br>刚上电时，系统使用的是back-up时钟，为100M。<br>因此system PLL在配置时，需要先配置为输出100M，然后系统时钟切换为PLL后，再逐步调整到目标频率（如100-&gt;150-&gt;200-&gt;300）,避免频率变化过大，电流波动太大影响系统稳定性。<br>PS：peripheral PLL 可以一步到位直接配置倍频到目标频率</p>
+<h3 id="watchdog-timers"><a href="#watchdog-timers" class="headerlink" title="watchdog timers"></a>watchdog timers</h3><ul>
+<li>一个safety watchdog timer，系统级别监控</li>
+<li>每个cpu 还有一个 watchdog timer</li>
+</ul>
+<p>watchdog超时后，不会直接操作系统复位。而是将信号给SMU处理，SMU触发recovery timer。见1305页</p>
+<p>watchdog timer模块有两个功能：</p>
+<ul>
+<li>EndInit 保护：保护关键寄存器被意外改写</li>
+<li>watchdog timer: 16bit 定时器</li>
+</ul>
+<p><strong>EndInit</strong><br>一种写保护措施，只允许在特定条件下进行写操作，以防止一些关键寄存器数据被意外改写。</p>
+<p>保护类型：</p>
+<ul>
+<li>CEy：cpu关键寄存器保护，当CPUy的 WDT ENDINIT&#x3D;0时，保护解除，受保护寄存器才可写。</li>
+<li>E：系统关键寄存器保护，任何CPU的WDT ENDINIT&#x3D;0时，或者EICON0.ENDINIT&#x3D;0时解除保护。</li>
+<li>SE：safety关键寄存器保护，safety WDT ENDINIT&#x3D;0或EICON0.ENDINIT&#x3D;0 时，保护解除。</li>
+</ul>
+<p><strong>ENDINIT&#x3D;0 操作需要一定时间，因此设置后需要回读，直到配置生效，才能访问被保护的寄存器。并且，当软件清除ENDINIT位时，WDT会自动切换为timeout模式，来监控ENDINIT位的修改，如果在超时前ENDINIT没有被重新置位，则产生看门狗故障响应</strong></p>
+<h3 id="startup-and-initialisation"><a href="#startup-and-initialisation" class="headerlink" title="startup and initialisation"></a>startup and initialisation</h3><p>启动过程包括：</p>
+<ul>
+<li>对MCU上电过程（电源电压上升）</li>
+<li>执行boot firmware，进行基本硬件准备工作（flash ramp-up，ram init, BMI验证，HSM初始化）</li>
+<li>应用启动部分代码（APP start-up software）进一步初始化应用需要的相关硬件和软件（可选的BIST，栈和csa初始化，PLL和相关硬件驱动初始化，c执行环境初始化）</li>
+<li>执行应用代码</li>
+</ul>
+<p><strong>cold power-on reset</strong>:之前未供电的情况下，上电复位。<br>复位后状态：</p>
+<ul>
+<li>所有寄存器复位为初始状态</li>
+<li>flash 未激活状态，不能进行任何操作</li>
+<li>ram内容未定义</li>
+<li>时钟系统复位为初始状态</li>
+</ul>
+<p><strong>system reset</strong>：对 Boot firmware来说，warm power-on复位执行流程和system reset是一致的。<br>触发源：如 看门狗定时器触发复位，PORST引脚复位，软件复位。<br>复位后状态：</p>
+<ul>
+<li>受该复位类型影响的寄存器置为初始状态</li>
+<li>flash未激活状态</li>
+<li>ram 内容和system reset前一致</li>
+<li>时钟系统复位为初始态</li>
+</ul>
+<p><strong>applacation reset</strong>：可由内部、外部硬件，或者软件触发。具体由软件配置。<br>复位后状态：</p>
+<ul>
+<li>受该复位类型影响的寄存器置为初始状态</li>
+<li>flash可读</li>
+<li>ram和时钟系统不受该复位事件影响</li>
+</ul>
+<p><strong>CPU module reset</strong>:单个CPU核心复位。</p>
+<p><strong>start-up过程中的时钟系统</strong>：</p>
+<ul>
+<li>power-on 和 system reset情况下，时钟系统复位：<ul>
+<li>fSRI&#x3D; fCPU0 &#x3D; fFSI&#x3D;fBACK&#x3D;100MHz </li>
+<li>fSPB&#x3D;fSTM&#x3D;fBACK&#x2F;2&#x3D;50MHz nominal</li>
+<li>PLL and VCO are in power-down mode</li>
+</ul>
+</li>
+<li>application reset 情况下，时钟系统保持之前状态不变。</li>
+</ul>
+<h4 id="Boot-Firmware"><a href="#Boot-Firmware" class="headerlink" title="Boot Firmware"></a>Boot Firmware</h4><p>Boot Firmware位于BOOT ROM，是CPU 启动后第一个执行的代码。由CPU0 执行，其它核在引导阶段均为halt状态，直到它们被显示启动。</p>
+<p>在上电复位&#x2F;PORST引脚产生复位信号&#x2F;system reset&#x2F;application reset 发生后，都会进入Boot Firmware运行。基于复位类型和用户配置，Boot Firmware会执行不同的启动序列。</p>
+<p><strong>Boot Firmware</strong>涉及的工作：</p>
+<ul>
+<li>start flash ramp-up：启动flash，使其进入工作状态。</li>
+<li>Ram initialization：对选定 Ram 区域填充0，自动初始化ECC值。<ul>
+<li>具体初始化行为（什么复位需要初始化RAM，初始化哪些区域），由PROCONRAM寄存器中的字段控制。</li>
+</ul>
+</li>
+<li>选择并执行启动模式：根据BMHD（UCB中的固定位置），确定启动模式。</li>
+<li>启动HSM（如果使能了）：<ul>
+<li>HSM 是一个32位的arm指令集cpu。用来执行一些强制性的内部测试、生产使用（production use）、启动行为（start-up behavirour）工作。</li>
+<li>当 DMU_SP_PROCONHSMCFG.HSMBOOTEN 设置时，boot firmware会启动HSM</li>
+</ul>
+</li>
+<li>lockstep 设置（根据BMHD中的配置）</li>
+<li>调试系统处理：<ul>
+<li>如果使能了调试访问，则Boot Firmware会解锁Debug interface。</li>
+<li>调试使能时，如果有来自外部工具的请求，则执行复位后暂停（halt after reset），即在第一个用户代码指令之前中断执行。</li>
+</ul>
+</li>
+</ul>
+<p><strong>启动配置</strong>：（boot 选项）</p>
+<ul>
+<li>软件方式：根据BMI（boot mode index）中的信息进行配置</li>
+<li>硬件方式：仅当在BMI中启用，且HWCFG[3]引脚拉低。此时，启动模式由HWCFG[4],HWCFG[5]引脚电平决定。</li>
+</ul>
+<p><strong>Boot Mode Header</strong>：<br>Boot firmware会根据 BMHD 数据结构中信息，执行不同的启动过程。BMHD存储在data flash中的 UCB 区域中。<br>BMHD中的几个重要信息：</p>
+<ul>
+<li><p>包含启动模式配置</p>
+<ul>
+<li>Internal Start模式：从目标地址启动用户代码</li>
+<li>备用引导模式（Alterna Boot Mode）：<ul>
+<li>如果是启动模式是ABM，则下面的STAD放的就是ABM head数据的地址，ABM 的行为由 ABM header中的数据决定（例如数据校验的区域）</li>
+<li>该模式下会进行一些列检查，检查通过后跳转到用户代码（由ABM header中的STADABM 指定），检查没通过会回到 bootstrap loader模式</li>
+</ul>
+</li>
+<li>bootstrap loader 模式：通过can等接口直接加载用户程序到CPU0_PSPR中，并且加载完后执行加载的用户代码</li>
+</ul>
+</li>
+<li><p>锁步核使能配置</p>
+</li>
+<li><p>LBIST使能配置</p>
+</li>
+<li><p>Boot Firmware执行后是否执行CHSW（checker software）</p>
+</li>
+<li><p>STAD：启动地址。<strong>如果是ABM模式，则为ABM 头结构数据所在地址，如果是internal start模式，则为用户代码地址。</strong></p>
+</li>
+</ul>
+<h4 id="application-start-up-software"><a href="#application-start-up-software" class="headerlink" title="application start-up software"></a>application start-up software</h4><p>Boot firmware执行完后，就会根据跳转到用户启动代码部分（根据BMHD.STAR或ABM.STADABM指定的地址），由CPU0运行。<br>根据复位事件（reset event）， 用户start-up代码会执行不同的初始化路径（这些初始化过程的代码，用户都是可以更具自己的需求修改的）。</p>
+<p>TC3xx 处理器目前 start-up 部分的软件功能大致可以分为 6 个阶段：</p>
+<ul>
+<li><p>phase 1：初始化 PSW寄存器，检测 reset 类型</p>
+<ul>
+<li>检测复位状态相关寄存器，判断复位事件是否为application reset，（对于软件上来说，其它的还有system reset 或 cpu0 reset</li>
+<li>如果是 application reset，则跳过phase 2，执行phase 3</li>
+<li>如果不是application reset，则需要执行 pase 2</li>
+</ul>
+</li>
+<li><p>phase 2：初始化EVR，执行 LBIST 测试，MONBIST检查</p>
+<ul>
+<li>初始化电源管理系统（PMS）：这里初始化PMS，是因为后面的LBIST需要大电流</li>
+<li>LBIST相关处理（logic build in self test，对硬件数值部分进行系统内自动健康检查的一种结构测试方法）</li>
+<li>MONBIST相关处理（对备用电压监控进行潜在的失效检测，当发现备用电压监控失效时，将错误报告给standby SMU）</li>
+</ul>
+</li>
+<li><p>phase 3：建立CSA，初始化SP</p>
+<ul>
+<li>初始化用户栈指针（所以phase3之前都不能用栈上的局部变量）</li>
+<li>初始化CSA区域（构建CSA的链表结构）</li>
+</ul>
+</li>
+<li><p>phase 4：初始化时钟，MBIST 检查。初始化并检查所有ram的安全性。</p>
+<ul>
+<li>配置PLL，对CPU和各外设提供时钟</li>
+<li>MBIST（memory build-in-self test)，对RAM区域进行测试。</li>
+</ul>
+</li>
+<li><p>phase 5：SMU 相关处理</p>
+<ul>
+<li>SMU警告处理，SMU集中了所有与不同硬件&#x2F;软件安全机制相关的警告信号，本阶段处理这些信息</li>
+</ul>
+</li>
+<li><p>phase 6：配置cache ，BIV，BTV，启动其它cpu。</p>
+<ul>
+<li>cache相关配置</li>
+<li>配置中断和trap向量表，配置ISP寄存器。</li>
+<li>ifx_ssw_c_init 根据需要，将flash中的初始值复制到ram中（已初始化的全局变量）</li>
+<li>到这里，trap已经是使能了，但是中断还并未使能，需要在后续应用代码中主动使能。</li>
+</ul>
+</li>
+</ul>
+<p><strong>英飞凌官方启动过程介绍</strong>：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/410252630">https://zhuanlan.zhihu.com/p/410252630</a></p>
+<h3 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h3><h4 id="RAM"><a href="#RAM" class="headerlink" title="RAM"></a>RAM</h4><p>每个CPU都有自己的PSRAM、DSRAM。PSRAM是挂在指令总线上，DSRAM是挂在数据总线上。一般PSRAM用来放代码，DSRAM用来放数据，可以实现 0 cycle等待。 </p>
+<ul>
+<li>每个CPU的PSRAM、DSRAM也可被其它CPU访问，只是需要通过SRI总线，因此比较慢。</li>
+<li>每个CPU的PSRAM也能用来放数据，不是一定要放代码，但是放数据时，本CPU和其它CPU访问这个PSRAM，都需要通过DMI经过SRI总线来访问，因此较慢。（放代码时，本CPU访问0 cycle等待）</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2023/07/24/AURIX-tc3xx-draft/" title="infineon AURIX-TC3xx——草稿笔记">http://fengxun2017.github.io/2023/07/24/AURIX-tc3xx-draft/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2023/06/06/BleStack-link-connection-2/" rel="prev" title="实现一个精简的BLE从机协议栈—5—链路层连接建立——实现细节">
+                  <i class="fa fa-chevron-left"></i> 实现一个精简的BLE从机协议栈—5—链路层连接建立——实现细节
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">221k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:37</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
