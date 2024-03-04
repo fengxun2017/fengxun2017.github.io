@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://fengxun2017.github.io/2024/02/28/DMA-/</loc>
+    <lastmod>2024-03-04</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/</loc>
+    <lastmod>2024-02-28</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2023/07/24/AURIX-tc3xx-mcmcan/</loc>
+    <lastmod>2023-07-30</lastmod>
+  </url>
+  <url>
     <loc>http://fengxun2017.github.io/2023/07/24/AURIX-tc3xx-draft/</loc>
-    <lastmod>2023-07-23</lastmod>
+    <lastmod>2023-07-24</lastmod>
   </url>
   <url>
     <loc>http://fengxun2017.github.io/2023/06/06/BleStack-link-connection-2/</loc>
@@ -18,10 +30,6 @@
   </url>
   <url>
     <loc>http://fengxun2017.github.io/2023/04/24/BleStack-link-advertising/</loc>
-    <lastmod>2023-06-05</lastmod>
-  </url>
-  <url>
-    <loc>http://fengxun2017.github.io/2023/03/25/BleStack-hardware-driver/</loc>
     <lastmod>2023-06-05</lastmod>
   </url>
   <url>
