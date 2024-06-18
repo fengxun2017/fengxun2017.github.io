@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="GNU linker ld (GNU Binutils) version 2.42 —— Command-line Options">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GNU linker ld —— Command-line Options">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/06/18/GUN-linker-Command-line-Options/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="GNU linker ld (GNU Binutils) version 2.42 —— Command-line Options">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-06-18T15:41:48.083Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2024/06/18/GUN-linker-Command-line-Options/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/06/18/GUN-linker-Command-line-Options/","path":"2024/06/18/GUN-linker-Command-line-Options/","title":"GNU linker ld —— Command-line Options"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>GNU linker ld —— Command-line Options | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Command-line-Options"><span class="nav-number">1.</span> <span class="nav-text">Command-line Options</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#file"><span class="nav-number">1.1.</span> <span class="nav-text">@file</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#b-input-format-amp-amp-%E2%80%93format-x3D-input-format"><span class="nav-number">1.2.</span> <span class="nav-text">-b input-format &amp;&amp; –format&#x3D;input-format</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#c-MRI-commandfile-amp-amp-%E2%80%93mri-script-x3D-MRI-commandfile"><span class="nav-number">1.3.</span> <span class="nav-text">-c MRI-commandfile &amp;&amp; –mri-script&#x3D;MRI-commandfile</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#r-amp-amp-%E2%80%93relocatable"><span class="nav-number">1.4.</span> <span class="nav-text">-r &amp;&amp; –relocatable**</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#i"><span class="nav-number">1.5.</span> <span class="nav-text">-i</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#d-amp-amp-dc-amp-amp-dp"><span class="nav-number">1.6.</span> <span class="nav-text">-d &amp;&amp; -dc &amp;&amp; -dp</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93depaudit-AUDITLIB-amp-amp-P-AUDITLIB"><span class="nav-number">1.7.</span> <span class="nav-text">–depaudit AUDITLIB &amp;&amp; -P AUDITLIB</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93enable-linker-version"><span class="nav-number">1.8.</span> <span class="nav-text">–enable-linker-version</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93disable-linker-version%EF%BC%9A"><span class="nav-number">1.9.</span> <span class="nav-text">–disable-linker-version：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93enable-non-contiguous-regions%EF%BC%9A"><span class="nav-number">1.10.</span> <span class="nav-text">–enable-non-contiguous-regions：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93enable-non-contiguous-regions-warnings"><span class="nav-number">1.11.</span> <span class="nav-text">–enable-non-contiguous-regions-warnings:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#e-entry-amp-amp-%E2%80%93entry-x3D-entry%EF%BC%9A"><span class="nav-number">1.12.</span> <span class="nav-text">-e entry &amp;&amp; –entry&#x3D;entry：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93exclude-libs-lib-lib-%E2%80%A6"><span class="nav-number">1.13.</span> <span class="nav-text">–exclude-libs lib,lib,…</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#E-amp-amp-%E2%80%93export-dynamic-amp-amp-%E2%80%93no-export-dynamic%EF%BC%9A"><span class="nav-number">1.14.</span> <span class="nav-text">-E &amp;&amp; –export-dynamic &amp;&amp; –no-export-dynamic：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93export-dynamic-symbol-x3D-glob"><span class="nav-number">1.15.</span> <span class="nav-text">–export-dynamic-symbol&#x3D;glob</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93export-dynamic-symbol-list-x3D-file"><span class="nav-number">1.16.</span> <span class="nav-text">–export-dynamic-symbol-list&#x3D;file</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EB%EF%BC%9A"><span class="nav-number">1.17.</span> <span class="nav-text">-EB：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#EL"><span class="nav-number">1.18.</span> <span class="nav-text">-EL:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#f-name-amp-amp-%E2%80%93auxiliary-x3D-name"><span class="nav-number">1.19.</span> <span class="nav-text">-f name &amp;&amp; –auxiliary&#x3D;name :</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#F-name-amp-amp-%E2%80%93filter-x3D-name"><span class="nav-number">1.20.</span> <span class="nav-text">-F name &amp;&amp; –filter&#x3D;name</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#fini-x3D-name"><span class="nav-number">1.21.</span> <span class="nav-text">-fini&#x3D;name</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#g"><span class="nav-number">1.22.</span> <span class="nav-text">-g</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#G-value-amp-amp-%E2%80%93gpsize-x3D-value"><span class="nav-number">1.23.</span> <span class="nav-text">-G value &amp;&amp; –gpsize&#x3D;value</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#h-name-amp-amp-soname-x3D-name"><span class="nav-number">1.24.</span> <span class="nav-text">-h name &amp;&amp; -soname&#x3D;name</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#init-x3D-name"><span class="nav-number">1.25.</span> <span class="nav-text">-init&#x3D;name</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#l-namespec-amp-amp-%E2%80%93library-x3D-namespec"><span class="nav-number">1.26.</span> <span class="nav-text">-l namespec &amp;&amp; –library&#x3D;namespec</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/06/18/GUN-linker-Command-line-Options/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="GNU linker ld —— Command-line Options | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GNU linker ld —— Command-line Options
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-06-18 00:00:00" itemprop="dateCreated datePublished" datetime="2024-06-18T00:00:00+08:00">2024-06-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/GUN-linker/" itemprop="url" rel="index"><span itemprop="name">GUN-linker</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>33k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>41 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+GNU linker ld (GNU Binutils) version 2.42 —— Command-line Options
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p><strong>个人笔记，仅供参考！！</strong></p>
+<h4 id="Command-line-Options"><a href="#Command-line-Options" class="headerlink" title="Command-line Options"></a>Command-line Options</h4><p>链接器支持大量的命令行选项，但在实践中，仅有很少的选项可以在任意上下文中使用。<br>ld 的一个常用用法是在一个受支持的标准Unix系统上，链接标准Unix对象文件。</p>
+<p>ld 中的一些命令行选项可以在命令行中的任何位置指定。但是，引用文件的选项，如’-l’或’-T’，会导致在命令行出现该选项时读取文件（相对于目标文件和其它文件选项）。使用不同的参数重复非文件选项，可能没有实际效果也可能会覆盖前面出现的该选项。<br>那些多次指定，可能具有实际意义的选项，将在下面的描述中注明。</p>
+<p><strong>非选项参数是要链接在一起的目标文件或归档文件</strong>。它们可以跟在命令行选项后面、前面，也可以与命令行选项混合在一起，但是对象文件参数（指目标文件或归档文件）不能放在选项和它的参数之间。</p>
+<p>通常使用至少一个对象文件来调用链接器，但可以’-l’,’-R’和脚本命令语言指定其它形式的二进制输入文件。如果没有指定任何二进制输入文件，链接器不会产生任何输出，并发出消息’no input files’。</p>
+<p>如果链接器不能识别目标文件的格式，它将假定它是一个链接器脚本。以这种方式指定的脚本，增强了用于链接的主链接器脚本（默认链接器脚本，或使用’-T’指定的链接器脚本）。这个特性允许链接器链接到一个看起来是对象或存档的文件，但实际上只是定义了一些符号值，或使用INPUT或GTROUP来加载其它对象。以这种方式指定一个链接脚本只是增强了主链接器脚本，即在主脚本之后放置了额外的命令。</p>
+<p>对于名称为单个字母的选项，选项参数可以紧跟选项字母且不加空格，或者作为单独的参数紧跟在需要它们的选项后面。例如：<br>-o outputfile 等价于 -ooutputfile，它们的作用都是将输出文件名设置为outputfile</p>
+<p>对于名称由多个字母组成的选项，可以在选项名称前加一个或两个波折号；例如，’-trace-symbol’和’–trace-symbol’是等价的。注意，这里存在一个例外：以小写的’o’开头的多个字母选项前面只能有两个波折号，这是避免与’-o’选项的混淆。例如，’-omagic’将输出文件名设置为’magic’，而’–omagic’在输出上设置NMAGIC标志。</p>
+<p>多字母选项的参数必须用等号与选项名分开，或者作为单独的参数紧接在需要它们的选项后面。例如：<br>‘–trace-symbol foo’ 和 ‘–trace-symbol&#x3D;foo’ 是等价的。</p>
+<p><strong>需要注意</strong>：如果链接器是通过编译器驱动程序（例如’gcc’）间接调用的，那么所有的链接器命令行选项都应该以’-Wl’作为前缀（或其它适用于特定编译器驱动程序的前缀），例如：<br>gcc -Wl,–start-group foo.o bar.o -Wl,–end-group （向链接器传递选项 –start-group 和 –end-group 并且选项参数为foo.o bar.o。 这个选项是用来处理链接过程中两个库间相互引用的问题 ）<br>这一点很重要，否则编译器驱动程序可能会静默地丢弃链接器选项，从而导致错误的链接。当通过驱动程序传递需要值的选项时，也可能存在混淆，因为在选项和参数之间使用空格作为分隔符，导致驱动程序可能仅将选项传递给链接器并将参数传递给编译器。为了避免这种情况，最简单的方法是使用单字母和多字母的连接形式，例如：<br> gcc foo.o bar.o -Wl,-eENTRY -Wl,-Map&#x3D;a.map     （向链接器传递选项 -e 参数为 ENTRY，传递选项-map 参数为 a.map）</p>
+<p>下面是 GUN 链接器接受的通用命令行选项：</p>
+<h5 id="file"><a href="#file" class="headerlink" title="@file"></a>@file</h5><p>该选项用来告诉链接器从指定文件(file)中读取链接器的选项和参数。一般用于将大量的链接选项及参数放在一个文件中，然后在命令行中引用这个文件，使命令行更简洁，便于管理。<br>file中的选项以空格分隔，通过将整个选项用单引号或双引号括起来，可以将空白字符包含在其中。文件内容中可以包含额外的@file选项，会自动被链接器递归处理。<br>例如： ld @linker_options.txt<br>linker_options.txt的内容为：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">--verbose</span><br><span class="line">-o output.elf</span><br><span class="line">section1.o</span><br><span class="line">section2.o</span><br></pre></td></tr></table></figure>
+
+<h5 id="b-input-format-amp-amp-–format-x3D-input-format"><a href="#b-input-format-amp-amp-–format-x3D-input-format" class="headerlink" title="-b input-format &amp;&amp; –format&#x3D;input-format"></a>-b input-format &amp;&amp; –format&#x3D;input-format</h5><p>这两个选项用来指定特定的二进制格式。当需要链接某种特定的二进制格式文件时，可以在特定格式的每组目标文件前使用 -b input-format 来明确切换二进制格式。（objdump -i 命令可以查看支持的二进制格式。通常不需要特殊指定该选项，因为ld通常会被配置机器上最常用的格式作为默认输入格式。）</p>
+<h5 id="c-MRI-commandfile-amp-amp-–mri-script-x3D-MRI-commandfile"><a href="#c-MRI-commandfile-amp-amp-–mri-script-x3D-MRI-commandfile" class="headerlink" title="-c MRI-commandfile &amp;&amp; –mri-script&#x3D;MRI-commandfile"></a>-c MRI-commandfile &amp;&amp; –mri-script&#x3D;MRI-commandfile</h5><p>该选项是为了兼容MRI链接器使用的链接脚本，方便用户从MRI链接器过渡到GUN连接器。如果MRI-commandfile不存在，链接器会从 ‘-L’ 选项指定的目录中检索它。</p>
+<h5 id="r-amp-amp-–relocatable"><a href="#r-amp-amp-–relocatable" class="headerlink" title="-r &amp;&amp; –relocatable**"></a>-r &amp;&amp; –relocatable**</h5><p>生成可重定位的输出。即生成一个输出文件，该输出文件又可以作为 ld 的输入。通常称为部分链接。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ld -r a.o b.o -o output.o</span><br></pre></td></tr></table></figure>
+<p>在支持标准Unix魔数的环境中，输出文件的魔数会被设置为OMAGIC（告诉系统，这是一个可重定位的对象文件，而不是一个绝对可执行文件）。</p>
+<h5 id="i"><a href="#i" class="headerlink" title="-i"></a>-i</h5><p>执行增量链接，作用与 <code>-r</code> 选项相同。</p>
+<h5 id="d-amp-amp-dc-amp-amp-dp"><a href="#d-amp-amp-dc-amp-amp-dp" class="headerlink" title="-d &amp;&amp; -dc &amp;&amp; -dp"></a>-d &amp;&amp; -dc &amp;&amp; -dp</h5><p>这三个选项是等价的，定义了三个是为了和其它链接器兼容。设置该选项后，即使指定了可重定位的输出文件（使用了’-r’）链接器也会为公共符号（common symbols）分配空间。<br>关于common symbols，大致是为了应对多个独立编译单元均声明了同一个名称的未初始化变量的情况（参考：<a target="_blank" rel="noopener" href="https://maskray.me/blog/2022-02-06-all-about-common-symbols">All about COMMON symbols</a> 以及 <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/16835716/bss-vs-common-what-goes-where">bss vs COMMON: what goes where?</a>）</p>
+<h5 id="–depaudit-AUDITLIB-amp-amp-P-AUDITLIB"><a href="#–depaudit-AUDITLIB-amp-amp-P-AUDITLIB" class="headerlink" title="–depaudit AUDITLIB &amp;&amp; -P AUDITLIB"></a>–depaudit AUDITLIB &amp;&amp; -P AUDITLIB</h5><p>该选项表示将AUDITLIB添加到动态段（包含了程序运行时所需的动态链接信息）的DT_DEPAUDIT条目中。可以通过多次使用该选项来指定多个审计接口，它们会以冒号分割的形式列在DT_DEPAUDIT中。该选项仅适用于支持rtld-audit接口的ELF平台（rtld-audit是一种用于动态链接库的接口，用于执行运行时的审计和跟踪）。-P 选项是为了与Solaris系统兼容。</p>
+<h5 id="–enable-linker-version"><a href="#–enable-linker-version" class="headerlink" title="–enable-linker-version"></a>–enable-linker-version</h5><p> 该选项用于使能链接版本信息插入。例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 在 .text 段之后插入链接器版本信息 */</span></span><br><span class="line">SECTIONS &#123;</span><br><span class="line">    . = <span class="number">0x1000</span>;    <span class="comment">/* 设置当前位置为地址 0x1000 */</span></span><br><span class="line">    .text : &#123;</span><br><span class="line">        <span class="comment">/* 这里放置你的代码 */</span></span><br><span class="line">        *(.text)    <span class="comment">/* 将所有 .text 段的内容放在这里 */</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* 插入链接器版本信息 */</span></span><br><span class="line">    .version : &#123;</span><br><span class="line">        BYTE(<span class="number">0</span>)     <span class="comment">/* 一个空字节，用于分隔版本信息 */</span></span><br><span class="line">        <span class="comment">/* 这里是链接器版本信息 */</span></span><br><span class="line">        BYTE(LINKER_VERSION)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当启用该选项后，链接器在链接过程中会将链接器版本信息（LINKER_VERSION会被替换为实际版本信息）插入到.version段中。</p>
+<h5 id="–disable-linker-version："><a href="#–disable-linker-version：" class="headerlink" title="–disable-linker-version："></a>–disable-linker-version：</h5><p> 禁用连接器的LINK_VERSION指令，这样连接器就不会在连接过程中插入版本字符串信息。</p>
+<h5 id="–enable-non-contiguous-regions："><a href="#–enable-non-contiguous-regions：" class="headerlink" title="–enable-non-contiguous-regions："></a>–enable-non-contiguous-regions：</h5><p> 该选项的作用，是让链接器在输入段找不到匹配的输出段时，避免发生错误。链接器会尝试将输入部分分配给后续匹配的输出部分，并仅在没有足够大的输出段可以放输入段时，才生成错误。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">MEMORY &#123;</span><br><span class="line">  MEM1 (rwx) : ORIGIN = 0x1000, LENGTH = 0x14</span><br><span class="line">  MEM2 (rwx) : ORIGIN = 0x1000, LENGTH = 0x40</span><br><span class="line">  MEM3 (rwx) : ORIGIN = 0x2000, LENGTH = 0x40</span><br><span class="line">&#125;</span><br><span class="line">SECTIONS &#123;</span><br><span class="line">  mem1 : &#123; *(.data.*); &#125; &gt; MEM1</span><br><span class="line">  mem2 : &#123; *(.data.*); &#125; &gt; MEM2</span><br><span class="line">  mem3 : &#123; *(.data.*); &#125; &gt; MEM3</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">with input sections:</span><br><span class="line">.data.1: size 8</span><br><span class="line">.data.2: size 0x10</span><br><span class="line">.data.3: size 4</span><br><span class="line"></span><br><span class="line">results in .data.1 affected to mem1, and .data.2 and .data.3</span><br><span class="line">affected to mem2, even though .data.3 would fit in mem3.</span><br></pre></td></tr></table></figure>
+<p>上面的例子中，虽然第三个输入段.data.3可以适配到MEM3中，但由于链接器尝试将输入段分配给后续的适配的输出段，因此.data.3被分配给了MEM2，这是因为MEM2是第一个足够大的输出段。</p>
+<p><strong>注意</strong>：该选项与链接脚本中的INSERT语句不兼容，例如下面的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS &#123;</span><br><span class="line">    .text : &#123;</span><br><span class="line">        *(.text)</span><br><span class="line">    &#125;</span><br><span class="line">    .data : &#123;</span><br><span class="line">        *(.data)</span><br><span class="line">    &#125;</span><br><span class="line">    .rodata : &#123;</span><br><span class="line">        *(.rodata)</span><br><span class="line">    &#125;</span><br><span class="line">    INSERT : &#123;</span><br><span class="line">        /* 插入自定义节 */</span><br><span class="line">        my_custom_section</span><br><span class="line">    &#125;</span><br><span class="line">    .bss : &#123;</span><br><span class="line">        *(.bss)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">假设存在以下输入段：</span><br><span class="line">.text : &#123; ... &#125;              /* 输入的.text节 */</span><br><span class="line">.data : &#123; ... &#125;              /* 输入的.data节 */</span><br><span class="line">.rodata : &#123; ... &#125;            /* 输入的.rodata节 */</span><br><span class="line">.bss : &#123; ... &#125;               /* 输入的.bss节 */</span><br><span class="line">.my_custom_section : &#123; ... &#125; /* 输入的自定义节 */</span><br></pre></td></tr></table></figure>
+<p>当启用 –enable-non-contiguous-regions 选项后，链接器在将输入段分配到输出段时，自定义节可能会被链接器放置在任何合适的输出段中，这导致自定义节的位置可能与插入语句指定的位置不一致。</p>
+<h5 id="–enable-non-contiguous-regions-warnings"><a href="#–enable-non-contiguous-regions-warnings" class="headerlink" title="–enable-non-contiguous-regions-warnings:"></a>–enable-non-contiguous-regions-warnings:</h5><p> 开启<code>--enable-non-contiguous-regions</code>选项后，可能存在输入段被放置在了不符合预期的位置上，或者某些内容被丢弃，导致结果与预期不符合。在启用了<code>--enable-non-contiguous-regions-warnings</code>选项后，链接器会产生警告提醒开发者这种潜在问题。等于是在<code>--enable-non-contiguous-regions</code>真实生效后（输入段受该选项影响，被放到了一些非预期段中，这种行为可能存在问题，也可能并不影响连接生成的可执行程序），链接器会发出警告，提醒开发者检查确认链接器所做的链接行为是否存在问题。</p>
+<h5 id="e-entry-amp-amp-–entry-x3D-entry："><a href="#e-entry-amp-amp-–entry-x3D-entry：" class="headerlink" title="-e entry &amp;&amp; –entry&#x3D;entry："></a>-e entry &amp;&amp; –entry&#x3D;entry：</h5><p> 该选项用于设定程序入口（第一条执行的指令）。如果链接器没有找到名为<code>entry</code>的符号，则链接器会将<code>entry</code>解释为数值并作为程序的入口地址（默认解释为10进制，16进行需要使用’0x’前缀，8进制需要使用’0’）。<br>对于程序入口的设定，链接器会依次尝试下面几种方法，直到找到一个匹配的：</p>
+<ul>
+<li>链接命令中使用 <code>-e</code> 选项来指定</li>
+<li>链接脚本中通过ENTRY(symbol)来指定</li>
+<li>使用目标特定的符号值（如果定义了的话）。对许多目标来说，这个符号通常是<code>start</code></li>
+<li>如果存在代码段，并且正在创建一个可执行文件，则使用代码段的第一个字节的地址作为程序入口。通常情况下，代码段是<code>.text</code></li>
+<li>0作为入口地址。</li>
+</ul>
+<h5 id="–exclude-libs-lib-lib-…"><a href="#–exclude-libs-lib-lib-…" class="headerlink" title="–exclude-libs lib,lib,…"></a>–exclude-libs lib,lib,…</h5><p> 该选项用于指定一组库，它们的符号不会被自动导出。其中，库名称使用逗号或冒号进行分割。如果指定了<code>--exclude-libs ALL</code>，所有库中的符号都不会被自动导出。该选项一般用来：</p>
+<ul>
+<li>避免符号冲突：同时使用了多个库，某些库中可能使用了相同名称的函数或变量，通过排除某些库中符号的自动导出，可以避免冲突。</li>
+<li>隐藏实现细节：过排除这些库中的符号自动导出，可以防止其他模块或者程序直接使用这些函数或变量。</li>
+</ul>
+<p>（如果排除了某个库中的符号自动导出，但是又需要使用该库中的一些函数，可以将这些函数放到.def文件中让其可以导出（linux下可用？），也可以在函数定义处添加<code>__attribute__((visibility(&quot;default&quot;)))</code>让其默认可见。）<br>（感觉这个选项的作用，更多的是对库中非对外的函数进行屏蔽，这些内部函数命名，可能不同库中存在相同的名字。）</p>
+<h5 id="E-amp-amp-–export-dynamic-amp-amp-–no-export-dynamic："><a href="#E-amp-amp-–export-dynamic-amp-amp-–no-export-dynamic：" class="headerlink" title="-E &amp;&amp; –export-dynamic &amp;&amp; –no-export-dynamic："></a>-E &amp;&amp; –export-dynamic &amp;&amp; –no-export-dynamic：</h5><p> -E 或 –export-dynamic 选项会让链接器将所有符号添加到动态符号表中，这两个选项会将所有符号暴漏给动态链接的对象。如果不使用-E 或 –export-dynamic选项（或者使用–no-export-dynamic恢复默认行为），则动态符号表通常只包含链接中使用的共享库的符号，而不包含程序自身定义的符号。（例如，你的程序加载了一个共享库<code>libfoo.so</code>，而这个共享库中的某些函数需要调用你的程序中的一些函数，那么就需要在编译时使用-E 或 –export-dynamic选项，以便将程序自身的符号添加到动态符号表中，使得libfoo.so可以正确地调用这些函数。）</p>
+<h5 id="–export-dynamic-symbol-x3D-glob"><a href="#–export-dynamic-symbol-x3D-glob" class="headerlink" title="–export-dynamic-symbol&#x3D;glob"></a>–export-dynamic-symbol&#x3D;glob</h5><p>1：在创建动态链接的可执行文件时，与通配符模式<code>glob</code>匹配的符号会被添加到动态符号表中。动态符号表是在运行时对其他动态对象可见的符号集合，即这些符号可以被动态加载的其它共享库访问到。<br>2：创建共享库时使用该选项，则与通配符模式<code>glob</code>匹配的符号引用不会被静态绑定到该共享库内部的定义，这些符号会被添加到动态符号表中，并在运行时动态解析。（如果一个共享库中的某些符号希望能被其它共享库使用（使用而不是引用），那么这些符号不能被静态的绑定到当前共享库的定义）。注意，当创建共享库时，如果没有指定 -Bsymbolic 或 –dynamic-list，则该选项不会起作用。<br>该选项仅对支持共享库的ELF平台有意义。</p>
+<h5 id="–export-dynamic-symbol-list-x3D-file"><a href="#–export-dynamic-symbol-list-x3D-file" class="headerlink" title="–export-dynamic-symbol-list&#x3D;file"></a>–export-dynamic-symbol-list&#x3D;file</h5><p>该选项用于从指定的文件中读取模式，文件中的每一行都是一个模式。该选项的作用是方便地从文件中批量指定需要导出的符号模式，而不必在命令行中逐个指定。例如：<br>假设存在一个名为<code>symbols.txt</code>的文件，内容为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">foo_*</span><br><span class="line"> bar_*</span><br></pre></td></tr></table></figure>
+<p>链接时，使用：ld –export-dynamic-symbol-list&#x3D;symbols.txt …<br>则文件中所列的每个模式都会被解析为一个 –export-dynamic-symbol 选项。</p>
+<h5 id="EB："><a href="#EB：" class="headerlink" title="-EB："></a>-EB：</h5><p> 该选项用于在链接时指定生成<strong>大端</strong>字节序的输出文件。</p>
+<h5 id="EL"><a href="#EL" class="headerlink" title="-EL:"></a>-EL:</h5><p> 该选项用于在链接时指定生成<strong>小端</strong>字节序的输出文件。</p>
+<h5 id="f-name-amp-amp-–auxiliary-x3D-name"><a href="#f-name-amp-amp-–auxiliary-x3D-name" class="headerlink" title="-f name &amp;&amp; –auxiliary&#x3D;name :"></a>-f name &amp;&amp; –auxiliary&#x3D;name :</h5><p> 该选项用于创建 ELF 共享对象时，设置内部的 DT_AUXILIARY 字段为指定的名称。DT_AUXILIARY 字段告诉动态链接器，共享对象的符号表应该作为共享对象name（这里指name表示的共享对象）的辅助过滤器。举例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ld -shared -o A.so --auxiliary=B.so A.o</span><br></pre></td></tr></table></figure>
+<p>在创建共享对象 <strong>A.so</strong>时，指定了<code> --auxiliary=B.so</code>。则当共享对象<strong>A.so</strong>被程序动态链接时，当动态链接器需要解析任何<strong>A.so</strong>中的符号时，它将首先检查<code>B.so</code>是否存在该符号的定义。如果存在，它将使用<code>B.so</code>中的定义，如果不存在才使用<strong>A.so</strong>中的定义。</p>
+<p>因此，name表示的共享对象可用于提供某些功能的替代实现，可能用于调试或特定于机器的高性能实现。</p>
+<h5 id="F-name-amp-amp-–filter-x3D-name"><a href="#F-name-amp-amp-–filter-x3D-name" class="headerlink" title="-F name &amp;&amp; –filter&#x3D;name"></a>-F name &amp;&amp; –filter&#x3D;name</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ld -shared -o A.so -F=B.so A.o</span><br></pre></td></tr></table></figure>
+<p> 与–auxiliary&#x3D;name 类似，区域在于：在创建共享对象 <strong>A.so</strong>时，指定了<code> --filter=B.so</code>。则当共享对象<strong>A.so</strong>被程序动态链接时，当动态链接器需要解析任何<strong>A.so</strong>中的符号时，<strong>它总是在</strong><code>B.so</code>中查找该符号的定义。（如果找不到，链接器会继续查找命令行中指定的其它共享对象，直到找到符号的定义或者报告符号未解析错误。即与–auxiliary&#x3D;name相比，链接器不会回退到使用<strong>A.SO</strong>中的定义）<br>参考<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter4-4.html">https://docs.oracle.com/cd/E23824_01&#x2F;html&#x2F;819-0690&#x2F;chapter4-4.html</a></p>
+<h5 id="fini-x3D-name"><a href="#fini-x3D-name" class="headerlink" title="-fini&#x3D;name"></a>-fini&#x3D;name</h5><p> 该选项用于在创建ELF可执行文件或共享对象时，指定它被卸载时调用的函数。该选项会将 DT_FINI 设置为指定函数（name）的地址。默认情况下，链接器会使用<code>-fini</code>作为要调用的函数名。<br>该选项可以用来在可执行文件或共享对象被卸载时，执行一些清理工作。</p>
+<h5 id="g"><a href="#g" class="headerlink" title="-g"></a>-g</h5><p>该选项是用来兼容其它工具的。例如，在Solaris的链接器中，<code>-g</code> 选项用来指示链接器将调试信息放在输出文件中。然而，在 GUN ld 中，调试信息处理通常由编译器来完成，而不是链接器。因此<code>-g</code>在GUN ld 中被忽略。</p>
+<h5 id="G-value-amp-amp-–gpsize-x3D-value"><a href="#G-value-amp-amp-–gpsize-x3D-value" class="headerlink" title="-G value &amp;&amp; –gpsize&#x3D;value"></a>-G value &amp;&amp; –gpsize&#x3D;value</h5><p> 该选项仅适用于MIPS ELF等支持将大型和小型对象放置在不同节中的目标文件格式。该选项用来设置可以使用全局指针寄存器（GP）进行优化的对象的最大大小。<br>备注：在MIPS架构中，由于架构的特殊性，对于较大的全局变量或静态变量，寄存器无法直接寻址。为了处理这种特殊的情况，需要使用特殊的加载指令来加载数据，这会导致额外的指令和性能开销。为了优化性能，MIPS ELF可以将其中相对较小的全局变量和静态变量放置在一个可以通过全局寄存器直接寻址的节中。然后，只有较大的对象才需要额外的指令来加载数据。通过 <code>-G</code>选项，可以设置一个值，告诉连接器只有大小小于或等于该值的对象，才会被放置在可以通过GP直接寻址的段中，而其它更大的对象则会采用其它方式来访问。（-G 设置过大，可能导致一些很大的只读变量被放到了 可读写的GP直接寻址段中，可能会浪费内存）</p>
+<h5 id="h-name-amp-amp-soname-x3D-name"><a href="#h-name-amp-amp-soname-x3D-name" class="headerlink" title="-h name &amp;&amp; -soname&#x3D;name"></a>-h name &amp;&amp; -soname&#x3D;name</h5><p> 当创建elf共享库，并使用该选项时，会将该共享库内的<strong>DT_SONAME</strong>字段设置为<code>name</code>。<br>当可执行文件与具有<strong>DT_SONAME</strong>字段的共享库链接后，当可执行文件运行时，动态链接器将尝试加载由<strong>DT_SONAME</strong>字段指定的共享库，而不是创建可执行文件时给连接器的共享库名。<br>soname通常用于提供版本向后兼容信息，例如版本1.0到1.9的共享库<code>libx</code>提供了相同的API，那么它们可以设置相同的soname，例如<code>libx.so.1</code>。<br>如果创建可执行文件 APP 时，链接的共享库为<code>libx.so.1.2</code>（其soname为<code>libx.so.1</code>），但系统当前只包含了该共享库的 1.3版本<code>libx.so.1.3</code>。那么系统可以使用<code>libx.so.1.3</code>来替代最初的<code>libx.so.1.2</code>。（前缀匹配？）参考<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Soname">https://en.wikipedia.org/wiki/Soname</a>。</p>
+<h5 id="init-x3D-name"><a href="#init-x3D-name" class="headerlink" title="-init&#x3D;name"></a>-init&#x3D;name</h5><p> 该选项用于在创建ELF可执行文件或共享对象时，设置 <strong>DT_INIT</strong>为函数（name）的地址，使elf或共享对象被加载时，调用该指定的函数。默认情况下，链接器使用<code>_init</code>作为加载时调用的函数。</p>
+<h5 id="l-namespec-amp-amp-–library-x3D-namespec"><a href="#l-namespec-amp-amp-–library-x3D-namespec" class="headerlink" title="-l namespec &amp;&amp; –library&#x3D;namespec"></a>-l namespec &amp;&amp; –library&#x3D;namespec</h5><p> 该选项用于将指定的库添加到链接的文件列表中。<strong>该选项可以被使用多次</strong>。<br>如果namespec的形式为<code>:filename</code>，链接器会在库路径中搜索名为<code>filename</code>的库，否则链接器会在库路径中搜索名为<code>libnamespec.a</code>的库。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ld -o output_file main.o -l:custom_library.a  # 搜索custom_library.a 库文件</span><br><span class="line"></span><br><span class="line">ld -o output_file main.o -lfoo # 搜索libfoo.a 库文件</span><br></pre></td></tr></table></figure>
+<p>此外，在支持共享对象的系统中，例如，在支持ELF可执行文件的系统中，链接器在搜索名为libnamespec.a的库之前，会先搜索名为libnamespec.so的库（该规则不适用于:filename格式，该格式总是用于指定名为filename的文件）。</p>
+<p>需要注意的是，链接器只会在命令行中指定该库的位置搜索一次库。<br>如果库中定义了在命令行上在它之前的某个对象中未定义的符号，链接器将包含库中的适当文件。但是，在命令行上它之后出现的对象中的未定义符号不会导致链接器再次搜索该库（保证了链接器对每个库只会搜索一次，以提高链接效率）。<br>如果需要强制连接器多次搜索该库，可是使用<code>-(</code>选项<br>这种库的搜索方式是Unix链接器的标准，在AIX上使用的ld与这里所说的行为不同。</p>
+<p><strong>-L searchdir &amp;&amp; –library-path&#x3D;searchdir</strong>：<br> 将目录<code>searchdir</code>添加到链接器的库和控制脚本搜索路径列表中。该命令可以使用多次。目录按它们在命令行中指定的顺序进行搜索，这些命令行中指定的目录会在默认目录之前进行搜索。<br>如果指定的路径以<code>=</code>或<code>$SYSROOT</code>开头，那么这些前缀会被替换为系统根目录前缀（系统根目录前缀由<code>--sysroot</code>选项控制，或在链接器配置时指定）。</p>
+<p><strong>-m emulation</strong>：<br>该选项用于指定链接器要模拟的仿真模式。在链接时，不同的操作系统或硬件平台可能需要使用不同的链接器仿真模式。如果没有使用<code>-m</code>选项，链接器会尝试从环境变量<code>LDEMULATION</code>中获取仿真模式，如果该环境变量也没定义，则会使用默认仿真模式（链接器配置时确定的）。<br>备注：“仿真模式”是指链接器在链接时模拟的目标系统或硬件平台的环境。在编译和链接过程中，链接器需要知道要生成的可执行文件或库文件将要在哪种操作系统或硬件架构上运行，以便正确地生成与目标环境兼容的输出文件（能在目标环境上运行）。</p>
+<p><strong>–remap-inputs&#x3D;pattern&#x3D;filename &amp;&amp; –remap-inputs-file&#x3D;file：</strong><br>该选项用于在链接器尝试打开输入文件之前更改它们的名称。例如，<code>--remap-inputs=foo*.o=bar.o</code>会导致链接器在试图加载任何匹配<code>foo*.o</code>模式的输入文件时，实际上会加载<code>bar.o</code>文件。<br><code>--remap-inputs-file=file</code>允许从文件中读取替换规则。文件中的每一行包含一个替换规则。空行被忽略，<code>#</code>开始的行为注释，映射模式与文件名之间可以用空格或<code>=</code>分割。<br>这两个选项可以使用多次，其内容会累积。替换规则会按照它们在命令行中出现的顺序进行处理，一旦找到了匹配的规则，就不会再进一步检查。<br>如果替换的文件名是<code>/dev/null</code>或<code>NULL</code>，则该规则实际上会导致输入文件被忽略（方便从复杂的构建环境中移除输入文件）。<br>需要注意，该选项是位置相关的，只会影响其后出现的文件名，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ld foo.o --remap-inputs=foo.o=bar.o</span><br></pre></td></tr></table></figure>
+<p>不会产生效果，而</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ld --remap-inputs=foo.o=bar.o foo.o</span><br></pre></td></tr></table></figure>
+<p>会导致输入文件<code>foo.o</code>被替换为<code>bar.o</code>。</p>
+<p>此外，该选项也会影响到连接脚本中<strong>INPUT</strong>语句引用的文件（也会应用替换规则）。</p>
+<p><strong>-M &amp;&amp; –print-map</strong>：<br>该选项将链接映射打印到标准输出。包含符号在内存的地址、符号大小等信息。</p>
+<p><strong>-Map&#x3D;mapfile</strong>：<br>同上，将链接映射输出到文件中保存。如果<code>mapfile</code>为<code>-</code>，表示输出到标准输出。</p>
+<p><strong>–print-map-discarded &amp;&amp; –no-print-map-discarded</strong><br>选项<code>--print-map-discarded</code>为默认开启的，它会在链接映射过程中打印被丢弃的链接段信息。该选项提供了对链接过程中丢弃段的可视化，以便开发人员了解哪些部分被丢弃了。<br>如果使用<code>--no-print-map-discarded</code>选项，则链接器不会输出丢弃的节信息。</p>
+<p><strong>–print-map-locals &amp;&amp; –no-print-map-locals</strong><br><code>--print-map-locals</code>该选项启动时，链接器将在链接映射中打印局部符号（局部符号在其名称前有local标识）。以便了解在链接过程中使用的所有符号，包括全局和局部范围的符号。<br><code>--no-print-map-locals</code>该选项为默认配置，链接器不会在链接映射中打印局部符号，有助于简化输出信息。</p>
+<p><strong>-n &amp;&amp; –nmagic</strong>:<br>该选项用于关闭段对齐，并禁止链接到共享库。如果输出格式支持Unix风格的魔数，链接器会将输出标记为<code>NMAGIC</code>（标记为<code>NMAGIC</code>表示对象文件不可重定位，是一个绝对可执行文件，是已经经过链接和地址解析，可以直接运行的）。</p>
+<p><strong>-N &amp;&amp; –omagic</strong>：<br>该选项用于将文本和数据段设置为可读可写。此外，还会关闭数据段的页面对齐功能，并禁止链接到共享库。如果输出格式支持Unix风格的魔数，则输出文件被标记为OMAGIC。</p>
+<ul>
+<li>通常情况下，程序的文本和数据段是可读的，以确保程序的安全性和稳定性。使用该选项后，这些段被设置为可读可写，使得程序可以修改自身的代码和数据（这里应该是指的生成的可执行文件中的数据段可写，当程序被加载运行后，操作系统一般会将数据段设置为可读）。</li>
+</ul>
+<p>标记为OMAGIC的可执行文件，是可重定位的（例如多个目标文件和库链接在一起，但没有完全链接），可以进一步与其它对象文件链接以生成最终可执行文件。</p>
+<p><strong>–no-omagic</strong>：<br>该选项是对<code>-N</code>选项一些特性的反作用。具体来说：</p>
+<ul>
+<li>将文本段设置为只读，有助于提高程序的安全和稳定性。</li>
+<li>强制数据段进行页面对齐，有助于提高程序加载速度。</li>
+<li>该选项也会设置链接器不链接共享库。（使用<code>-Bdynamic</code>来启用链接共享库）</li>
+</ul>
+<p><strong>-o output &amp;&amp; –output&#x3D;output</strong>:<br>用来指定链接后的输出文件名为<code>output</code>。如不指定，默认产生<code>a.out</code>。此外，脚本文件中也可以通过命令OUTPUT来指定输出文件。</p>
+<p><strong>–dependency-file&#x3D;depfile</strong>：<br>该选项的作用是生成一个依赖文件，其中描述了生成输出文件所需的所有输入文件的规则。（生成的这个依赖文件，可以用于构建系统快速识别依赖文件的修改，提高构建效率）</p>
+<p><strong>-O level</strong>：<br>该选项用于控制链接器的优化级别，目前该选项只影响 ELF 共享库的生成。例如，连接器可能会对共享库中的符号进行分析，识别出一些没有使用的函数，然后将这些无用的函数从最终的共享库中剔除掉，减小共享库的大小。</p>
+<p><strong>注意</strong>该选项与编译器选项中<code>-O</code>的区别，编译器选项<code>-O</code>用来控制编译器的优化级别，通过代码内联、循环展开、常量折叠等优化技术来改善生成目标代码的性能&#x2F;大小。这些优化技术应用于<strong>源代码到目标代码的转换过程</strong>。而连接器中的该选项应用于生成最终的可执行文件或共享库。</p>
+<p><strong>-plugin name</strong><br>该选项可以用来指定链接过程中使用的插件。</p>
+<p><strong>–push-state &amp;&amp; –pop-state</strong>:<br>这两个选项的作用是保存和恢复链接器的状态。在链接过程中，可能会涉及到一系列标志选项来控制输入文件的处理方式，如静态链接、动态链接等。使用<code>--push-state</code>可以将当前的这些标志选项状态保存起来，而使用<code>--pop-state</code>可以将之前保存的状态恢复，以便后续的操作继续使用这些标志状态。<br>实际使用中，可能一些文件需要使用多个标志选项，当处理后续不需要这些标志选项的输入文件时，就可以使用<code>--push-state</code>，而后续又碰到需要使用这些标志选项的输入文件时可以再次使用<code>--push-state</code>恢复。</p>
+<p><strong>-q &amp;&amp; –emit-relocs</strong>：<br>该选项让链接器在生成可执行文件时，保留重定位段和内容。（这些信息对于后续的链接分析和优化工具有用，一些分析工具或优化工具可能会对可执行文件进行修改，以提高性能、减小体积或修复错误，重定位信息能帮助这些工具更精确的了解程序中各个符号的使用方式。）<br>该选项仅在ELF平台上支持。</p>
+<p><strong>–force-dynamic：</strong><br>该选项针对VxWorks系统，作用是强制使输出文件具有动态段，以确保在VxWorks目标上正确的进行动态链接。<br>（动态段包含了与动态链接相关的信息，例如动态链接库的依赖关系、重定位信息等）</p>
+<p><strong>-R filename &amp;&amp; –just-symbols&#x3D;filename</strong>:<br>该选项会从指定文件中读取符号名和它们的地址，但不会对指定文件进行重定位或将其包含在最终的输出文件中。（通过引用其它程序定义的符号的内存位置，可以在目标输出文件中使用这些符号来访问其它程序的功能或数据，而不必将这些代码或数据包含在目标输出文件中）<br>如果 -R 后跟的是目录，链接器会将其视为<code>-rpath</code>选项。</p>
+<p><strong>-s &amp;&amp; –strip-all</strong>：<br>该选项用于从输出文件中省略所有符号信息（函数名，变量名等）。这样可以减少输出目标文件大小，但会使调试更加困难。</p>
+<p><strong>-S &amp;&amp; –strip-debug</strong>:<br>省略调试器符号信息（源代码行号，局部变量名等），但保留其它符号信息（函数名、变量名等）</p>
+<p><strong>–strip-discarded &amp;&amp; –no-strip-discarded</strong>：<br>选项<code>--strip-discarded</code>设置后（默认启用），链接器会省略在被丢弃的段（可能是包含未使用的代码或数据的段）中定义的全局符号。而选项<code>--no-strip-discarded</code>启用时，链接器会保留在被丢弃的段中定义的全局符号。</p>
+<p><strong>-t &amp;&amp; –trace</strong>：<br>启用该选项，链接器在处理输入文件时会打印它们的名称。如果使用了两次<code>-t</code>（-t -t），链接器会将归档（archives）文件中的成员名称也打印出来。</p>
+<p><strong>-T scriptfile &amp;&amp; –script&#x3D;scriptfile</strong>:<br>该选项用于指定自定义的链接脚本文件，自定义链接过程。可以使用多次<code>-T</code>指定多个文件，链接器会按照顺序依次处理。</p>
+<p><strong>-dT scriptfile &amp;&amp; –default-script&#x3D;scriptfile</strong>：<br>该选项用于指定文件<code>scriptfile</code>作为默认链接器脚本。但是该脚本被处理，是在命令行中的其它选项都被处理完后，才会处理该脚本。这意味着，命令行中出现在 –default-script 选项之后的选项和参数会影响到该脚本的行为。</p>
+<p><strong>-u symbol &amp;&amp; –undefined&#x3D;symbol</strong>:<br>该选项用于强制将符号<code>symbol</code>加入到输出文件中作为一个未定义符号。链接器在链接过程中就会尝试在其它的可用库中寻找<code>symbol</code>的定义，并将相关的模块链接到最终输出中，以确保程序可以成功编译运行。（例如，有些符号可能是非公开的，不会自动暴露给链接器，通过指定<code>-u</code>选项，可以强制告诉链接器要解析这些非公开的符号。）</p>
+<p><strong>–require-defined&#x3D;symbol</strong><br>该选项要求输出文件中必须定义指定的符号<code>symbol</code>，类似于<code>--undefined</code>选项，但如果链接器在输出文件中找不到指定的符号定义，则会报错并退出。</p>
+<p><strong>-Ur</strong>:<br>该选项用于生成可重定位的输出文件（输出文件可以再作为链接器的输入文件）。对于不使用构造函数或析构函数的程序，或对于基于ELF的系统，该选项等价于<code>-r</code>。对于其它类型的二进制文件，<code>-Ur</code>与<code>-r</code>类似，但它还会解析对构造函数和析构函数的引用。使用<code>-Ur</code>选项时，应该确保该选项只用于最后一次的部分链接，而不要用于之前的部分链接（有一些系统中，如果文件本身是使用 <code>-Ur</code> 选项进行链接的，那么在后续的部分链接中，使用 <code>-Ur</code> 选项是无效的。这是因为一旦构造函数表已经构建，就无法再添加了。因此，在这种情况下，应该仅在最后一次的部分链接中使用 <code>-Ur</code>，而在其他情况下使用 <code>-r</code>）</p>
+<p><strong>–orphan-handling&#x3D;MODE</strong>：<br>该选项用于控制孤立段的处理方式。</p>
+<ul>
+<li>place：孤立段（输入）会被放到一个适当的输出中，具体策略为：<ul>
+<li>如果存在一个输出段的名字与该孤立段的名字完全匹配，则该孤立段被放在该输出段的末尾。</li>
+<li>否则，会创建一个名称和该孤立段一样的新的输出段，该孤立段被放入该输出段中。对于这个新的输出段，通常链接器会将它放在具有相同属性（例如代码与数据，可加载与不可加载等）的输出段之后。如果没有找到合适的位置，或不支持，则该新输出段被放在文件末尾。</li>
+</ul>
+</li>
+<li>discard：孤立段被丢弃（通过将它们放置在<code>DISCARD</code>段中）。</li>
+<li>warn：以<code>place</code>方式处理孤立段，并发出一个警告。</li>
+<li>error：出现任何孤立段，链接器会报错并退出。</li>
+</ul>
+<p>如果没有配置–orphan-handling 选项，则默认为<code>place</code>处理方式。</p>
+<p>**–unique[&#x3D;SECTION]**：<br>使用该选项，链接器会对匹配的指定输入段，创建一个单独的同名输出段。该选项可以使用多次。</p>
+<p><strong>-v &amp;&amp; –version &amp;&amp; -V</strong>:<br>该选项显示链接器的版本号。</p>
+<p><strong>-x &amp;&amp; –discard-all</strong>:<br>该选项用于从输出文件中删除所有局部符号。（局部符号只在定义它们的模块中可见，如局部变量、静态函数等。这些符号在链接过程中不再需要，因为它们对其他模块不可见，所以也不会对最终的可执行文件或库产生影响。）</p>
+<p><strong>-X &amp;&amp; –discard-locals</strong>:<br>临时本地符号（以系统特定的本地标签前缀开头）由编译器或汇编器生成，用于临时性标记某些代码或数据块，但它们不应该被链接到最终的输出文件中。<br>该选项用于删除所有临时本地符号，减少输出文件大小。</p>
+<p><strong>-y symbol &amp;&amp; –trace-symbol&#x3D;symbol</strong>:<br>该选项用于打印包含特定符号的输入文件，该选项可以使用多次，用来追踪不同的符号。</p>
+<p><strong>-Y path</strong>：<br>将指定路径添加到默认的库搜索路径中。（该选项是用来兼容Solaris系统）</p>
+<p><strong>-z keyword</strong>：<br>用于向链接器传递特定的关键字参数<code>keyword</code>，其中<code>keyword</code>是链接器的一些特定功能或行为的标志。<code>keywork</code>例如：</p>
+<ul>
+<li>now：强制链接器立即解析符号，而不是按需解析（第一次使用时）。这可以加快程序启动速度，但会增加加载时间。</li>
+<li>relro：开启RELRO（relocation read-only）保护。让链接器在加载共享对象时将重定位表置于只读内存区域，以增加程序的安全性。</li>
+<li>defs：链接过程中打印出所有未定义符号。有助于识别缺少的库或依赖关系。</li>
+</ul>
+<p><strong>–accept-unknown-input-arch &amp;&amp; –no-accept-unknown-input-arch</strong>：<br>这两个选项用于控制链接器对输入文件的处理方式：</p>
+<ul>
+<li>accept-unknown-input-arch：当链接器无法识别输入文件的架构（architecture）时，该选项告诉编译器接受这些无法识别的输入文件。（该选项假设用户对链接器的行为有深入了解，知道自己在做什么，并且有意将这些未知的输入文件链接进来。）</li>
+<li>no-accept-unknown-input-arch：该选项相反，明确告诉链接器不接收无法识别架构的输入文件。</li>
+</ul>
+<p>一般情况下，不同架构的文件是无法链接在一起的，因为它们的二进制格式和指令集不兼容。然而一些特殊的情况下，例如在进行跨平台开发时，可能会使用一些特殊的技术或工具，使得不同的架构代码可以链接在一起。</p>
+<p><strong>–as-needed &amp;&amp; –no-as-needed</strong>:</p>
+<ul>
+<li>as-needed：链接过程中，链接器会检查所有依赖的动态库，如果这个动态库没有被实际引用，则不会在最终生成文件中写入对该动态库的引用。（elf文件中没有对该动态库的DT_NEEDED标记）</li>
+<li>no-as-needed:链接器不做检查，用户指定的动态库，都会写入最终的输出文件中。（可执行文件中含有对该库的引用信息，即有DT_NEEDED标记，则执行该可执行文件时，会加载相应的动态库）</li>
+</ul>
+<p><strong>–copy-dt-needed-entries &amp;&amp; –no-copy-dt-needed-entries</strong>：</p>
+<ul>
+<li>–copy-dt-needed-entries：使用该选项，链接器会搜索具有DT_NEEDED标签的动态库所引用（有DT_NEEDED标记）的动态库，并将它们加入到输出文件中。（动态库A引用了动态库B，当连接时指定了动态库A，则最终的输出文件中，会同时存在对A、B的DT_NEEDED标签）</li>
+<li>–no-copy-dt-needed-entries：使用该选项，链接器只会将该动态库本身（命令行中指定的）在输出文件中添加DT_NEEDED标签，不会递归搜索。该选项为链接器默认行为。</li>
+</ul>
+<p><strong>-Bdynamic &amp;&amp; -dy &amp;&amp; -call_shared</strong>:<br>该选项用来指示链接器在生成可执行文件时，查找和链接到动态库。<br>该选项存在多个变体，是为了兼容不同的系统。</p>
+<p><strong>-Bgroup：</strong><br>该选用<strong>仅用于支持ELF和动态库的系统中</strong>。<br>使用该选项，可以让<strong>运行时链接器</strong>仅在库对象及其依赖的库内进行库符号查找，不会搜索其它库。使用该选项，确保了库符号解析在一个封闭的组内进行，有助于避免符号冲突。并且由于减少了链接器的搜索范围，可以提高程序的启动速度。<br>例如：<br><code>gcc -Wl,-Bgroup -lgroup1 -Wl,-Bgroup -lgroup2 -o my_program</code><br>库<code>libgroup1</code>和<code>libgroup2</code>被放到两个独立的组中，如果<code>libgroup1</code>和<code>libgroup2</code>中均存在函数<code>foo</code>，则链接器在解析<code>libgroup1</code>中的<code>foo</code>函数时，仅会在<code>libgroup1</code>及其依赖库中检索。在解析<code>libgroup2</code>中的<code>foo</code>函数时，仅会在<code>libgroup2</code>及其依赖库中检索。</p>
+<p><strong>-Bstatic &amp;&amp; -dn &amp;&amp; -non_shared &amp;&amp; -static</strong>：<br>该选项控制链接器不要使用共享库，使用静态库。 不同的变体是为了兼容不同的系统。该选项可以使用多次，它会影响其后的 -l 选项。</p>
+<p><strong>-Bsymbolic</strong>:<br>在创建共享库时使用该选项，会指示链接器将程序中对全局符号的引用绑定到共享库内部的定义。该选项有助于减少共享库和主程序之间的符号冲突，确保共享库的符号定义不会被外部定义覆盖。<br>例如，共享库：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// libexample.c</span></span><br><span class="line"><span class="type">int</span> counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">increment</span><span class="params">()</span> &#123;</span><br><span class="line">    counter++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>主程序：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.c</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="type">void</span> <span class="title function_">increment</span><span class="params">()</span>;</span><br><span class="line"><span class="type">int</span> counter = <span class="number">10</span>; <span class="comment">// 主程序中的 counter</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    increment();</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Counter: %d\n&quot;</span>, counter);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果共享库编译时没有指定<code>-Bsymbolic</code>选项，当主程序调用increment时，由于符号解析是在运行时进行的，increment函数会增加主程序中的counter，输出的counter值为11。</p>
+<p><strong>-Bsymbolic-functions</strong>：<br>该选项作用和选项<code>-Bsymbolic</code>类似，但该选项专门用于函数符号。<br>创建共享库时指定该选项，链接器会将对全局函数符号的引用绑定到共享库内部的定义。</p>
+<p><strong>-Bno-symbolic：</strong><br>该选项用于取消之前指定的 <code>-Bsymbolic 和 </code>-Bsymbolic-functions&#96; 选项的作用</p>
+<p><strong>–dynamic-list&#x3D;dynamic-list-file</strong>：<br>该选项可以用来指定一个文件，该文件中包含一个全局符号列表。<br>创建共享库时指定该选项，则对文件中所列符号的引用不会绑定到共享库内部。<br>例如：<br>文件 dynamic-list.txt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  global_init;</span><br><span class="line">  global_cleanup;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>使用该命令创建共享库：<br><code>gcc -shared -o libexample.so obj1.o obj2.o -Wl,--dynamic-list=dynamic-list.txt </code><br>–dynamic-list&#x3D;dynamic-list.txt 选项告诉链接器读取 dynamic-list.txt 文件，并根据其中列出的符号来处理符号绑定。这样，即使 libexample.so 中定义了 global_init 和 global_cleanup，它们也不会被绑定到库内部的定义，允许外部程序在运行时提供这些函数的替代实现。</p>
+<p>创建可执行文件时指定该选项，会将文件中所列的符号添加到可执行文件符号列表中。<br>例如：<br>文件：dynamic-list.txt</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  plugin_interface;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>使用该命令创建可执行程序：<br><code>gcc -o app main.o -Wl,--dynamic-list=dynamic-list.txt</code><br>–dynamic-list&#x3D;dynamic-list.txt 选项告诉链接器读取 dynamic-list.txt 文件，并将其中列出的符号添加到可执行文件的符号表中。这样，当 app 加载动态插件时，插件可以找到并使用 plugin_interface 符号，即使它是在 app 中定义的。</p>
+<p><strong>–dynamic-list-data</strong>：<br>创建共享库时使用该选项，会使得共享库中的全局符号，包含在动态符号表中。其它链接到这个库的程序，可以访问这些全局符号。</p>
+<p>创建可执行程序时使用该选项，会使得程序中定义的全局符号包含在动态符号表中，当程序在运行时动态加载一个插件（共享库），该插件可以访问动态符号表中的全局符号。</p>
+<p>动态符号表：由链接器创建，包含了程序中所有需要在运行时进行符号解析的全局符号。ELF文件中被标记为ALLOC（A）。</p>
+<p><strong>–dynamic-list-cpp-new</strong>：<br>使用该选项，链接器会创建一个内置的动态列表，专门用于C++的new 和 delete 操作符。这个选项在构建共享的libstdc++库（c++内存管理共享库）时非常有用。</p>
+<p><strong>-dynamic-list-cpp-typeinfo：</strong><br>使用该链接选项，链接器会创建内置的动态列表，这个列表专门用于C++运行时类型识别（RTTI）。RTTI允许程序在运行时确定对象的类型。在C++中，typeid 操作符和 dynamic_cast 转换通常用于此目的。</p>
+<p>当构建共享库或可执行文件时，使用 -dynamic-list-cpp-typeinfo 选项可以确保与类型识别相关的符号（如类型信息对象和类型名称）被包含在动态符号表中，用于支持跨模块的类型检查和转换，特别是程序中使用了多态和需要在运行时进行类型安全检查时。</p>
+<p><strong>–check-sections &amp;&amp; –no-check-sections</strong>：<br>这两个选项用于控制链接器是否检查分配给每个段（section）的地址是否有重叠。<br>–check-sections 是默认行为，链接器会进行检查。</p>
+<p><strong>–copy-dt-needed-entries &amp;&amp; –no-copy-dt-needed-entries</strong>：</p>
+<ul>
+<li>–copy-dt-needed-entries：指定该选项时，链接器会将命令行上提及的任何动态库的DT_NEEDED条目添加到输出二进制文件中。并且链接器会根据命令行上提及的动态库的DT_NEEDED条目递归搜索其它库。</li>
+<li>–no-copy-dt-needed-entries：该选项是链接器默认行为，链接器只会搜索命令行提及的动态库，不会递归遍历它们的DT_NEEDED条目中提及的动态库。（由于输出文件中包含更少的DT_NEEDED依赖，使用该选项可以减少程序首次启动的时间）</li>
+</ul>
+<p><strong>–cref</strong>：<br>该选项用于生成交叉引用表。表格中包含每个符号的定义位置（文件），以及引用位置（文件）。</p>
+<p><strong>–ctf-variables &amp;&amp; –no-ctf-variables</strong>：<br>CTF调试信息格式中存在一个特定段，该段包含了程序中那些没有出现在任何符号表中的变量的名称和类型。由于这些变量不能通过传统调试器按地址查找，因此一般情况下用于存储它们类型和名称的空间是浪费的（类型信息小，但名称消息可能比较大）。</p>
+<ul>
+<li>ctf-variables：使用该选项，可以生成该特定段。</li>
+<li>no-ctf-variables：使用该选型，恢复默认行为，即不生成该特定段。减少生成文件中调试信息的大小。</li>
+</ul>
+<p><strong>–ctf-share-types&#x3D;method：</strong><br>该选项用来调整CTF在不同翻译单元（不同源文件）之间共享类型的方法，method取值有：</p>
+<ul>
+<li>share-unconflicted：该选项会将所有没有歧义定义的类型放入共享字典中，即使这些类型只在一个翻译单元中出现。易于调试器找到和访问这些类型。</li>
+<li>share-duplicated：该选项只将出现在多个翻译单元中的类型放入共享字典中（否则，放入每个翻译单元自己的字典中）。对于大型项目可以加快CTF打开的速度，并在运行时节省CTF使用的内存。</li>
+</ul>
+<p>CTF（Compact Type Format）：一种在不同翻译单元之间共享类型信息的格式。</p>
+<p><strong>–no-define-common：</strong><br>该选项用于控制链接器如何处理公共符号。默认情况下，连接器会为公共符号（通常是由多个不同的文件共享的未初始化全局变量）分配地址。当使用该选项后，链接器不会为公共符号分配地址。</p>
+<p>例如：<br>在 file1.c 中，声明了一个未初始化的全局变量：int myGlobalVar;<br>在 file2.c 中，也声明了同样的全局变量：int myGlobalVar;<br>在这种情况下，myGlobalVar 就是一个公共符号。因为它在两个不同的源文件中被声明，但没有在任何地方被明确地初始化。当这个两个文件被编译为对象文件后，链接器在链接它们时，会将两个声明合并为一个单一的全局变量，这样myGlobalVar 在程序任何地方都指向相同的内存地址。<br>如果使用了–no-define-common 选项，则链接器不会为 myGlobalVar 分配地址，这种情况下如果myGlobalVar 被定义在一个共享库中，它的地址将在运行时由动态链接器分配。（如果使用了该选项，但共享库中也没有定义myGlobalVar，那么链接器可能会发出警告或错误，因为找不到定义。不过也存在一些机制可以处理符号未定义的情况，如弱符号或符号别名）</p>
+<p><strong>–force-group-allocation：</strong><br>该选项用于控制链接器如何处理段组（section groups）。段组是一组相关的段，在链接脚本中以组的形式定义，以便它们可以作为一个整体进行管理。<br>默认情况下，在最终链接（final link）过程中，链接器会将段组成员放置在输出文件中，就像普通的输入段一样，并且删除段组的定义。这意味着段组成员将被视为独立的节，并且在输出文件中没有特别的组结构。<br>但是，当进行可重定位链接（relocatable link，通常与 -r 选项一起使用）时，段组的默认行为可能会有所不同。使用 –force-group-allocation 选项可以确保即使在可重定位链接中，段组成员也会被当作普通输入节来处理，并且删除段组的定义。好处：</p>
+<ul>
+<li>简化段的管理。</li>
+<li>提高兼容性：特定工具&#x2F;环境可能需要段不被组织为段组</li>
+<li>节省空间：删除段组定义，可以减少输出文件的大小。</li>
+</ul>
+<p><strong>–defsym&#x3D;symbol&#x3D;expression</strong>：<br>该选项用于在输出文件中创建一个全局符号，其值为表达式结果。链接器会按照<code>--defsym</code>和<code>-T</code>选项的顺序进行处理，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ld --defsym=start=0x8000 --defsym=size=0x1000 -T script.ld</span><br></pre></td></tr></table></figure>
+<p>在处理链接脚本之前，定义了两个符号<code>start</code>（值为0x8000）和<code>size</code>(值为0x1000)，这些符号可以在链接脚本中使用。</p>
+<p><strong>–demangle[&#x3D;style] &amp;&amp; –no-demangle</strong>：<br>该选项用于控制链接器是否在错误消息和其他输出中对符号名称进行解码（demangle），这里的解码，即将编译器生成的修饰过的的符号名称（mangled name， 例如C++编译器会对用户函数名添加额外的参数、返回值等信息来构成最终的函数符号）转换为易读形式。 连接器默认会进行解码。<br>调试程序时，有时可能需要看到真实使用的符号名称，此时可以使用<code>--no-demangle</code>选项。</p>
+<p><strong>–dynamic-linker&#x3D;file：</strong><br>该选项用于设置动态链接，该选项只在生成动态链接的ELF可执行文件时才有意义。<br>默认的动态链接器一般正确的，除非明确需要使用特定的动态链接器，一般不应该使用该选项。</p>
+<p><strong>–no-dynamic-linker</strong>:<br>该选项只对包含动态重定位的ELF可执行文件有意义。使用该选项，链接器不会在生成的ELF文件中添加用于请求动态链接器的信息。这意味着，生成的可执行文件在加载时不会请求动态链接器来处理动态重定位。（除非有其它适当的机制来处理重定位或可执行文件本身是一个完全静态链接的可执行文件，否则不应该使用该选项）</p>
+<p><strong>–disable-multiple-abs-defs：</strong><br>该选项用于确保在链接过程中，每个符号只有一个唯一的定义。</p>
+<p><strong>–fatal-warnings &amp;&amp; –no-fatal-warnings</strong>:<br>用于控制是否将所有链接警告当做错误处理。</p>
+<p>-w &amp;&amp; –no-warnings：<br>该选项用于告诉链接器不显示任何警告或错误信息。如果已经启用了<code>--fatal-warnings</code>，这个选项会覆盖它。如果明确知道输出文件存在问题，但需要生成该输出文件进行分析时，可以使用该选项。</p>
+<p><strong>–force-exe-suffix</strong>:<br>该选项用于确保输出文件有.exe后缀。<br>该选项一般用于在使用unix makefiles 在windows上运行时。</p>
+<p><strong>–gc-sections &amp;&amp; –no-gc-sections</strong>:<br>该选项用于控制链接器，对于未使用的输入段段，是否从最终输出的二进制文件中移除。<br>如果开启了未使用段的垃圾回收，一般情况下，链接器能自动识别和保留必要的段，但在复杂项目中，可能需要开发者提供额外的指示来确保所有必要的代码和数据被正确处理。</p>
+<p><strong>–print-gc-sections &amp;&amp; –no-print-gc-sections</strong>：<br>用来控制，是否在标准错误输出上，输出所有被垃圾收集器移除的段。</p>
+<p><strong>–gc-keep-exported</strong>：<br>启用<code>--gc-sections</code>选项后，使用该选项，链接器不会将那些具有默认或受保护可见性的全局符号所在的段移除（即使它们当前没有被直接引用）。<br>默认可见性：可被任意模块访问的全局符号。<br>受保护可见性：允许符号在其自己的模块及派生的模块中被访问，但不允许其它模块访问。</p>
+<p><strong>–print-output-format</strong>：<br>该选项用于打印输出文件的格式名称。</p>
+<p><strong>–print-memory-usage</strong>：<br>使用该选项，会在标准输出上打印一个内存使用报告，输出由MEMORY命令创建的内存区域的已用大小、总大小和已用百分比。</p>
+<p><strong>–target-help</strong>：<br>使用该选项，会在标准输出上打印特定于目标的选项摘要。例如：<br><code>arm-linux-gnueabi-gcc --target-help</code><br>执行此命令后，编译器会列出所有适用于 ARM 目标的特定编译选项，例如针对 ARM 处理器的优化选项、指令集选择等。</p>
+<p><strong>-Map&#x3D;mapfile</strong>：<br>使用该选项，链接器会创建一个链接映射文件<code>mapfile</code>，该文件中包含了程序如何被链接的详细信息。</p>
+<p><strong>–no-keep-memory</strong>：<br>使用该选项，告诉连链接器在运行过程中优化运行内存的使用，而不是速度。通常情况下，链接器会将输入文件的符号表缓存到内存中，以加快链接速度。对于大型项目如果在链接时遇到内存不足的问题，可以使用这个选项，使得链接器在有限内存资源下完成链接工作。</p>
+<p><strong>–no-undefined &amp;&amp; -z defs</strong>:<br>正常创建可执行文件时，如果存在对无法解析符号的引用，链接过程会进行报错。<br>使用该选项，用于进一步确保链接器，对于引用无法解析符号的情况，会报告错误。因为创建共享库时，如果存在对无法解析符号的引用，可能默认情况下链接器不会报错（预期这些符号将在运行时由其它共享库或主程序进行解析）。使用该选项，可以确保在创建共享库时，所有符号都已解析。</p>
+<p><strong>–allow-multiple-definition &amp;&amp; -z muldefs</strong>：<br>通常情况下，如果一个符号被定义了多次，链接器会进行报错。<br>该选项允许一个符号存在多个定义，并且会使用第一个定义。除非确定不会引起问题，否则不应该使用该选项。</p>
+<p><strong>-allow-shlib-undefined &amp;&amp; –no-allow-shlib-undefined</strong>:<br>该选项用于控制在共享库中是否允许存在未定义的符号。</p>
+<p><strong>–error-handling-script&#x3D;scriptname</strong>：<br>该选项项允许指定一个脚本，该脚本会在链接器遇到错误时被调用。目前，这个选项支持两种错误类型：缺失的符号和缺失的库。当这些错误发生时，链接器会传递两个参数给脚本：关键词 “undefined-symbol” 或 “missing-lib” 以及未定义符号或缺失库的名称。</p>
+<p><strong>–no-undefined-version</strong>:<br>该选项用于确保所有符号都有一个定义的版本信息。<br>例如，一个共享库，对外的API，可以通过指定版本信息来实现迭代目的。当链接这个共享库时，就可以通过指定版本来实现不同版本功能的控制。</p>
+<p><strong>-default-symver</strong>：<br>该选项用于为那些未指定版本的<strong>导出符号</strong>创建并使用一个默认的符号版本，这个默认版本通常是由库的soname决定的。这样可以在不改变源代码的情况下，为库提供一定程度的符号版本控制。</p>
+<p><strong>–default-imported-symver</strong>：<br>该选项的作用是为那些未指定版本的<strong>导入符号</strong>（imported symbols）创建并使用一个默认的符号版本，这个默认版本通常是共享对象的 soname。</p>
+<p><strong>–no-warn-mismatch</strong>:<br>该选项是告诉链接器在遇到可能不匹配的输入文件时不要发出错误信息。通常情况下，如果尝试将为不同处理器编译的文件或具有不同字节顺序（endianness）的文件链接在一起，链接器会报错。使用这个选项后，链接器会忽略这些潜在的错误，并继续执行链接过程。</p>
+<p>这个选项应该谨慎使用，只有在已经采取了某些特殊措施，确保链接器的错误信息可以忽略的情况下才能使用。例如，虽然某些文件报告为不匹配，但实际上是兼容的，或者有其他机制来处理这些不匹配的问题。</p>
+<p><strong>–no-warn-search-mismatch</strong>:<br>链接器进行库搜索时，如果发现一个不兼容的库，通常链接器会给出一个警告。该选项的作用是关闭这个警告。</p>
+<p><strong>–no-whole-archive</strong>：<br>链接选项 <code>--no-whole-archive</code> 用于关闭之前通过 <code>--whole-archive </code>选项启用的效果。<br><code>--whole-archive</code> 选项会告诉链接器将后续归档文件（通常是静态库文件，如 .a 文件）中的所有符号都加载到链接的目标文件中。这通常用于确保静态库中未被直接引用的对象也被包含在最终的可执行文件或共享库中。</p>
+<p><strong>–noinhibit-exec</strong>：<br>该选项的作用是即使在链接过程中出现错误，只要最终的可执行文件仍然可用，链接器也会保留它。通常情况下，如果链接器在链接过程中遇到任何错误，它都不会生成输出文件，而是直接退出。但是，当使用了 –noinhibit-exec 选项后，即使出现非致命的链接错误，链接器仍然会生成并保留输出文件<br>应该谨慎使用该选项，因为它可能会导致生成的可执行文件包含未解决的错误，这在生产环境中可能会引起更大的问题。</p>
+<p><strong>-nostdlib</strong>:<br>该选项让链接器不要默认链接标准库，仅在链接命令行上显示指定的库目录中搜索库（链接脚本中指定的库搜索目录也被忽略）。</p>
+<p><strong>–oformat&#x3D;output-format</strong>：<br>该选项用于指定输出目标文件的二进制格式。<br>通常情况下，不需要手动指定 <code>--oformat</code>，因为连接器 ld 应该已经根据机器的默认配置选择了最常用的目标文件格式作为输出格式。<br><code>output-format</code> 是一个文本字符串，它是由 BFD（Binary File Descriptor）库支持的特定格式的名称。你可以使用 objdump -i 命令列出所有可用的二进制格式。<br>此外，如果在连接器脚本中使用了 OUTPUT_FORMAT 命令来指定输出格式，那么 –oformat 选项会覆盖这个设置。</p>
+<p><code>--out-implib file</code>:<br>使用该选项，链接器在生成可执行文件（例如 DLL 或 ELF 程序）的同时会生成对应的导入库（import library）<br>导入库：</p>
+<ul>
+<li>在 Windows 平台上，导入库是一种特殊的库，用于解决动态链接库（DLL）的问题。它允许程序在编译时引用 DLL 中的符号，而不需要实际的 DLL 文件。</li>
+<li>在 Linux 上，共享对象文件（.so）既可以作为动态库，也可以作为导入库。导入库的作用类似于 Windows 上的导入库，但在 Linux 上并不常见。</li>
+</ul>
+<p><strong>-pie &amp;&amp; –pic-executable</strong>：<br>该选项用于创建位置无关的可执行文件（Position Independent Executable）。<br>位置无关可执行文件是一种特殊的可执行文件，它在运行时由操作系统加载，并且可以在内存中的任何位置执行。这与普通的可执行文件不同，后者在加载时会被放置到固定的内存地址上。该选项只在ELF 平台上支持。</p>
+<p><strong>-no-pie</strong>：<br>该选项用于生成位置相关的可执行文件（Position Dependent Executable）。该选项是链接器的默认行为。</p>
+<p><strong>–relax &amp;&amp; –no-relax</strong>：<br>该选项用于开启&#x2F;关闭链接器执行执行与目标平台相关的全局优化。例如：</p>
+<ul>
+<li>地址优化：链接器可以优化代码和数据的地址分配，减少跳转指令的数量，提高缓存命中率，并减小可执行文件的大小。</li>
+<li>指令合并：链接器可以将相邻的指令合并成更有效的形式，例如将多个加载&#x2F;存储指令合并为一个。</li>
+<li>代码替换：链接器可以根据目标平台的特定规则，将某些指令替换为更高效的指令。</li>
+</ul>
+<p>注意：全局优化可能会导致一些调试信息丢失，因为优化后的代码可能与源代码之间的映射不再一一对应。因此，在需要进行符号调试的情况下，我们需要权衡是否启用全局优化。</p>
+<p><strong>–retain-symbols-file&#x3D;filename</strong>：<br>该选项用于保留指定文件中列出的符号，而丢弃其他所有符号。<br>注意，该功能会影响调试器（无法找到符号，导致不能显示相关信息）。</p>
+<p><strong>-rpath&#x3D;dir</strong>：<br>该选项用于将目录添加到运行时库搜索路径中，确保程序在运行时能够正确找到所需的共享库。<br>所有 -rpath 参数都会被连接起来，并传递给运行时链接器，它会在运行时使用这些路径来定位共享对象。如果在链接 ELF 可执行文件时未使用 -rpath，则会使用环境变量 LD_RUN_PATH 的内容（如果已定义）。</p>
+<p>备注：</p>
+<ul>
+<li>-rpath 用于指定<strong>运行时搜索路径</strong>，确保程序在运行时能够正确找到共享库。</li>
+<li>-L 用于指定<strong>编译时搜索路径</strong>，告诉链接器在编译时查找共享库。</li>
+</ul>
+<p><strong>-rpath-link&#x3D;dir</strong>：<br>该选项用于在链接时指定运行时库搜索路径，与<code>-rpath</code>类似，但仅在链接时有效，不影响运行时。</p>
+<p>该选项可以用于解决共享库之间的依赖关系。当一个共享库引用另一个共享库时，链接器会使用<code>-rpath-link</code> 指定的路径来查找所需的共享库。这样，即使在编译和链接阶段，共享库之间的依赖关系也能够得到正确解析。<br>例如，我们需要使用两个共享库libA.so 和 libB.so，libA.so 中的某个函数需要调用 libB.so 中的函数。在编译和链接阶段，我们可以使用 -rpath-link 选项来指定 libB.so 的搜索路径，以确保在运行时能够正确加载它。</p>
+<p><strong>-shared &amp;&amp; -Bshareable</strong>：<br>该选项用于告诉链接器，创建共享库（动态链接库）而不是可执行文件。</p>
+<p><strong>–sort-common &amp;&amp; –sort-common&#x3D;ascending &amp;&amp; –sort-common&#x3D;descending</strong>：<br>该选项用于控制公共符号（common symbols）的排序方式。公共符号是在多个目标文件中定义的、但没有被初始化的全局变量或函数。排序是为了避免由于对齐约束而导致符号之间出现间隙。</p>
+<p><strong>–sort-section&#x3D;name</strong>：<br>使用该选项，会在链接脚本中的所有通配符段（wildcard section）模式上应用 SORT_BY_NAME 排序（按照段的名称进行排序）。排序后，链接器会按照段名称的字母顺序将相应的目标文件段放置在输出文件中。<br>例如，如果链接脚本中有以下通配符段模式：<br>*(.text)<br>*(.data)<br>*(.bss)<br>使用该选项后，链接器会按照 .bss、.data、.text 的顺序将相应的段放置在输出文件中。</p>
+<p><strong>–sort-section&#x3D;alignment</strong>：<br>使用该选项，会在链接脚本中的所有通配符段（wildcard section）模式上应用 SORT_BY_ALIGNMENT 排序（按照段的对齐方式进行排序）。</p>
+<p><strong>–spare-dynamic-tags&#x3D;count</strong>：<br>用于指定在 ELF 共享对象的 .dynamic 段中保留多少个空槽位（empty slots）。这些空槽位可能会被后处理工具使用。例如，prelinker 可能需要在 .dynamic 段中添加一些标记。</p>
+<p>.dynamic 段是 ELF 文件中的一个段，它包含了动态链接器（如 ld.so）在运行时所需的信息，这些信息包括共享库的依赖关系、符号表、重定位表等。</p>
+<p>**–split-by-file[&#x3D;size]**：<br>该选项告诉链接器在链接过程中为每个输入文件创建一个新的输出段。size 是一个可选参数，用于指定输出段的大小，如果指定了 size，那么当输出段的大小达到或超过指定的大小时，链接器会创建一个新的输出段。</p>
+<p><strong>–split-by-reloc[&#x3D;count]</strong><br>该选项用于在输出文件中创建额外的段（sections），以确保单个输出段不包含超过 count 个重定位项（relocations）</p>
+<p><strong>–stats</strong>：<br>该选项用于计算并显示链接器操作的统计信息，例如连接器执行时间和内存使用情况。</p>
+<p><strong>–sysroot&#x3D;directory</strong><br>该选项用于设置目标平台根目录，它会影响编译和链接过程中查找头文件和链接库的位置。<br>默认情况下，编译器会在<code>/usr/include</code>目录中搜索头文件，以及在<code>/usr/lib</code>目录中搜索依赖库,当设置了<code>--sysroot=dir</code>后，编译器会从<code>dir/usr/include</code>搜索头文件，从<code>dir/usr/lib</code>搜索依赖库。</p>
+<p><strong>–traditional-format</strong><br>该选项用于请求链接器使用传统的输出格式，而不是默认的格式。<br>例如，在 SunOS 上，ld 会合并符号字符串表中的重复条目。这可以将完整调试信息的输出文件大小减少超过 30%，但这也会导致SunOS 的 dbx 程序无法读取生成的程序（但 gdb 没有问题）。使用<code>--traditional-format</code> 选项可以告诉链接器不要合并重复的条目，以便保留这些重复的信息。</p>
+<p><strong>–section-start&#x3D;sectionname&#x3D;org</strong><br>该选项用于在输出文件中定位一个段（section），并指定其绝对地址为 org 指定的值。你可以在命令行中使用此选项多次，以定位多个段。<br>例如：<br><code>ld --section-start=mysection=0x12345678 -o my_output_file my_object_files.o</code><br>使用此命令后，链接器将确保 mysection 段位于输出文件中的地址 0x12345678 处。</p>
+<p><strong>-Tbss&#x3D;org &amp;&amp; -Tdata&#x3D;org &amp;&amp; -Ttext&#x3D;org</strong>:<br>与选项<code>--section-start</code>的作用一样，sectionname被限定为.bss、.data、.text。</p>
+<p><strong>-Ttext-segment&#x3D;org</strong>:<br>该选项用于指定 ELF 可执行文件中 .text 段的起始地址。<br>.text 段是用于存放程序的机器代码的区域，通常是程序的入口点。org 是一个地址值，表示 .text 段的起始地址。<br>该选项和<code>-Ttext=org</code>的作用一样。</p>
+<p><strong>-Trodata-segment&#x3D;org</strong>：<br>该选项用于指定只读数据（read-only data）所在的段的起始地址</p>
+<p><strong>-Tldata-segment&#x3D;org</strong>:<br>该选项用于指定 x86-64 中型内存模型（medium memory model）下的 ELF 可执行文件或共享对象中 ldata 段的起始地址。ldata 段通常用于存放局部变量和临时数据。</p>
+<p><strong>–unresolved-symbols&#x3D;method</strong>：<br>该选项用于指定处理未解析符号（unresolved symbols）的方式：</p>
+<ul>
+<li>ignore-all：不报告任何未解析符号</li>
+<li>report-all：报告所有未解析符号。这是默认行为。</li>
+<li>ignore-in-object-files：报告位于共享库中的未解析符号，但如果来自常规目标文件，则忽略它们。</li>
+<li>ignore-in-shared-libs：报告来自常规目标文件的未解析符号，但如果来自共享库，则忽略它们。</li>
+</ul>
+<p>通常链接器会为每个报告的未解析符号生成错误消息，但选项 –warn-unresolved-symbols 可以将其更改为警告。</p>
+<p><strong>–dll-verbose &amp;&amp; –verbose[&#x3D;NUMBER]</strong>:<br>这两个选项可以显示链接器的版本号，并列出支持的链接器仿真（linker emulations）。它还会显示哪些输入文件可以打开，哪些不能，以及链接器正在使用的链接脚本。</p>
+<p><strong>–version-script&#x3D;version-scriptfile</strong>:<br>该选项用于指定版本脚本（version script）的名称。在创建共享库时，版本脚本用于指定关于正在创建的库的版本层次结构的附加信息。有利于共享库的版本控制。</p>
+<p><strong>-warn-common：</strong><br>使用该选项，链接器会对common符号合并动作可能存在的问题，发出警告。</p>
+<p>以 C 为例，三种全局符号如：</p>
+<ul>
+<li>int i &#x3D; 1;：这是一个定义，它位于输出文件的已初始化数据段中。</li>
+<li>extern int i;：这是一个未定义的引用，不分配空间。对于变量，必须存在定义或 common 符号。</li>
+<li>int i;：这是一个 common 符号。如果一个变量只有一个或多个 common 符号，它将位于输出文件的未初始化数据区域中。链接器将相同变量的多个 common 符号合并为一个符号。如果它们的大小不同，它会选择最大的大小。如果存在相同变量的定义，链接器会将 common 符号转换为声明。</li>
+</ul>
+<p>–warn-common 选项可以产生五种警告。每个警告由一对行组成：第一行描述刚刚遇到的符号，第二行描述具有相同名称的先前符号。这两个符号中的一个或两个将是 common 符号。</p>
+<p>将 common 符号转换为引用，因为已经存在该符号的定义。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">file(section): warning: common of `symbol&#x27;</span><br><span class="line">   overridden by definition</span><br><span class="line">file(section): warning: defined here</span><br></pre></td></tr></table></figure>
+
+<p>将 common 符号转换为引用，因为后面遇到了该符号的定义。这与前一种情况相同，只是符号的顺序不同。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">file(section): warning: definition of `symbol&#x27;</span><br><span class="line">   overriding common</span><br><span class="line">file(section): warning: common is here</span><br></pre></td></tr></table></figure>
+
+<p>将 common 符号与先前相同大小的 common 符号合并。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">file(section): warning: multiple common</span><br><span class="line">   of `symbol&#x27;</span><br><span class="line">file(section): warning: previous common is here</span><br></pre></td></tr></table></figure>
+
+<p>将 common 符号与先前较大的 common 符号合并。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">file(section): warning: common of `symbol&#x27;</span><br><span class="line">   overridden by larger common</span><br><span class="line">file(section): warning: larger common is here</span><br></pre></td></tr></table></figure>
+
+<p>将 common 符号与先前较小的 common 符号合并。这与前一种情况相同，只是符号的顺序不同。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">file(section): warning: common of `symbol&#x27;</span><br><span class="line">   overriding smaller common</span><br><span class="line">file(section): warning: smaller common is here</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>–warn-execstack<br>–warn-execstack-objects<br>–no-warn-execstack</strong><br>在 ELF 平台上，当链接器被要求创建一个包含可执行堆栈的输出文件时，可能会生成警告消息。</p>
+<ul>
+<li>–warn-execstack 选项会始终生成警告，即使通过 -z execstack 命令行选项请求了可执行堆栈。</li>
+<li>–warn-execstack-objects 选项仅在对象文件请求可执行堆栈时生成警告，但如果使用了 -z execstack 选项，则不会生成警告。</li>
+<li>–no-warn-execstack 选项将链接器置于无警告状态，即不生成任何警告。</li>
+</ul>
+<p>备注：可执行堆栈是指程序运行时的堆栈区域，用于存储函数调用和局部变量。如果一个程序的堆栈区域被标记为可执行，那么它可以执行代码，这可能会导致安全风险。例如，缓冲区溢出漏洞可能导致恶意代码覆盖堆栈上的返回地址，从而控制程序的执行流程。</p>
+<p><strong>–error-execstack &amp;&amp; –no-error-execstack：</strong></p>
+<ul>
+<li>–error-execstack：如果链接器将生成关于可执行堆栈的警告消息，则此选项将将该警告更改为错误。</li>
+<li>–no-error-execstack：此选项将恢复生成警告消息的默认行为。</li>
+</ul>
+<p><strong>–warn-multiple-gp</strong>：<br>该选项用于在输出文件中警告是否需要多个全局指针值。<br>这仅对某些处理器（例如 Alpha 处理器）有意义。具体而言，某些处理器将大值常量放在一个特殊的节（section）中。一个特殊的寄存器（全局指针）指向该节的中间位置，以便通过基址寄存器相对寻址模式高效地加载常量。由于基址寄存器相对模式中的偏移量是固定且相对较小的（例如 16 位），这限制了常量池的最大大小。因此，在大型程序中，通常需要使用多个全局指针值，以便能够寻址所有可能的常量。使用该选项在在出现此情况时发出警告。</p>
+<p><strong>–warn-once</strong>：<br>使用该选项，链接器在每个未定义的符号（undefined symbol）上只发出一次警告，而不是每个引用该符号的模块都发出一次。<br>例如，如果代码中有多个模块引用了同一个未定义的符号，使用该选项后，只会在第一次引用时发出警告，可以避免刷屏（频繁重复的警告消息）。</p>
+<p><strong>–warn-rwx-segments &amp;&amp; –no-warn-rwx-segments</strong>：<br>这两个选项用于控制在创建可加载的、非零大小的段时，是否发出警告。</p>
+<ul>
+<li>–warn-rwx-segments：如果链接器创建了一个具有读、写和执行权限的可加载、非零大小的段，则会发出警告。这样的段可能存在潜在的安全漏洞。此外，如果创建了一个线程局部存储段，并且设置了执行权限标志，无论它是否设置了读和&#x2F;或写标志，都会生成警告。</li>
+<li>–no-warn-rwx-segments：此选项将禁用默认情况下启用的警告。</li>
+</ul>
+<p>这种段造成的潜在安全漏洞：例如，如果这样的段被用作缓冲区，且存在缓冲区溢出漏洞，攻击者可以通过向缓冲区写入超出其分配大小的数据来覆盖相邻内存区域。这可能导致程序崩溃、数据泄漏或执行恶意代码。</p>
+<p><strong>–warn-section-align</strong>:<br>使用该选项后，如果输出段的地址因为边界对齐而发生变化，则链接器发出警告。</p>
+<p><strong>–warn-textrel</strong>：<br>使用该选项，当创建一个位置无关的可执行文件或共享对象时，如果链接器添加了<code>DT_TEXTREL</code>，则发出警告。<br><code>DT_TEXTREL</code> 是一个动态链接器标记，表示某个段（通常是代码段）的重定位表中包含了对代码段的重定位。这可能会导致潜在的安全问题，因为它允许在运行时修改代码段，这可能被恶意代码利用。</p>
+<p>在链接过程中，重定位表（relocation table）记录了需要在程序加载到内存后进行修正的地址。这些修正通常涉及到符号的地址，例如函数、变量或其他标识符的地址。对于代码段（通常是 .text 段），重定位表中的条目指示了需要在运行时修改的地址。（如果重定位表中存在对代码段的修正，那么在运行时，这些修正可能会导致代码被修改。这可能被恶意代码利用，例如插入恶意指令或破坏原始代码的完整性。）</p>
+<p><strong>–warn-alternate-em</strong>:<br>使用该选项后，如果目标文件中存在多个版本的ELF机器码，链接器会发出警告。（多个版本的机器码，可能是由于不同编译器、优化选项等因素导致的）</p>
+<p><strong>–warn-unresolved-symbols：</strong><br>设置改选项后，如果存在未解析的符号（unresolved symbol），则将生成警告而不是错误。</p>
+<p><strong>–error-unresolved-symbols：</strong><br>使用该选项后，在链接过程中，如果存在未解析的符号（unresolved symbol），则将生成错误而不是警告。</p>
+<p><strong>–whole-archive</strong>：<br>使用该选项后，链接器会将指定的归档文件中的每个目标文件都包含在最终的可执行文件或共享库中，而不仅仅是搜索归档文件以获取所需的目标文件。<br>使用GCC时，GCC会在链接中添加自己的归档文件列表。因此，在列出归档文件后，应该使用 -Wl,-no-whole-archive， 避免–whole-archive选项影响到GCC添加的归档文件。</p>
+<p><strong>–wrap&#x3D;symbol</strong>：<br>使用该选项，链接器会为指定的符号创建一个包装函数。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">void *</span><br><span class="line">__wrap_malloc (size_t c)</span><br><span class="line">&#123;</span><br><span class="line">  printf (&quot;malloc called with %zu\n&quot;, c);</span><br><span class="line">  return __real_malloc (c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果在链接选项中指定了：–wrap&#x3D;malloc ，那么所有对 malloc 的调用都将调用 __wrap_malloc 函数。在 __wrap_malloc 中对 __real_malloc 的调用将实际调用真正的 malloc 函数。</p>
+<p><strong>–eh-frame-hdr：</strong><br>使用此选项时，会创建一个名为.eh_frame_hdr的特殊段，该段包含了一种压缩过的异常处理框架信息，用于加速异常处理的查找。</p>
+<p><strong>–no-eh-frame-hdr：</strong><br>使用此选项时，不会创建.eh_frame_hdr段。</p>
+<p><strong>–no-ld-generated-unwind-info：</strong><br>使用此选项时，会请求创建.eh_frame段的异常展开信息（unwind info）。默认情况下，如果链接器支持生成展开信息，这个选项会被打开。<br>总之，.eh_frame段用于处理异常和堆栈展开，而–no-ld-generated-unwind-info选项影响是否生成这些信息</p>
+<p><strong>–enable-new-dtags &amp;&amp; –enable-new-dtags：</strong></p>
+<ul>
+<li>–enable-new-dtags：使用此选项时，链接器会根据需要创建新的动态标签。默认情况下，不会创建新的动态标签。</li>
+<li>–disable-new-dtags：使用此选项时，链接器不会创建新的动态标签，只会使用旧的动态标签。</li>
+</ul>
+<p>这两个选项可以用来控制 ELF 文件中动态标签的生成方式，以适应不同的系统需求。<br>在 ELF 文件中，动态标签是指用于描述共享库、符号表、重定位信息和其他运行时特性的标签。这些标签存储在 ELF 文件的动态段中，通常是 .dynamic 段。这些标签允许操作系统和运行时环境在加载可执行文件或共享库时进行必要的初始化和配置。<br>在 ELF 文件中，新&#x2F;旧动态标签指的是不同版本之间对动态标签的修改或更新。具体来说：</p>
+<ul>
+<li>新动态标签：在新版本的 ELF 文件中，可能引入了一些新的动态标签，以支持更多功能、优化性能或满足新的需求。这些新标签可能具有不同的名称或功能。</li>
+<li>旧动态标签：在旧版本的 ELF 文件中，可能使用了较早的动态标签。这些标签可能在新版本中被废弃、替换或不再使用。</li>
+</ul>
+<p><strong>–hash-size&#x3D;number</strong>:<br>该选项用于将链接器哈希表的默认大小设置为接近number的素数。<br>增加此值可以减少链接器执行任务所需的时间，但会增加内存需求。减小此值可以降低内存需求，但会牺牲一些速度。</p>
+<p><strong>–hash-style&#x3D;style</strong><br>该选项用于设置链接器的哈希表（hash tables）的类型。哈希表用于加速符号查找和重定位等链接器任务。<br>style 可以是以下三种配置之一：</p>
+<ul>
+<li>sysv：经典的 ELF .hash 段。</li>
+<li>gnu：新风格的 GNU .gnu.hash 段。</li>
+<li>both：同时使用经典的 ELF .hash 和新风格的 GNU .gnu.hash 哈希表。</li>
+</ul>
+<p>默认情况下，取决于链接器的配置，对于大多数基于 Linux 的系统，默认值是 both。</p>
+<p><strong>–compress-debug-sections&#x3D;none<br>–compress-debug-sections&#x3D;zlib<br>–compress-debug-sections&#x3D;zlib-gnu<br>–compress-debug-sections&#x3D;zlib-gabi<br>–compress-debug-sections&#x3D;zstd</strong><br>这几个选项用于控制是否对调试进行压缩，以及选择压缩算法。<br>压缩调试段可以显著减少ELF文件的大小，但是压缩调试信息会增加链接过程的时间，因为链接器需要额外的时间来压缩数据。并且在调试过程中，调试器需要解压缩调试信息。</p>
+<p><strong>–reduce-memory-overheads</strong>：<br>使用该选项，链接器运行时会使用更少的内存，但是链接速度会降低。（如果编译时出现内存不够问题时可以使用）</p>
+<p><strong>–max-cache-size&#x3D;size</strong>：<br>该选项用于设置链接器在内存中缓存输入文件的重定位信息和符号表的最大大小。默认情况下，链接器会无限制地缓存这些信息，这有助于加快链接过程，因为可以快速访问这些数据。<br>使用该选项，可以指定一个最大的缓存大小（即size），这样在内存受限的系统上进行链接操作时，可以防止链接器使用过多内存而导致系统变慢或崩溃。</p>
+<p><strong>–build-id &amp;&amp; –build-id&#x3D;style</strong>：<br>该链接选项用于在ELF或COFF格式的输出文件中创建一个包含唯一标识符的节。这个标识符用于唯一地识别链接后的文件</p>
+<p><strong>–package-metadata&#x3D;JSON</strong>：<br>该选项用于在ELF格式的输出文件中创建一个名为 .note.package 的节。这个节的内容是按照包元数据规范以JSON格式编写的。这允许将JSON中包含的元数据直接嵌入到ELF文件中，以便于分发和部署时的识别和验证。</p>
+<p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/Options.html">https://sourceware.org/binutils/docs/ld/Options.html</a><br>【2】<a target="_blank" rel="noopener" href="https://docs.oracle.com/cd/E23824_01/html/819-0690/chapter4-4.html">https://docs.oracle.com/cd/E23824_01&#x2F;html&#x2F;819-0690&#x2F;chapter4-4.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2024/06/18/GUN-linker-Command-line-Options/" title="GNU linker ld —— Command-line Options">http://fengxun2017.github.io/2024/06/18/GUN-linker-Command-line-Options/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/06/%E8%AF%84%E4%BC%B0%E6%9C%80%E5%A4%A7%E6%A0%88%E4%BD%BF%E7%94%A8%E9%87%8F/" rel="prev" title="评估最大栈使用量">
+                  <i class="fa fa-chevron-left"></i> 评估最大栈使用量
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">265k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:31</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
