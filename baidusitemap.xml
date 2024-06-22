@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://fengxun2017.github.io/2024/06/22/GUN-linker-Linker-Scripts-Simple-Linker-Script-Example/</loc>
+    <lastmod>2024-06-22</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2024/06/21/GUN-linker-Linker-Scripts-Linker-Script-Format/</loc>
+    <lastmod>2024-06-20</lastmod>
+  </url>
+  <url>
     <loc>http://fengxun2017.github.io/2024/06/20/GUN-linker-Linker-Scripts-Basic-Linker-Script-Concepts/</loc>
     <lastmod>2024-06-20</lastmod>
   </url>
