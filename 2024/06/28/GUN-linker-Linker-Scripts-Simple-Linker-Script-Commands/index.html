@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Simple Linker Script Commands">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GNU linker ld —— Simple Linker Script Commands">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Simple Linker Script Commands">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-06-28T15:40:29.848Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/","path":"2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/","title":"GNU linker ld —— Simple Linker Script Commands"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>GNU linker ld —— Simple Linker Script Commands | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Setting-the-Entry-Point"><span class="nav-number">1.</span> <span class="nav-text">1 Setting the Entry Point</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Commands-Dealing-with-Files"><span class="nav-number">2.</span> <span class="nav-text">2 Commands Dealing with Files</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-INCLUDE-filename"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 INCLUDE filename</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-INPUT-file-file-%E2%80%A6-%E6%88%96-INPUT-file-file-%E2%80%A6"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 INPUT(file, file, …) 或 INPUT(file file …)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-GROUP-file-file-%E2%80%A6-%E6%88%96-GROUP-file-file-%E2%80%A6"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 GROUP(file, file, …) 或 GROUP(file file …)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-AS-NEEDED-file-file-%E2%80%A6-%E6%88%96-AS-NEEDED-file-file-%E2%80%A6"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 AS_NEEDED(file, file, …) 或 AS_NEEDED(file file …)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-5-OUTPUT-filename"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 OUTPUT(filename)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-6-SEARCH-DIR-path"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 SEARCH_DIR(path)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-7-STARTUP-filename"><span class="nav-number">2.7.</span> <span class="nav-text">2.7 STARTUP(filename)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Commands-Dealing-with-Object-File-Formats"><span class="nav-number">3.</span> <span class="nav-text">3 Commands Dealing with Object File Formats</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-OUTPUT-FORMAT-bfdname-%E6%88%96-OUTPUT-FORMAT-default-big-little"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 OUTPUT_FORMAT(bfdname) 或 OUTPUT_FORMAT(default, big, little)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-2-TARGET-bfdname"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 TARGET(bfdname)</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Assign-alias-names-to-memory-regions"><span class="nav-number">4.</span> <span class="nav-text">4 Assign alias names to memory regions</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Other-Linker-Script-Commands"><span class="nav-number">5.</span> <span class="nav-text">5 Other Linker Script Commands</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#5-1-ASSERT-exp-message-%EF%BC%9A"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 ASSERT(exp, message)：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-2-EXTERN-symbol-symbol-%E2%80%A6-%EF%BC%9A"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 EXTERN(symbol symbol …)：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-3-FORCE-COMMON-ALLOCATION%EF%BC%9A"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 FORCE_COMMON_ALLOCATION：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4-INHIBIT-COMMON-ALLOCATION%EF%BC%9A"><span class="nav-number">6.</span> <span class="nav-text">5.4 INHIBIT_COMMON_ALLOCATION：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#5-5FORCE-GROUP-ALLOCATION%EF%BC%9A"><span class="nav-number">6.1.</span> <span class="nav-text">5.5FORCE_GROUP_ALLOCATION：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-6-INSERT-AFTER-BEFORE-output-section%EF%BC%9A"><span class="nav-number">6.2.</span> <span class="nav-text">5.6 INSERT [ AFTER | BEFORE ] output_section：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-7-NOCROSSREFS-section-section-%E2%80%A6-%EF%BC%9A"><span class="nav-number">6.3.</span> <span class="nav-text">5.7 NOCROSSREFS(section section …)：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-8-NOCROSSREFS-TO-tosection-fromsection-%E2%80%A6-%EF%BC%9A"><span class="nav-number">6.4.</span> <span class="nav-text">5.8 NOCROSSREFS_TO(tosection fromsection …)：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-9-OUTPUT-ARCH-bfdarch-%EF%BC%9A"><span class="nav-number">6.5.</span> <span class="nav-text">5.9 OUTPUT_ARCH(bfdarch)：</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="GNU linker ld —— Simple Linker Script Commands | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GNU linker ld —— Simple Linker Script Commands
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-06-28 00:00:00" itemprop="dateCreated datePublished" datetime="2024-06-28T00:00:00+08:00">2024-06-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/GUN-linker/" itemprop="url" rel="index"><span itemprop="name">GUN-linker</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Simple Linker Script Commands
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p><strong>个人笔记，仅供参考！！</strong></p>
+<h4 id="1-Setting-the-Entry-Point"><a href="#1-Setting-the-Entry-Point" class="headerlink" title="1 Setting the Entry Point"></a>1 Setting the Entry Point</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ENTRY(symbol)</span><br></pre></td></tr></table></figure>
+<p>该命令用于设置程序入口点 程序中要执行的第一条指令称为入口点。</p>
+<p>有几种方法可以设置入口点。链接器将按顺序尝试以下每种方法来设置入口点，直到其中一种成功：</p>
+<ul>
+<li>命令行选项 <code>-e</code>；</li>
+<li>链接器脚本中的 <code>ENTRY(synbol)</code> 命令；</li>
+<li>如果定义了目标特定的符号的值（对于许多目标来说，start符号的值为程序入口）。</li>
+<li>如果正在创建可执行文件，则代码段的第一个字节的地址即为程序入口。</li>
+<li>地址 0。</li>
+</ul>
+<h4 id="2-Commands-Dealing-with-Files"><a href="#2-Commands-Dealing-with-Files" class="headerlink" title="2 Commands Dealing with Files"></a>2 Commands Dealing with Files</h4><p>如下是一些链接脚本中处理文件的命令：</p>
+<h5 id="2-1-INCLUDE-filename"><a href="#2-1-INCLUDE-filename" class="headerlink" title="2.1 INCLUDE filename"></a>2.1 INCLUDE filename</h5><p>在当前位置包含链接脚本文件名。文件将在当前目录和使用 -L 选项指定的任何目录中进行搜索。可以嵌套调用 INCLUDE，最深可达 10 层。</p>
+<p>可以在顶层、MEMORY 或 SECTIONS 命令中，或在输出段描述中放置 INCLUDE 指令。</p>
+<h5 id="2-2-INPUT-file-file-…-或-INPUT-file-file-…"><a href="#2-2-INPUT-file-file-…-或-INPUT-file-file-…" class="headerlink" title="2.2 INPUT(file, file, …) 或 INPUT(file file …)"></a>2.2 INPUT(file, file, …) 或 INPUT(file file …)</h5><p>INPUT 命令指示链接器在链接中包含所指定文件。</p>
+<p>例如，如果总是需要在链接时包含 subr.o，但不想每次都在链接命令行上输入它，就可以在链接脚本中放置 INPUT (subr.o)。</p>
+<p>如果配置了 sysroot 前缀，并且文件名以 &#x2F; 字符开头，并且正在处理的脚本位于 sysroot 前缀内，那么将在 sysroot 前缀中查找文件名。通过在文件名路径中指定 &#x3D; 作为第一个字符，或在文件名路径前加上 $SYSROOT，也可以强制使用 sysroot 前缀。另见命令行选项中的 -L 描述。</p>
+<p>如果没有使用 sysroot 前缀，那么链接器将尝试在包含链接脚本的目录中打开文件。如果找不到，链接器将搜索当前目录。如果仍然找不到，链接器将搜索库搜索路径。</p>
+<p>如果 INPUT (-lfile)，ld 将名称转换为 libfile.a，效果与命令行参数 -l 一样。</p>
+<p>需要注意的是，在链接脚本中使用 INPUT 命令时，文件将在包含链接脚本文件的点被包含在链接中。这可能会影响库搜索。</p>
+<h5 id="2-3-GROUP-file-file-…-或-GROUP-file-file-…"><a href="#2-3-GROUP-file-file-…-或-GROUP-file-file-…" class="headerlink" title="2.3 GROUP(file, file, …) 或 GROUP(file file …)"></a>2.3 GROUP(file, file, …) 或 GROUP(file file …)</h5><p>GROUP 命令类似于 INPUT，不同之处在于输入的文件都应该是库文件，并且它们可以被重复搜索另见命令行选项中的<code>-(</code>描述。</p>
+<h5 id="2-4-AS-NEEDED-file-file-…-或-AS-NEEDED-file-file-…"><a href="#2-4-AS-NEEDED-file-file-…-或-AS-NEEDED-file-file-…" class="headerlink" title="2.4 AS_NEEDED(file, file, …) 或 AS_NEEDED(file file …)"></a>2.4 AS_NEEDED(file, file, …) 或 AS_NEEDED(file file …)</h5><p>这个结构只能出现在 INPUT 或 GROUP 命令中。<br>这个结构本质上为其中列出的所有文件启用了 –as-needed 选项，并在之后恢复之前的 –as-needed 或 –no-as-needed 设置。<br>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">GROUP(</span><br><span class="line">  libmain.a</span><br><span class="line">  AS_NEEDED(liboptional.so libanother.so)</span><br><span class="line">  libsupport.a</span><br><span class="line">)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h5 id="2-5-OUTPUT-filename"><a href="#2-5-OUTPUT-filename" class="headerlink" title="2.5 OUTPUT(filename)"></a>2.5 OUTPUT(filename)</h5><p>OUTPUT 可以设置输出文件。在链接脚本中使用 OUTPUT(filename) 与在命令行上使用 -o filename 效果一样。如果两者都使用了，命令行选项优先。</p>
+<p>可以使用 OUTPUT 命令为输出文件定义一个默认名称。</p>
+<h5 id="2-6-SEARCH-DIR-path"><a href="#2-6-SEARCH-DIR-path" class="headerlink" title="2.6 SEARCH_DIR(path)"></a>2.6 SEARCH_DIR(path)</h5><p>SEARCH_DIR 命令用于将路径添加到 ld 查找库的路径列表中。<br>使用 SEARCH_DIR(path) 与在命令行上使用 -L path 效果一样（参见命令行选项）。如果两者都使用了，那么链接器将搜索两个路径。首先搜索使用命令行选项指定的路径。</p>
+<h5 id="2-7-STARTUP-filename"><a href="#2-7-STARTUP-filename" class="headerlink" title="2.7 STARTUP(filename)"></a>2.7 STARTUP(filename)</h5><p>STARTUP 命令指定的 filename 将成为要链接的第一个输入文件。如果当前系统的入口点总是第一个文件的开始，该命令可以用来指定入口。</p>
+<h4 id="3-Commands-Dealing-with-Object-File-Formats"><a href="#3-Commands-Dealing-with-Object-File-Formats" class="headerlink" title="3 Commands Dealing with Object File Formats"></a>3 Commands Dealing with Object File Formats</h4><p>如下是一些用于处理对象文件格式的命令。</p>
+<h5 id="3-1-OUTPUT-FORMAT-bfdname-或-OUTPUT-FORMAT-default-big-little"><a href="#3-1-OUTPUT-FORMAT-bfdname-或-OUTPUT-FORMAT-default-big-little" class="headerlink" title="3.1 OUTPUT_FORMAT(bfdname) 或 OUTPUT_FORMAT(default, big, little)"></a>3.1 OUTPUT_FORMAT(bfdname) 或 OUTPUT_FORMAT(default, big, little)</h5><p>OUTPUT_FORMAT 命令指定输出文件使用的 BFD 格式。作用与在命令行上使用 –oformat bfdname 一样。如果两者都使用了，命令行选项优先。</p>
+<p>如果使用带有三个参数的 OUTPUT_FORMAT，会基于命令行选项 -EB 和 -EL 而使用不同的格式。这允许链接脚本根据所需的字节序设置输出格式。<br>具体地：如果链接命令行中，既没有使用 -EB 选项，也没有使用 -EL 选项，那么输出格式将是第一个参数，default。如果使用了 -EB，输出格式将是第二个参数 big。如果使用了 -EL，输出格式将是第三个参数 little。</p>
+<p>例如，MIPS ELF 目标的默认链接脚本使用此命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">OUTPUT_FORMAT(elf32-bigmips, elf32-bigmips, elf32-littlemips)</span><br></pre></td></tr></table></figure>
+<p>这表明输出文件的默认格式是 elf32-bigmips，但如果用户使用了 -EL 命令行选项，输出文件将以 elf32-littlemips 格式创建。</p>
+<h5 id="3-2-TARGET-bfdname"><a href="#3-2-TARGET-bfdname" class="headerlink" title="3.2 TARGET(bfdname)"></a>3.2 TARGET(bfdname)</h5><p>TARGET 命令指定读取输入文件时使用的 BFD 格式。它影响随后的 INPUT 和 GROUP 命令。其作用与在命令行上使用 -b bfdname 一样。如果使用了 TARGET 命令但没有使用 OUTPUT_FORMAT，那么最后一个 TARGET 命令也将用于设置输出文件的格式。</p>
+<h4 id="4-Assign-alias-names-to-memory-regions"><a href="#4-Assign-alias-names-to-memory-regions" class="headerlink" title="4 Assign alias names to memory regions"></a>4 Assign alias names to memory regions</h4><p>链接脚本中的 <strong>REGION_ALIAS</strong> 用于为内存区域创建别名，使输出节能够灵活地映射到内存区域。示例场景：</p>
+<p>假设我们有一个嵌入式系统的应用程序，该程序包含四个输出节：</p>
+<ul>
+<li>.text：程序代码段</li>
+<li>.rodata：只读数据段</li>
+<li>.data：可读写的，已初始化数据段</li>
+<li>.bss：零初始化数据</li>
+</ul>
+<p>该系统中存在一个通用的、易失性的 RAM 内存，用于代码执行或数据存储。还有一个只读的、非易失性的 ROM 内存，用于代码执行和只读数据访问。以及一种变体是只读的、非易失性的 ROM2 内存，用于只读数据访问，但不支持代码执行。<br>要求：程序代码加载到 ROM 中，只读数据加载到 ROM2 中，读写数据加载到 RAM 中。</p>
+<p>链接器脚本示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">MEMORY</span><br><span class="line">  &#123;</span><br><span class="line">    ROM : ORIGIN = 0, LENGTH = 2M</span><br><span class="line">    ROM2 : ORIGIN = 0x10000000, LENGTH = 1M</span><br><span class="line">    RAM : ORIGIN = 0x20000000, LENGTH = 1M</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">REGION_ALIAS(&quot;REGION_TEXT&quot;, ROM);</span><br><span class="line">REGION_ALIAS(&quot;REGION_RODATA&quot;, ROM2);</span><br><span class="line">REGION_ALIAS(&quot;REGION_DATA&quot;, RAM);</span><br><span class="line">REGION_ALIAS(&quot;REGION_BSS&quot;, RAM);</span><br><span class="line"></span><br><span class="line">SECTIONS</span><br><span class="line">  &#123;</span><br><span class="line">    .text :</span><br><span class="line">      &#123;</span><br><span class="line">        *(.text)</span><br><span class="line">      &#125; &gt; REGION_TEXT</span><br><span class="line">    .rodata :</span><br><span class="line">      &#123;</span><br><span class="line">        *(.rodata)</span><br><span class="line">        rodata_end = .;</span><br><span class="line">      &#125; &gt; REGION_RODATA</span><br><span class="line">    .data : AT (rodata_end)</span><br><span class="line">      &#123;</span><br><span class="line">        data_start = .;</span><br><span class="line">        *(.data)</span><br><span class="line">      &#125; &gt; REGION_DATA</span><br><span class="line">    data_size = SIZEOF(.data);</span><br><span class="line">    data_load_start = LOADADDR(.data);</span><br><span class="line">    .bss :</span><br><span class="line">      &#123;</span><br><span class="line">        *(.bss)</span><br><span class="line">      &#125; &gt; REGION_BSS</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后，如果需要，可以编写一个通用的系统初始化例程，将 .data 节从 ROM 或 ROM2 复制到 RAM 中。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;string.h&gt;</span><br><span class="line"></span><br><span class="line">extern char data_start [];</span><br><span class="line">extern char data_size [];</span><br><span class="line">extern char data_load_start [];</span><br><span class="line"></span><br><span class="line">void copy_data(void)</span><br><span class="line">&#123;</span><br><span class="line">  if (data_start != data_load_start)</span><br><span class="line">    &#123;</span><br><span class="line">      memcpy(data_start, data_load_start, (size_t) data_size);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="5-Other-Linker-Script-Commands"><a href="#5-Other-Linker-Script-Commands" class="headerlink" title="5 Other Linker Script Commands"></a>5 Other Linker Script Commands</h4><h5 id="5-1-ASSERT-exp-message-："><a href="#5-1-ASSERT-exp-message-：" class="headerlink" title="5.1 ASSERT(exp, message)："></a>5.1 ASSERT(exp, message)：</h5><p><strong>ASSERT</strong> 命令用于确保表达式 exp 的值非零。如果 exp 为零，则链接器会退出并打印错误消息。<br>需要注意的是，链接器在最终的链接阶段之前会检查断言。因此在链接的早期阶段，链接脚本中的断言会被验证。但另一方面，在段定义内部提供的符号，它们的值在链接的最终阶段之前不会被设置，因此在断言中使用这些符号可能会失败。唯一的例外是仅引用点号提供的符号。</p>
+<p>例如：下面的例子使用了节内部定义的__stack_size，因此会失败。（__stack使用“.”没有问题）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.stack :</span><br><span class="line">&#123;</span><br><span class="line">  PROVIDE (__stack = .);</span><br><span class="line">  PROVIDE (__stack_size = 0x100);</span><br><span class="line">  ASSERT ((__stack &gt; (_end + __stack_size)), &quot;Error: No room left for the stack&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在段定义之外提供的符号会更早地进行求值，因此它们可以在断言中使用。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PROVIDE (__stack_size = 0x100);</span><br><span class="line">.stack :</span><br><span class="line">&#123;</span><br><span class="line">  PROVIDE (__stack = .);</span><br><span class="line">  ASSERT ((__stack &gt; (_end + __stack_size)), &quot;Error: No room left for the stack&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="5-2-EXTERN-symbol-symbol-…-："><a href="#5-2-EXTERN-symbol-symbol-…-：" class="headerlink" title="5.2 EXTERN(symbol symbol …)："></a>5.2 EXTERN(symbol symbol …)：</h5><p><strong>EXTERN</strong> 命令用于将符号作为未定义符号输入到输出文件中。这可能会触发从标准库链接其他模块的操作。</p>
+<p>可以为每个 <strong>EXTERN</strong> 列出多个符号，并且可以多次使用 <strong>EXTERN</strong>。此命令的效果与命令行选项 -u 相同。</p>
+<h5 id="5-3-FORCE-COMMON-ALLOCATION："><a href="#5-3-FORCE-COMMON-ALLOCATION：" class="headerlink" title="5.3 FORCE_COMMON_ALLOCATION："></a>5.3 FORCE_COMMON_ALLOCATION：</h5><p>此命令的效果与命令行选项 -d 相同：即使指定了可重定位输出文件（-r），也会使链接器为 common 符号分配空间。</p>
+<h4 id="5-4-INHIBIT-COMMON-ALLOCATION："><a href="#5-4-INHIBIT-COMMON-ALLOCATION：" class="headerlink" title="5.4 INHIBIT_COMMON_ALLOCATION："></a>5.4 INHIBIT_COMMON_ALLOCATION：</h4><p>此命令的效果与命令行选项 –no-define-common 相同：即使对于非重定位输出文件，也会使链接器忽略对 common 符号的地址分配。</p>
+<h5 id="5-5FORCE-GROUP-ALLOCATION："><a href="#5-5FORCE-GROUP-ALLOCATION：" class="headerlink" title="5.5FORCE_GROUP_ALLOCATION："></a>5.5FORCE_GROUP_ALLOCATION：</h5><p>此命令的效果与命令行选项 –force-group-allocation 相同：使链接器将段组成员放置在普通输入节中，并且即使指定了可重定位输出文件（-r），也会删除段组。</p>
+<h5 id="5-6-INSERT-AFTER-BEFORE-output-section："><a href="#5-6-INSERT-AFTER-BEFORE-output-section：" class="headerlink" title="5.6 INSERT [ AFTER | BEFORE ] output_section："></a>5.6 INSERT [ AFTER | BEFORE ] output_section：</h5><p><strong>INSERT</strong> 命令允许在指定的输出段之后或之前插入其他链接脚本语句。</p>
+<h5 id="5-7-NOCROSSREFS-section-section-…-："><a href="#5-7-NOCROSSREFS-section-section-…-：" class="headerlink" title="5.7 NOCROSSREFS(section section …)："></a>5.7 NOCROSSREFS(section section …)：</h5><p><strong>NOCROSSREFS</strong> 命令接受一个<strong>输出节名称的列表</strong>。如果链接器检测到这些节之间存在交叉引用，它将报告错误并返回非零的退出状态。NOCROSSREFS 命令在确保两个或多个输出节完全独立的情况下非常有用。</p>
+<p>例如，在使用覆盖层（overlays）的嵌入式系统中，当一个节被加载到内存中时，另一个节不会被加载，如果一个节中的代码调用了另一个节中定义的函数，那么这将是一个错误。</p>
+<h5 id="5-8-NOCROSSREFS-TO-tosection-fromsection-…-："><a href="#5-8-NOCROSSREFS-TO-tosection-fromsection-…-：" class="headerlink" title="5.8 NOCROSSREFS_TO(tosection fromsection …)："></a>5.8 NOCROSSREFS_TO(tosection fromsection …)：</h5><p>NOCROSSREFS_TO 命令接受一个<strong>输出节名称的列表</strong>。第一个节不能从其他节中引用。如果链接器检测到其他节中对第一个节的引用，它将报告错误并返回非零的退出状态。</p>
+<h5 id="5-9-OUTPUT-ARCH-bfdarch-："><a href="#5-9-OUTPUT-ARCH-bfdarch-：" class="headerlink" title="5.9 OUTPUT_ARCH(bfdarch)："></a>5.9 OUTPUT_ARCH(bfdarch)：</h5><p><strong>OUTPUT_ARCH</strong> 命令用于指定特定的输出机器体系结构。参数是 BFD 库使用的名称之一。你可以使用 objdump 程序的 -f 选项查看目标文件的体系结构。</p>
+<p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/Entry-Point.html">https://sourceware.org/binutils/docs/ld/Entry-Point.html</a><br>【2】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/Format-Commands.html">https://sourceware.org/binutils/docs/ld/Format-Commands.html</a><br>【3】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/File-Commands.html">https://sourceware.org/binutils/docs/ld/File-Commands.html</a><br>【3】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/Miscellaneous-Commands.html">https://sourceware.org/binutils/docs/ld/Miscellaneous-Commands.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/" title="GNU linker ld —— Simple Linker Script Commands">http://fengxun2017.github.io/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/06/22/GUN-linker-Linker-Scripts-Simple-Linker-Script-Example/" rel="prev" title="GNU linker ld —— Simple Linker Script Example">
+                  <i class="fa fa-chevron-left"></i> GNU linker ld —— Simple Linker Script Example
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">272k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">5:41</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
