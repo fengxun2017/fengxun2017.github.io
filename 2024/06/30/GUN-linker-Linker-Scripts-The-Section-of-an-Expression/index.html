@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="给自己的tips">
+    <meta name="description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：The Section of an Expression">
 <meta property="og:type" content="article">
-<meta property="og:title" content="life">
-<meta property="og:url" content="http://fengxun2017.github.io/2023/05/03/my-life/index.html">
+<meta property="og:title" content="GNU linker ld —— The Section of an Expression">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/index.html">
 <meta property="og:site_name" content="fx">
-<meta property="og:description" content="给自己的tips">
+<meta property="og:description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：The Section of an Expression">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-05-02T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-05-03T11:18:25.455Z">
+<meta property="article:published_time" content="2024-06-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-06-30T11:55:09.144Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://fengxun2017.github.io/2023/05/03/my-life/">
+<link rel="canonical" href="http://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2023/05/03/my-life/","path":"2023/05/03/my-life/","title":"life"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/","path":"2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/","title":"GNU linker ld —— The Section of an Expression"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>life | fx</title>
+<title>GNU linker ld —— The Section of an Expression | fx</title>
   
 
 
@@ -108,7 +108,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+    <div class="sidebar-inner sidebar-overview-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -121,7 +121,6 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8B%87%E4%BA%8E%E4%B8%BA%E8%87%AA%E5%B7%B1%E4%BA%89%E5%8F%96%E5%88%A9%E7%9B%8A%EF%BC%8C%E6%95%A2%E4%BA%8E%E4%B8%BB%E5%8A%A8%E5%87%BA%E5%87%BB"><span class="nav-number">1.</span> <span class="nav-text">勇于为自己争取利益，敢于主动出击</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%B0%E5%BD%95%E8%87%AA%E5%B7%B1%E7%9A%84%E6%88%90%E9%95%BF%EF%BC%8C%E5%AF%B9%E5%B7%A5%E4%BD%9C%E3%80%81%E5%AF%B9%E7%9F%A5%E8%AF%86%E8%BF%9B%E8%A1%8C%E5%A4%8D%E7%9B%98"><span class="nav-number">2.</span> <span class="nav-text">记录自己的成长，对工作、对知识进行复盘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9C%E7%A6%BB%E6%B6%88%E6%9E%81%E7%9A%84%E4%BA%BA%EF%BC%8C%E8%BF%9C%E7%A6%BB%E6%82%B2%E8%A7%82%E4%B8%BB%E4%B9%89%E8%80%85"><span class="nav-number">3.</span> <span class="nav-text">远离消极的人，远离悲观主义者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%9D%E6%8C%81%E5%AD%A6%E4%B9%A0%EF%BC%8C%E4%BF%9D%E6%8C%81%E7%83%AD%E6%83%85%EF%BC%8C%E4%BF%9D%E6%8C%81%E8%87%AA%E5%B7%B1%E7%9A%84%E8%8A%82%E5%A5%8F%EF%BC%8C%E7%84%B6%E5%90%8E%E4%B9%90%E8%A7%82%E4%B8%94%E5%9D%9A%E5%AE%9A%E5%9C%B0%E7%9C%8B%E5%BE%85%E6%9C%AA%E6%9D%A5"><span class="nav-number">4.</span> <span class="nav-text">保持学习，保持热情，保持自己的节奏，然后乐观且坚定地看待未来</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E5%88%B6%E9%95%BF%E6%9C%9F%E7%9A%84%E5%B7%A5%E4%BD%9C%E4%B9%8B%E5%A4%96%E7%9A%84%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92%EF%BC%8C%E4%B8%8D%E6%96%AD%E6%B7%B1%E5%85%A5%E8%87%AA%E5%B7%B1%E7%86%9F%E6%82%89%E7%9A%84%E9%A2%86%E5%9F%9F"><span class="nav-number">5.</span> <span class="nav-text">定制长期的工作之外的学习计划，不断深入自己熟悉的领域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E6%96%AD%E6%8E%A2%E7%B4%A2%E5%85%B6%E5%AE%83%E9%A2%86%E5%9F%9F%EF%BC%8C%E6%89%A9%E5%B1%95%E8%87%AA%E5%B7%B1%E7%9A%84%E7%9F%A5%E8%AF%86%E9%9D%A2%EF%BC%8C%E6%9E%84%E5%BB%BA%E6%9B%B4%E5%AE%8C%E5%A4%87%E7%9A%84%E7%9F%A5%E8%AF%86%E4%BD%93%E7%B3%BB"><span class="nav-number">6.</span> <span class="nav-text">不断探索其它领域，扩展自己的知识面，构建更完备的知识体系</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -182,7 +181,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2023/05/03/my-life/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -195,12 +194,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="life | fx">
+      <meta itemprop="name" content="GNU linker ld —— The Section of an Expression | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          life
+          GNU linker ld —— The Section of an Expression
         </h1>
 
         <div class="post-meta-container">
@@ -211,7 +210,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2023-05-03 00:00:00" itemprop="dateCreated datePublished" datetime="2023-05-03T00:00:00+08:00">2023-05-03</time>
+      <time title="创建时间：2024-06-30 00:00:00" itemprop="dateCreated datePublished" datetime="2024-06-30T00:00:00+08:00">2024-06-30</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -219,7 +218,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/my-life/" itemprop="url" rel="index"><span itemprop="name">my life</span></a>
+          <a href="/categories/GUN-linker/" itemprop="url" rel="index"><span itemprop="name">GUN-linker</span></a>
         </span>
     </span>
 
@@ -230,14 +229,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>183</span>
+      <span>1.4k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>1 分钟</span>
+      <span>2 分钟</span>
     </span>
 </div>
 
@@ -249,18 +248,44 @@
     
     <div class="post-body" itemprop="articleBody">
         <center>
-给自己的tips
+GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：The Section of an Expression
 </center>
 
 <span id="more"></span>
 
 <hr>
-<h4 id="勇于为自己争取利益，敢于主动出击"><a href="#勇于为自己争取利益，敢于主动出击" class="headerlink" title="勇于为自己争取利益，敢于主动出击"></a>勇于为自己争取利益，敢于主动出击</h4><h4 id="记录自己的成长，对工作、对知识进行复盘"><a href="#记录自己的成长，对工作、对知识进行复盘" class="headerlink" title="记录自己的成长，对工作、对知识进行复盘"></a>记录自己的成长，对工作、对知识进行复盘</h4><ul>
-<li>记录问题的发现</li>
-<li>记录问题的处理过程（涉及的上下游，涉及的资源）</li>
-<li>跟踪下游对处理结果的反馈</li>
+<p><strong>个人笔记，仅供参考！！</strong></p>
+<p><strong>绝对地址和相对地址</strong>：</p>
+<ul>
+<li>地址和符号可以是相对于段的，也可以是绝对的。</li>
+<li>相对于段的符号是可重定位的。如果使用了 -r 链接选项请求可重定位输出，进一步的链接操作可能会更改相对于段的符号的值。</li>
+<li>绝对符号在任何进一步的链接操作中都会保持相同的值。</li>
 </ul>
-<h4 id="远离消极的人，远离悲观主义者"><a href="#远离消极的人，远离悲观主义者" class="headerlink" title="远离消极的人，远离悲观主义者"></a>远离消极的人，远离悲观主义者</h4><h4 id="保持学习，保持热情，保持自己的节奏，然后乐观且坚定地看待未来"><a href="#保持学习，保持热情，保持自己的节奏，然后乐观且坚定地看待未来" class="headerlink" title="保持学习，保持热情，保持自己的节奏，然后乐观且坚定地看待未来"></a>保持学习，保持热情，保持自己的节奏，然后乐观且坚定地看待未来</h4><h4 id="定制长期的工作之外的学习计划，不断深入自己熟悉的领域"><a href="#定制长期的工作之外的学习计划，不断深入自己熟悉的领域" class="headerlink" title="定制长期的工作之外的学习计划，不断深入自己熟悉的领域"></a>定制长期的工作之外的学习计划，不断深入自己熟悉的领域</h4><h4 id="不断探索其它领域，扩展自己的知识面，构建更完备的知识体系"><a href="#不断探索其它领域，扩展自己的知识面，构建更完备的知识体系" class="headerlink" title="不断探索其它领域，扩展自己的知识面，构建更完备的知识体系"></a>不断探索其它领域，扩展自己的知识面，构建更完备的知识体系</h4>
+<p>链接器表达式中的一些术语（terms）是地址,例如那些相对于段的符号以及返回地址的内置函数，例如 ADDR、LOADADDR、ORIGIN 和 SEGMENT_START。<br>其他术语（terms）只是数字，或者是返回非地址值的内置函数，例如 LENGTH。</p>
+<p>通常情况下，链接脚本中，数字和绝对符号在不同的位置上会被不同对待。在输出段定义之外的表达式中，所有数字都被视为绝对地址,这意味着，如果在表达式中使用一个数字，它将被解释为一个绝对地址。<br>在输出段定义之内的表达式中，绝对符号被视为数字，而数字被视为相对于当前段的地址。<br>但如果设置了 LD_FEATURE (“SANE_EXPR”)，则绝对符号和数字在任何地方都被视为数字。</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">  . = 0x100;</span><br><span class="line">  __executable_start = 0x100;</span><br><span class="line">  .data :</span><br><span class="line">  &#123;</span><br><span class="line">    . = 0x10;</span><br><span class="line">    __data_start = 0x10;</span><br><span class="line">    *(.data)</span><br><span class="line">  &#125;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个例子中，<code>.</code>和<code>__executable_start</code>在前两个赋值中都设置为绝对地址 0x100。<br>然后，在后两个赋值中，<code>.</code>和<code>__data_start</code>都相对于 .data 节设置为 0x10。</p>
+<p>对于涉及数字、相对地址和绝对地址的表达式，ld 遵循以下规则来计算：</p>
+<ul>
+<li>对绝对地址或数字的一元操作，以及对两个绝对地址或两个数字或一个绝对地址和一个数字之间的二元操作，将操作应用于值。</li>
+<li>对相对地址的一元操作，以及在同一段中的两个相对地址之间或相对地址和数字之间的二元操作，将操作应用于地址的偏移部分。</li>
+<li>其他二元操作，即在不同段中的两个相对地址之间或相对地址和绝对地址之间的操作，在应用操作之前首先将任何非绝对术语（term）转换为绝对地址。</li>
+</ul>
+<p>每个子表达式的结果段如下：</p>
+<ul>
+<li>仅涉及数字的操作结果是一个数字。</li>
+<li>比较、‘&amp;&amp;’ 和 ‘||’ 的结果也是一个数字。</li>
+<li>当LD_FEATURE (“SANE_EXPR”)或在输出段定义内时，对同一段中的两个相对地址或两个绝对地址(经过上述转换)进行其他二进制算术和逻辑运算的结果也是一个数字，否则是一个绝对地址。</li>
+<li>对相对地址或一个相对地址加一个数字进行其他操作的结果是与相对操作数位于同一节中的相对地址。</li>
+<li>在绝对地址上的其他操作（经过上述转换）的结果是一个绝对地址。</li>
+</ul>
+<p>可以使用内置函数 <strong>ABSOLUTE</strong> 来强制表达式成为绝对地址，否则它可能是相对的。例如，要创建一个绝对符号，其地址设置为输出段 .data 的末尾：</p>
+<p>SECTIONS<br>{<br>  .data : { *(.data) _edata &#x3D; ABSOLUTE(.); }<br>}</p>
+<p>如果没有使用 ABSOLUTE，_edata 将相对于 .data 段。</p>
+<p>使用 <strong>LOADADDR</strong> 也会强制表达式成为绝对地址，因为这个特定的内置函数返回一个绝对地址。</p>
+<p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/Expression-Section.html">https://sourceware.org/binutils/docs/ld/Expression-Section.html</a></p>
+
     </div>
 
     
@@ -277,7 +302,7 @@
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2023/05/03/my-life/" title="life">http://fengxun2017.github.io/2023/05/03/my-life/</a>
+      <a href="http://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/" title="GNU linker ld —— The Section of an Expression">http://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -290,14 +315,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2023/04/24/BleStack-link-advertising/" rel="prev" title="实现一个精简的BLE从机协议栈—3—链路层广播状态机实现">
-                  <i class="fa fa-chevron-left"></i> 实现一个精简的BLE从机协议栈—3—链路层广播状态机实现
+                <a href="/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/" rel="prev" title="GNU linker ld —— Simple Linker Script Commands">
+                  <i class="fa fa-chevron-left"></i> GNU linker ld —— Simple Linker Script Commands
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2023/05/20/BleStack-link-connection/" rel="next" title="实现一个精简的BLE从机协议栈—4—链路层连接建立——前置理论">
-                  实现一个精简的BLE从机协议栈—4—链路层连接建立——前置理论 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
