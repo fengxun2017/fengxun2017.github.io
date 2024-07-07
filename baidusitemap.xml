@@ -1,28 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://fengxun2017.github.io/2024/07/02/GUN-linker-Linker-Scripts-SECTIONS-Command/</loc>
+    <lastmod>2024-07-07</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/</loc>
+    <lastmod>2024-07-07</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2024/07/01/GUN-linker-Linker-Scripts-Assigning-Values-to-Symbols/</loc>
+    <lastmod>2024-07-03</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/</loc>
+    <lastmod>2024-07-01</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2024/06/18/GUN-linker-Command-line-Options/</loc>
+    <lastmod>2024-07-01</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2024/06/20/GUN-linker-Linker-Scripts-Basic-Linker-Script-Concepts/</loc>
+    <lastmod>2024-07-01</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2024/06/21/GUN-linker-Linker-Scripts-Linker-Script-Format/</loc>
+    <lastmod>2024-07-01</lastmod>
+  </url>
+  <url>
     <loc>http://fengxun2017.github.io/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/</loc>
     <lastmod>2024-07-01</lastmod>
   </url>
   <url>
-    <loc>http://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/</loc>
-    <lastmod>2024-06-30</lastmod>
-  </url>
-  <url>
     <loc>http://fengxun2017.github.io/2024/06/22/GUN-linker-Linker-Scripts-Simple-Linker-Script-Example/</loc>
-    <lastmod>2024-06-22</lastmod>
-  </url>
-  <url>
-    <loc>http://fengxun2017.github.io/2024/06/21/GUN-linker-Linker-Scripts-Linker-Script-Format/</loc>
-    <lastmod>2024-06-20</lastmod>
-  </url>
-  <url>
-    <loc>http://fengxun2017.github.io/2024/06/20/GUN-linker-Linker-Scripts-Basic-Linker-Script-Concepts/</loc>
-    <lastmod>2024-06-20</lastmod>
-  </url>
-  <url>
-    <loc>http://fengxun2017.github.io/2024/06/18/GUN-linker-Command-line-Options/</loc>
-    <lastmod>2024-06-18</lastmod>
+    <lastmod>2024-07-01</lastmod>
   </url>
   <url>
     <loc>http://fengxun2017.github.io/2024/05/06/%E8%AF%84%E4%BC%B0%E6%9C%80%E5%A4%A7%E6%A0%88%E4%BD%BF%E7%94%A8%E9%87%8F/</loc>

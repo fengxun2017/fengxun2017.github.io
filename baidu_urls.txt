@@ -1,5 +1,5 @@
+http://fengxun2017.github.io/2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/
+http://fengxun2017.github.io/2024/07/02/GUN-linker-Linker-Scripts-SECTIONS-Command/
+http://fengxun2017.github.io/2024/07/01/GUN-linker-Linker-Scripts-Assigning-Values-to-Symbols/
 http://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/
 http://fengxun2017.github.io/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/
-http://fengxun2017.github.io/2024/06/22/GUN-linker-Linker-Scripts-Simple-Linker-Script-Example/
-http://fengxun2017.github.io/2024/06/21/GUN-linker-Linker-Scripts-Linker-Script-Format/
-http://fengxun2017.github.io/2024/06/20/GUN-linker-Linker-Scripts-Basic-Linker-Script-Concepts/
