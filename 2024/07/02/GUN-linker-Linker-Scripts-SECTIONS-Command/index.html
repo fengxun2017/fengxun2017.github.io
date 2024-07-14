@@ -27,7 +27,7 @@
 <meta property="og:description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：SECTIONS Command">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-07-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-07-14T09:45:14.818Z">
+<meta property="article:modified_time" content="2024-07-14T14:45:56.044Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
@@ -121,7 +121,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Output-Section-Description"><span class="nav-number">1.</span> <span class="nav-text">1 Output Section Description</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-1-Output-Section-Name"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 Output Section Name</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-2-Output-Section-Address"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 Output Section Address</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-3-Output-Section-Type"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 Output Section Type</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-Output-Section-LMA"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 Output Section LMA</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-5-Forced-Output-Alignment"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 Forced Output Alignment</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-6-Forced-Input-Alignment"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 Forced Input Alignment</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-7-Output-Section-Constraint"><span class="nav-number">1.7.</span> <span class="nav-text">1.7 Output Section Constraint</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-8-Output-Section-Region"><span class="nav-number">1.8.</span> <span class="nav-text">1.8 Output Section Region</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-9-Output-Section-Phdr"><span class="nav-number">1.9.</span> <span class="nav-text">1.9 Output Section Phdr</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-10-Output-Section-Fill"><span class="nav-number">1.10.</span> <span class="nav-text">1.10 Output Section Fill</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-11-Output-Section-Data"><span class="nav-number">1.11.</span> <span class="nav-text">1.11 Output Section Data</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-12-Output-Section-Discarding"><span class="nav-number">1.12.</span> <span class="nav-text">1.12 Output Section Discarding</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Input-Section-Description"><span class="nav-number">2.</span> <span class="nav-text">2 Input Section Description</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-Input-Section-Basics"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Input Section Basics</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">参考连接：</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">参考连接：</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -230,14 +230,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>9.9k</span>
+      <span>516</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>12 分钟</span>
+      <span>1 分钟</span>
     </span>
 </div>
 
@@ -263,162 +263,10 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：SECTIONS Comma
 <ul>
 <li>ENTRY 命令（参见<a href="https://fengxun2017.github.io/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/">Simple-Linker-Script-Commands&#x2F;</a>）</li>
 <li>符号赋值（Assigning Values to Symbols）（参见<a href="https://fengxun2017.github.io/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/">Simple-Linker-Script-Commands&#x2F;</a>）</li>
-<li>输出段描述</li>
+<li>输出段描述（参见<a href="https://fengxun2017.github.io/2024/07/12/GUN-linker-Linker-Scripts-Output-Section-Description/">Output Section Description</a>）</li>
 <li>覆盖描述(overlay description)</li>
 </ul>
-<p>输出段描述和覆盖描述将在下面进行描述。</p>
 <p>如果没有在链接器脚本中使用 <strong>SECTIONS</strong> 命令，链接器将按照输入文件中段出现的顺序，将每个输入段放入同名的输出段中。</p>
-<h4 id="1-Output-Section-Description"><a href="#1-Output-Section-Description" class="headerlink" title="1 Output Section Description"></a>1 Output Section Description</h4><p>链接脚本中输出段的完整描述如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">section [address] [(type)] :</span><br><span class="line">  [AT(lma)]</span><br><span class="line">  [ALIGN(section_align) | ALIGN_WITH_INPUT]</span><br><span class="line">  [SUBALIGN(subsection_align)]</span><br><span class="line">  [constraint]</span><br><span class="line">  &#123;</span><br><span class="line">    output-section-command</span><br><span class="line">    output-section-command</span><br><span class="line">    …</span><br><span class="line">  &#125; [&gt;region] [AT&gt;lma_region] [:phdr :phdr …] [=fillexp] [,]</span><br></pre></td></tr></table></figure>
-
-<p>大多数输出段不使用可选的段属性。在 <strong>section</strong> 周围的空格是必需的，以确保段名称不会引起歧义。冒号和花括号也是必需的。如果使用了 fillexp 并且下一个 sections-command 看起来是表达式的延续，那么末尾的逗号可能是必需的。换行和其他空白是可选的。</p>
-<p>输出段描述中的 <code>output-section-command</code> 可以是以下之一：</p>
-<ul>
-<li>符号赋值</li>
-<li>输入段描述（见后文“Input Section Description”）</li>
-<li>直接包含的数据值（见后文“Output Section Data”）</li>
-<li>特殊的输出段关键字（“Output Section Keywords”）</li>
-</ul>
-<h5 id="1-1-Output-Section-Name"><a href="#1-1-Output-Section-Name" class="headerlink" title="1.1 Output Section Name"></a>1.1 Output Section Name</h5><p><code>section</code>为输出段的名称，需要满足输出格式的要求。<br>输出节名<code>/DISCARD/</code>是特殊的，参考后文“Output Section Discarding”。</p>
-<h5 id="1-2-Output-Section-Address"><a href="#1-2-Output-Section-Address" class="headerlink" title="1.2 Output Section Address"></a>1.2 Output Section Address</h5><p><code>address</code>是虚拟内存地址（VMA）的表达式，用于指定输出段的位置。这个地址是可选的，但如果提供了，输出地址将会被精确地设置为指定的值。<br>如果没有指定输出地址，链接器将根据以下启发式规则为该段选择一个地址。该地址将根据输出段的对齐要求进行调整。输出段的对齐要求是包含在输出段内的任何输入段的最严格对齐要求。输出段地址的启发式规则如下：</p>
-<ul>
-<li>如果为该段设置了输出内存区域（输出段描述中的<code>[&gt;region]</code>），则将其添加到该区域，并且其地址将是该区域中的下一个空闲地址。</li>
-<li>如果使用 <strong>MEMORY</strong> 命令创建了一组内存区域，则选择与该段兼容的第一个区域来包含它。该段的输出地址将是该区域中的下一个空闲地址.</li>
-<li>如果没有指定内存区域，或者没有与该段匹配的区域，则输出地址将基于当前位置计数器的值。</li>
-</ul>
-<p>例如：<code>.text . : &#123; *(.text) &#125;</code> 和 <code>.text : &#123; *(.text) &#125;</code><br>这两者之间有微妙的区别。第一个示例将 .text 输出段的地址设置为当前位置计数器的值。第二个示例将其设置为与 .text 输入段中最严格对齐要求对齐的当前位置计数器的值。</p>
-<p><code>address</code>可以是任意表达式（参考链接脚本中的表达式）。例如，如果想要将该段对齐到 0x10 字节边界，使得段地址的最低四位为零，可以这样做：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.text ALIGN(0x10) : &#123; *(.text) &#125;</span><br></pre></td></tr></table></figure>
-<p>这里的 <strong>ALIGN</strong> 返回当前位置计数器向上对齐到指定值的结果。</p>
-<p>如果为某个段指定了地址，那么该段的地址将改变位置计数器的值，前提是该段非空（空段将被忽略）。</p>
-<h5 id="1-3-Output-Section-Type"><a href="#1-3-Output-Section-Type" class="headerlink" title="1.3 Output Section Type"></a>1.3 Output Section Type</h5><p>输出段可以使用<code>type</code>属性，来标记一些段特性，存在以下段类型定义：</p>
-<ul>
-<li><p><strong>NOLOAD</strong>：该类型用于标记一个段为不可加载，当运行程序时，该段不会被加载到内存中。通常用于包含只读数据或其他不需要在运行时加载的数据的段。</p>
-</li>
-<li><p><strong>READONLY</strong>：该类型将段标记为只读。可以将一些只读数据，例如常量或配置信息，放在只读段中。</p>
-</li>
-<li><p><strong>DSECT、COPY、INFO、OVERLAY</strong>：这些类型是为了向后兼容而保留的，很少使用。它们都具有相同的效果：将段标记为“不可分配”，因此在运行程序时不会为该段分配内存。</p>
-</li>
-<li><p><strong>TYPE &#x3D; type</strong>：可以在链接脚本中使用<code>TYPE = type</code>来显式设置输出段的类型，如果不显式设置类型，链接器将根据输入段的内容自动推断输出段的类型。在生成ELF输出文件时，<code>type</code>可以取值： </p>
-<ul>
-<li>SHT_PROGBITS：代码或只读数据段。</li>
-<li>SHT_STRTAB：字符串表段。</li>
-<li>SHT_NOTE：注释段。</li>
-<li>SHT_NOBITS：不占用实际内存的段（例如BSS段）。</li>
-<li>SHT_INIT_ARRAY：初始化函数数组段。</li>
-<li>SHT_FINI_ARRAY：终止函数数组段。</li>
-<li>SHT_PREINIT_ARRAY：预初始化函数数组段。</li>
-</ul>
-<p>需要注意的是，<strong>只有当输出段的内容没有自己的隐式类型时，TYPE 才会生效</strong>。<br><code>隐式类型</code>：输入文件中的每个段都有一个隐式类型。例如，代码段（.text）的隐式类型是 SHT_PROGBITS，而只包含零初始化数据的段（.bss）的隐式类型是 SHT_NOBITS。链接器通常会根据输入段的隐式类型来设置输出段的属性。<br><code>类型继承</code>：例如，<code>.foo . TYPE = SHT_PROGBITS &#123; *(.bar) &#125;</code> 将会将输出段<code>.foo</code>的类型设置为与输入段中的<code>.bar</code>段相同的类型，但不一定是 SHT_PROGBITS 类型（虽然使用了 TYPE 指令显式地设置了输出段的类型）。<br><code>覆盖隐式类型</code>：如果需要强制设置输出段的类型（即使输入段具有不同的隐式类型），则需要添加一个额外的无类型数据。例如：<code>.foo . TYPE = SHT_PROGBITS &#123; BYTE(1); *(.bar) &#125;</code></p>
-</li>
-<li><p>**READONLY ( TYPE &#x3D; type )**：这种语法将 READONLY 类型与指定的类型结合起来。</p>
-</li>
-</ul>
-<p>综上，链接器通常根据映射到输出段的输入段来设置输出段的属性。可以通过使用段类型来覆盖这一点。例如，在下面的示例脚本中，“ROM”段位于内存位置“0”，在运行程序时不需要加载：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">SECTIONS &#123;</span><br><span class="line">  ROM 0 (NOLOAD) : &#123; … &#125;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="1-4-Output-Section-LMA"><a href="#1-4-Output-Section-LMA" class="headerlink" title="1.4 Output Section LMA"></a>1.4 Output Section LMA</h5><p>每个段都有一个虚拟地址（VMA）和一个加载地址（LMA）。虚拟地址由前面描述的输出段地址指定。加载地址由<code>AT</code>或<code>AT&gt;</code>关键字指定。指定加载地址是可选的。</p>
-<p><code>AT</code>关键字接受一个表达式作为参数。这指定了段的确切加载地址。<br><code>AT&gt;</code>关键字接受一个区域的名称作为参数。请参阅 <a href="https://fengxun2017.github.io/2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/">MEMORY命令</a>。使用<code>AT&gt;</code>，则段的加载地址设置为该区域中的下一个空闲地址，对齐到段的对齐要求。</p>
-<p><strong>可分配的段</strong>：是指在链接过程中需要在内存中分配空间的段。这些段包含程序的代码、数据或其他资源。<br>例如，<code>.text</code> 节通常包含程序的可执行代码，<code>.data</code> 节包含已初始化的全局变量，而 <code>.bss</code> 节用于存放未初始化的全局变量。<br><strong>不可分配的段</strong>：是指在链接过程中不需要在内存中分配空间的段。这些段通常包含调试信息、只读数据或其他不需要在运行时加载的内容。<br>例如，<code>.rodata</code> 节通常包含只读数据，如字符串常量。</p>
-<p>对于一个可分配的段，如果既没有指定<code>AT</code>也没有指定<code>AT&gt;</code>，链接器将使用以下启发式方法来确定加载地址：</p>
-<ul>
-<li>如果该段具有特定的VMA地址，则该地址也用作LMA地址。</li>
-<li>如果该段不可分配，则其LMA设置为其VMA。</li>
-<li>否则，如果可以找到与当前段兼容的内存区域，并且该区域包含至少一个段，则设置LMA，使当前段VMA与LMA之间的差等于该区域中最后一个段的VMA与LMA之间的差。</li>
-<li>如果没有声明内存区域，则在上一步中使用“覆盖整个地址空间的默认区域”。</li>
-<li>如果找不到合适的区域，或者没有先前的段，则LMA设置为等于VMA。</li>
-</ul>
-<p>这个特性使构建ROM映像变得容易。例如，以下链接脚本创建了三个输出段：<br>一个名为“.text”，VMA为0x1000，LMA未指定，因此和VMA值相同。<br>一个名为“.mdata”，尽管其VMA为0x2000，但加载地址在“.text”段的末尾。<br>一个名为“.bss”的段，用于保存地址0x3000处的未初始化数据。符号_data的值定义为0x2000（这表明位置计数器保存的是VMA值，而不是LMA值）。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">  .text 0x1000 : &#123; *(.text) _etext = . ; &#125;</span><br><span class="line">  .mdata 0x2000 :</span><br><span class="line">    AT ( ADDR (.text) + SIZEOF (.text) )</span><br><span class="line">    &#123; _data = . ; *(.data); _edata = . ;  &#125;</span><br><span class="line">  .bss 0x3000 :</span><br><span class="line">    &#123; _bstart = . ;  *(.bss) *(COMMON) ; _bend = . ;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>使用此链接脚本生成的程序，其运行时初始化代码将包括类似以下的内容，以将初始化数据从ROM映像复制到其运行时地址。请注意，此代码利用了链接脚本定义的符号。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">extern char _etext, _data, _edata, _bstart, _bend;</span><br><span class="line">char *src = &amp;_etext;</span><br><span class="line">char *dst = &amp;_data;</span><br><span class="line"></span><br><span class="line">/* ROM中有数据位于文本末尾；将其复制。 */</span><br><span class="line">while (dst &lt; &amp;_edata)</span><br><span class="line">  *dst++ = *src++;</span><br><span class="line"></span><br><span class="line">/* 清零bss。 */</span><br><span class="line">for (dst = &amp;_bstart; dst&lt; &amp;_bend; dst++)</span><br><span class="line">  *dst = 0;</span><br></pre></td></tr></table></figure>
-
-<h5 id="1-5-Forced-Output-Alignment"><a href="#1-5-Forced-Output-Alignment" class="headerlink" title="1.5 Forced Output Alignment"></a>1.5 Forced Output Alignment</h5><p><strong>ALIGN</strong> 属性用于设置输出节的对齐方式。具体来说，它会插入填充字节，直到当前位置对齐到指定的字节边界。<br>例如，<code>. = ALIGN(8)</code> 表示在当前位置插入填充字节，直到对齐到 8 字节的边界。</p>
-<p><strong>ALIGN_WITH_INPUT</strong> 属性可以用来确保 VMA（虚拟内存地址）和 LMA（加载内存地址）之间的差距在整个输出节中保持不变。这意味着，如果在某个输出节中使用了 ALIGN_WITH_INPUT，那么在该节中的每个输入段的 VMA 和 LMA 之间的差距将保持不变。</p>
-<h5 id="1-6-Forced-Input-Alignment"><a href="#1-6-Forced-Input-Alignment" class="headerlink" title="1.6 Forced Input Alignment"></a>1.6 Forced Input Alignment</h5><p>在输出段描述中使用 <strong>SUBALIGN</strong> 属性时，它将在该输出段内强制指定输入段的对齐方式。例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.text : SUBALIGN(4)</span><br><span class="line">&#123;</span><br><span class="line">    *(.text*)</span><br><span class="line">&#125; &gt; flash</span><br></pre></td></tr></table></figure>
-<p>该例中，<code>.text</code> 段的对齐方式被设置为 4 字节。无论输入段的对齐方式如何，都会被 SUBALIGN 指定的值所覆盖。</p>
-<h5 id="1-7-Output-Section-Constraint"><a href="#1-7-Output-Section-Constraint" class="headerlink" title="1.7 Output Section Constraint"></a>1.7 Output Section Constraint</h5><p><strong>Constraint</strong> 属性可以使用的关键字有<code>ONLY_IF_RO</code>和<code>ONLY_IF_RW</code>，分别用来指定，只有在输出段中的所有输入段都是只读的或都是读写的情况下，才创建该输出段。</p>
-<h5 id="1-8-Output-Section-Region"><a href="#1-8-Output-Section-Region" class="headerlink" title="1.8 Output Section Region"></a>1.8 Output Section Region</h5><p>通过使用 <code>&gt;region</code>属性，可以将一个段（section）分配给 <a href="https://fengxun2017.github.io/2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/">MEMORY命令</a>定义的区域（region）。<br>示例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">MEMORY &#123;</span><br><span class="line">    rom : ORIGIN = 0x1000, LENGTH = 0x1000</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">SECTIONS &#123;</span><br><span class="line">    ROM : &#123;</span><br><span class="line">        *(.text)</span><br><span class="line">    &#125; &gt;rom</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>MEMORY 部分定义了一个名为 <code>rom</code> 的内存区域，其起始地址（ORIGIN）为 0x1000，长度（LENGTH）为 0x1000。<br>SECTIONS 部分定义了一个名为 <code>ROM</code> 的输出段，它包含了所有<code>.text</code>段的内容。<code>&gt;rom</code> 表示将 <code>ROM</code> 输出段分配到 <code>rom</code> 内存区域。</p>
-<h5 id="1-9-Output-Section-Phdr"><a href="#1-9-Output-Section-Phdr" class="headerlink" title="1.9 Output Section Phdr"></a>1.9 Output Section Phdr</h5><p>可以使用’:phdr ‘将一个输出段分配给先前定义的程序段。参见<a href="https://fengxun2017.github.io/2024/07/09/GUN-linker-Linker-Scripts-PHDRS-Command/">PHDRS命令</a>。如果一个section被分配给一个或多个段(segment)，那么所有后续分配的section也将被分配给这些段，除非它们显式地使用:phdr修饰符。可以使用:NONE来告诉链接器不将该节放在任何段中。</p>
-<p>示例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">PHDRS &#123; text PT_LOAD ; &#125;</span><br><span class="line">SECTIONS &#123; .text : &#123; *(.text) &#125; :text &#125;</span><br></pre></td></tr></table></figure>
-
-
-<h5 id="1-10-Output-Section-Fill"><a href="#1-10-Output-Section-Fill" class="headerlink" title="1.10 Output Section Fill"></a>1.10 Output Section Fill</h5><p>输出段属性<code>=fillexp</code>可以用来设置整个段的填充模式，<code>fillexp</code> 是一个表达式。输出段内的任何未指定的内存区域（例如，由于输入段所需的对齐而留下的间隙）将使用该值进行填充，并根据需要重复。如果填充表达式是一个简单的十六进制数，即以“0x”开头且没有尾随的“k”或“M”的十六进制数字字符串，那么可以使用任意长的十六进制数字序列来指定填充模式；前导零也成为模式的一部分。对于其他所有情况，包括额外的括号或一元加号，填充模式是表达式值的四个最低有效字节。如果值的大小小于四个字节，则会将其零扩展为四个字节。在所有情况下，数字都是大端序。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Fill Value     Fill Pattern</span><br><span class="line">0x90           90 90 90 90</span><br><span class="line">0x0090         00 90 00 90</span><br><span class="line">144            00 00 00 90</span><br></pre></td></tr></table></figure>
-<p>还可以通过输出段命令中的 <strong>FILL</strong> 命令更改填充值（见后文）。</p>
-<p>以下是一个简单的示例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS &#123; .text : &#123; *(.text) &#125; =0x90909090 &#125;</span><br></pre></td></tr></table></figure>
-<p>这将使用填充值 0x90909090 来填充 .text 节。</p>
-<h5 id="1-11-Output-Section-Data"><a href="#1-11-Output-Section-Data" class="headerlink" title="1.11 Output Section Data"></a>1.11 Output Section Data</h5><p>通过使用 <strong>BYTE</strong>、<strong>SHORT</strong>、<strong>LONG</strong>、<strong>QUAD</strong> 或 <strong>SQUAD</strong> 作为输出段命令，可以在输出段中包含确切字节的数据。每个关键字后跟一个括号中的表达式，提供要存储的值。</p>
-<p><strong>BYTE</strong>、<strong>SHORT</strong>、<strong>LONG</strong> 和 <strong>QUAD</strong> 命令分别存储 1、2、4 和 8个字节。存储字节后，位置计数器按存储的字节数递增。</p>
-<p>例如，以下命令将存储字节1，后跟符号“addr”的四字节值：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">BYTE(1)</span><br><span class="line">LONG(addr)</span><br></pre></td></tr></table></figure>
-
-<p>当使用64位主机或目标时，<strong>QUAD</strong> 和 <strong>SQUAD</strong>是相同的;它们都存储8字节或64位的值。当主机和目标都是32位时，表达式计算为32位。在这种情况下，QUAD存储一个32位按 0 扩展到64位的值，SQUAD存储一个32位按符号扩展到64位的值。</p>
-<p>通常情况下，输出文件的目标文件格式具有显式字节序，值会将按照该字节序存储。如果目标文件格式没有显式字节序，值将按照第一个输入目标文件的字节序存储。</p>
-<p>除了存储数值，还可以使用 <strong>ASCIZ</strong> 关键字在输出段中包含以零结尾的字符串。该关键字后面跟着一个字符串，该字符串存储在当前位置计数器的值处，<strong>末尾添加一个零字节</strong>。如果字符串包含空格，则必须用双引号括起来。字符串可以包含 \n、\r、\t 和八进制数字，但不支持十六进制数字。</p>
-<p>例如，下面这个16个字符的字符串将创建一个17字节的区域：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ASCIZ &quot;This is 16 bytes&quot;</span><br></pre></td></tr></table></figure>
-
-<p><strong>需要注意的是，这些命令仅在段描述内部有效，在段之间是无效的</strong>。因此，下面的代码将导致链接器错误：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS &#123;</span><br><span class="line">    .text : &#123; *(.text) &#125;</span><br><span class="line">    LONG(1)</span><br><span class="line">    .data : &#123; *(.data) &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>而以下代码将正常工作：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS &#123;</span><br><span class="line">    .text : &#123; *(.text) ; LONG(1) &#125;</span><br><span class="line">    .data : &#123; *(.data) &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p>段内数据通常可能存在一些未指定的区域（例如，由于输入段所需的对齐而留下的间隙），可以使用 <strong>FILL</strong> 命令为当前段设置填充模式，该命令后面跟着一个括号中的表达式。在段内的其它未指定的内存区域将用表达式的值填充，必要时会重复。<strong>FILL</strong> 语句作用于它在<strong>section</strong>定义中出现的点之后的内存位置；通过包含多个<strong>FILL</strong>语句，可以在输出部分的不同部分使用不同的填充模式。</p>
-<p>以下示例使用值“0x90”填充未指定的内存区域：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FILL(0x90909090)</span><br></pre></td></tr></table></figure>
-
-<p><strong>FILL</strong> 命令类似于<code>[=fillexp]</code>输出段属性，但它仅影响在 <strong>FILL</strong> 命令之后的段部分，而不是整个段。如果两者都使用，<strong>FILL</strong> 命令将优先生效。</p>
-<p>备注：填充模式是表达式值的四个最低有效字节。如果值的大小小于四个字节，则会将其零扩展为四个字节。实际填充时，如果待填充区域小于4字节，则填充值为对应的低字节区域。</p>
-<p>通常情况下，如果填充模式表达式的值小于四字节，会按照 0 扩展到4字节，并用于填充。因此，<code>FILL(144)</code>将用重复的模式<code>0 0 0 144</code>填充一个区域。<code>FILL(22 * 256 + 23)</code>将用重复的模式<code>0 0 22 23</code>填充该区域。如果表达式的结果值大于4个有效字节，则只使用该值的最低4个字节。</p>
-<p><strong>当填充表达式是一个简单的十六进制数时，上述规则不适用</strong>。在这种情况下，不会执行零扩展，所有字节都是有效的。因此，<code>FILL(0x90)</code>将用<code>0x90</code>重复填充一个区域，没有零字节，<code>FILL(0x9192)</code>将用<code>0x910x92</code>重复填充该区域。十六进制表达式中的零字节即使在开始时也是重要的，因此<code>FILL(0x0090)</code>将用<code>0x00 0x90</code>的重复填充一个区域。<br>十六进制数可以大于4字节，并且所有字节都是有效的，因此<code>FILL(0x123456789a)</code>将用重复的5字节序列<code>0x12 0x34 0x56 0x78 0x9a</code>填充一个区域。十六进制值中超出区域大小的多余字节将被静默忽略。<br>以上只适用于指定为’ 0x[0-9][a-f][a-f] ‘的十六进制数。使用’ $ ‘前缀或’ h ‘， ‘ h ‘， ‘ x ‘或’ x ‘后缀指定的十六进制数将遵循通常情况下的填充值规则。</p>
-<h5 id="1-12-Output-Section-Discarding"><a href="#1-12-Output-Section-Discarding" class="headerlink" title="1.12 Output Section Discarding"></a>1.12 Output Section Discarding</h5><p>链接器通常不会创建没有内容的输出节。例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.foo : &#123; *(.foo) &#125;</span><br></pre></td></tr></table></figure>
-
-<p>当至少有一个输入文件中存在一个名为<code>.foo</code>的节，并且输入节不都为空时，链接器才会在输出文件中创建一个<code>.foo</code>节。</p>
-<p>链接器将忽略丢弃的输出段上的地址分配（见前文 Output Section Address），除非链接脚本在输出节中定义了符号。在这种情况下，链接器将遵守地址分配，即使该节被丢弃，也可能推进<code>.</code>(location counter)，这是因为我们在输出段中定义了一个符号，链接器会考虑这个符号的位置。</p>
-<p>特殊的输出段名称<code>/DISCARD/</code>可用于丢弃输入段。分配给名为<code>/DISCARD/</code>输出段的任何输入节都不会包含在输出文件中。 </p>
-<h4 id="2-Input-Section-Description"><a href="#2-Input-Section-Description" class="headerlink" title="2 Input Section Description"></a>2 Input Section Description</h4><p>最常见的输出段命令是输入段描述。</p>
-<p>输入段描述是最基本的链接器脚本操作。通过使用输出段，可以告诉链接器如何在内存中布局程序，通过使用输入段描述，可以告诉链接器如何将输入文件映射到内存布局中。</p>
-<h5 id="2-1-Input-Section-Basics"><a href="#2-1-Input-Section-Basics" class="headerlink" title="2.1 Input Section Basics"></a>2.1 Input Section Basics</h5><p>链接脚本中的输入段描述由一个文件名（可选）和一个括号内的段名列表组成。文件名和段名可以是通配符模式，见后文输入段通配符模式。</p>
-<p>最常见的输入段描述是在输出段中包含具有特定名称的所有输入段。例如，要包含所有输入的<code>.text</code>段，可以编写：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*(.text)</span><br></pre></td></tr></table></figure>
-
-<p>这里的“*”是一个通配符，匹配任何文件名。要从匹配文件名通配符的文件列表中排除一些文件，可以使用 <strong>EXCLUDE_FILE</strong> 来匹配除 EXCLUDE_FILE 列表中指定的文件之外的所有文件。例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXCLUDE_FILE (*crtend.o *otherfile.o) *(.ctors)</span><br></pre></td></tr></table></figure>
-
-<p>这将包含除了 crtend.o 和 otherfile.o 以外的所有文件中的 .ctors 输入段。</p>
-<p>EXCLUDE_FILE 命令也可以放在输入段列表内，例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*(EXCLUDE_FILE (*crtend.o *otherfile.o) .ctors)</span><br></pre></td></tr></table></figure>
-<p>这与前面的示例效果完全相同。为 EXCLUDE_FILE 支持两种语法对于包含多个输入段的列表很有用，例如：有两种方法可以包含多个节</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">*(.text .rdata)</span><br><span class="line">*(.text) *(.rdata)</span><br></pre></td></tr></table></figure>
-<p>这两者之间的区别在于“.text”和“.rdata”输入段在输出段中出现的顺序。在第一个示例中，它们将混合在一起，以与在链接器输入中的顺序相同的顺序出现。在第二个示例中，所有“.text”输入段将首先出现，然后是所有“.rdata”输入段。</p>
-<p>当在多个输入段中使用 EXCLUDE_FILE 时，如果排除在输入段列表内，则排除仅适用于紧随其后的节，例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*(EXCLUDE_FILE (*somefile.o) .text .rdata)</span><br></pre></td></tr></table></figure>
-<p>这会从除 somefile.o 以外的所有文件中包含所有“.text”输入段，而从所有文件中包含所有“.rdata”节，包括 somefile.o文件。要从 somefile.o 中排除“rdata”节，可以修改示例为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*(EXCLUDE_FILE (*somefile.o) .text EXCLUDE_FILE (*somefile.o) .rdata)</span><br></pre></td></tr></table></figure>
-
-<p>或者，将 EXCLUDE_FILE 放在节列表之外，在输入文件选择之前，将导致排除适用于所有输入段。因此，前面的示例可以重写为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EXCLUDE_FILE (*somefile.o) *(.text .rdata)</span><br></pre></td></tr></table></figure>
-
-<p>此外，输入按段描述支持指定文件名以包含来自特定文件的输入段。例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data.o(.data)</span><br></pre></td></tr></table></figure>
-<p>如果要根据输入段的标志来细化包含的输入段，可以使用 <strong>INPUT_SECTION_FLAGS</strong>。以下是使用 ELF 节的节头标志的简单示例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS &#123;</span><br><span class="line">  .text : &#123; INPUT_SECTION_FLAGS (SHF_MERGE &amp; SHF_STRINGS) *(.text) &#125;</span><br><span class="line">  .text2 :  &#123; INPUT_SECTION_FLAGS (!SHF_WRITE) *(.text) &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在此示例中，输出节“.text”将包含任何匹配 *(.text) 且其输入段的标志 SHF_MERGE 和 SHF_STRINGS 已设置的输入段。输出节“.text2”将包含任何匹配 *(.text) 且其输入段标志 SHF_WRITE 未设置的输入段。</p>
-<p>输入段描述还支持在归档文件中指定文件，方法是先写入与归档文件匹配的模式，然后写入与文件匹配的模式，冒号周围不要有空格。例如：</p>
-<p><code>archive:file</code>用来匹配归档中的文件。<br><code>archive:</code>用来匹配整个存档。<br><code>:file</code>匹配文件，但不匹配归档中的文件</p>
-<p><code>archive</code>和<code>file</code>中的一个或两个都可以包含shell通配符。在基于DOS的文件系统上，链接器将假定后面跟着冒号的单个字母是驱动器说明符，因此<code>c:myfile.o</code>仅表明一个文件，而不是<code>myfile.O</code>在一个名为<code>c </code>的归档中。<code>archive:file</code>文件也可以在 EXCLUDE_FILE 列表中使用，但可能不会出现在其他链接器脚本上下文中。例如，不能通过在INPUT命令中使用<code>archive:file</code>从归档中提取文件。</p>
-<p>如果使用的文件名中没有输入段列表，那么输入文件中的所有输入段都将包含在输出段中。</p>
-<p>当使用的文件名不是<code>archive:file</code>说明符并且不包含任何通配符时，链接器将首先查看是否还在链接器命令行或INPUT命令中指定了文件名。如果没有这样做，链接器将尝试将该文件作为输入文件打开，就像它出现在命令行上一样。注意，这与INPUT命令不同，因为链接器不会在存档搜索路径中搜索文件。</p>
 <h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/SECTIONS.html">https://sourceware.org/binutils/docs/ld/SECTIONS.html</a></p>
 
     </div>
@@ -490,14 +338,14 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：SECTIONS Comma
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">303k</span>
+    <span title="站点总字数">293k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">6:18</span>
+    <span title="站点阅读时长">6:07</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
