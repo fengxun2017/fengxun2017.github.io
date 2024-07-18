@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://fengxun2017.github.io/2024/07/17/GUN-linker-Linker-Scripts-Expressions-in-Linker-Scripts/</loc>
+    <lastmod>2024-07-18</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/</loc>
+    <lastmod>2024-07-17</lastmod>
+  </url>
+  <url>
     <loc>http://fengxun2017.github.io/2024/07/15/GUN-linker-Linker-Scripts-VERSION-Command/</loc>
     <lastmod>2024-07-16</lastmod>
   </url>
@@ -27,10 +35,6 @@
   <url>
     <loc>http://fengxun2017.github.io/2024/07/01/GUN-linker-Linker-Scripts-Assigning-Values-to-Symbols/</loc>
     <lastmod>2024-07-03</lastmod>
-  </url>
-  <url>
-    <loc>http://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/</loc>
-    <lastmod>2024-07-01</lastmod>
   </url>
   <url>
     <loc>http://fengxun2017.github.io/2024/06/18/GUN-linker-Command-line-Options/</loc>

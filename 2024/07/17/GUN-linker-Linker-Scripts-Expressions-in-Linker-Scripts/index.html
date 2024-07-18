@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Expressions in Linker Scripts">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GNU linker ld —— Expressions in Linker Scripts">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/07/17/GUN-linker-Linker-Scripts-Expressions-in-Linker-Scripts/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Expressions in Linker Scripts">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-18T16:15:44.942Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2024/07/17/GUN-linker-Linker-Scripts-Expressions-in-Linker-Scripts/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/07/17/GUN-linker-Linker-Scripts-Expressions-in-Linker-Scripts/","path":"2024/07/17/GUN-linker-Linker-Scripts-Expressions-in-Linker-Scripts/","title":"GNU linker ld —— Expressions in Linker Scripts"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>GNU linker ld —— Expressions in Linker Scripts | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#Constants"><span class="nav-number">1.</span> <span class="nav-text">Constants</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Symbolic-Constants"><span class="nav-number">2.</span> <span class="nav-text">Symbolic Constants</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Symbol-Names"><span class="nav-number">3.</span> <span class="nav-text">Symbol Names</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Orphan-Sections"><span class="nav-number">4.</span> <span class="nav-text">Orphan Sections</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#The-Location-Counter"><span class="nav-number">5.</span> <span class="nav-text">The Location Counter</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number"></span> <span class="nav-text">参考连接：</span></a></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/07/17/GUN-linker-Linker-Scripts-Expressions-in-Linker-Scripts/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="GNU linker ld —— Expressions in Linker Scripts | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GNU linker ld —— Expressions in Linker Scripts
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-07-17 00:00:00" itemprop="dateCreated datePublished" datetime="2024-07-17T00:00:00+08:00">2024-07-17</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/GUN-linker/" itemprop="url" rel="index"><span itemprop="name">GUN-linker</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Expressions in Linker Scripts
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p><strong>个人笔记，仅供参考！！</strong><br>链接器脚本语言中表达式的语法与C表达式的语法相同，只是在某些地方需要使用空白来解决语法歧义。所有表达式都计算为整数。所有表达式都以相同的大小计算，如果主机和目标都是32位，则为32位，否则为64位。</p>
+<p>可以在表达式中使用和设置符号值。</p>
+<p>链接器定义了几个在表达式中使用的特殊用途的内置函数:</p>
+<h5 id="Constants"><a href="#Constants" class="headerlink" title="Constants"></a>Constants</h5><p>所有常数都是整数。<br>与C语言一样，链接器认为以’ 0 ‘开头的整数为八进制，以’ 0x ‘或’ 0x ‘开头的整数为十六进制。或者，链接器接受十六进制的’ h ‘或’ h ‘后缀，八进制的’ o ‘或’ o ‘后缀，二进制的’ b ‘或’ b ‘后缀，十进制的’ d ‘或’ d ‘后缀。任何没有前缀或后缀的整数值都被认为是十进制。</p>
+<p>此外，可以使用后缀 K 和 M 分别将常数缩放为1024或1024*1024。例如，以下都是指同一数量:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">_fourk_1 = 4K;</span><br><span class="line">_fourk_2 = 4096;</span><br><span class="line">_fourk_3 = 0x1000;</span><br><span class="line">_fourk_4 = 10000o;</span><br></pre></td></tr></table></figure>
+<p>注意- K和M后缀不能与上面提到的基本后缀一起使用。</p>
+<h5 id="Symbolic-Constants"><a href="#Symbolic-Constants" class="headerlink" title="Symbolic Constants"></a>Symbolic Constants</h5><p>可以通过使用 CONSTANT(name) 来引用特定于目标的常量，其中name是以下之一:</p>
+<ul>
+<li>MAXPAGESIZE ：目标的最大页面大小。</li>
+<li>COMMONPAGESIZE ：目标的默认页面大小。</li>
+</ul>
+<p>使用示例:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.text ALIGN (CONSTANT (MAXPAGESIZE)): &#123;*(.text)&#125;</span><br></pre></td></tr></table></figure>
+<p>将创建一个与目标支持的最大页面边界对齐的输出段 .text。</p>
+<h5 id="Symbol-Names"><a href="#Symbol-Names" class="headerlink" title="Symbol Names"></a>Symbol Names</h5><p>除非加引号，否则符号名称以字母、下划线或句点开头，可以包括字母、数字、下划线、句点和连字符。未加引号的符号名不能与任何关键字冲突。可以指定包含特殊字符或与关键字名称相同的符号，方法是将符号名称用双引号括起来，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">&quot;SECTION&quot; = 9;</span><br><span class="line">&quot;with a space&quot; = &quot;also with a space&quot; + 10;</span><br></pre></td></tr></table></figure>
+<p>由于符号可以包含许多非字母字符，因此用空格分隔符号是最安全的。例如，<code>A-B</code>是一个符号，而<code>A - B</code>是一个涉及减法的表达式。</p>
+<h5 id="Orphan-Sections"><a href="#Orphan-Sections" class="headerlink" title="Orphan Sections"></a>Orphan Sections</h5><p>“孤儿段” 是指在输入文件中存在的段，但在链接脚本中没有明确放置到输出文件中。链接器仍然会通过查找或创建一个合适的输出段来放置孤立的输入段，从而将这些段复制到输出文件中。</p>
+<p>如果孤立输入段的名称恰好与现有输出段的名称匹配，那么孤立输入段将放置在该输出段的末尾。</p>
+<p>如果没有与之匹配的输出段，则会创建新的输出段。每个新的输出段将与其中的孤儿段具有相同的名称。如果有多个具有相同名称的孤儿段，它们将合并为一个新的输出段。</p>
+<p>如果创建新的输出段来容纳孤儿段，那么链接器必须决定在现有输出段中如何放置这些新的输出段。在大多数现代目标上，链接器会尝试将孤儿段放置在具有相同属性的段之后。如果找不到具有匹配属性的段，或者不支持此功能，那么孤儿段将放置在文件的末尾。</p>
+<p>命令行选项“–orphan-handling”和“–unique”可用于控制将孤儿段放置在哪些输出段中</p>
+<h5 id="The-Location-Counter"><a href="#The-Location-Counter" class="headerlink" title="The Location Counter"></a>The Location Counter</h5><p><strong>dot（“.”）变量</strong>：</p>
+<ul>
+<li>“.”是一个特殊的链接器变量，它始终包含当前的输出位置计数器（output location counter）。</li>
+<li>在链接脚本中，我们可以使用“.”来引用输出节（output section）中的位置。</li>
+<li>但是，“.”只能出现在SECTIONS命令内的表达式中。</li>
+</ul>
+<p><strong>给“.”赋值：</strong></p>
+<ul>
+<li>将一个值赋给“.”会导致位置计数器移动。这可以用来在输出节中创建空隙。</li>
+<li>位置计数器不能在输出部分内向后移动，也不能在输出部分外向后移动，如果这样做会创建具有重叠LMAs（load memory addresses）。</li>
+</ul>
+<p>示例：在下面的示例中，定义了一个名为“output”的输出段，其中包含了三个文件的“.text”节。<br>其中，使用了“. &#x3D; . + 1000”；和“. +&#x3D; 1000;” 创建1000字节的空隙。<br>“&#x3D; 0x12345678”指定了在这些空隙中写入的数据（见“Output Section Fill”）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">  output :</span><br><span class="line">  &#123;</span><br><span class="line">    file1(.text)</span><br><span class="line">    . = . + 1000;</span><br><span class="line">    file2(.text)</span><br><span class="line">    . += 1000;</span><br><span class="line">    file3(.text)</span><br><span class="line">  &#125; = 0x12345678;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>关于“.”的实际含义：</strong></p>
+<ul>
+<li>实际上，“.”表示相对于当前包含对象的起始字节偏移量。</li>
+<li>通常情况下，这个包含对象是SECTIONS语句，其起始地址为0，因此“.”可以用作绝对地址。</li>
+<li>但是，<strong>如果在段描述内部使用“.”，它将表示相对于该节的起始字节偏移量，而不是绝对地址</strong>。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">    . = 0x100;</span><br><span class="line">    .text: &#123;</span><br><span class="line">        *(.text)</span><br><span class="line">        . = 0x200;</span><br><span class="line">    &#125;</span><br><span class="line">    . = 0x500;</span><br><span class="line">    .data: &#123;</span><br><span class="line">        *(.data)</span><br><span class="line">        . += 0x600;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述示例中，”.text” 输出段将被分配一个起始地址0x100和正好0x200字节的大小，即使.text输入段中没有足够的数据填充此区域。(如果有太多的数据，将产生一个错误，因为这将是一个将“.”向后移动的尝试)。输出段”.data”将从0x500开始，并且在输入段’.data’填充结束后，还具有额外的0x600字节的空间。数据“输入”部分和“结束”之前。数据输出部分本身。</p>
+<p>如果链接器需要放置孤儿段，<strong>将符号设置为输出段语句之外的位置计数器的值可能会导致意外值</strong>。例如，给定以下内容:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">    start_of_text = . ;</span><br><span class="line">    .text: &#123; *(.text) &#125;</span><br><span class="line">    end_of_text = . ;</span><br><span class="line"></span><br><span class="line">    start_of_data = . ;</span><br><span class="line">    .data: &#123; *(.data) &#125;</span><br><span class="line">    end_of_data = . ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果现在输入中包含一些上述脚本中没有提到的输入段，例如“.rodata”，由于链接器不会将上述符号名（’start_of_data’这些）与段关联起来。相反，<strong>链接器假设所有赋值或其它语句都属于前一个输出部分，除了赋值给“.”的特殊情况</strong>。也就是说，链接器会像这样放置“.rodata”部分</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">    start_of_text = . ;</span><br><span class="line">    .text: &#123; *(.text) &#125;</span><br><span class="line">    end_of_text = . ;</span><br><span class="line"></span><br><span class="line">    start_of_data = . ;</span><br><span class="line">    .rodata: &#123; *(.rodata) &#125;</span><br><span class="line">    .data: &#123; *(.data) &#125;</span><br><span class="line">    end_of_data = . ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这大概率不是脚本作者对“start_of_data”值的意图。影响孤立段位置的一种方法是将位置计数器赋值给自身，<strong>因为链接器假定赋值给”.”正在设置以下输出部分的起始地址，因此应该与该部分分组</strong>。所以可以这样写:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">    start_of_text = . ;</span><br><span class="line">    .text: &#123; *(.text) &#125;</span><br><span class="line">    end_of_text = . ;</span><br><span class="line"></span><br><span class="line">    . = . ;</span><br><span class="line">    start_of_data = . ;</span><br><span class="line">    .data: &#123; *(.data) &#125;</span><br><span class="line">    end_of_data = . ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，孤儿段“.rodata”将放在“end_of_text”和“start_of_data”之间。</p>
+<h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/Expressions.html">https://sourceware.org/binutils/docs/ld/Expressions.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2024/07/17/GUN-linker-Linker-Scripts-Expressions-in-Linker-Scripts/" title="GNU linker ld —— Expressions in Linker Scripts">http://fengxun2017.github.io/2024/07/17/GUN-linker-Linker-Scripts-Expressions-in-Linker-Scripts/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/07/15/GUN-linker-Linker-Scripts-VERSION-Command/" rel="prev" title="GNU linker ld —— VERSION Command">
+                  <i class="fa fa-chevron-left"></i> GNU linker ld —— VERSION Command
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">301k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:16</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
