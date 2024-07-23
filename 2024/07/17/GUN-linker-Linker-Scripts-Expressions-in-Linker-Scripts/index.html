@@ -27,7 +27,7 @@
 <meta property="og:description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Expressions in Linker Scripts">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-07-16T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-07-18T16:15:44.942Z">
+<meta property="article:modified_time" content="2024-07-23T16:14:46.234Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
@@ -121,7 +121,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#Constants"><span class="nav-number">1.</span> <span class="nav-text">Constants</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Symbolic-Constants"><span class="nav-number">2.</span> <span class="nav-text">Symbolic Constants</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Symbol-Names"><span class="nav-number">3.</span> <span class="nav-text">Symbol Names</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Orphan-Sections"><span class="nav-number">4.</span> <span class="nav-text">Orphan Sections</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#The-Location-Counter"><span class="nav-number">5.</span> <span class="nav-text">The Location Counter</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number"></span> <span class="nav-text">参考连接：</span></a></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Constants"><span class="nav-number">1.</span> <span class="nav-text">1 Constants</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Symbolic-Constants"><span class="nav-number">2.</span> <span class="nav-text">2 Symbolic Constants</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-Symbol-Names"><span class="nav-number">3.</span> <span class="nav-text">3 Symbol Names</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-Orphan-Sections"><span class="nav-number">4.</span> <span class="nav-text">4 Orphan Sections</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-The-Location-Counter"><span class="nav-number">5.</span> <span class="nav-text">5 The Location Counter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-Operators"><span class="nav-number">6.</span> <span class="nav-text">6 Operators</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-Evaluation"><span class="nav-number">7.</span> <span class="nav-text">7 Evaluation</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-The-Section-of-an-Expression"><span class="nav-number">8.</span> <span class="nav-text">8 The Section of an Expression</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9-Builtin-Functions"><span class="nav-number">9.</span> <span class="nav-text">9 Builtin Functions</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number"></span> <span class="nav-text">参考连接：</span></a></div>
         </div>
         <!--/noindex-->
 
@@ -230,14 +230,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>3.2k</span>
+      <span>7.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>4 分钟</span>
+      <span>9 分钟</span>
     </span>
 </div>
 
@@ -258,11 +258,11 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Expressions in
 <p><strong>个人笔记，仅供参考！！</strong><br>链接器脚本语言中表达式的语法与C表达式的语法相同，只是在某些地方需要使用空白来解决语法歧义。所有表达式都计算为整数。所有表达式都以相同的大小计算，如果主机和目标都是32位，则为32位，否则为64位。</p>
 <p>可以在表达式中使用和设置符号值。</p>
 <p>链接器定义了几个在表达式中使用的特殊用途的内置函数:</p>
-<h5 id="Constants"><a href="#Constants" class="headerlink" title="Constants"></a>Constants</h5><p>所有常数都是整数。<br>与C语言一样，链接器认为以’ 0 ‘开头的整数为八进制，以’ 0x ‘或’ 0x ‘开头的整数为十六进制。或者，链接器接受十六进制的’ h ‘或’ h ‘后缀，八进制的’ o ‘或’ o ‘后缀，二进制的’ b ‘或’ b ‘后缀，十进制的’ d ‘或’ d ‘后缀。任何没有前缀或后缀的整数值都被认为是十进制。</p>
+<h5 id="1-Constants"><a href="#1-Constants" class="headerlink" title="1 Constants"></a>1 Constants</h5><p>所有常数都是整数。<br>与C语言一样，链接器认为以’ 0 ‘开头的整数为八进制，以’ 0x ‘或’ 0x ‘开头的整数为十六进制。或者，链接器接受十六进制的’ h ‘或’ h ‘后缀，八进制的’ o ‘或’ o ‘后缀，二进制的’ b ‘或’ b ‘后缀，十进制的’ d ‘或’ d ‘后缀。任何没有前缀或后缀的整数值都被认为是十进制。</p>
 <p>此外，可以使用后缀 K 和 M 分别将常数缩放为1024或1024*1024。例如，以下都是指同一数量:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">_fourk_1 = 4K;</span><br><span class="line">_fourk_2 = 4096;</span><br><span class="line">_fourk_3 = 0x1000;</span><br><span class="line">_fourk_4 = 10000o;</span><br></pre></td></tr></table></figure>
 <p>注意- K和M后缀不能与上面提到的基本后缀一起使用。</p>
-<h5 id="Symbolic-Constants"><a href="#Symbolic-Constants" class="headerlink" title="Symbolic Constants"></a>Symbolic Constants</h5><p>可以通过使用 CONSTANT(name) 来引用特定于目标的常量，其中name是以下之一:</p>
+<h5 id="2-Symbolic-Constants"><a href="#2-Symbolic-Constants" class="headerlink" title="2 Symbolic Constants"></a>2 Symbolic Constants</h5><p>可以通过使用 CONSTANT(name) 来引用特定于目标的常量，其中name是以下之一:</p>
 <ul>
 <li>MAXPAGESIZE ：目标的最大页面大小。</li>
 <li>COMMONPAGESIZE ：目标的默认页面大小。</li>
@@ -270,15 +270,15 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Expressions in
 <p>使用示例:</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.text ALIGN (CONSTANT (MAXPAGESIZE)): &#123;*(.text)&#125;</span><br></pre></td></tr></table></figure>
 <p>将创建一个与目标支持的最大页面边界对齐的输出段 .text。</p>
-<h5 id="Symbol-Names"><a href="#Symbol-Names" class="headerlink" title="Symbol Names"></a>Symbol Names</h5><p>除非加引号，否则符号名称以字母、下划线或句点开头，可以包括字母、数字、下划线、句点和连字符。未加引号的符号名不能与任何关键字冲突。可以指定包含特殊字符或与关键字名称相同的符号，方法是将符号名称用双引号括起来，例如：</p>
+<h5 id="3-Symbol-Names"><a href="#3-Symbol-Names" class="headerlink" title="3 Symbol Names"></a>3 Symbol Names</h5><p>除非加引号，否则符号名称以字母、下划线或句点开头，可以包括字母、数字、下划线、句点和连字符。未加引号的符号名不能与任何关键字冲突。可以指定包含特殊字符或与关键字名称相同的符号，方法是将符号名称用双引号括起来，例如：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">&quot;SECTION&quot; = 9;</span><br><span class="line">&quot;with a space&quot; = &quot;also with a space&quot; + 10;</span><br></pre></td></tr></table></figure>
 <p>由于符号可以包含许多非字母字符，因此用空格分隔符号是最安全的。例如，<code>A-B</code>是一个符号，而<code>A - B</code>是一个涉及减法的表达式。</p>
-<h5 id="Orphan-Sections"><a href="#Orphan-Sections" class="headerlink" title="Orphan Sections"></a>Orphan Sections</h5><p>“孤儿段” 是指在输入文件中存在的段，但在链接脚本中没有明确放置到输出文件中。链接器仍然会通过查找或创建一个合适的输出段来放置孤立的输入段，从而将这些段复制到输出文件中。</p>
+<h5 id="4-Orphan-Sections"><a href="#4-Orphan-Sections" class="headerlink" title="4 Orphan Sections"></a>4 Orphan Sections</h5><p>“孤儿段” 是指在输入文件中存在的段，但在链接脚本中没有明确放置到输出文件中。链接器仍然会通过查找或创建一个合适的输出段来放置孤立的输入段，从而将这些段复制到输出文件中。</p>
 <p>如果孤立输入段的名称恰好与现有输出段的名称匹配，那么孤立输入段将放置在该输出段的末尾。</p>
 <p>如果没有与之匹配的输出段，则会创建新的输出段。每个新的输出段将与其中的孤儿段具有相同的名称。如果有多个具有相同名称的孤儿段，它们将合并为一个新的输出段。</p>
 <p>如果创建新的输出段来容纳孤儿段，那么链接器必须决定在现有输出段中如何放置这些新的输出段。在大多数现代目标上，链接器会尝试将孤儿段放置在具有相同属性的段之后。如果找不到具有匹配属性的段，或者不支持此功能，那么孤儿段将放置在文件的末尾。</p>
 <p>命令行选项“–orphan-handling”和“–unique”可用于控制将孤儿段放置在哪些输出段中</p>
-<h5 id="The-Location-Counter"><a href="#The-Location-Counter" class="headerlink" title="The Location Counter"></a>The Location Counter</h5><p><strong>dot（“.”）变量</strong>：</p>
+<h5 id="5-The-Location-Counter"><a href="#5-The-Location-Counter" class="headerlink" title="5 The Location Counter"></a>5 The Location Counter</h5><p><strong>dot（“.”）变量</strong>：</p>
 <ul>
 <li>“.”是一个特殊的链接器变量，它始终包含当前的输出位置计数器（output location counter）。</li>
 <li>在链接脚本中，我们可以使用“.”来引用输出节（output section）中的位置。</li>
@@ -309,6 +309,59 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Expressions in
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">    start_of_text = . ;</span><br><span class="line">    .text: &#123; *(.text) &#125;</span><br><span class="line">    end_of_text = . ;</span><br><span class="line"></span><br><span class="line">    . = . ;</span><br><span class="line">    start_of_data = . ;</span><br><span class="line">    .data: &#123; *(.data) &#125;</span><br><span class="line">    end_of_data = . ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>这样，孤儿段“.rodata”将放在“end_of_text”和“start_of_data”之间。</p>
+<h5 id="6-Operators"><a href="#6-Operators" class="headerlink" title="6 Operators"></a>6 Operators</h5><p>链接器能识别标准的 C 算术运算符集</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">precedence      associativity   Operators                           Notes</span><br><span class="line">(highest)</span><br><span class="line">1               left            !  -  ~                                (1)</span><br><span class="line">2               left            *  /  %</span><br><span class="line">3               left            +  -</span><br><span class="line">4               left            &gt;&gt;  &lt;&lt;</span><br><span class="line">5               left            &gt;  &lt;  &lt;=  &gt;=</span><br><span class="line">6               left            ==  !=</span><br><span class="line">7               left            &amp;</span><br><span class="line">8               left            ^</span><br><span class="line">9               left            |</span><br><span class="line">10              left            &amp;&amp;</span><br><span class="line">11              left            ||</span><br><span class="line">12              right           ? :</span><br><span class="line">13              right           +=  -=  *=  /=  &lt;&lt;=  &gt;&gt;=  &amp;=  |= ^=    (2)</span><br></pre></td></tr></table></figure>
+<p>备注：这里(1)为前缀操作符 (2)参见<a href="https://fengxun2017.github.io/2024/07/01/GUN-linker-Linker-Scripts-Assigning-Values-to-Symbols/">符号赋值</a></p>
+<h5 id="7-Evaluation"><a href="#7-Evaluation" class="headerlink" title="7 Evaluation"></a>7 Evaluation</h5><p>链接器对表达式进行“惰性计算”（lazy evaluation）：只有在绝对必要时才计算表达式的值。</p>
+<p>链接器需要一些信息，例如第一个段的起始地址的值以及内存区域的起始地址和长度，以便进行链接。这些值会在链接器读取链接脚本时尽早计算出来。</p>
+<p>然而，其它值（例如符号值）直到存储分配之后才会知道或需要。这些符号会在其它信息（例如输出段的大小）可用于符号赋值表达式时再求值。</p>
+<p>段的大小只有在分配之后才能知道，因此依赖于这些大小的赋值直到分配之后才执行。</p>
+<p>某些表达式，例如依赖于位置计数器“.”的表达式，在段分配期间进行求值。</p>
+<p>如果需要表达式的结果，但值不可用，则会出现错误。例如，以下脚本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">  .text 9+this_isnt_constant :</span><br><span class="line">    &#123; *(.text) &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将导致错误消息“初始地址的表达式不是常量”。</p>
+<h5 id="8-The-Section-of-an-Expression"><a href="#8-The-Section-of-an-Expression" class="headerlink" title="8 The Section of an Expression"></a>8 The Section of an Expression</h5><p>见<a href="https://fengxun2017.github.io/2024/06/30/GUN-linker-Linker-Scripts-The-Section-of-an-Expression/">The Section of an Expression</a></p>
+<h5 id="9-Builtin-Functions"><a href="#9-Builtin-Functions" class="headerlink" title="9 Builtin Functions"></a>9 Builtin Functions</h5><p><em><strong>ABSOLUTE(exp)</strong></em>:<br>返回表达式exp的绝对值。主要用于在段定义中为符号赋绝对值，其中符号值通常是相对于段的。</p>
+<p><em><strong>ADDR(section)</strong></em>:<br>返回指定section的地址(VMA)。脚本中必须事先定义了该section的位置。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS &#123; …</span><br><span class="line">  .output1 :</span><br><span class="line">    &#123;</span><br><span class="line">    start_of_output_1 = ABSOLUTE(.);</span><br><span class="line">    …</span><br><span class="line">    &#125;</span><br><span class="line">  .output :</span><br><span class="line">    &#123;</span><br><span class="line">    symbol_1 = ADDR(.output1);</span><br><span class="line">    symbol_2 = start_of_output_1;</span><br><span class="line">    &#125;</span><br><span class="line">… &#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的例子中，start_of_output_1, symbol_1和symbol_2被赋相等的值，除了symbol_1是相对于输出段<code>.output1</code>，而其它两个是绝对的:</p>
+<p>***ALIGN(align)***：<br>***ALIGN(exp,align)***：<br>将当前的位置计数器（location counter）或任意表达式对齐到下一个指定的边界。这个命令有两种形式：</p>
+<ul>
+<li>单操作数形式：ALIGN(align)。这种形式不会改变位置计数器的值，只是在其上执行算术运算。</li>
+<li>双操作数形式：ALIGN(exp,align)。这种形式允许将任意表达式向上对齐（ALIGN(align) 等效于 ALIGN(ABSOLUTE(.), align)）。</li>
+</ul>
+<p>以下是一个示例，展示如何将输出段 <code>.data</code> 对齐到前面的段之后的下一个 0x2000 字节边界，并在该段内设置一个变量，使其对齐到输入段之后的下一个 0x8000 边界：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS &#123;</span><br><span class="line">  ...</span><br><span class="line">  .data ALIGN(0x2000): &#123;</span><br><span class="line">    *(.data)</span><br><span class="line">    variable = ALIGN(0x8000);</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>***ALIGNOF(section)***：<br>如果指定的section已被分配，则返回该section的对齐方式(以字节为单位)，如果该section尚未被分配，则返回零。如果链接器脚本中不存在该section，则链接器将报告错误。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS&#123; …</span><br><span class="line">  .output &#123;</span><br><span class="line">    LONG (ALIGNOF (.output))</span><br><span class="line">    …</span><br><span class="line">    &#125;</span><br><span class="line">… &#125;</span><br></pre></td></tr></table></figure>
+
+<p>***BLOCK(exp)***：<br>与 ALIGN 作用相同，以便与旧链接器脚本兼容。一般用于设置输出段的地址。</p>
+<p>***DATA_SEGMENT_ALIGN(maxpagesize, commonpagesize)<em><strong>：<br>这个函数的目的是将数据段（这个表达式的结果和</strong>DATA_SEGMENT_END</em>*之间的区域）对齐到指定的页面大小（page size）。具体来说，它会根据情况选择以下两种形式之一计算对齐后的地址：</p>
+<ul>
+<li>如果使用第一种形式，那么对齐后的地址为：(ALIGN(maxpagesize)+(.&amp;(maxpagesize−1)))</li>
+<li>如果使用第二种形式，那么对齐后的地址为：(ALIGN(maxpagesize)+((.+commonpagesize−1)&amp;(maxpagesize−commonpagesize)))</li>
+</ul>
+<p>具体选择哪种形式取决于是否使用第二种形式可以减少数据段所需的 commonpagesize 大小的页面数。如果使用第二种形式，这意味着在磁盘文件上可能会浪费 commonpagesize 字节，但在运行时内存中将节省 commonpagesize 字节。</p>
+<p>需要注意的是，<strong>这个表达式只能直接在 SECTIONS 命令中使用，而不能在任何输出段描述中使用，且在链接脚本中只能使用一次</strong>。此外，commonpagesize 应该小于等于 maxpagesize，并且应该是对象希望在最大页面大小为 maxpagesize 的系统上进行优化的系统页面大小。注意，如果系统页面大小大于 commonpagesize，则 <code>-z relro</code>保护将不会生效。</p>
+<p><em><strong>DATA_SEGMENT_END(exp)</strong></em>:<br>这为DATA_SEGMENT_ALIGN定义的数据段的结束。例如：<br><code>. = DATA_SEGMENT_END(.);</code></p>
+<p><em><strong>DATA_SEGMENT_RELRO_END(offset, exp)</strong></em>:<br>当使用 -z relro 选项时，这个函数用于定义 PT_GNU_RELRO 段的结束位置。如果没有使用 -z relro 选项，DATA_SEGMENT_RELRO_END 不会产生任何效果。否则，它会对 DATA_SEGMENT_ALIGN 进行填充，以使 exp + offset 对齐到 DATA_SEGMENT_ALIGN 中给定的 commonpagesize 参数。如果在链接脚本中存在该函数，它必须放置在 DATA_SEGMENT_ALIGN 和 DATA_SEGMENT_END 之间。该函数的计算结果是第二个参数加上由于段对齐而在 PT_GNU_RELRO 段末尾所需的填充。</p>
+<p><em><strong>DEFINED(symbol)</strong></em>:<br>该函数的功能是判断一个符号是否在链接器的全局符号表中，并且在使用 DEFINED 语句之前是否已经定义。<br>如果 symbol 存在于全局符号表并且在 DEFINED 语句之前已经定义，那么函数返回 1。否则，返回 0。<br>可以使用这个函数为符号提供默认值。例如，以下链接脚本片段展示了如何将全局符号 begin 设置为 .text 段中的第一个位置。但是，如果名为 begin 的符号已经存在，则保留其值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS &#123; …</span><br><span class="line">  .text : &#123;</span><br><span class="line">    begin = DEFINED(begin) ? begin : . ;</span><br><span class="line">    …</span><br><span class="line">  &#125;</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em><strong>LENGTH(memory)：</strong></em><br>这个函数返回名为 memory 的内存区域的长度。</p>
+<p>*<em><strong>LOADADDR(section)：</strong></em><br>返回指定段（section）的绝对加载地址（Load Memory Address，LMA）。</p>
+<p><em><strong>LOG2CEIL(exp)：</strong></em><br>返回以2为底的 exp 的对数，向上取整。LOG2CEIL(0)返回 0</p>
+<p><em><strong>MAX(exp1, exp2)：</strong></em><br>返回 exp1 和 exp2 中的较大值。</p>
+<p><em><strong>MIN(exp1, exp2)：</strong></em><br>返回 exp1 和 exp2 中的较小值。</p>
+<p><em><strong>NEXT(exp)：</strong></em><br>返回下一个未分配的地址，该地址是 exp 的倍数。这个函数与 ALIGN(exp) 密切相关；除非使用 MEMORY 命令为输出文件定义不连续的内存，否则这两个函数是等效的。</p>
+<p><em><strong>ORIGIN(memory)：</strong></em><br>返回名为 memory 的内存区域的起始地址。</p>
+<p><em><strong>SEGMENT_START(segment, default)：</strong></em><br>返回指定段（segment）的基地址。如果已经使用命令行的 -T 选项为该段设置了显式值，那么将返回该值；否则将返回 default。目前，-T 命令行选项只能用于设置“text”、“data”和“bss”段的基地址，但 SEGMENT_START中可以使用任何段名。</p>
+<p><em><strong>SIZEOF(section)：</strong></em><br>返回指定段（section）的字节大小，如果该段已分配，则返回其大小；如果该段未分配，则返回0。如果链接脚本中不存在该段，链接器将报告错误。如果 section 是 NEXT_SECTION，则 SIZEOF 将返回链接脚本中指定的下一个已分配段的对齐值，如果没有这样的段，则返回0。在以下示例中，symbol_1 和 symbol_2 被赋予相同的值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS &#123;</span><br><span class="line">  ...</span><br><span class="line">  .output &#123;</span><br><span class="line">    .start = . ;</span><br><span class="line">    ...</span><br><span class="line">    .end = . ;</span><br><span class="line">  &#125;</span><br><span class="line">  symbol_1 = .end - .start ;</span><br><span class="line">  symbol_2 = SIZEOF(.output);</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><em><strong>SIZEOF_HEADERS：</strong></em><br>返回输出文件头部的字节大小。这是出现在输出文件开头的信息。如果需要，可以使用此数字来设置第一个段的起始地址，以便进行分页。<br>注意：当生成 ELF 输出文件时，如果链接脚本使用了 SIZEOF_HEADERS 内置函数，链接器必须在确定所有段的地址和大小之前计算程序头的数量。如果链接器后来发现需要更多的程序头，它将报告错误“没有足够的空间用于程序头”。为避免此错误，应该必须避免使用 SIZEOF_HEADERS 函数，或者重新设计链接脚本以避免强制链接器使用额外的程序头，或者使用 PHDRS 命令自己定义程序头。</p>
 <h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/Expressions.html">https://sourceware.org/binutils/docs/ld/Expressions.html</a></p>
 
     </div>
@@ -377,14 +430,14 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Expressions in
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">301k</span>
+    <span title="站点总字数">305k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">6:16</span>
+    <span title="站点阅读时长">6:21</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
