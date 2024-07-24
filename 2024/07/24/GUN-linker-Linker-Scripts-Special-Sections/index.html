@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Simple Linker Script Example">
+    <meta name="description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Special Sections">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GNU linker ld —— Simple Linker Script Example">
-<meta property="og:url" content="http://fengxun2017.github.io/2024/06/22/GUN-linker-Linker-Scripts-Simple-Linker-Script-Example/index.html">
+<meta property="og:title" content="GNU linker ld —— Special Sections">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/07/24/GUN-linker-Linker-Scripts-Special-Sections/index.html">
 <meta property="og:site_name" content="fx">
-<meta property="og:description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Simple Linker Script Example">
+<meta property="og:description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Special Sections">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-06-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-07-01T14:02:34.718Z">
+<meta property="article:published_time" content="2024-07-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-07-24T16:19:24.070Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://fengxun2017.github.io/2024/06/22/GUN-linker-Linker-Scripts-Simple-Linker-Script-Example/">
+<link rel="canonical" href="http://fengxun2017.github.io/2024/07/24/GUN-linker-Linker-Scripts-Special-Sections/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/06/22/GUN-linker-Linker-Scripts-Simple-Linker-Script-Example/","path":"2024/06/22/GUN-linker-Linker-Scripts-Simple-Linker-Script-Example/","title":"GNU linker ld —— Simple Linker Script Example"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/07/24/GUN-linker-Linker-Scripts-Special-Sections/","path":"2024/07/24/GUN-linker-Linker-Scripts-Special-Sections/","title":"GNU linker ld —— Special Sections"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>GNU linker ld —— Simple Linker Script Example | fx</title>
+<title>GNU linker ld —— Special Sections | fx</title>
   
 
 
@@ -182,7 +182,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/06/22/GUN-linker-Linker-Scripts-Simple-Linker-Script-Example/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/07/24/GUN-linker-Linker-Scripts-Special-Sections/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -195,12 +195,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="GNU linker ld —— Simple Linker Script Example | fx">
+      <meta itemprop="name" content="GNU linker ld —— Special Sections | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          GNU linker ld —— Simple Linker Script Example
+          GNU linker ld —— Special Sections
         </h1>
 
         <div class="post-meta-container">
@@ -211,7 +211,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2024-06-22 00:00:00" itemprop="dateCreated datePublished" datetime="2024-06-22T00:00:00+08:00">2024-06-22</time>
+      <time title="创建时间：2024-07-24 00:00:00" itemprop="dateCreated datePublished" datetime="2024-07-24T00:00:00+08:00">2024-07-24</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -230,7 +230,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>952</span>
+      <span>797</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -249,24 +249,18 @@
     
     <div class="post-body" itemprop="articleBody">
         <center>
-GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Simple Linker Script Example
+GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Special Sections
 </center>
 
 <span id="more"></span>
 
 <hr>
-<p><strong>个人笔记，仅供参考！！</strong></p>
-<p>最简单的链接脚本只有一个命令：<code>SECTIONS</code>，用来描述输出文件的内存布局。</p>
-<p>这里提供一个简单用法示例：假设程序（输入文件）中只包含代码、已初始化数据和未初始化数据，并分别位于<code>.text</code>、<code>.data</code>和<code>.bss</code>段中，期望将代码在<code>0x10000</code>开始的区域，数据在<code>0x8000000</code>开始的区域。以下是一个能够实现此目的的链接脚本：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">  . = 0x10000;</span><br><span class="line">  .text : &#123; *(.text) &#125;</span><br><span class="line">  . = 0x8000000;</span><br><span class="line">  .data : &#123; *(.data) &#125;</span><br><span class="line">  .bss : &#123; *(.bss) &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个示例中，关键字<code>SECTIONS</code>后跟一系列符号赋值和输出段描述，这些描述被包含在花括号中。</p>
-<p><code>SECTIONS</code>命令中的第一行设置了特殊符号<code>.</code>的值，即位置计数器。如果没有以其他方式指定输出段的地址，则该输出段地址将从位置计数器的当前值设置开始。然后，位置计数器会增加该输出段的大小。<br>在<code>SECTIONS</code>命令开始时，位置计数器的值为 0 。</p>
-<p>第二行定义了一个输出段<code>.text</code>，冒号是必需的语法，在输出段名称后的花括号内，列出了应该放置到此输出段中的输入段的名称。<code>*</code>是一个通配符，匹配任何文件名。表达式<code>(.text)</code>表示输入文件中<code>.text</code>输入段。</p>
-<p>由于在定义输出段<code>.text</code>时位置计数器是<code>0x10000</code>，链接器将设置输出文件中<code>.text</code>段的地址为‘0x10000’。</p>
-<p>剩余行定义了输出文件中的<code>.data</code>和<code>.bss</code>段。链接器脚本指定<code>.data</code>输出段放置在地址<code>0x8000000</code>。在<code>.data</code>输出段后，位置计数器的值将是<code>0x8000000</code>加上<code>.data</code>输出段的大小。因此，<code>.bss</code>输出段紧接在内存中的<code>.data</code>输出段之后。</p>
-<p>链接器将确保每个输出段都具有所需的对齐。此外，还可以手动通过增加位置计数器或特殊命令（如ALIGN）来实现特殊的对齐要求。</p>
-<h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/Simple-Example.html">https://sourceware.org/binutils/docs/ld/Simple-Example.html</a></p>
+<p><strong>个人笔记，仅供参考！！</strong><br>在链接ELF格式的目标文件时，ld 会以一种特殊的、非标准的方式处理某些 section。</p>
+<p><strong>.gnu.warning</strong>：<br><code>.gnu.warning</code> section 的内容被假定为ASCII格式的警告消息。<br>如果在任何输入文件中出现这个部分，其内容将显示给用户，但不会复制到输出映像中。如果启用了–fatal-warnings选项，那么如果遇到警告，链接过程也会停止。<br>注意：<code>.gnu.warning</code> section 不受链接器垃圾回收或孤儿段处理的影响。</p>
+<p><strong>.gnu.warning.SYM</strong>：<br>以前缀<code>.gnu.warning.</code>开始并以符号名称结尾的section，以类似于<code>.gnu.warning</code> section 的方式处理。但只有在指定的符号被引用时，才会显示这个部分的内容。例如，如果存在一个名为<code>.gnu.warning.foo</code>的 section，只有当一个或多个输入文件引用了符号 foo 时，其内容才会作为警告消息显示。这包括从静态库中提取的目标文件、完成链接所需的共享对象等。</p>
+<p>注意：因为这些警告消息是在链接器执行垃圾收集(如果启用)之前生成的，所以可能会显示一个符号的警告，该符号后来被删除，然后永远不会出现在最终输出中。</p>
+<p><strong>.note.gnu.property：</strong><br>当链接器合并这个名称的各个section时，它会根据注释本身编码的各种规则将它们合并在一起。因此，输出的<code>.note.gnu.property</code> section 的内容可能不对应于输入部分的简单连接。如果使用了-Map选项来请求链接器映射，那么属性合并的详细信息将包含在映射中。</p>
+<h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/Special-Sections.html">https://sourceware.org/binutils/docs/ld/Special-Sections.html</a></p>
 
     </div>
 
@@ -284,7 +278,7 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Simple Linker 
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2024/06/22/GUN-linker-Linker-Scripts-Simple-Linker-Script-Example/" title="GNU linker ld —— Simple Linker Script Example">http://fengxun2017.github.io/2024/06/22/GUN-linker-Linker-Scripts-Simple-Linker-Script-Example/</a>
+      <a href="http://fengxun2017.github.io/2024/07/24/GUN-linker-Linker-Scripts-Special-Sections/" title="GNU linker ld —— Special Sections">http://fengxun2017.github.io/2024/07/24/GUN-linker-Linker-Scripts-Special-Sections/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -297,14 +291,11 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：Simple Linker 
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/06/21/GUN-linker-Linker-Scripts-Linker-Script-Format/" rel="prev" title="GNU linker ld —— Linker Script Format">
-                  <i class="fa fa-chevron-left"></i> GNU linker ld —— Linker Script Format
+                <a href="/2024/07/17/GUN-linker-Linker-Scripts-Expressions-in-Linker-Scripts/" rel="prev" title="GNU linker ld —— Expressions in Linker Scripts">
+                  <i class="fa fa-chevron-left"></i> GNU linker ld —— Expressions in Linker Scripts
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/06/28/GUN-linker-Linker-Scripts-Simple-Linker-Script-Commands/" rel="next" title="GNU linker ld —— Simple Linker Script Commands">
-                  GNU linker ld —— Simple Linker Script Commands <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
