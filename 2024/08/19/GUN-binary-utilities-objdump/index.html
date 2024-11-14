@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="GNU binary utilities (GNU Binutils) version 2.42: —— objdump">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GNU binary utilities —— objdump">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/08/19/GUN-binary-utilities-objdump/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="GNU binary utilities (GNU Binutils) version 2.42: —— objdump">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-08-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-14T14:55:17.379Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2024/08/19/GUN-binary-utilities-objdump/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/08/19/GUN-binary-utilities-objdump/","path":"2024/08/19/GUN-binary-utilities-objdump/","title":"GNU binary utilities —— objdump"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>GNU binary utilities —— objdump | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-%E2%80%93archive-header%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">-a, –archive-header：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93adjust-vma-x3D-offset%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">–adjust-vma&#x3D;offset：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b-bfdname-%E2%80%93target-x3D-bfdname%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">-b bfdname, –target&#x3D;bfdname：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-%E2%80%93demangle-x3D-style-%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">-C, –demangle[&#x3D;style]：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93recurse-limit-%E2%80%93no-recurse-limit-%E2%80%93recursion-limit-%E2%80%93no-recursion-limit%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">–recurse-limit, –no-recurse-limit, –recursion-limit, –no-recursion-limit：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#g-%E2%80%93debugging%EF%BC%9A"><span class="nav-number">6.</span> <span class="nav-text">-g, –debugging：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#e-%E2%80%93debugging-tags%EF%BC%9A"><span class="nav-number">7.</span> <span class="nav-text">-e, –debugging-tags：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d-%E2%80%93disassemble-%E2%80%93disassemble-x3D-symbol%EF%BC%9A"><span class="nav-number">8.</span> <span class="nav-text">-d, –disassemble, –disassemble&#x3D;symbol：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#D-x2F-%E2%80%93disassemble-all%EF%BC%9A"><span class="nav-number">9.</span> <span class="nav-text">-D &#x2F; –disassemble-all：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93no-addresses%EF%BC%9A"><span class="nav-number">10.</span> <span class="nav-text">–no-addresses：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93prefix-addresses"><span class="nav-number">11.</span> <span class="nav-text">–prefix-addresses</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#EB%E3%80%81-EL%E3%80%81%E2%80%93endian-x3D-big-x2F-little"><span class="nav-number">12.</span> <span class="nav-text">-EB、-EL、–endian&#x3D;big&#x2F;little</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#f-x2F-%E2%80%93file-headers"><span class="nav-number">13.</span> <span class="nav-text">-f&#x2F;–file-headers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#F-x2F-%E2%80%93file-offsets"><span class="nav-number">14.</span> <span class="nav-text">-F&#x2F;–file-offsets</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93file-start-context"><span class="nav-number">15.</span> <span class="nav-text">–file-start-context</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#h-x2F-%E2%80%93section-headers-x2F-%E2%80%93headers"><span class="nav-number">16.</span> <span class="nav-text">-h&#x2F;–section-headers&#x2F;–headers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#H-x2F-%E2%80%93help"><span class="nav-number">17.</span> <span class="nav-text">-H &#x2F; –help</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#i-x2F-%E2%80%93info"><span class="nav-number">18.</span> <span class="nav-text">-i &#x2F; –info</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#j-name-x2F-%E2%80%93section-x3D-name"><span class="nav-number">19.</span> <span class="nav-text">-j name &#x2F; –section&#x3D;name</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#L-x2F-%E2%80%93process-links"><span class="nav-number">20.</span> <span class="nav-text">-L &#x2F; –process-links</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#l-x2F-%E2%80%93line-numbers"><span class="nav-number">21.</span> <span class="nav-text">-l &#x2F; –line-numbers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#m-machine-x2F-%E2%80%93architecture-x3D-machine"><span class="nav-number">22.</span> <span class="nav-text">-m machine &#x2F; –architecture&#x3D;machine</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#p-x2F-%E2%80%93private-headers"><span class="nav-number">23.</span> <span class="nav-text">-p &#x2F; –private-headers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#P-options-x2F-%E2%80%93private-x3D-options"><span class="nav-number">24.</span> <span class="nav-text">-P options &#x2F; –private&#x3D;options</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#r-x2F-%E2%80%93reloc"><span class="nav-number">25.</span> <span class="nav-text">-r &#x2F; –reloc:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#R-%E2%80%93dynamic-reloc"><span class="nav-number">26.</span> <span class="nav-text">-R –dynamic-reloc:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#s-x2F-%E2%80%93full-contents"><span class="nav-number">27.</span> <span class="nav-text">-s &#x2F; –full-contents:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#S-x2F-%E2%80%93source"><span class="nav-number">28.</span> <span class="nav-text">-S &#x2F; –source</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93show-all-symbols"><span class="nav-number">29.</span> <span class="nav-text">–show-all-symbols</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93source-comment-x3D-txt"><span class="nav-number">30.</span> <span class="nav-text">–source-comment[&#x3D;txt]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93prefix-x3D-prefix"><span class="nav-number">31.</span> <span class="nav-text">–prefix&#x3D;prefix</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93prefix-strip-x3D-level"><span class="nav-number">32.</span> <span class="nav-text">–prefix-strip&#x3D;level</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93show-raw-insn"><span class="nav-number">33.</span> <span class="nav-text">–show-raw-insn</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93no-show-raw-insn"><span class="nav-number">33.1.</span> <span class="nav-text">–no-show-raw-insn</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93insn-width-x3D-width"><span class="nav-number">34.</span> <span class="nav-text">–insn-width&#x3D;width</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93visualize-jumps-x3D-color-x3D-extended-color-x3D-off"><span class="nav-number">35.</span> <span class="nav-text">–visualize-jumps[&#x3D;color|&#x3D;extended-color|&#x3D;off]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93disassembler-color-x3D-off-x2F-%E2%80%93disassembler-color-x3D-terminal-x2F-%E2%80%93disassembler-color-x3D-on-color-colour-x2F-%E2%80%93disassembler-color-x3D-extended-extended-color-extended-colour"><span class="nav-number">36.</span> <span class="nav-text">–disassembler-color&#x3D;off &#x2F; –disassembler-color&#x3D;terminal &#x2F; –disassembler-color&#x3D;on|color|colour &#x2F; –disassembler-color&#x3D;extended|extended-color|extended-colour</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#W-lLiaprmfFsoORtUuTgAckK-x2F-%E2%80%93dwarf-x3D-rawline-x3D-decodedline-x3D-info-x3D-abbrev-x3D-pubnames-x3D-aranges-x3D-macro-x3D-frames-x3D-frames-interp-x3D-str-x3D-str-offsets-x3D-loc-x3D-Ranges-x3D-pubtypes-x3D-trace-info-x3D-trace-abbrev-x3D-trace-aranges-x3D-gdb-index-x3D-addr-x3D-cu-index-x3D-links-x3D-follow-links"><span class="nav-number">37.</span> <span class="nav-text">-W[lLiaprmfFsoORtUuTgAckK] &#x2F; –dwarf[&#x3D;rawline,&#x3D;decodedline,&#x3D;info,&#x3D;abbrev,&#x3D;pubnames,&#x3D;aranges,&#x3D;macro,&#x3D;frames,&#x3D;frames-interp,&#x3D;str,&#x3D;str-offsets,&#x3D;loc,&#x3D;Ranges,&#x3D;pubtypes,&#x3D;trace_info,&#x3D;trace_abbrev,&#x3D;trace_aranges,&#x3D;gdb_index,&#x3D;addr,&#x3D;cu_index,&#x3D;links,&#x3D;follow-links]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93dwarf-depth-x3D-n"><span class="nav-number">38.</span> <span class="nav-text">–dwarf-depth&#x3D;n</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93dwarf-start-x3D-n"><span class="nav-number">39.</span> <span class="nav-text">–dwarf-start&#x3D;n</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93dwarf-check"><span class="nav-number">40.</span> <span class="nav-text">–dwarf-check</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93ctf-x3D-section"><span class="nav-number">41.</span> <span class="nav-text">–ctf[&#x3D;section]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93ctf-parent-x3D-member"><span class="nav-number">42.</span> <span class="nav-text">–ctf-parent&#x3D;member</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93sframe-x3D-section"><span class="nav-number">43.</span> <span class="nav-text">–sframe[&#x3D;section]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#G-%E2%80%93stabs"><span class="nav-number">44.</span> <span class="nav-text">-G, –stabs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93start-address-x3D-address"><span class="nav-number">45.</span> <span class="nav-text">–start-address&#x3D;address</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93stop-address-x3D-address"><span class="nav-number">46.</span> <span class="nav-text">–stop-address&#x3D;address</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#t-x2F-%E2%80%93syms"><span class="nav-number">47.</span> <span class="nav-text">-t &#x2F; –syms</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#T-x2F-%E2%80%93dynamic-syms"><span class="nav-number">48.</span> <span class="nav-text">-T &#x2F; –dynamic-syms</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93special-syms"><span class="nav-number">49.</span> <span class="nav-text">–special-syms</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#U-d-i-l-e-x-h-x2F-%E2%80%93unicode-x3D-default-invalid-locale-escape-hex-highlight"><span class="nav-number">50.</span> <span class="nav-text">-U [d|i|l|e|x|h] &#x2F;–unicode&#x3D;[default|invalid|locale|escape|hex|highlight]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#V-%E2%80%93version"><span class="nav-number">51.</span> <span class="nav-text">-V –version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#x-%E2%80%93all-headers"><span class="nav-number">52.</span> <span class="nav-text">-x –all-headers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#w-%E2%80%93wide"><span class="nav-number">53.</span> <span class="nav-text">-w –wide</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#z-%E2%80%93disassemble-zeroes"><span class="nav-number">54.</span> <span class="nav-text">-z –disassemble-zeroes</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Z-%E2%80%93decompress"><span class="nav-number">55.</span> <span class="nav-text">-Z –decompress</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number">56.</span> <span class="nav-text">参考连接：</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/08/19/GUN-binary-utilities-objdump/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="GNU binary utilities —— objdump | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GNU binary utilities —— objdump
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-08-19 00:00:00" itemprop="dateCreated datePublished" datetime="2024-08-19T00:00:00+08:00">2024-08-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/GNU-binary-utilities/" itemprop="url" rel="index"><span itemprop="name">GNU-binary-utilities</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>14k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>18 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+GNU binary utilities (GNU Binutils) version 2.42: —— objdump
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p><strong>个人笔记，仅供参考！！</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">objdump [-a|--archive-headers]</span><br><span class="line">        [-b bfdname|--target=bfdname]</span><br><span class="line">        [-C|--demangle[=style] ]</span><br><span class="line">        [-d|--disassemble[=symbol]]</span><br><span class="line">        [-D|--disassemble-all]</span><br><span class="line">        [-z|--disassemble-zeroes]</span><br><span class="line">        [-EB|-EL|--endian=&#123;big | little &#125;]</span><br><span class="line">        [-f|--file-headers]</span><br><span class="line">        [-F|--file-offsets]</span><br><span class="line">        [--file-start-context]</span><br><span class="line">        [-g|--debugging]</span><br><span class="line">        [-e|--debugging-tags]</span><br><span class="line">        [-h|--section-headers|--headers]</span><br><span class="line">        [-i|--info]</span><br><span class="line">        [-j section|--section=section]</span><br><span class="line">        [-l|--line-numbers]</span><br><span class="line">        [-S|--source]</span><br><span class="line">        [--source-comment[=text]]</span><br><span class="line">        [-m machine|--architecture=machine]</span><br><span class="line">        [-M options|--disassembler-options=options]</span><br><span class="line">        [-p|--private-headers]</span><br><span class="line">        [-P options|--private=options]</span><br><span class="line">        [-r|--reloc]</span><br><span class="line">        [-R|--dynamic-reloc]</span><br><span class="line">        [-s|--full-contents]</span><br><span class="line">        [-Z|--decompress]</span><br><span class="line">        [-W[lLiaprmfFsoORtUuTgAck]|</span><br><span class="line">         --dwarf[=rawline,=decodedline,=info,=abbrev,=pubnames,=aranges,=macro,=frames,=frames-interp,=str,=str-offsets,=loc,=Ranges,=pubtypes,=trace_info,=trace_abbrev,=trace_aranges,=gdb_index,=addr,=cu_index,=links]]</span><br><span class="line">        [-WK|--dwarf=follow-links]</span><br><span class="line">        [-WN|--dwarf=no-follow-links]</span><br><span class="line">        [-wD|--dwarf=use-debuginfod]</span><br><span class="line">        [-wE|--dwarf=do-not-use-debuginfod]</span><br><span class="line">        [-L|--process-links]</span><br><span class="line">        [--ctf=section]</span><br><span class="line">        [--sframe=section]</span><br><span class="line">        [-G|--stabs]</span><br><span class="line">        [-t|--syms]</span><br><span class="line">        [-T|--dynamic-syms]</span><br><span class="line">        [-x|--all-headers]</span><br><span class="line">        [-w|--wide]</span><br><span class="line">        [--start-address=address]</span><br><span class="line">        [--stop-address=address]</span><br><span class="line">        [--no-addresses]</span><br><span class="line">        [--prefix-addresses]</span><br><span class="line">        [--[no-]show-raw-insn]</span><br><span class="line">        [--adjust-vma=offset]</span><br><span class="line">        [--show-all-symbols]</span><br><span class="line">        [--dwarf-depth=n]</span><br><span class="line">        [--dwarf-start=n]</span><br><span class="line">        [--ctf-parent=section]</span><br><span class="line">        [--no-recurse-limit|--recurse-limit]</span><br><span class="line">        [--special-syms]</span><br><span class="line">        [--prefix=prefix]</span><br><span class="line">        [--prefix-strip=level]</span><br><span class="line">        [--insn-width=width]</span><br><span class="line">        [--visualize-jumps[=color|=extended-color|=off]</span><br><span class="line">        [--disassembler-color=[off|terminal|on|extended]</span><br><span class="line">        [-U method] [--unicode=method]</span><br><span class="line">        [-V|--version]</span><br><span class="line">        [-H|--help]</span><br><span class="line">        objfile…</span><br></pre></td></tr></table></figure>
+
+<p>objdump 显示一个或多个目标文件的信息。选项控制显示哪些特定信息。</p>
+<p><code>objfile...</code> 是要检查的目标文件。当指定归档文件（archives）时，objdump 会显示每个成员目标文件的信息。</p>
+<p>这里显示的选项的长短形式是等效的。必须从列表 -a, -d, -D, -e, -f, -g, -G, -h, -H, -p, -P, -r, -R, -s, -S, -t, -T, -V, -x 中至少选择一个选项。</p>
+<h4 id="a-–archive-header："><a href="#a-–archive-header：" class="headerlink" title="-a, –archive-header："></a>-a, –archive-header：</h4><p>如果任何 objfile 文件是归档文件（archive），显示归档文件头信息（格式类似于 ls -l）。除了可以用 <code>ar tv</code> 列出的信息外，objdump -a 还显示每个归档文件中成员的目标文件格式。</p>
+<h4 id="–adjust-vma-x3D-offset："><a href="#–adjust-vma-x3D-offset：" class="headerlink" title="–adjust-vma&#x3D;offset："></a>–adjust-vma&#x3D;offset：</h4><p>在转储信息时，首先将 offset 添加到所有的section地址。这在section地址与符号表不对应时很有用，例如在使用不能表示section地址的格式（如 a.out）时将section放置在特定地址。</p>
+<h4 id="b-bfdname-–target-x3D-bfdname："><a href="#b-bfdname-–target-x3D-bfdname：" class="headerlink" title="-b bfdname, –target&#x3D;bfdname："></a>-b bfdname, –target&#x3D;bfdname：</h4><p>指定目标文件的目标代码格式为 bfdname。这个选项可能不是必须的；objdump 可以自动识别许多格式。例如：<br><code>objdump -b oasys -m vax -h fu.o</code><br>显示 fu.o 的section头信息（-h），该文件被明确标识（-m）为由 Oasys 编译器生成的 VAX 目标文件。可以使用 -i 选项列出可用的格式。</p>
+<h4 id="C-–demangle-x3D-style-："><a href="#C-–demangle-x3D-style-：" class="headerlink" title="-C, –demangle[&#x3D;style]："></a>-C, –demangle[&#x3D;style]：</h4><p>将低级符号名解码（解混淆）为用户级别的名称。除了移除系统预置的初始下划线外，这还使 C++ 函数名可读。不同的编译器有不同的混淆风格。可选的解混淆风格参数可用于为你的编译器选择合适的解混淆风格。更多信息请参见 c++filt。</p>
+<h4 id="–recurse-limit-–no-recurse-limit-–recursion-limit-–no-recursion-limit："><a href="#–recurse-limit-–no-recurse-limit-–recursion-limit-–no-recursion-limit：" class="headerlink" title="–recurse-limit, –no-recurse-limit, –recursion-limit, –no-recursion-limit："></a>–recurse-limit, –no-recurse-limit, –recursion-limit, –no-recursion-limit：</h4><p>启用或禁用在解混淆字符串时执行的递归量限制。由于名称混淆格式允许无限级别的递归，可能会创建解码时耗尽主机机器上可用堆栈空间的字符串，从而触发内存故障。限制通过将递归限制为 2048 级嵌套来防止这种情况发生。默认情况下启用此限制，但在解混淆非常复杂的名称时可能需要禁用它。然而，请注意，如果禁用递归限制，则可能会耗尽堆栈空间。</p>
+<h4 id="g-–debugging："><a href="#g-–debugging：" class="headerlink" title="-g, –debugging："></a>-g, –debugging：</h4><p>显示调试信息。这会尝试解析存储在文件中的 STABS 调试格式信息，并使用类似 C 的语法打印出来。如果没有找到 STABS 调试信息，此选项会回退到 -W 选项以打印文件中的任何 DWARF 信息。</p>
+<h4 id="e-–debugging-tags："><a href="#e-–debugging-tags：" class="headerlink" title="-e, –debugging-tags："></a>-e, –debugging-tags：</h4><p>类似于 -g，但信息以与 ctags 工具兼容的格式生成。</p>
+<h4 id="d-–disassemble-–disassemble-x3D-symbol："><a href="#d-–disassemble-–disassemble-x3D-symbol：" class="headerlink" title="-d, –disassemble, –disassemble&#x3D;symbol："></a>-d, –disassemble, –disassemble&#x3D;symbol：</h4><p>显示输入文件中机器指令的汇编助记符。此选项仅反汇编预期包含指令的section。如果给定了可选的 symbol 参数，则从 symbol 开始显示汇编助记符。如果 symbol 是函数名，则反汇编将在函数结束时停止，否则将在遇到下一个符号时停止。如果没有匹配的 symbol，则不会显示任何内容。请注意，如果启用了 –dwarf&#x3D;follow-links 选项，则在反汇编时将读取并使用链接的调试信息文件中的任何符号表。</p>
+<h4 id="D-x2F-–disassemble-all："><a href="#D-x2F-–disassemble-all：" class="headerlink" title="-D &#x2F; –disassemble-all："></a>-D &#x2F; –disassemble-all：</h4><p>类似于 -d，但反汇编所有非空的非 bss 段的内容，而不仅仅是那些预期包含指令的段。可以使用 -j 选择特定的段。<br>该选项还对代码段中指令的反汇编有微妙的影响。当 -d 选项生效时，objdump 会假设代码段中的任何符号都出现在指令之间的边界上，并且会拒绝跨越这样的边界进行反汇编。然而，当 -D 选项生效时，这种假设会被抑制。这意味着如果在代码段中存储了数据，-d 和 -D 的输出可能会有所不同。<br>如果目标是 ARM 架构，该选项还会强制反汇编器将代码段中的数据片段解码为指令。<br>注意，如果启用了 –dwarf&#x3D;follow-links 选项，则在反汇编时会读取并使用链接的调试信息文件中的符号表。</p>
+<h4 id="–no-addresses："><a href="#–no-addresses：" class="headerlink" title="–no-addresses："></a>–no-addresses：</h4><p>反汇编时，不在每行或符号和重定位偏移量上打印地址。与 –no-show-raw-insn 结合使用时，这对于比较编译器输出可能很有用。</p>
+<h4 id="–prefix-addresses"><a href="#–prefix-addresses" class="headerlink" title="–prefix-addresses"></a>–prefix-addresses</h4><p>反汇编时，在每行打印完整地址。这是较旧的反汇编格式。</p>
+<h4 id="EB、-EL、–endian-x3D-big-x2F-little"><a href="#EB、-EL、–endian-x3D-big-x2F-little" class="headerlink" title="-EB、-EL、–endian&#x3D;big&#x2F;little"></a>-EB、-EL、–endian&#x3D;big&#x2F;little</h4><p>指定目标文件的字节序。这只影响反汇编。当反汇编不描述字节序信息的文件格式（如 S-records）时，这可能很有用。</p>
+<h4 id="f-x2F-–file-headers"><a href="#f-x2F-–file-headers" class="headerlink" title="-f&#x2F;–file-headers"></a>-f&#x2F;–file-headers</h4><p>显示每个目标文件的整体头部摘要信息。</p>
+<h4 id="F-x2F-–file-offsets"><a href="#F-x2F-–file-offsets" class="headerlink" title="-F&#x2F;–file-offsets"></a>-F&#x2F;–file-offsets</h4><p>反汇编段时，每当显示符号时，也显示即将转储的数据区域的文件偏移量。如果跳过了零，则在反汇编恢复时，告诉用户跳过了多少个零以及从哪里恢复反汇编。当转储段时，显示转储开始位置的文件偏移量。</p>
+<h4 id="–file-start-context"><a href="#–file-start-context" class="headerlink" title="–file-start-context"></a>–file-start-context</h4><p>指定在显示未显示过的文件的交错源代码&#x2F;反汇编（假设 -S）时，将上下文扩展到文件的开头。</p>
+<h4 id="h-x2F-–section-headers-x2F-–headers"><a href="#h-x2F-–section-headers-x2F-–headers" class="headerlink" title="-h&#x2F;–section-headers&#x2F;–headers"></a>-h&#x2F;–section-headers&#x2F;–headers</h4><p>显示目标文件的段头摘要信息。<br>文件段可能会被重定位到非标准地址，例如使用 -Ttext、-Tdata 或 -Tbss 选项。然而，一些目标文件格式（如 a.out）不存储文件段的起始地址。在这种情况下，尽管 ld 正确地重定位了段，但使用 objdump -h 列出文件段头时无法显示正确的地址。相反，它显示的是目标隐含的通常地址。<br>注意，在某些情况下，一个段可能同时具有 READONLY 和 NOREAD 属性。在这种情况下，NOREAD 属性优先，但 objdump 会报告两者，因为标志位的确切设置可能很重要。</p>
+<h4 id="H-x2F-–help"><a href="#H-x2F-–help" class="headerlink" title="-H &#x2F; –help"></a>-H &#x2F; –help</h4><p>打印 objdump 选项的摘要并退出。</p>
+<h4 id="i-x2F-–info"><a href="#i-x2F-–info" class="headerlink" title="-i &#x2F; –info"></a>-i &#x2F; –info</h4><p>显示所有可用于 -b 或 -m 指定的架构和目标格式的列表。</p>
+<h4 id="j-name-x2F-–section-x3D-name"><a href="#j-name-x2F-–section-x3D-name" class="headerlink" title="-j name &#x2F; –section&#x3D;name"></a>-j name &#x2F; –section&#x3D;name</h4><p>显示指定段的信息。此选项可以多次指定。</p>
+<h4 id="L-x2F-–process-links"><a href="#L-x2F-–process-links" class="headerlink" title="-L &#x2F; –process-links"></a>-L &#x2F; –process-links</h4><p>显示链接到主文件的单独调试信息文件中非调试段的内容。此选项自动隐含 -WK 选项，并且只有其它命令行选项请求的段会被显示。</p>
+<h4 id="l-x2F-–line-numbers"><a href="#l-x2F-–line-numbers" class="headerlink" title="-l &#x2F; –line-numbers"></a>-l &#x2F; –line-numbers</h4><p>使用与所显示的目标代码或位置对应的文件名和源行号标记显示(使用调试信息)。仅用于-d、-d或-r。</p>
+<h4 id="m-machine-x2F-–architecture-x3D-machine"><a href="#m-machine-x2F-–architecture-x3D-machine" class="headerlink" title="-m machine &#x2F; –architecture&#x3D;machine"></a>-m machine &#x2F; –architecture&#x3D;machine</h4><p>指定反汇编目标文件时使用的架构。当反汇编不包含架构信息的目标文件（如 S-records）时，这个选项非常有用。你可以使用 -i 选项列出可用的架构。<br>对于大多数架构，可以提供一个架构名称和一个机器名称，用冒号分隔。例如，‘foo:bar’ 表示 ‘foo’ 架构中的 ‘bar’ 机器类型。如果 objdump 被配置为支持多种架构，这将非常有用。<br>如果目标是 ARM 架构，那么这个选项还有一个额外的效果。它将反汇编限制为仅支持由 machine 指定的架构的指令。如果因为输入文件不包含任何架构信息而需要使用此选项，但又希望反汇编所有指令，可以使用 -marm。</p>
+<p>-M options<br>–disassembler-options&#x3D;options 将特定于目标的信息传递给反汇编器。仅在某些目标上支持。如果需要指定多个反汇编选项，可以使用多个 -M 选项，或者将它们放在一个逗号分隔的列表中。</p>
+<p>对于 ARC（Argonaut RISC Core，一种由 Synopsys 开发的可配置处理器架构）：<br>dsp: 控制 DSP 指令的打印，<br>spfp: 选择打印 FPX 单精度 FP 指令，<br>dpfp: 选择打印 FPX 双精度 FP 指令，<br>quarkse_em: 选择打印特殊的 QuarkSE-EM 指令，<br>fpuda: 选择打印双精度辅助指令，<br>fpus: 选择打印 FPU 单精度 FP 指令，<br>fpud: 选择打印 FPU 双精度 FP 指令。<br>此外，可以选择使用 hex 将所有立即数打印为十六进制。默认情况下，短立即数使用十进制表示，而长立即数使用十六进制表示。</p>
+<p>cpu&#x3D;… 允许在反汇编指令时强制使用特定的 ISA（Instruction Set Architecture），覆盖 -m 值或 ELF 文件中的任何内容。这可能对选择 ARC EM（Embedded Microprocessor） 或 HS（ High Speed） ISA 有用，因为它们的架构相同，反汇编器依赖于私有 ELF 头数据来决定代码是针对 EM 还是 HS。此选项可以多次指定——仅使用最新的值。有效值与汇编器的 -mcpu&#x3D;… 选项相同。</p>
+<p>如果目标是 ARM 架构，则此开关可用于选择在反汇编期间使用的寄存器名称集。指定 -M reg-names-std（默认）将选择 ARM 指令集文档中使用的寄存器名称，但寄存器 13 称为 sp，寄存器 14 称为 lr，寄存器 15 称为 pc。指定 -M reg-names-apcs 将选择 ARM 过程调用标准使用的名称集，而指定 -M reg-names-raw 将仅使用 r 后跟寄存器编号。</p>
+<p>还有两个 APCS 寄存器命名方案的变体，分别由 -M reg-names-atpcs 和 -M reg-names-special-atpcs 启用，使用 ARM&#x2F;Thumb 过程调用标准命名约定。（使用正常寄存器名称或特殊寄存器名称）。</p>
+<p>此选项还可用于 ARM 架构，通过使用开关 –disassembler-options&#x3D;force-thumb 强制反汇编器将所有指令解释为 Thumb 指令。这在尝试反汇编其他编译器生成的 Thumb 代码时可能很有用。</p>
+<p>对于 AArch64 目标，此开关可用于设置是否使用 -M no-aliases 选项将指令反汇编为最通用的指令，或者是否使用 -M notes 在反汇编中生成指令注释。</p>
+<p>对于 x86，一些选项重复了 -m 开关的功能，但允许更细粒度的控制。<br>x86-64&#x2F;i386&#x2F;i8086: 选择给定架构的反汇编。<br>intel&#x2F;att: 在 Intel 语法模式和 AT&amp;T 语法模式之间选择。<br>amd64&#x2F;intel64: 在 AMD64 ISA 和 Intel64 ISA 之间选择。<br>intel-mnemonic&#x2F;att-mnemonic: 在 Intel 助记符模式和 AT&amp;T 助记符模式之间选择。注意：intel-mnemonic 隐含 intel，att-mnemonic 隐含 att。<br>addr64&#x2F;addr32&#x2F;addr16&#x2F;data32&#x2F;data16: 指定默认地址大小和操作数大小。如果 x86-64、i386 或 i8086 出现在选项字符串中，这五个选项将被覆盖。<br>suffix: 在 AT&amp;T 模式下以及在 Intel 模式下的有限指令集中，指示反汇编器打印助记符后缀，即使可以通过操作数或某些指令的执行模式的默认值推断出后缀。</p>
+<p>对于 PowerPC，-M 参数 raw 选择硬件指令的反汇编，而不是别名。例如，你会看到 rlwinm 而不是 clrlwi，addi 而不是 li。所有选择 CPU 的 gas 的 -m 参数都受支持。这些参数包括：403、405、440、464、476、601、603、604、620、7400、7410、7450、7455、750cl、821、850、860、a2、booke、booke32、cell、com、e200z2、e200z4、e300、e500、e500mc、e500mc64、e500x2、e5500、e6500、efs、power4、power5、power6、power7、power8、power9、power10、power11、ppc、ppc32、ppc64、ppc64bridge、ppcps、pwr、pwr2、pwr4、pwr5、pwr5x、pwr6、pwr7、pwr8、pwr9、pwr10、pwr11、pwrx、titan、vle 和 future。32 和 64 修改默认或先前的 CPU 选择，分别禁用和启用 64 位指令。此外，altivec、any、lsp、htm、vsx、spe 和 spe2 为先前或后来的 CPU 选择添加功能。any 将反汇编 binutils 知道的任何操作码，但在操作码有两种不同含义或不同参数的情况下，你可能不会看到预期的反汇编结果。如果在没有给出 CPU 选择的情况下进行反汇编，将从 BFD 从目标文件头中获取的信息中选择一个默认值，但结果可能仍然不如预期。</p>
+<p>对于 MIPS，此选项控制反汇编指令中的指令助记符名称和寄存器名称的打印。可以将以下多个选择指定为逗号分隔的字符串，无效选项将被忽略：</p>
+<ul>
+<li>no-aliases：打印“原始”指令助记符，而不是某些伪指令助记符。例如，打印 daddu 或 or 而不是 move，打印 sll 而不是 nop。</li>
+<li>msa：反汇编 MSA 指令。</li>
+<li>virt：反汇编虚拟化 ASE 指令。</li>
+<li>xpa：反汇编扩展物理地址（XPA）ASE 指令。</li>
+<li>gpr-names&#x3D;ABI：根据指定的 ABI 打印 GPR（通用寄存器）名称。默认情况下，GPR 名称根据正在反汇编的二进制文件的 ABI 选择。</li>
+<li>fpr-names&#x3D;ABI：根据指定的 ABI 打印 FPR（浮点寄存器）名称。默认情况下，打印 FPR 编号而不是名称。</li>
+<li>cp0-names&#x3D;ARCH：根据 ARCH 指定的 CPU 或架构打印 CP0（系统控制协处理器；协处理器 0）寄存器名称。默认情况下，CP0 寄存器名称根据正在反汇编的二进制文件的架构和 CPU 选择。</li>
+<li>hwr-names&#x3D;ARCH：根据 ARCH 指定的 CPU 或架构打印 HWR（硬件寄存器，用于 rdhwr 指令）名称。默认情况下，HWR 名称根据正在反汇编的二进制文件的架构和 CPU 选择。</li>
+<li>reg-names&#x3D;ABI：根据选定的 ABI 打印 GPR 和 FPR 名称。</li>
+<li>reg-names&#x3D;ARCH：根据选定的 CPU 或架构打印特定于 CPU 的寄存器名称（CP0 寄存器和 HWR 名称）。<br>对于上述任何选项，可以将 ABI 或 ARCH 指定为“numeric”，以便为选定类型的寄存器打印数字而不是名称。你可以使用 –help 选项列出 ABI 和 ARCH 的可用值。</li>
+</ul>
+<p>对于 VAX，你可以使用 -M entry:0xf00ba 指定函数入口地址。你可以多次使用此选项，以正确反汇编不包含符号表的 VAX 二进制文件（如 ROM 转储）。在这些情况下，函数入口掩码将被解码为 VAX 指令，这可能会导致函数的其余部分被错误反汇编。</p>
+<h4 id="p-x2F-–private-headers"><a href="#p-x2F-–private-headers" class="headerlink" title="-p &#x2F; –private-headers"></a>-p &#x2F; –private-headers</h4><p>打印特定于目标文件格式的信息。打印的确切信息取决于目标文件格式。对于某些目标文件格式，不会打印任何附加信息。</p>
+<h4 id="P-options-x2F-–private-x3D-options"><a href="#P-options-x2F-–private-x3D-options" class="headerlink" title="-P options &#x2F; –private&#x3D;options"></a>-P options &#x2F; –private&#x3D;options</h4><p>打印特定于目标文件格式的信息。参数 options 是一个逗号分隔的列表，具体取决于格式（选项列表可以通过帮助命令显示）。</p>
+<p>对于 XCOFF，可用选项包括：<br>        header<br>        aout<br>        sections<br>        syms<br>        relocs<br>        lineno<br>        loader<br>        except<br>        typchk<br>        traceback<br>        toc<br>        ldinfo<br>对于 PE，可用选项包括：<br>header<br>sections<br>并非所有目标格式都支持此选项，特别是 ELF 格式不使用它。</p>
+<h4 id="r-x2F-–reloc"><a href="#r-x2F-–reloc" class="headerlink" title="-r &#x2F; –reloc:"></a>-r &#x2F; –reloc:</h4><p>打印文件的重定位条目。如果与 -d 或 -D 一起使用，重定位条目将与反汇编内容交错打印。</p>
+<h4 id="R-–dynamic-reloc"><a href="#R-–dynamic-reloc" class="headerlink" title="-R –dynamic-reloc:"></a>-R –dynamic-reloc:</h4><p>打印文件的动态重定位条目。这仅对动态对象（如某些类型的共享库）有意义。与 -r 一样，如果与 -d 或 -D 一起使用，重定位条目将与反汇编内容交错打印。</p>
+<h4 id="s-x2F-–full-contents"><a href="#s-x2F-–full-contents" class="headerlink" title="-s &#x2F; –full-contents:"></a>-s &#x2F; –full-contents:</h4><p>显示节的全部内容，通常与 -j 一起使用以请求特定节。默认情况下，显示所有非空的非 bss 节。默认情况下，任何压缩节将以压缩形式显示。要查看解压缩形式的内容，请在命令行中添加 -Z 选项。</p>
+<h4 id="S-x2F-–source"><a href="#S-x2F-–source" class="headerlink" title="-S &#x2F; –source"></a>-S &#x2F; –source</h4><p>如果可能，显示与反汇编内容交错的源代码。隐含 -d 选项。</p>
+<h4 id="–show-all-symbols"><a href="#–show-all-symbols" class="headerlink" title="–show-all-symbols"></a>–show-all-symbols</h4><p>反汇编时，显示与给定地址匹配的所有符号，而不仅仅是第一个符号。</p>
+<h4 id="–source-comment-x3D-txt"><a href="#–source-comment-x3D-txt" class="headerlink" title="–source-comment[&#x3D;txt]"></a>–source-comment[&#x3D;txt]</h4><p>类似于 -S 选项，但所有源代码行都以 txt 为前缀显示。通常，txt 是一个注释字符串，用于区分汇编代码和源代码。如果未提供 txt，则使用默认字符串 “# ”（井号后跟一个空格）。</p>
+<h4 id="–prefix-x3D-prefix"><a href="#–prefix-x3D-prefix" class="headerlink" title="–prefix&#x3D;prefix"></a>–prefix&#x3D;prefix</h4><p>指定在使用 -S 时添加到绝对路径的前缀。</p>
+<h4 id="–prefix-strip-x3D-level"><a href="#–prefix-strip-x3D-level" class="headerlink" title="–prefix-strip&#x3D;level"></a>–prefix-strip&#x3D;level</h4><p>指示从硬编码的绝对路径中剥离多少个初始目录名称。如果没有 –prefix&#x3D;prefix，则此选项无效。</p>
+<h4 id="–show-raw-insn"><a href="#–show-raw-insn" class="headerlink" title="–show-raw-insn"></a>–show-raw-insn</h4><p>反汇编指令时，以十六进制和符号形式打印指令。这是默认设置，除非使用了 –prefix-addresses。</p>
+<h5 id="–no-show-raw-insn"><a href="#–no-show-raw-insn" class="headerlink" title="–no-show-raw-insn"></a>–no-show-raw-insn</h5><p>反汇编指令时，不打印指令字节。这是使用 –prefix-addresses 时的默认设置。</p>
+<h4 id="–insn-width-x3D-width"><a href="#–insn-width-x3D-width" class="headerlink" title="–insn-width&#x3D;width"></a>–insn-width&#x3D;width</h4><p>反汇编指令时，在一行上显示 width 字节。</p>
+<h4 id="–visualize-jumps-x3D-color-x3D-extended-color-x3D-off"><a href="#–visualize-jumps-x3D-color-x3D-extended-color-x3D-off" class="headerlink" title="–visualize-jumps[&#x3D;color|&#x3D;extended-color|&#x3D;off]"></a>–visualize-jumps[&#x3D;color|&#x3D;extended-color|&#x3D;off]</h4><p>通过在起始地址和目标地址之间绘制 ASCII 艺术来可视化函数内的跳转。可选的 &#x3D;color 参数使用简单的终端颜色为输出添加颜色。或者，&#x3D;extended-color 参数将使用 8 位颜色添加颜色，但这些颜色可能不适用于所有终端。</p>
+<p>如果需要在启用 visualize-jumps 选项后禁用它，请使用 visualize-jumps&#x3D;off。</p>
+<h4 id="–disassembler-color-x3D-off-x2F-–disassembler-color-x3D-terminal-x2F-–disassembler-color-x3D-on-color-colour-x2F-–disassembler-color-x3D-extended-extended-color-extended-colour"><a href="#–disassembler-color-x3D-off-x2F-–disassembler-color-x3D-terminal-x2F-–disassembler-color-x3D-on-color-colour-x2F-–disassembler-color-x3D-extended-extended-color-extended-colour" class="headerlink" title="–disassembler-color&#x3D;off &#x2F; –disassembler-color&#x3D;terminal &#x2F; –disassembler-color&#x3D;on|color|colour &#x2F; –disassembler-color&#x3D;extended|extended-color|extended-colour"></a>–disassembler-color&#x3D;off &#x2F; –disassembler-color&#x3D;terminal &#x2F; –disassembler-color&#x3D;on|color|colour &#x2F; –disassembler-color&#x3D;extended|extended-color|extended-colour</h4><p>启用或禁用反汇编输出中的彩色语法高亮显示。默认行为由配置时的选项确定。请注意，并非所有架构都支持彩色语法高亮显示，并且根据使用的终端，彩色输出可能实际上不可读。<br>on 参数使用简单的终端颜色添加颜色。<br>terminal 参数执行相同操作，但仅当输出设备是终端时。<br>extended-color 参数类似于 on 参数，但使用 8 位颜色。这些颜色可能不适用于所有终端。<br>off 参数禁用彩色反汇编。</p>
+<h4 id="W-lLiaprmfFsoORtUuTgAckK-x2F-–dwarf-x3D-rawline-x3D-decodedline-x3D-info-x3D-abbrev-x3D-pubnames-x3D-aranges-x3D-macro-x3D-frames-x3D-frames-interp-x3D-str-x3D-str-offsets-x3D-loc-x3D-Ranges-x3D-pubtypes-x3D-trace-info-x3D-trace-abbrev-x3D-trace-aranges-x3D-gdb-index-x3D-addr-x3D-cu-index-x3D-links-x3D-follow-links"><a href="#W-lLiaprmfFsoORtUuTgAckK-x2F-–dwarf-x3D-rawline-x3D-decodedline-x3D-info-x3D-abbrev-x3D-pubnames-x3D-aranges-x3D-macro-x3D-frames-x3D-frames-interp-x3D-str-x3D-str-offsets-x3D-loc-x3D-Ranges-x3D-pubtypes-x3D-trace-info-x3D-trace-abbrev-x3D-trace-aranges-x3D-gdb-index-x3D-addr-x3D-cu-index-x3D-links-x3D-follow-links" class="headerlink" title="-W[lLiaprmfFsoORtUuTgAckK] &#x2F; –dwarf[&#x3D;rawline,&#x3D;decodedline,&#x3D;info,&#x3D;abbrev,&#x3D;pubnames,&#x3D;aranges,&#x3D;macro,&#x3D;frames,&#x3D;frames-interp,&#x3D;str,&#x3D;str-offsets,&#x3D;loc,&#x3D;Ranges,&#x3D;pubtypes,&#x3D;trace_info,&#x3D;trace_abbrev,&#x3D;trace_aranges,&#x3D;gdb_index,&#x3D;addr,&#x3D;cu_index,&#x3D;links,&#x3D;follow-links]"></a>-W[lLiaprmfFsoORtUuTgAckK] &#x2F; –dwarf[&#x3D;rawline,&#x3D;decodedline,&#x3D;info,&#x3D;abbrev,&#x3D;pubnames,&#x3D;aranges,&#x3D;macro,&#x3D;frames,&#x3D;frames-interp,&#x3D;str,&#x3D;str-offsets,&#x3D;loc,&#x3D;Ranges,&#x3D;pubtypes,&#x3D;trace_info,&#x3D;trace_abbrev,&#x3D;trace_aranges,&#x3D;gdb_index,&#x3D;addr,&#x3D;cu_index,&#x3D;links,&#x3D;follow-links]</h4><p>显示文件中 DWARF 调试节的内容（如果存在）。压缩的调试节在显示之前会自动解压缩（临时）。如果开关后面跟有一个或多个可选字母或单词，则仅转储这些类型的数据。字母和单词对应以下信息：</p>
+<ul>
+<li><p>a 或 &#x3D;abbrev：显示 .debug_abbrev 节的内容。</p>
+</li>
+<li><p>A 或 &#x3D;addr：显示 .debug_addr 节的内容。</p>
+</li>
+<li><p>c 或 &#x3D;cu_index：显示 .debug_cu_index 和&#x2F;或 .debug_tu_index 节的内容。</p>
+</li>
+<li><p>f 或 &#x3D;frames：显示 .debug_frame 节的原始内容。</p>
+</li>
+<li><p>F 或 &#x3D;frames-interp：显示 .debug_frame 节的解释内容。</p>
+</li>
+<li><p>g 或 &#x3D;gdb_index：显示 .gdb_index 和&#x2F;或 .debug_names 节的内容。</p>
+</li>
+<li><p>i 或 &#x3D;info：显示 .debug_info 节的内容。注意：此选项的输出也可以通过使用 –dwarf-depth 和 –dwarf-start 选项来限制。</p>
+</li>
+<li><p>k 或 &#x3D;links：显示 .gnu_debuglink、.gnu_debugaltlink 和 .debug_sup 节的内容（如果存在）。还显示任何链接到单独的 DWARF 对象文件（dwo）的链接，如果它们由 .debug_info 节中的 DW_AT_GNU_dwo_name 或 DW_AT_dwo_name 属性指定。</p>
+</li>
+<li><p>K 或 &#x3D;follow-links 显示在链接的单独调试信息文件中找到的任何选定调试节的内容。如果同一调试节存在于多个文件中，这可能会导致显示多个版本的相同调试节。<br>此外，当显示 DWARF 属性时，如果发现引用单独调试信息文件的形式，则也会显示引用的内容。<br>注意：在某些发行版中，此选项默认启用。可以通过 N 调试选项禁用它。可以在配置 binutils 时通过 –enable-follow-debug-links&#x3D;yes 或 –enable-follow-debug-links&#x3D;no 选项选择默认值。如果不使用这些选项，则默认启用调试链接的跟随。<br>注意：如果在构建 binutils 时启用了 debuginfod 协议支持，则此选项还将尝试联系 DEBUGINFOD_URLS 环境变量中提到的任何 debuginfod 服务器。这可能需要一些时间来解析。可以通过 &#x3D;do-not-use-debuginfod 调试选项禁用此行为。</p>
+</li>
+<li><p>N 或 &#x3D;no-follow-links 禁用跟随单独调试信息文件的链接。</p>
+</li>
+<li><p>D 或 &#x3D;use-debuginfod 如果需要跟随调试链接，则启用联系 debuginfod 服务器。这是默认行为。</p>
+</li>
+<li><p>E 或 &#x3D;do-not-use-debuginfod 在需要跟随调试链接时禁用联系 debuginfod 服务器。</p>
+</li>
+<li><p>l 或 &#x3D;rawline 以原始格式显示 .debug_line 节的内容。</p>
+</li>
+<li><p>L 或 &#x3D;decodedline 显示 .debug_line 节的解释内容。</p>
+</li>
+<li><p>m 或 &#x3D;macro 显示 .debug_macro 和&#x2F;或 .debug_macinfo 节的内容。</p>
+</li>
+<li><p>o 或 &#x3D;loc 显示 .debug_loc 和&#x2F;或 .debug_loclists 节的内容。</p>
+</li>
+<li><p>O 或 &#x3D;str-offsets 显示 .debug_str_offsets 节的内容。</p>
+</li>
+<li><p>p 或 &#x3D;pubnames 显示 .debug_pubnames 和&#x2F;或 .debug_gnu_pubnames 节的内容。</p>
+</li>
+<li><p>r 或 &#x3D;aranges 显示 .debug_aranges 节的内容。</p>
+</li>
+<li><p>R 或 &#x3D;Ranges 显示 .debug_ranges 和&#x2F;或 .debug_rnglists 节的内容。</p>
+</li>
+<li><p>s 或 &#x3D;str 显示 .debug_str、.debug_line_str 和&#x2F;或 .debug_str_offsets 节的内容。</p>
+</li>
+<li><p>t 或 &#x3D;pubtype 显示 .debug_pubtypes 和&#x2F;或 .debug_gnu_pubtypes 节的内容。</p>
+</li>
+<li><p>T 或 &#x3D;trace_aranges 显示 .trace_aranges 节的内容。</p>
+</li>
+<li><p>u 或 &#x3D;trace_abbrev 显示 .trace_abbrev 节的内容。</p>
+</li>
+<li><p>U 或 &#x3D;trace_info 显示 .trace_info 节的内容。</p>
+</li>
+</ul>
+<h4 id="–dwarf-depth-x3D-n"><a href="#–dwarf-depth-x3D-n" class="headerlink" title="–dwarf-depth&#x3D;n"></a>–dwarf-depth&#x3D;n</h4><p>限制.debug_info section的转储深度为n层。这只在使用–debug-dump&#x3D;info 选项时有用。默认情况下会打印所有的DIEs；n的特殊值0也会有同样的效果。当n为非零值时，n层或更深层的DIEs将不会被打印。n的范围是从0开始。</p>
+<h4 id="–dwarf-start-x3D-n"><a href="#–dwarf-start-x3D-n" class="headerlink" title="–dwarf-start&#x3D;n"></a>–dwarf-start&#x3D;n</h4><p>仅打印从编号为n的DIE开始的DIE。这只在使用–debug-dump&#x3D;info选项时有用。如果指定了这个选项，将会抑制任何头信息的打印以及编号为n之前的所有DIEs的打印。只打印指定DIE的兄弟和子代。</p>
+<p>可以与–dwarf-depth选项结合使用。</p>
+<h4 id="–dwarf-check"><a href="#–dwarf-check" class="headerlink" title="–dwarf-check"></a>–dwarf-check</h4><p>启用对Dwarf信息的一致性进行额外检查。</p>
+<h4 id="–ctf-x3D-section"><a href="#–ctf-x3D-section" class="headerlink" title="–ctf[&#x3D;section]"></a>–ctf[&#x3D;section]</h4><p>显示指定CTF section的内容。CTF section本身包含许多子section，所有子section将按顺序显示。默认情况下，显示名为.ctf的部分，这是由ld生成的名称。</p>
+<h4 id="–ctf-parent-x3D-member"><a href="#–ctf-parent-x3D-member" class="headerlink" title="–ctf-parent&#x3D;member"></a>–ctf-parent&#x3D;member</h4><p>如果CTF section包含模糊定义的类型，它将由许多CTF字典的归档组成，所有这些字典都继承自一个包含明确类型的字典。默认情况下，这个成员命名为.ctf，就像包含它的部分一样，但可以在链接时使用ctf_link_set_memb_name_changer 函数更改这个名称。在查看由使用名称更改器重命名父归档成员的链接器创建的CTF归档时，可以使用–ctf-parent 指定用于父项的名称。</p>
+<h4 id="–sframe-x3D-section"><a href="#–sframe-x3D-section" class="headerlink" title="–sframe[&#x3D;section]"></a>–sframe[&#x3D;section]</h4><p>显示指定SFrame section的内容。默认情况下，显示名为.sframe的部分，这是由ld生成的名称。</p>
+<h4 id="G-–stabs"><a href="#G-–stabs" class="headerlink" title="-G, –stabs"></a>-G, –stabs</h4><p>显示请求的任何section的全部内容。显示ELF文件中.stab、.stab.index和.stab.excl部分的内容。这只在系统（如Solaris 2.0）中使用，其中.stab调试符号表条目位于ELF部分中。在大多数其他文件格式中，调试符号表条目与链接符号交错可见，并在–syms输出中可见。</p>
+<h4 id="–start-address-x3D-address"><a href="#–start-address-x3D-address" class="headerlink" title="–start-address&#x3D;address"></a>–start-address&#x3D;address</h4><p>从指定地址开始显示数据。这会影响-d、-r和-s选项的输出。</p>
+<h4 id="–stop-address-x3D-address"><a href="#–stop-address-x3D-address" class="headerlink" title="–stop-address&#x3D;address"></a>–stop-address&#x3D;address</h4><p>在指定地址处停止显示数据。这会影响-d、-r和-s选项的输出。</p>
+<h4 id="t-x2F-–syms"><a href="#t-x2F-–syms" class="headerlink" title="-t &#x2F; –syms"></a>-t &#x2F; –syms</h4><p>打印文件的符号表条目。虽然显示格式不同，但这类似于nm程序提供的信息。输出格式取决于被转储文件的格式，主要有两种类型。一个看起来像这样：<br>[  4](sec  3)(fl 0x00)(ty   0)(scl   3) (nx 1) 0x00000000 .bss<br>[  6](sec  1)(fl 0x00)(ty   0)(scl   2) (nx 0) 0x00000000 fred<br>其中，方括号内的数字是符号表条目的编号，sec数字是节号，fl值是符号的标志位，ty数字是符号的类型，scl数字是符号的存储类别，nx值是与符号关联的辅助条目数。最后两个字段是符号的值和名称。</p>
+<p>另一种常见的输出格式，通常用于基于ELF的文件，像这样：<br>00000000 l    d  .bss   00000000 .bss<br>00000000 g       .text  00000000 fred<br>这里，第一个数字是符号的值（有时称为地址）。下一个字段实际上是一组字符和空格，表示设置在符号上的标志位。这些字符如下所述。接下来是符号所属的节名，如果节是绝对的（即不连接任何节），则为<em>ABS</em>；如果节在被转储的文件中被引用但未定义，则为<em>UND</em>。<br>节名之后是另一个字段，一个数字，对于常见符号是对齐，对其他符号是大小。最后是符号的名称。<br>标志字符分为7组如下：<br>l g u ! 符号是本地符号(l)，全局符号(g)，唯一全局符号(u)，既不是全局也不是本地符号（一个空格）或既是全局又是本地符号(!)。一个符号可能既不是本地也不是全局符号出于多种原因，例如因为它用于调试，但如果它既是本地符号又是全局符号，可能是一个错误的指示。唯一全局符号是对ELF符号绑定的GNU扩展。对于这样的符号，动态链接器将确保在整个进程中仅使用一个具有该名称和类型的符号。<br>w 符号是弱符号(w)或强符号（一个空格）。<br>C 符号表示构造函数符号(C)或普通符号（一个空格）。<br>W 符号是警告符号(W)或正常符号（一个空格）。警告符号的名称是一个消息，如果引用了警告符号后面的符号，就会显示此消息。<br>I i 符号是对另一个符号的间接引用(I)，在重定位处理期间要评估的函数(i)或普通符号（一个空格）。<br>d D 符号是调试符号(d)或动态符号(D)或普通符号（一个空格）。<br>F f O 符号是函数名称(F)，文件名称(f)，对象名称(O)或只是普通符号（一个空格）。</p>
+<h4 id="T-x2F-–dynamic-syms"><a href="#T-x2F-–dynamic-syms" class="headerlink" title="-T &#x2F; –dynamic-syms"></a>-T &#x2F; –dynamic-syms</h4><p>打印文件的动态符号表条目。这仅对动态对象有意义，例如某些类型的共享库。这类似于使用nm程序时带有-D（–dynamic）选项所提供的信息。<br>输出格式类似于–syms选项生成的格式，不同之处在于在符号名称之前插入了一个额外字段，给出了与符号关联的版本信息。如果版本是用于解析未版本化引用的默认版本，则按原样显示，否则将其放在括号中。</p>
+<h4 id="–special-syms"><a href="#–special-syms" class="headerlink" title="–special-syms"></a>–special-syms</h4><p>在显示符号时包括目标认为特殊的符号，这些符号通常不会引起用户的兴趣。</p>
+<h4 id="U-d-i-l-e-x-h-x2F-–unicode-x3D-default-invalid-locale-escape-hex-highlight"><a href="#U-d-i-l-e-x-h-x2F-–unicode-x3D-default-invalid-locale-escape-hex-highlight" class="headerlink" title="-U [d|i|l|e|x|h] &#x2F;–unicode&#x3D;[default|invalid|locale|escape|hex|highlight]"></a>-U [d|i|l|e|x|h] &#x2F;–unicode&#x3D;[default|invalid|locale|escape|hex|highlight]</h4><p>控制字符串中UTF-8编码的多字节字符的显示。默认（–unicode&#x3D;default）是对它们不做特殊处理。–unicode&#x3D;locale选项会在当前区域设置下显示序列，当前区域设置可能支持也可能不支持它们。–unicode&#x3D;hex和–unicode&#x3D;invalid选项将它们显示为用尖括号或大括号括起来的十六进制字节序列。<br>–unicode&#x3D;escape选项将它们显示为转义序列（\uxxxx），–unicode&#x3D;highlight选项将它们显示为高亮红色的转义序列（如果输出设备支持）。着色旨在引起人们对可能意料之外的Unicode序列的注意。</p>
+<h4 id="V-–version"><a href="#V-–version" class="headerlink" title="-V –version"></a>-V –version</h4><p>打印objdump的版本号并退出。</p>
+<h4 id="x-–all-headers"><a href="#x-–all-headers" class="headerlink" title="-x –all-headers"></a>-x –all-headers</h4><p>显示所有可用的头信息，包括符号表和重定位条目。使用-x等同于指定了-a -f -h -p -r -t。</p>
+<h4 id="w-–wide"><a href="#w-–wide" class="headerlink" title="-w –wide"></a>-w –wide</h4><p>将某些行格式化为适用于超过80列的输出设备。同时在显示时不要截断符号名称。</p>
+<h4 id="z-–disassemble-zeroes"><a href="#z-–disassemble-zeroes" class="headerlink" title="-z –disassemble-zeroes"></a>-z –disassemble-zeroes</h4><p>通常反汇编输出会跳过零块。此选项指示反汇编器像处理其他数据一样反汇编这些块。</p>
+<h4 id="Z-–decompress"><a href="#Z-–decompress" class="headerlink" title="-Z –decompress"></a>-Z –decompress</h4><p>-Z选项应与-s选项一起使用。它指示objdump在显示内容之前解压任何压缩的部分。</p>
+<h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs-2.42/binutils/objdump.html">https://sourceware.org/binutils/docs-2.42/binutils/objdump.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2024/08/19/GUN-binary-utilities-objdump/" title="GNU binary utilities —— objdump">http://fengxun2017.github.io/2024/08/19/GUN-binary-utilities-objdump/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/08/01/GUN-binary-utilities-objcopy/" rel="prev" title="GNU binary utilities —— objcopy">
+                  <i class="fa fa-chevron-left"></i> GNU binary utilities —— objcopy
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">347k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">7:14</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

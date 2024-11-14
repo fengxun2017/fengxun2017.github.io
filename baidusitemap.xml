@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://fengxun2017.github.io/2024/08/19/GUN-binary-utilities-objdump/</loc>
+    <lastmod>2024-11-14</lastmod>
+  </url>
+  <url>
     <loc>http://fengxun2017.github.io/2024/08/01/GUN-binary-utilities-objcopy/</loc>
     <lastmod>2024-08-16</lastmod>
   </url>
