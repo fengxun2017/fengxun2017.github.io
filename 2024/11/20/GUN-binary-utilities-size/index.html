@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：MEMORY Command">
+    <meta name="description" content="GNU binary utilities (GNU Binutils) version 2.42: —— size">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GNU linker ld —— MEMORY Command">
-<meta property="og:url" content="http://fengxun2017.github.io/2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/index.html">
+<meta property="og:title" content="GNU binary utilities —— size">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/11/20/GUN-binary-utilities-size/index.html">
 <meta property="og:site_name" content="fx">
-<meta property="og:description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：MEMORY Command">
+<meta property="og:description" content="GNU binary utilities (GNU Binutils) version 2.42: —— size">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-06T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-07-07T15:41:32.623Z">
+<meta property="article:published_time" content="2024-11-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-20T15:22:21.559Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://fengxun2017.github.io/2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/">
+<link rel="canonical" href="http://fengxun2017.github.io/2024/11/20/GUN-binary-utilities-size/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/","path":"2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/","title":"GNU linker ld —— MEMORY Command"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/11/20/GUN-binary-utilities-size/","path":"2024/11/20/GUN-binary-utilities-size/","title":"GNU binary utilities —— size"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>GNU linker ld —— MEMORY Command | fx</title>
+<title>GNU binary utilities —— size | fx</title>
   
 
 
@@ -121,7 +121,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">参考连接：</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#A-B-G-%E2%80%93format-x3D-compatibility"><span class="nav-number">1.</span> <span class="nav-text">-A -B -G –format&#x3D;compatibility</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93help-h-H"><span class="nav-number">2.</span> <span class="nav-text">–help -h -H -?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d-o-x-%E2%80%93radix-x3D-number"><span class="nav-number">3.</span> <span class="nav-text">-d -o -x –radix&#x3D;number</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93common"><span class="nav-number">4.</span> <span class="nav-text">–common</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#t-%E2%80%93totals"><span class="nav-number">5.</span> <span class="nav-text">-t –totals</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93target-x3D-bfdname"><span class="nav-number">6.</span> <span class="nav-text">–target&#x3D;bfdname</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#v-V-%E2%80%93version"><span class="nav-number">7.</span> <span class="nav-text">-v -V –version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#f"><span class="nav-number">8.</span> <span class="nav-text">-f</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number">9.</span> <span class="nav-text">参考连接：</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -182,7 +182,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/11/20/GUN-binary-utilities-size/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -195,12 +195,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="GNU linker ld —— MEMORY Command | fx">
+      <meta itemprop="name" content="GNU binary utilities —— size | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          GNU linker ld —— MEMORY Command
+          GNU binary utilities —— size
         </h1>
 
         <div class="post-meta-container">
@@ -211,7 +211,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2024-07-07 00:00:00" itemprop="dateCreated datePublished" datetime="2024-07-07T00:00:00+08:00">2024-07-07</time>
+      <time title="创建时间：2024-11-20 00:00:00" itemprop="dateCreated datePublished" datetime="2024-11-20T00:00:00+08:00">2024-11-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -219,7 +219,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/GUN-linker/" itemprop="url" rel="index"><span itemprop="name">GUN-linker</span></a>
+          <a href="/categories/GNU-binary-utilities/" itemprop="url" rel="index"><span itemprop="name">GNU-binary-utilities</span></a>
         </span>
     </span>
 
@@ -230,7 +230,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.5k</span>
+      <span>1.4k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -249,35 +249,42 @@
     
     <div class="post-body" itemprop="articleBody">
         <center>
-GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：MEMORY Command
+GNU binary utilities (GNU Binutils) version 2.42: —— size
 </center>
 
 <span id="more"></span>
 
 <hr>
-<p><strong>个人笔记，仅供参考！！</strong><br>链接器的默认配置允许分配所有可用内存。可以使用<strong>MEMOR</strong>Y命令来覆盖此设置。</p>
-<p>MEMORY 命令描述了一个内存块的位置和大小。可以使用 MEMORY 命令来描述哪些内存区域可以被链接器使用，以及哪些内存区域必须避免使用。此外，还可以将输出段分配到特定的内存区域。链接器会根据这些内存区域设置段的地址，并在内存区域变得过满时发出警告。但是，链接器不会重新排列段以适应可用的内存区域。</p>
-<p>每个链接脚本可以包含多个 MEMORY 命令，但所有定义的内存块都被视为在单个 MEMORY 命令中指定的。MEMORY 命令的语法如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MEMORY</span><br><span class="line">&#123;</span><br><span class="line">  name [(attr)] : ORIGIN = origin, LENGTH = len</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>个人笔记，仅供参考！！</strong></p>
+<p>size [-A|-B|-G|–format&#x3D;compatibility] [–help] [-d|-o|-x|–radix&#x3D;number] [–common] [-t|–totals] [–target&#x3D;bfdname] [-V|–version] [-f] [objfile…]</p>
+<p>GNU size 工具列出每个二进制文件的节大小和总大小。如果未指定文件，则默认使用 a.out。<br>命令行选项的含义如下：</p>
+<h4 id="A-B-G-–format-x3D-compatibility"><a href="#A-B-G-–format-x3D-compatibility" class="headerlink" title="-A -B -G –format&#x3D;compatibility"></a>-A -B -G –format&#x3D;compatibility</h4><p>使用这些选项之一，可以选择输出格式：</p>
+<p>-A 或 –format&#x3D;sysv：使用 System V size 格式</p>
+<p>-B 或 –format&#x3D;berkeley：使用 Berkeley size 格式（默认）</p>
+<p>-G 或 –format&#x3D;gnu：使用 GNU 格式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ size --format=Berkeley ranlib size</span><br><span class="line">   text    data     bss     dec     hex filename</span><br><span class="line"> 294880   81920   11592  388392   5ed28 ranlib</span><br><span class="line"> 294880   81920   11888  388688   5ee50 size</span><br></pre></td></tr></table></figure>
+<p>Berkeley 输出格式将只读数据计入 text 列，而非 data 列；dec 和 hex 列分别以十进制和十六进制显示 text、data 和 bss 列的总和。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ size --format=GNU ranlib size</span><br><span class="line">      text       data        bss      total filename</span><br><span class="line">    279880      96920      11592     388392 ranlib</span><br><span class="line">    279880      96920      11888     388688 size</span><br></pre></td></tr></table></figure>
+<p>GNU 格式将只读数据计入 data 列，而非 text 列，仅在 total 列显示总和。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$ size --format=SysV ranlib size</span><br><span class="line">ranlib  :</span><br><span class="line">section         size         addr</span><br><span class="line">.text         294880         8192</span><br><span class="line">.data          81920       303104</span><br><span class="line">.bss           11592       385024</span><br><span class="line">Total         388392</span><br><span class="line"></span><br><span class="line">size  :</span><br><span class="line">section         size         addr</span><br><span class="line">.text         294880         8192</span><br><span class="line">.data          81920       303104</span><br><span class="line">.bss           11888       385024</span><br><span class="line">Total         388688</span><br></pre></td></tr></table></figure>
 
-<p><code>name</code> 是在链接脚本中用于引用该区域的名称。该区域名称在链接脚本之外没有其他含义。区域名称存储在单独的命名空间中，不会与符号名称、文件名称或段名称冲突。每个内存区域在 MEMORY 命令中必须具有唯一的名称。但是，可以使用<strong>REGION_ALIAS</strong>命令为现有内存区域添加别名。</p>
-<p><code>attr</code> 是一个可选的属性列表，<strong>用于指定是否将某个未在链接脚本中显式映射的输入段放入特定的内存区域</strong>。如在<strong>SECTIONS</strong>命令中所描述，如果你没有为某个输入段指定输出段，链接器将创建一个与输入段同名的输出段。如果定义了区域属性，链接器将使用它们为它创建的输出段选择合适的区域。<br><code>attr</code> 字符串只能由以下字符组成：</p>
+<h4 id="–help-h-H"><a href="#–help-h-H" class="headerlink" title="–help -h -H -?"></a>–help -h -H -?</h4><p>显示可接受参数和选项的摘要。</p>
+<h4 id="d-o-x-–radix-x3D-number"><a href="#d-o-x-–radix-x3D-number" class="headerlink" title="-d -o -x –radix&#x3D;number"></a>-d -o -x –radix&#x3D;number</h4><p>控制每个节的大小显示格式：</p>
 <ul>
-<li>R：只读段</li>
-<li>W：读&#x2F;写段</li>
-<li>X：可执行段</li>
-<li>A：可分配段</li>
-<li>I：已初始化段</li>
-<li>L：与‘I’相同</li>
-<li>!：反转随后的任何属性的含义</li>
-<li>如果某个未映射的段与列出的属性中的任何一个匹配（除了‘!’），它将被放置在对应内存区域中。‘!’ 属性会反转随后的属性的匹配，因此，只有在该段不匹配随后列出的属性时，未映射的段才会放置在内存区域中。因此，属性字符串“RW!X”将匹配具有‘R’和‘W’属性的任何未映射段，但前提是该段不具有‘X’属性。</li>
+<li><p>-d 或 –radix&#x3D;10：十进制</p>
+</li>
+<li><p>-o 或 –radix&#x3D;8：八进制</p>
+</li>
+<li><p>-x 或 –radix&#x3D;16：十六进制</p>
+</li>
 </ul>
-<p><code>origin</code> 是区域的起始地址的数值表达式。该表达式必须求值为常量，不能包含任何符号。关键字<strong>ORIGIN</strong>可以缩写为<strong>org</strong>或<strong>o</strong>（但不能缩写为ORG）。<br><code>len</code> 是区域的大小（以字节为单位）的表达式。与起始地址表达式一样，该表达式必须仅为数字，并且必须求值为常量。关键字<strong>LENGTH</strong>可以缩写为<strong>len</strong>或<strong>l</strong>。</p>
-<p>以下是一个示例，这个示例中指定了两个可用于分配的内存区域：一个从‘0’开始，大小为256k字节，另一个从‘0x40000000’开始，大小为4M字节。连接器将把未显式映射到内存区域且为只读或可执行的每个段放置到‘rom’内存区域中。连接器将把未显式映射到内存区域的其他段放置到‘ram’内存区域中。</p>
-<p>MEMORY<br>{<br>  rom (rx)  : ORIGIN &#x3D; 0, LENGTH &#x3D; 256K<br>  ram (!rx) : ORIGIN &#x3D; 0x40000000, LENGTH &#x3D; 4M<br>}</p>
-<p>一旦定义了一个内存区域，可以通过使用输出段属性<code>&gt;region</code>来指示连接器将特定输出段放置到该内存区域中。<br>如果未为输出段指定地址，则连接器将将地址设置为内存区域内的下一个可用地址。如果指向内存区域的组合输出段对该区域来说太大，连接器将发出错误消息。</p>
-<p>可以通过**ORIGIN(memory)<strong>和</strong>LENGTH(memory)**函数在表达式中访问内存的起始地址和长度：</p>
-<h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/MEMORY.html">https://sourceware.org/binutils/docs/ld/MEMORY.html</a></p>
+<p>总大小始终以两种基数显示；对于 -d 或 -x，显示十进制和十六进制；对于 -o，显示八进制和十六进制。</p>
+<h4 id="–common"><a href="#–common" class="headerlink" title="–common"></a>–common</h4><p>显示每个文件中的公共符号总大小。使用 Berkeley 或 GNU 格式时，这些符号包含在 bss 大小中。</p>
+<h4 id="t-–totals"><a href="#t-–totals" class="headerlink" title="-t –totals"></a>-t –totals</h4><p>显示所有列出的对象的总数（仅适用于 Berkeley 或 GNU 格式）。</p>
+<h4 id="–target-x3D-bfdname"><a href="#–target-x3D-bfdname" class="headerlink" title="–target&#x3D;bfdname"></a>–target&#x3D;bfdname</h4><p>指定 objfile 的目标代码格式为 bfdname。通常不需要此选项，因为 size 可以自动识别许多格式。</p>
+<h4 id="v-V-–version"><a href="#v-V-–version" class="headerlink" title="-v -V –version"></a>-v -V –version</h4><p>显示 size 的版本号。</p>
+<h4 id="f"><a href="#f" class="headerlink" title="-f"></a>-f</h4><p>被忽略。此选项由其他版本的 size 程序使用，但不受 GNU Binutils 版本支持。</p>
+<h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs-2.42/binutils/size.html">https://sourceware.org/binutils/docs-2.42/binutils/size.html</a></p>
 
     </div>
 
@@ -295,7 +302,7 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：MEMORY Command
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/" title="GNU linker ld —— MEMORY Command">http://fengxun2017.github.io/2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/</a>
+      <a href="http://fengxun2017.github.io/2024/11/20/GUN-binary-utilities-size/" title="GNU binary utilities —— size">http://fengxun2017.github.io/2024/11/20/GUN-binary-utilities-size/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -308,14 +315,11 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：MEMORY Command
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/07/02/GUN-linker-Linker-Scripts-SECTIONS-Command/" rel="prev" title="GNU linker ld —— SECTIONS Command">
-                  <i class="fa fa-chevron-left"></i> GNU linker ld —— SECTIONS Command
+                <a href="/2024/08/19/GUN-binary-utilities-objdump/" rel="prev" title="GNU binary utilities —— objdump">
+                  <i class="fa fa-chevron-left"></i> GNU binary utilities —— objdump
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/07/09/GUN-linker-Linker-Scripts-PHDRS-Command/" rel="next" title="GNU linker ld —— PHDRS Command">
-                  GNU linker ld —— PHDRS Command <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
