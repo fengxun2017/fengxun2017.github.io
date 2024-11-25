@@ -19,27 +19,27 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：PHDRS Command">
+    <meta name="description" content="GNU binary utilities (GNU Binutils) version 2.42: —— strings">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GNU linker ld —— PHDRS Command">
-<meta property="og:url" content="http://fengxun2017.github.io/2024/07/09/GUN-linker-Linker-Scripts-PHDRS-Command/index.html">
+<meta property="og:title" content="GNU binary utilities —— strings">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/11/21/GUN-binary-utilities-string/index.html">
 <meta property="og:site_name" content="fx">
-<meta property="og:description" content="GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：PHDRS Command">
+<meta property="og:description" content="GNU binary utilities (GNU Binutils) version 2.42: —— strings">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-07-08T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-07-10T15:45:50.739Z">
+<meta property="article:published_time" content="2024-11-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-21T15:09:05.221Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="http://fengxun2017.github.io/2024/07/09/GUN-linker-Linker-Scripts-PHDRS-Command/">
+<link rel="canonical" href="http://fengxun2017.github.io/2024/11/21/GUN-binary-utilities-string/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/07/09/GUN-linker-Linker-Scripts-PHDRS-Command/","path":"2024/07/09/GUN-linker-Linker-Scripts-PHDRS-Command/","title":"GNU linker ld —— PHDRS Command"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/11/21/GUN-binary-utilities-string/","path":"2024/11/21/GUN-binary-utilities-string/","title":"GNU binary utilities —— strings"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>GNU linker ld —— PHDRS Command | fx</title>
+<title>GNU binary utilities —— strings | fx</title>
   
 
 
@@ -121,7 +121,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">参考连接：</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-x2F-%E2%80%93all-x2F"><span class="nav-number">1.</span> <span class="nav-text">-a &#x2F; –all &#x2F; -</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#d-x2F-%E2%80%93data"><span class="nav-number">2.</span> <span class="nav-text">-d &#x2F; –data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#f-x2F-%E2%80%93print-file-name"><span class="nav-number">3.</span> <span class="nav-text">-f &#x2F; –print-file-name</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%80%93help"><span class="nav-number">4.</span> <span class="nav-text">–help</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#min-len-x2F-n-min-len-x2F-%E2%80%93bytes-x3D-min-len"><span class="nav-number">5.</span> <span class="nav-text">-min-len &#x2F; -n min-len &#x2F; –bytes&#x3D;min-len</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#o"><span class="nav-number">6.</span> <span class="nav-text">-o</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#t-radix-x2F-%E2%80%93radix-x3D-radix"><span class="nav-number">7.</span> <span class="nav-text">-t radix &#x2F; –radix&#x3D;radix</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#e-encoding-x2F-%E2%80%93encoding-x3D-encoding"><span class="nav-number">8.</span> <span class="nav-text">-e encoding &#x2F; –encoding&#x3D;encoding</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#U-d-i-l-e-x-h-x2F-%E2%80%93unicode-x3D-default-invalid-locale-escape-hex-highlight"><span class="nav-number">9.</span> <span class="nav-text">-U [d|i|l|e|x|h] &#x2F; –unicode&#x3D;[default|invalid|locale|escape|hex|highlight]</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#T-bfdname-x2F-%E2%80%93target-x3D-bfdname"><span class="nav-number">10.</span> <span class="nav-text">-T bfdname &#x2F; –target&#x3D;bfdname</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#v-x2F-V-x2F-%E2%80%93version"><span class="nav-number">11.</span> <span class="nav-text">-v &#x2F; -V &#x2F; –version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#w-x2F-%E2%80%93include-all-whitespace"><span class="nav-number">12.</span> <span class="nav-text">-w &#x2F; –include-all-whitespace</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#s-x2F-%E2%80%93output-separator"><span class="nav-number">13.</span> <span class="nav-text">-s &#x2F; –output-separator</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number">14.</span> <span class="nav-text">参考连接：</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -182,7 +182,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/07/09/GUN-linker-Linker-Scripts-PHDRS-Command/">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/11/21/GUN-binary-utilities-string/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -195,12 +195,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="GNU linker ld —— PHDRS Command | fx">
+      <meta itemprop="name" content="GNU binary utilities —— strings | fx">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          GNU linker ld —— PHDRS Command
+          GNU binary utilities —— strings
         </h1>
 
         <div class="post-meta-container">
@@ -211,7 +211,7 @@
       </span>
       <span class="post-meta-item-text">发表于</span>
 
-      <time title="创建时间：2024-07-09 00:00:00" itemprop="dateCreated datePublished" datetime="2024-07-09T00:00:00+08:00">2024-07-09</time>
+      <time title="创建时间：2024-11-21 00:00:00" itemprop="dateCreated datePublished" datetime="2024-11-21T00:00:00+08:00">2024-11-21</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -219,7 +219,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/GUN-linker/" itemprop="url" rel="index"><span itemprop="name">GUN-linker</span></a>
+          <a href="/categories/GNU-binary-utilities/" itemprop="url" rel="index"><span itemprop="name">GNU-binary-utilities</span></a>
         </span>
     </span>
 
@@ -230,7 +230,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>2.4k</span>
+      <span>2.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -249,57 +249,33 @@
     
     <div class="post-body" itemprop="articleBody">
         <center>
-GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：PHDRS Command
+GNU binary utilities (GNU Binutils) version 2.42: —— strings
 </center>
 
 <span id="more"></span>
 
 <hr>
 <p><strong>个人笔记，仅供参考！！</strong></p>
-<p><strong>PHDRS</strong> 命令在链接脚本中的作用和目的是精确指定程序头（program headers）。</p>
-<p>ELF（Executable and Linkable Format，可执行与可链接格式）的目标文件格式使用程序头（也称为段头）来描述如何将程序加载到内存中。可以使用 objdump 程序的 -p 选项来打印这些程序头。</p>
-<p>程序头是一组数据结构，它们以二进制格式存储在可执行文件中。在 ELF 文件中，它们通常位于文件头之后，紧接着是各个段的数据。每个段对应于可执行文件中的一部分数据，例如代码、只读数据、只写数据等。而程序头告诉系统加载器如何将这些段加载到内存中。启动可执行程序时，系统加载器会读取程序头，以确定如何加载程序。<br>每个程序头具有以下字段：</p>
-<ul>
-<li>p_type：指示段的类型（例如加载段、动态段等）。</li>
-<li>p_offset：指示段在文件中的偏移量。</li>
-<li>p_vaddr：指示段在内存中的虚拟地址。</li>
-<li>p_filesz：指示段在文件中的大小。</li>
-<li>p_memsz：指示段在内存中的大小。</li>
-<li>p_flags：指示段的标志（例如可读、可写、可执行等）。</li>
-</ul>
-<p>链接器默认会创建合理的程序头。但在某些情况下，可能需要更精确地指定程序头。可以使用 <strong>PHDRS</strong> 命令来实现这一目的。当链接器在链接脚本中看到 <strong>PHDRS</strong> 命令时，它将仅创建指定的程序头，而不会创建其他程序头。</p>
-<p>链接器只在生成 ELF 输出文件时关注 PHDRS 命令。在其他情况下，链接器将简单地忽略 PHDRS。</p>
-<p> <strong>PHDRS</strong> 命令的语法如下。其中 PHDRS、FILEHDR、AT 和 FLAGS 是关键字。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PHDRS</span><br><span class="line">&#123;</span><br><span class="line">  name type [ FILEHDR ] [ PHDRS ] [ AT ( address ) ]</span><br><span class="line">        [ FLAGS ( flags ) ] ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>name</code> 仅用于链接脚本中的 SECTIONS 命令的引用。它不会放入输出文件中。程序头名称存储在单独的命名空间中，不会与符号名称、文件名或节名称冲突。每个程序头必须具有唯一的名称。这些头按顺序处理，通常会映射到按升序加载地址排列的段。</p>
-<p><code>type</code> 可以是以下之一。数字表示关键字的值。</p>
-<ul>
-<li>PT_NULL（0）：表示未使用的程序头。</li>
-<li>PT_LOAD（1）：表示此程序头描述要从文件中加载的段。</li>
-<li>PT_DYNAMIC（2）：表示包含动态链接信息的段。</li>
-<li>PT_INTERP（3）：表示包含程序解释器名称的段。</li>
-<li>PT_NOTE（4）：表示包含注释信息的段。</li>
-<li>PT_SHLIB（5）：保留的程序头类型，由 ELF ABI 定义但未指定。</li>
-<li>PT_PHDR（6）：表示包含程序头的段。</li>
-<li>PT_TLS（7）：指示包含线程本地存储的段。</li>
-<li>expression ：给出程序头的数字类型的表达式。这可以用于上面没有定义的类型。</li>
-</ul>
-<p>某些程序头类型描述了系统加载器将从文件中加载的内存段（segments）。在链接脚本中，通过将可分配的输出段（sections）放置在这些段（segments）中来指定这些段的内容。可以使用输出段属性“:phdr”将输出段放置在特定段（segment）中。</p>
-<p>允许将某些输出段放置在多个段（segement）中。这仅意味着一个内存段(segment )包含另一个内存段(segment)。可以重复使用 “:phdr”，每个应包含该输出段的段（segment）使用一次。</p>
-<p>如果使用 “:phdr” 将输出段放置在一个或多个段（segment）中，那么链接器将在相同的段（segment）中放置所有后续的可分配输出段，这是为了方便起见，因为通常会将一整组连续的输出段放置在单个段（segment）中。可以使用 “:NONE” 来覆盖默认段，并告诉链接器不要将输出段节放入任何段（segment）中。</p>
-<p>可以在程序头类型之后使用 <strong>FILEHDR</strong> 和 <strong>PHDRS</strong> 关键字进一步描述段的内容。FILEHDR 关键字表示该段应包含 ELF 文件头。PHDRS 关键字表示该段应包含 ELF 程序头本身。如果应用于可加载段（type&#x3D;PT_LOAD），则所有先前的可加载段必须具有这些关键字之一。</p>
-<p><code>AT ( address )</code>：可以通过使用 AT 表达式来指定内存中的特定地址来加载段（segment）。这与输出段属性的中的 AT 属性作用相同。程序头的 AT 命令会覆盖输出段属性。</p>
-<p><code>FLAGS ( flags )</code>：链接器通常会基于组成段(segment)的各个输出段来设置段标志。可以使用 FLAGS 关键字显式指定段标志。flags 的值必须是整数。它用于设置程序头中的 p_flags 字段。</p>
-<p>一个使用 <strong>PHDRS</strong> 命令的示例。展示了在ELF系统上使用的典型程序头集合。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PHDRS</span><br><span class="line">&#123;</span><br><span class="line">  headers PT_PHDR PHDRS ;</span><br><span class="line">  interp PT_INTERP ;</span><br><span class="line">  text PT_LOAD FILEHDR PHDRS ;</span><br><span class="line">  data PT_LOAD ;</span><br><span class="line">  dynamic PT_DYNAMIC ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>以下是链接脚本的示例。显示了在内存中使用的一组典型程序头。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">SECTIONS</span><br><span class="line">&#123;</span><br><span class="line">  . = SIZEOF_HEADERS;</span><br><span class="line">  .interp : &#123; *(.interp) &#125; :text :interp</span><br><span class="line">  .text : &#123; *(.text) &#125; :text</span><br><span class="line">  .rodata : &#123; *(.rodata) &#125; /* 默认为 :text */</span><br><span class="line">  …</span><br><span class="line">  . = . + 0x1000; /* 移动到内存中的新页面 */</span><br><span class="line">  .data : &#123; *(.data) &#125; :data</span><br><span class="line">  .dynamic : &#123; *(.dynamic) &#125; :data :dynamic</span><br><span class="line">  …</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs/ld/PHDRS.html">https://sourceware.org/binutils/docs/ld/PHDRS.html</a></p>
+<p>strings [-afovV] [-min-len] [-n min-len] [–bytes&#x3D;min-len] [-t radix] [–radix&#x3D;radix] [-e encoding] [–encoding&#x3D;encoding] [-U method] [–unicode&#x3D;method] [-] [–all] [–print-file-name] [-T bfdname] [–target&#x3D;bfdname] [-w] [–include-all-whitespace] [-s] [–output-separator sep_string] [–help] [–version] file…</p>
+<p>对于给定的每个文件，GNU strings 会打印至少包含4个字符的可打印字符序列（或者根据下面的选项指定的字符数）且后面跟有一个不可打印字符。</p>
+<p>根据strings程序的配置，它默认要么显示每个文件中能找到的所有可打印序列，要么仅显示可加载的已初始化数据段中的序列。如果文件类型无法识别，或者strings从标准输入读取，它将始终显示能找到的所有可打印序列。</p>
+<p>为了向后兼容，任何仅有一个 - 命令行选项之后的文件也将被完整扫描，无论是否存在任何 -d 选项。</p>
+<p>strings 主要用于确定非文本文件的内容。</p>
+<p>选项：</p>
+<h4 id="a-x2F-–all-x2F"><a href="#a-x2F-–all-x2F" class="headerlink" title="-a &#x2F; –all &#x2F; -"></a>-a &#x2F; –all &#x2F; -</h4><p>扫描整个文件，无论其包含哪些段，或这些段是否已加载或初始化。通常这是默认行为，但strings可以配置为 -d 为默认行为。</p>
+<h4 id="d-x2F-–data"><a href="#d-x2F-–data" class="headerlink" title="-d &#x2F; –data"></a>-d &#x2F; –data</h4><p>只打印文件中已初始化的加载数据段中的字符串。这可能减少输出中的垃圾，但也可能暴露strings程序使用的BFD库中的任何安全漏洞。strings可以配置为此选项为默认行为，在这种情况下，可以使用 -a 选项来避免使用BFD库，只打印文件中的所有字符串。</p>
+<h4 id="f-x2F-–print-file-name"><a href="#f-x2F-–print-file-name" class="headerlink" title="-f &#x2F; –print-file-name"></a>-f &#x2F; –print-file-name</h4><p>在每个字符串前打印文件名。</p>
+<h4 id="–help"><a href="#–help" class="headerlink" title="–help"></a>–help</h4><p>打印程序使用的摘要到标准输出并退出。</p>
+<h4 id="min-len-x2F-n-min-len-x2F-–bytes-x3D-min-len"><a href="#min-len-x2F-n-min-len-x2F-–bytes-x3D-min-len" class="headerlink" title="-min-len &#x2F; -n min-len &#x2F; –bytes&#x3D;min-len"></a>-<em>min-len</em> &#x2F; -n <em>min-len</em> &#x2F; –bytes&#x3D;<em>min-len</em></h4><p>打印至少包含<em>min-len</em>个字符的可显示字符序列。如果未指定，默认最小长度为4。可显示和不可显示字符的区别取决于-e和-U选项的设置。序列总是以控制字符（如换行和回车）为终止符，但不包括制表符。</p>
+<h4 id="o"><a href="#o" class="headerlink" title="-o"></a>-o</h4><p>类似于 <code>-t o</code>。一些其它版本的strings将 -o 作用于 <code>-t d</code>。</p>
+<h4 id="t-radix-x2F-–radix-x3D-radix"><a href="#t-radix-x2F-–radix-x3D-radix" class="headerlink" title="-t radix &#x2F; –radix&#x3D;radix"></a>-t radix &#x2F; –radix&#x3D;radix</h4><p>在每个字符串前打印文件中的偏移量。单个字符参数指定偏移量的基数——‘o’ 表示八进制，‘x’ 表示十六进制，‘d’ 表示十进制。</p>
+<h4 id="e-encoding-x2F-–encoding-x3D-encoding"><a href="#e-encoding-x2F-–encoding-x3D-encoding" class="headerlink" title="-e encoding &#x2F; –encoding&#x3D;encoding"></a>-e <em>encoding</em> &#x2F; –encoding&#x3D;<em>encoding</em></h4><p>选择要查找的字符串的字符编码。<em>encoding</em> 的可能值包括：‘s’ &#x3D; 单字节7位字符（默认），‘S’ &#x3D; 单字节8位字符，‘b’ &#x3D; 16位大端序，‘l’ &#x3D; 16位小端序，‘B’ &#x3D; 32位大端序，‘L’ &#x3D; 32位小端序。对于查找宽字符字符串非常有用。（‘l’和‘b’适用于例如Unicode UTF-16&#x2F;UCS-2编码）。</p>
+<h4 id="U-d-i-l-e-x-h-x2F-–unicode-x3D-default-invalid-locale-escape-hex-highlight"><a href="#U-d-i-l-e-x-h-x2F-–unicode-x3D-default-invalid-locale-escape-hex-highlight" class="headerlink" title="-U [d|i|l|e|x|h] &#x2F; –unicode&#x3D;[default|invalid|locale|escape|hex|highlight]"></a>-U [d|i|l|e|x|h] &#x2F; –unicode&#x3D;[default|invalid|locale|escape|hex|highlight]</h4><p>控制strings中 UTF-8 编码多字节字符的显示。默认（–unicode&#x3D;default）是不作特殊处理，而依赖于–encoding选项的设置。其他选项值自动启用–encoding&#x3D;S。<br>–unicode&#x3D;invalid 选项将它们视为非图形字符，因此不属于有效字符串。其余选项将它们视为有效字符串字符。<br>–unicode&#x3D;locale 选项在当前语言环境中显示它们，这可能支持也可能不支持UTF-8编码。–unicode&#x3D;hex 选项将它们显示为括在&lt;&gt;字符之间的十六进制字节序列。–unicode&#x3D;escape 选项将它们显示为转义序列（\uxxxx），–unicode&#x3D;highlight 选项将它们显示为红色高亮的转义序列（如果输出设备支持）。着色旨在引起注意，以便在不期望存在unicode序列的地方发现它们。</p>
+<h4 id="T-bfdname-x2F-–target-x3D-bfdname"><a href="#T-bfdname-x2F-–target-x3D-bfdname" class="headerlink" title="-T bfdname &#x2F; –target&#x3D;bfdname"></a>-T bfdname &#x2F; –target&#x3D;bfdname</h4><p>指定一种不同于系统默认格式的目标代码格式。详见 Target Selection。</p>
+<h4 id="v-x2F-V-x2F-–version"><a href="#v-x2F-V-x2F-–version" class="headerlink" title="-v &#x2F; -V &#x2F; –version"></a>-v &#x2F; -V &#x2F; –version</h4><p>打印程序版本号到标准输出并退出。</p>
+<h4 id="w-x2F-–include-all-whitespace"><a href="#w-x2F-–include-all-whitespace" class="headerlink" title="-w &#x2F; –include-all-whitespace"></a>-w &#x2F; –include-all-whitespace</h4><p>默认情况下，制表符和空格字符包含在显示的字符串中，但其他空白字符（如换行和回车）不包括在内。-w 选项将其更改为所有空白字符都视为字符串的一部分。</p>
+<h4 id="s-x2F-–output-separator"><a href="#s-x2F-–output-separator" class="headerlink" title="-s &#x2F; –output-separator"></a>-s &#x2F; –output-separator</h4><p>默认情况下，输出字符串由换行符分隔。此选项允许你提供任意字符串作为输出记录分隔符。对于–include-all-whitespace非常有用，字符串内部可能包含换行符。</p>
+<h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs-2.42/binutils/strings.html">https://sourceware.org/binutils/docs-2.42/binutils/strings.html</a></p>
 
     </div>
 
@@ -317,7 +293,7 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：PHDRS Command
   </li>
   <li class="post-copyright-link">
       <strong>本文链接：</strong>
-      <a href="http://fengxun2017.github.io/2024/07/09/GUN-linker-Linker-Scripts-PHDRS-Command/" title="GNU linker ld —— PHDRS Command">http://fengxun2017.github.io/2024/07/09/GUN-linker-Linker-Scripts-PHDRS-Command/</a>
+      <a href="http://fengxun2017.github.io/2024/11/21/GUN-binary-utilities-string/" title="GNU binary utilities —— strings">http://fengxun2017.github.io/2024/11/21/GUN-binary-utilities-string/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -330,13 +306,13 @@ GNU linker ld (GNU Binutils) version 2.42 —— Linker Scripts：PHDRS Command
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2024/07/07/GUN-linker-Linker-Scripts-MEMORY-Command/" rel="prev" title="GNU linker ld —— MEMORY Command">
-                  <i class="fa fa-chevron-left"></i> GNU linker ld —— MEMORY Command
+                <a href="/2024/11/20/GUN-binary-utilities-size/" rel="prev" title="GNU binary utilities —— size">
+                  <i class="fa fa-chevron-left"></i> GNU binary utilities —— size
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2024/07/12/GUN-linker-Linker-Scripts-Output-Section-Description/" rel="next" title="GNU linker ld —— Output Section Description">
-                  GNU linker ld —— Output Section Description <i class="fa fa-chevron-right"></i>
+                <a href="/2024/11/25/GUN-binary-utilities-strip/" rel="next" title="GNU binary utilities —— strip">
+                  GNU binary utilities —— strip <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="GNU binary utilities (GNU Binutils) version 2.42: —— strip">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GNU binary utilities —— strip">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/11/25/GUN-binary-utilities-strip/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="GNU binary utilities (GNU Binutils) version 2.42: —— strip">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-11-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-11-25T15:09:05.397Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2024/11/25/GUN-binary-utilities-strip/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/11/25/GUN-binary-utilities-strip/","path":"2024/11/25/GUN-binary-utilities-strip/","title":"GNU binary utilities —— strip"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>GNU binary utilities —— strip | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#F-bfdname-%E2%80%93target-x3D-bfdname"><span class="nav-number">1.</span> <span class="nav-text">-F bfdname –target&#x3D;bfdname</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93help"><span class="nav-number">2.</span> <span class="nav-text">–help</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93info"><span class="nav-number">3.</span> <span class="nav-text">–info</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#I-bfdname-%E2%80%93input-target-x3D-bfdname"><span class="nav-number">4.</span> <span class="nav-text">-I bfdname –input-target&#x3D;bfdname</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#O-bfdname-%E2%80%93output-target-x3D-bfdname"><span class="nav-number">5.</span> <span class="nav-text">-O bfdname –output-target&#x3D;bfdname</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#R-sectionname-%E2%80%93remove-section-x3D-sectionname"><span class="nav-number">6.</span> <span class="nav-text">-R sectionname –remove-section&#x3D;sectionname</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93keep-section-x3D-sectionpattern"><span class="nav-number">7.</span> <span class="nav-text">–keep-section&#x3D;sectionpattern</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93remove-relocations-x3D-sectionpattern"><span class="nav-number">8.</span> <span class="nav-text">–remove-relocations&#x3D;sectionpattern</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93strip-section-headers"><span class="nav-number">9.</span> <span class="nav-text">–strip-section-headers</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#s-%E2%80%93strip-all"><span class="nav-number">10.</span> <span class="nav-text">-s –strip-all</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#g-S-d-%E2%80%93strip-debug"><span class="nav-number">11.</span> <span class="nav-text">-g -S -d –strip-debug</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93strip-dwo"><span class="nav-number">12.</span> <span class="nav-text">–strip-dwo</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93strip-unneeded"><span class="nav-number">13.</span> <span class="nav-text">–strip-unneeded</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#K-symbolname-%E2%80%93keep-symbol-x3D-symbolname"><span class="nav-number">14.</span> <span class="nav-text">-K symbolname –keep-symbol&#x3D;symbolname</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#M-%E2%80%93merge-notes-%E2%80%93no-merge-notes"><span class="nav-number">15.</span> <span class="nav-text">-M –merge-notes –no-merge-notes</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#N-symbolname-%E2%80%93strip-symbol-x3D-symbolname"><span class="nav-number">16.</span> <span class="nav-text">-N symbolname –strip-symbol&#x3D;symbolname</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#o-file"><span class="nav-number">17.</span> <span class="nav-text">-o file</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#p-%E2%80%93preserve-dates"><span class="nav-number">18.</span> <span class="nav-text">-p –preserve-dates</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#D-%E2%80%93enable-deterministic-archives"><span class="nav-number">19.</span> <span class="nav-text">-D –enable-deterministic-archives</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#U-%E2%80%93disable-deterministic-archives"><span class="nav-number">20.</span> <span class="nav-text">-U –disable-deterministic-archives</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#w-%E2%80%93wildcard"><span class="nav-number">21.</span> <span class="nav-text">-w –wildcard</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#x-%E2%80%93discard-all"><span class="nav-number">22.</span> <span class="nav-text">-x –discard-all</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#X-%E2%80%93discard-locals"><span class="nav-number">23.</span> <span class="nav-text">-X –discard-locals</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93keep-section-symbols"><span class="nav-number">24.</span> <span class="nav-text">–keep-section-symbols</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93keep-file-symbols"><span class="nav-number">25.</span> <span class="nav-text">–keep-file-symbols</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E2%80%93only-keep-debug"><span class="nav-number">26.</span> <span class="nav-text">–only-keep-debug</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#V-%E2%80%93version"><span class="nav-number">27.</span> <span class="nav-text">-V –version</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#v-%E2%80%93verbose"><span class="nav-number">28.</span> <span class="nav-text">-v –verbose</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%BF%9E%E6%8E%A5%EF%BC%9A"><span class="nav-number"></span> <span class="nav-text">参考连接：</span></a></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/11/25/GUN-binary-utilities-strip/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="GNU binary utilities —— strip | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          GNU binary utilities —— strip
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-11-25 00:00:00" itemprop="dateCreated datePublished" datetime="2024-11-25T00:00:00+08:00">2024-11-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/GNU-binary-utilities/" itemprop="url" rel="index"><span itemprop="name">GNU-binary-utilities</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+GNU binary utilities (GNU Binutils) version 2.42: —— strip
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p><strong>个人笔记，仅供参考！！</strong><br>strip [-F bfdname |–target&#x3D;bfdname]<br>      [-I bfdname |–input-target&#x3D;bfdname]<br>      [-O bfdname |–output-target&#x3D;bfdname]<br>      [-s|–strip-all]<br>      [-S|-g|-d|–strip-debug]<br>      [–strip-dwo]<br>      [-K symbolname|–keep-symbol&#x3D;symbolname]<br>      [-M|–merge-notes][–no-merge-notes]<br>      [-N symbolname |–strip-symbol&#x3D;symbolname]<br>      [-w|–wildcard]<br>      [-x|–discard-all] [-X |–discard-locals]<br>      [-R sectionname |–remove-section&#x3D;sectionname]<br>      [–keep-section&#x3D;sectionpattern]<br>      [–remove-relocations&#x3D;sectionpattern]<br>      [–strip-section-headers]<br>      [-o file] [-p|–preserve-dates]<br>      [-D|–enable-deterministic-archives]<br>      [-U|–disable-deterministic-archives]<br>      [–keep-section-symbols]<br>      [–keep-file-symbols]<br>      [–only-keep-debug]<br>      [-v |–verbose] [-V|–version]<br>      [–help] [–info]<br>      objfile…</p>
+<p>GNU strip 删除目标文件 objfile 中的所有符号。目标文件列表可能包括归档文件。必须至少给定一个目标文件。<br>strip 会修改其参数中指定的文件，而不是写入带有不同名称的修改副本。</p>
+<p>选项：</p>
+<h5 id="F-bfdname-–target-x3D-bfdname"><a href="#F-bfdname-–target-x3D-bfdname" class="headerlink" title="-F bfdname –target&#x3D;bfdname"></a>-F bfdname –target&#x3D;bfdname</h5><p>将原始 objfile 作为具有对象代码格式 bfdname 的文件处理，并以相同格式重写它。有关详细信息，请参阅target selection。</p>
+<h5 id="–help"><a href="#–help" class="headerlink" title="–help"></a>–help</h5><p>显示 strip 的选项摘要并退出。</p>
+<h5 id="–info"><a href="#–info" class="headerlink" title="–info"></a>–info</h5><p>显示一个列表，列出所有可用的架构和对象格式。</p>
+<h5 id="I-bfdname-–input-target-x3D-bfdname"><a href="#I-bfdname-–input-target-x3D-bfdname" class="headerlink" title="-I bfdname –input-target&#x3D;bfdname"></a>-I bfdname –input-target&#x3D;bfdname</h5><p>将原始 objfile 作为具有对象代码格式 bfdname 的文件处理。有关详细信息，请参阅target select。</p>
+<h5 id="O-bfdname-–output-target-x3D-bfdname"><a href="#O-bfdname-–output-target-x3D-bfdname" class="headerlink" title="-O bfdname –output-target&#x3D;bfdname"></a>-O bfdname –output-target&#x3D;bfdname</h5><p>将 objfile 替换为 bfdname 格式的文件。有关详细信息，请参阅target select。</p>
+<h5 id="R-sectionname-–remove-section-x3D-sectionname"><a href="#R-sectionname-–remove-section-x3D-sectionname" class="headerlink" title="-R sectionname –remove-section&#x3D;sectionname"></a>-R sectionname –remove-section&#x3D;sectionname</h5><p>从输出文件中移除任何名为 sectionname 的段，除了会被删除的其他段外。此选项可以多次给出。请注意，不当使用此选项可能会使输出文件无法使用。通配符 * 可以在 sectionname 的末尾给出。如果是这样，则任何以 sectionname 开头的段都将被移除。</p>
+<p>如果 sectionpattern 的第一个字符是感叹号（!），则即使命令行中较早使用的 –remove-section 会删除它，匹配的段也不会被删除。例如：</p>
+<p>–remove-section&#x3D;.text.* –remove-section&#x3D;!.text.foo 会删除所有匹配模式 .text.* 的段，但不会删除段 .text.foo。</p>
+<h5 id="–keep-section-x3D-sectionpattern"><a href="#–keep-section-x3D-sectionpattern" class="headerlink" title="–keep-section&#x3D;sectionpattern"></a>–keep-section&#x3D;sectionpattern</h5><p>从输出文件中移除段时，保留与 sectionpattern 匹配的段。</p>
+<h5 id="–remove-relocations-x3D-sectionpattern"><a href="#–remove-relocations-x3D-sectionpattern" class="headerlink" title="–remove-relocations&#x3D;sectionpattern"></a>–remove-relocations&#x3D;sectionpattern</h5><p>删除输出文件中任何匹配 sectionpattern 的段的重定位。此选项可以多次给出。请注意，不当使用此选项可能会使输出文件无法使用。sectionpattern 中接受通配符。例如：</p>
+<p>–remove-relocations&#x3D;.text.* 会删除所有匹配模式 .text.* 的段的重定位。</p>
+<p>如果 sectionpattern 的第一个字符是感叹号（!），则即使命令行中较早使用的 –remove-relocations 会删除重定位，匹配的段也不会删除其重定位。例如：</p>
+<p>–remove-relocations&#x3D;.text.* –remove-relocations&#x3D;!.text.foo 会删除所有匹配模式 .text.* 的段的重定位，但不会删除段 .text.foo 的重定位。</p>
+<h5 id="–strip-section-headers"><a href="#–strip-section-headers" class="headerlink" title="–strip-section-headers"></a>–strip-section-headers</h5><p>剥离段标头。此选项仅对 ELF 文件有效。隐含 –strip-all 和 –merge-notes。</p>
+<h5 id="s-–strip-all"><a href="#s-–strip-all" class="headerlink" title="-s –strip-all"></a>-s –strip-all</h5><p>删除所有符号。</p>
+<h5 id="g-S-d-–strip-debug"><a href="#g-S-d-–strip-debug" class="headerlink" title="-g -S -d –strip-debug"></a>-g -S -d –strip-debug</h5><p>仅删除调试符号。</p>
+<h5 id="–strip-dwo"><a href="#–strip-dwo" class="headerlink" title="–strip-dwo"></a>–strip-dwo</h5><p>删除所有 DWARF .dwo 段的内容，保留其余的调试段和所有符号。有关详细信息，请参阅 objcopy 部分中的说明。</p>
+<h5 id="–strip-unneeded"><a href="#–strip-unneeded" class="headerlink" title="–strip-unneeded"></a>–strip-unneeded</h5><p>除了通过 –strip-debug 删除的调试符号和段外，还删除所有不需要重定位处理的符号。</p>
+<h5 id="K-symbolname-–keep-symbol-x3D-symbolname"><a href="#K-symbolname-–keep-symbol-x3D-symbolname" class="headerlink" title="-K symbolname –keep-symbol&#x3D;symbolname"></a>-K symbolname –keep-symbol&#x3D;symbolname</h5><p>删除符号时，保留符号 symbolname，即使它通常会被删除。此选项可以多次给出。</p>
+<h5 id="M-–merge-notes-–no-merge-notes"><a href="#M-–merge-notes-–no-merge-notes" class="headerlink" title="-M –merge-notes –no-merge-notes"></a>-M –merge-notes –no-merge-notes</h5><p>对于 ELF 文件，尝试（或不尝试）通过删除重复的注释来减小任何 SHT_NOTE 类型段的大小。默认情况下，除非剥离调试或 DWO 信息，否则尝试进行此简化。</p>
+<h5 id="N-symbolname-–strip-symbol-x3D-symbolname"><a href="#N-symbolname-–strip-symbol-x3D-symbolname" class="headerlink" title="-N symbolname –strip-symbol&#x3D;symbolname"></a>-N symbolname –strip-symbol&#x3D;symbolname</h5><p>从源文件中删除符号 symbolname。此选项可以多次给出，并且可以与其他剥离选项（除了 -K）结合使用。</p>
+<h5 id="o-file"><a href="#o-file" class="headerlink" title="-o file"></a>-o file</h5><p>将剥离的输出放入 file 中，而不是替换现有文件。使用此参数时，只能指定一个 objfile 参数。</p>
+<h5 id="p-–preserve-dates"><a href="#p-–preserve-dates" class="headerlink" title="-p –preserve-dates"></a>-p –preserve-dates</h5><p>保留文件的访问和修改日期。</p>
+<h5 id="D-–enable-deterministic-archives"><a href="#D-–enable-deterministic-archives" class="headerlink" title="-D –enable-deterministic-archives"></a>-D –enable-deterministic-archives</h5><p>以确定性模式操作。在复制归档成员和写入归档索引时，使用零 UID、GID、时间戳，并为所有文件使用一致的文件模式。</p>
+<p>如果 binutils 使用 –enable-deterministic-archives 配置，则此模式默认启用。可以使用下面的 -U 选项禁用它。</p>
+<h5 id="U-–disable-deterministic-archives"><a href="#U-–disable-deterministic-archives" class="headerlink" title="-U –disable-deterministic-archives"></a>-U –disable-deterministic-archives</h5><p>不以确定性模式操作。这是上述 -D 选项的反义词：在复制归档成员和写入归档索引时，使用它们的实际 UID、GID、时间戳和文件模式值。</p>
+<p>除非 binutils 使用 –enable-deterministic-archives 配置，否则这是默认值。</p>
+<h5 id="w-–wildcard"><a href="#w-–wildcard" class="headerlink" title="-w –wildcard"></a>-w –wildcard</h5><p>允许在其他命令行选项中使用 symbolnames 中的正则表达式。问号（?）、星号（*）、反斜杠（\）和方括号（[]）运算符可以在符号名称的任何位置使用。如果符号名称的第一个字符是感叹号（!），则对该符号的开关意义被反转。例如：</p>
+<p>-w -K !foo -K fo* 将导致 strip 只保留以“fo”开头的符号，但丢弃符号“foo”。</p>
+<h5 id="x-–discard-all"><a href="#x-–discard-all" class="headerlink" title="-x –discard-all"></a>-x –discard-all</h5><p>删除非全局符号。</p>
+<h5 id="X-–discard-locals"><a href="#X-–discard-locals" class="headerlink" title="-X –discard-locals"></a>-X –discard-locals</h5><p>删除编译器生成的本地符号。（这些通常以“L”或“.”开头。）</p>
+<h5 id="–keep-section-symbols"><a href="#–keep-section-symbols" class="headerlink" title="–keep-section-symbols"></a>–keep-section-symbols</h5><p>剥离文件时，保留任何指定段名称的符号，否则这些符号将被剥离，可能与 –strip-debug 或 –strip-unneeded 一起使用。</p>
+<h5 id="–keep-file-symbols"><a href="#–keep-file-symbols" class="headerlink" title="–keep-file-symbols"></a>–keep-file-symbols</h5><p>剥离文件时，保留任何指定源文件名称的符号，否则这些符号将被剥离，可能与 –strip-debug 或 –strip-unneeded 一起使用。</p>
+<h5 id="–only-keep-debug"><a href="#–only-keep-debug" class="headerlink" title="–only-keep-debug"></a>–only-keep-debug</h5><p>剥离文件，清空 –strip-debug 不会剥离的任何段的内容，并保留调试段。在 ELF 文件中，这也保留了输出中的所有注释段。</p>
+<p>注意：剥离段的段标头会被保留，包括它们的大小，但段的内容会被丢弃。保留段标头是为了让其他工具可以将调试信息文件与实际可执行文件匹配，即使该可执行文件已重新定位到不同的地址空间。</p>
+<p>此选项的意图是与 –add-gnu-debuglink 一起使用，以创建一个两部分的可执行文件。一个是剥离的二进制文件，它占用的 RAM 和分发空间较少，另一个是调试信息文件，仅在需要调试功能时才需要。创建这些文件的建议程序如下：</p>
+<p>正常链接可执行文件，假设它被称为 foo，然后…… 运行 objcopy –only-keep-debug foo foo.dbg 以创建包含调试信息的文件。 运行 objcopy –strip-debug foo 创建一个剥离的可执行文件。 运行 objcopy –add-gnu-debuglink&#x3D;foo.dbg foo 将调试信息链接添加到剥离的可执行文件中。 注意：.dbg 作为调试信息文件的扩展名是任意的。–only-keep-debug 步骤是可选的。你可以这样做：</p>
+<p>正常链接可执行文件。将 foo 复制为 foo.full 运行 strip –strip-debug foo 运行 objcopy –add-gnu-debuglink&#x3D;foo.full foo 即，由 –add-gnu-debuglink 指向的文件可以是完整的可执行文件。它不必是通过 –only-keep-debug 选项创建的文件。</p>
+<p>注意：此选项仅适用于完全链接的文件。它在调试信息可能不完整的目标文件上使用是没有意义的。此外，gnu_debuglink 功能目前仅支持存在一个包含调试信息的文件，而不是每个目标文件一个文件名。</p>
+<h5 id="V-–version"><a href="#V-–version" class="headerlink" title="-V –version"></a>-V –version</h5><p>显示 strip 的版本号。</p>
+<h5 id="v-–verbose"><a href="#v-–verbose" class="headerlink" title="-v –verbose"></a>-v –verbose</h5><p>详细输出：列出所有修改的目标文件。在归档的情况下，strip -v 列出归档的所有成员。</p>
+<h4 id="参考连接："><a href="#参考连接：" class="headerlink" title="参考连接："></a>参考连接：</h4><p>【1】<a target="_blank" rel="noopener" href="https://sourceware.org/binutils/docs-2.42/binutils/strip.html">https://sourceware.org/binutils/docs-2.42/binutils/strip.html</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2024/11/25/GUN-binary-utilities-strip/" title="GNU binary utilities —— strip">http://fengxun2017.github.io/2024/11/25/GUN-binary-utilities-strip/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/11/21/GUN-binary-utilities-string/" rel="prev" title="GNU binary utilities —— strings">
+                  <i class="fa fa-chevron-left"></i> GNU binary utilities —— strings
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">355k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">7:23</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
