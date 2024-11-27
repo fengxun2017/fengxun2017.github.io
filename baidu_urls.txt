@@ -1,5 +1,5 @@
+http://fengxun2017.github.io/2024/11/27/GUN-binary-utilities-c++filt/
 http://fengxun2017.github.io/2024/11/25/GUN-binary-utilities-strip/
 http://fengxun2017.github.io/2024/11/21/GUN-binary-utilities-string/
 http://fengxun2017.github.io/2024/11/20/GUN-binary-utilities-size/
 http://fengxun2017.github.io/2024/08/19/GUN-binary-utilities-objdump/
-http://fengxun2017.github.io/2024/08/01/GUN-binary-utilities-objcopy/
