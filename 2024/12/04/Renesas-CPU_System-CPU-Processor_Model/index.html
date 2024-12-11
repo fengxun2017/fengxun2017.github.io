@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Renesas学习笔记CPU System : CPU - Processor Mode">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Renesas-RH850  CPU System - CPU - Processor Mode">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/12/04/Renesas-CPU_System-CPU-Processor_Model/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="Renesas学习笔记CPU System : CPU - Processor Mode">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-12-11T14:28:44.932Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2024/12/04/Renesas-CPU_System-CPU-Processor_Model/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/12/04/Renesas-CPU_System-CPU-Processor_Model/","path":"2024/12/04/Renesas-CPU_System-CPU-Processor_Model/","title":"Renesas-RH850  CPU System - CPU - Processor Mode"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Renesas-RH850  CPU System - CPU - Processor Mode | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-CPU-Operating-Modes"><span class="nav-number">1.</span> <span class="nav-text">1 CPU Operating Modes</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-CPU%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 CPU工作模式定义</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-CPU%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E5%88%87%E6%8D%A2"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 CPU工作模式切换</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-3-CPU%E6%93%8D%E4%BD%9C%E6%A8%A1%E5%BC%8F%EF%BC%88Operating-Mode%EF%BC%89%E5%92%8C%E6%9D%83%E9%99%90%EF%BC%88Privileges%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 CPU操作模式（Operating Mode）和权限（Privileges）</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-4-%E9%80%9A%E8%BF%87-HALT-%E6%8C%87%E4%BB%A4%E8%BF%9B%E5%85%A5-HALT-%E7%8A%B6%E6%80%81"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 通过 HALT 指令进入 HALT 状态</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-5-%E9%80%9A%E8%BF%87-SNOOZE-%E6%8C%87%E4%BB%A4%E8%BF%9B%E5%85%A5%E4%B8%B4%E6%97%B6%E6%9A%82%E5%81%9C%E7%8A%B6%E6%80%81"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 通过 SNOOZE 指令进入临时暂停状态</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-6-%E9%80%9A%E8%BF%87%E6%8C%87%E4%BB%A4%E8%BF%9B%E8%A1%8C%E6%97%B6%E9%97%B4%E8%B0%83%E6%95%B4"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 通过指令进行时间调整</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Instruction-Execution"><span class="nav-number">2.</span> <span class="nav-text">2 Instruction Execution</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-Exceptions-and-Interrupts"><span class="nav-number">3.</span> <span class="nav-text">3 Exceptions and Interrupts</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#3-1-%E5%BC%82%E5%B8%B8%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 异常的类型</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-2-%E5%BC%82%E5%B8%B8%E7%BA%A7%E5%88%AB"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 异常级别</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-Coprocessors"><span class="nav-number">4.</span> <span class="nav-text">4 Coprocessors</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#4-1-%E5%8D%8F%E5%A4%84%E7%90%86%E5%99%A8%E4%BD%BF%E7%94%A8%E6%9D%83%E9%99%90"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 协处理器使用权限</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-2-%E5%8D%8F%E5%A4%84%E7%90%86%E5%99%A8%E4%BD%BF%E7%94%A8%E6%9D%83%E9%99%90%E4%B8%8E%E5%8D%8F%E5%A4%84%E7%90%86%E5%99%A8%E4%B9%8B%E9%97%B4%E7%9A%84%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 协处理器使用权限与协处理器之间的对应关系</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-3-%E5%8D%8F%E5%A4%84%E7%90%86%E5%99%A8%E4%B8%8D%E5%8F%AF%E7%94%A8%E5%BC%82%E5%B8%B8"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 协处理器不可用异常</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-4-%E7%B3%BB%E7%BB%9F%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 系统寄存器</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-Registers"><span class="nav-number">5.</span> <span class="nav-text">5 Registers</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#5-1-%E7%A8%8B%E5%BA%8F%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 程序寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#5-2-%E7%B3%BB%E7%BB%9F%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 系统寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#5-3-%E5%AF%84%E5%AD%98%E5%99%A8%E6%9B%B4%E6%96%B0"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 寄存器更新</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#5-4-%E8%AE%BF%E9%97%AE%E6%9C%AA%E5%AE%9A%E4%B9%89%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 访问未定义寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#5-5-%E7%9B%91%E7%9D%A3%E9%94%81%E5%AE%9A%E8%AE%BE%E7%BD%AE"><span class="nav-number">5.5.</span> <span class="nav-text">5.5 监督锁定设置</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-Data-Types"><span class="nav-number">6.</span> <span class="nav-text">6 Data Types</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#6-1-%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 数据格式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-2-%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%A4%BA"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 数据表示</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-3-%E6%95%B0%E6%8D%AE%E5%AF%B9%E9%BD%90"><span class="nav-number">6.3.</span> <span class="nav-text">6.3 数据对齐</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-Address-Space"><span class="nav-number">7.</span> <span class="nav-text">7  Address Space</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#7-1-%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 内存映射</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-2-%E6%8C%87%E4%BB%A4%E5%AF%BB%E5%9D%80"><span class="nav-number">7.2.</span> <span class="nav-text">7.2 指令寻址</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-3-%E6%95%B0%E6%8D%AE%E5%AF%BB%E5%9D%80"><span class="nav-number">7.3.</span> <span class="nav-text">7.3 数据寻址</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-Execution-Timing-of-a-Store-Instruction"><span class="nav-number">8.</span> <span class="nav-text">8 Execution Timing of a Store Instruction</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9-Memory-Ordering"><span class="nav-number">9.</span> <span class="nav-text">9  Memory Ordering</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#10-Acquiring-the-CPU-Number"><span class="nav-number">10.</span> <span class="nav-text">10 Acquiring the CPU Number</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#11-System-Protection-Identifier-SPID"><span class="nav-number">11.</span> <span class="nav-text">11 System Protection Identifier (SPID)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#12-Timestamp-Counter"><span class="nav-number">12.</span> <span class="nav-text">12 Timestamp Counter</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#13-Performance-Measurement-Function"><span class="nav-number">13.</span> <span class="nav-text">13 Performance Measurement Function</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/12/04/Renesas-CPU_System-CPU-Processor_Model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Renesas-RH850  CPU System - CPU - Processor Mode | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Renesas-RH850  CPU System - CPU - Processor Mode
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-12-04 00:00:00" itemprop="dateCreated datePublished" datetime="2024-12-04T00:00:00+08:00">2024-12-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Renesas/" itemprop="url" rel="index"><span itemprop="name">Renesas</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+
+<p>Renesas学习笔记<br>CPU System : CPU - Processor Mode</p>
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h5 id="1-CPU-Operating-Modes"><a href="#1-CPU-Operating-Modes" class="headerlink" title="1 CPU Operating Modes"></a>1 CPU Operating Modes</h5><p>该CPU有两种工作模式：管理模式(SV)和用户模式(UM)。系统是否处于管理模式或用户模式由PSW寄存器中的UM位指示。</p>
+<p>监控模式 (PSW.UM &#x3D; 0)：所有硬件功能都可以被管理或使用。</p>
+<p>用户模式 (PSW.UM &#x3D; 1)：可用的硬件功能受限。</p>
+<h6 id="1-1-CPU工作模式定义"><a href="#1-1-CPU工作模式定义" class="headerlink" title="1.1 CPU工作模式定义"></a>1.1 CPU工作模式定义</h6><p>管理模式 (SV)：在这种模式下，所有硬件功能都可以被管理或使用。系统在复位后总是以监控模式启动。</p>
+<p>用户模式 (UM)：在用户模式下，用户可以访问由管理模式允许访问的地址空间和系统寄存器。管理特权指令不能执行，使用会导致异常。</p>
+<h6 id="1-2-CPU工作模式切换"><a href="#1-2-CPU工作模式切换" class="headerlink" title="1.2 CPU工作模式切换"></a>1.2 CPU工作模式切换</h6><p>CPU工作模式因三种事件而改变： </p>
+<ul>
+<li><p>由于确认异常引起的变化：当在用户模式下确认异常时，CPU工作模式切换为管理模式。 当在管理模式下确认异常时，CPU工作模式保持不变。</p>
+</li>
+<li><p>由于返回指令引起的变化：当执行返回指令时，PSW值根据备份到EIPSW和FEPSW的值恢复。</p>
+</li>
+<li><p>由于系统寄存器指令引起的变化 当使用 <code>LDSR</code> 指令直接覆盖PSW工作模式位时，CPU工作模式会发生变化。</p>
+</li>
+</ul>
+<p><strong>注意</strong>：由于PSW寄存器的高位（第31到第5位）无法在用户模式下被覆盖，因此无法在用户模式下更改CPU操作模式，而在管理模式下则可以更改模式。该CPU保证，如果使用LDSR指令更新PSW寄存器，新设置将在后续指令执行时生效。然而，该CPU不保证新设置在 MPU 的内存保护中反映在后续指令的指令获取中。因此，建议使用返回指令来更改PSW寄存器的高位（第31到第5位）</p>
+<h6 id="1-3-CPU操作模式（Operating-Mode）和权限（Privileges）"><a href="#1-3-CPU操作模式（Operating-Mode）和权限（Privileges）" class="headerlink" title="1.3 CPU操作模式（Operating Mode）和权限（Privileges）"></a>1.3 CPU操作模式（Operating Mode）和权限（Privileges）</h6><p>在该CPU中，可用功能可以根据特定资源的使用权限设置和CPU操作模式进行限制。特定指令（包括更新特定系统寄存器的指令）只能在定义的操作模式下执行。执行这些特定指令所需的权限称为“特权”。在没有特权的操作模式下，这些指令不会执行，并且会发生异常。</p>
+<p>该CPU定义了以下两种类型的权限（使用许可）：</p>
+<ul>
+<li><p><strong>管理（SV）特权</strong>：操作重要系统资源、处理致命错误和管理用户模式程序执行所需的特权。这种特权在管理模式下可用。SV特权通常是执行用于操作重要系统资源的指令所需的，这些指令有时被称为SV特权指令。</p>
+</li>
+<li><p><strong>协处理器使用权限</strong>：使用协处理器所需的权限。无论CPU的操作模式如何，都可以指定是否可以使用协处理器。PSW寄存器中的CU2至CU0位由管理者用于指定每个程序是否可以使用协处理器。如果CU2至CU0位未设置为1，当执行相应的协处理器指令或访问系统寄存器时，会发生协处理器不可用异常。<br>如果没有安装协处理器，则无法将相应的CU位设置为1。如果管理者访问协处理器系统寄存器，就必须设置CU2至CU0位以启用协处理器使用。</p>
+</li>
+</ul>
+<p><strong>发生特权违规时的操作：</strong> 当没有所需特权的人执行特权指令，或者当没有所需权限的人访问指定访问权限的系统寄存器时，会发生PIE异常或UCPOP异常。</p>
+<h6 id="1-4-通过-HALT-指令进入-HALT-状态"><a href="#1-4-通过-HALT-指令进入-HALT-状态" class="headerlink" title="1.4 通过 HALT 指令进入 HALT 状态"></a>1.4 通过 HALT 指令进入 HALT 状态</h6><p>执行 HALT 指令使 CPU 核心进入 HALT 状态。 当向 CPU 发出终止异常请求时，HALT 状态结束。在此时，如果满足终止异常的确认条件，控制权将转移到异常处理程序地址。即使不满足这些条件，当发出请求时，HALT 状态也会终止；因此，操作将从 HALT 指令后的指令恢复。</p>
+<h6 id="1-5-通过-SNOOZE-指令进入临时暂停状态"><a href="#1-5-通过-SNOOZE-指令进入临时暂停状态" class="headerlink" title="1.5 通过 SNOOZE 指令进入临时暂停状态"></a>1.5 通过 SNOOZE 指令进入临时暂停状态</h6><p>SNOOZE 指令是一种在自旋锁期间减少总线带宽使用的指令。执行该指令后，CPU 核心进入临时暂停状态以限制后续指令的执行。程序员可以通过在自旋锁循环中插入此指令，避免因短期重复锁定过程而导致的不必要的总线带宽使用。</p>
+<p>临时暂停状态在满足以下任一条件时结束：</p>
+<p>在 SNZCFG 寄存器指定的时间过去后，恢复执行后续指令。</p>
+<p>发生终止异常时，控制权转移到异常处理程序地址。如果不满足异常确认条件，则从 SNOOZE 指令后的指令继续执行。如果异常被确认，则中断 SNOOZE 指令后的指令，并且恢复的 PC 将指向 SNOOZE 指令后的指令。</p>
+<h6 id="1-6-通过指令进行时间调整"><a href="#1-6-通过指令进行时间调整" class="headerlink" title="1.6 通过指令进行时间调整"></a>1.6 通过指令进行时间调整</h6><p>如果需要调整程序执行的时间，可以使用特定指令 SYNCP。当连续执行 SYNCP 时，单条指令的周期数取决于 CPU 核心。对于 G4MH 核心，这个周期数是 3。为了调整时间，其他指令的周期数不被保证。</p>
+<h5 id="2-Instruction-Execution"><a href="#2-Instruction-Execution" class="headerlink" title="2 Instruction Execution"></a>2 Instruction Execution</h5><p>如果可以确认终止异常，当在获取指令代码期间检测到异常或指令的执行特权不满足时，异常会在指令执行前发生。如果在CPU执行操作期间发生可恢复异常，它会中断操作的执行并确认异常。在这些情况下，指令操作的结果原则上不会反映在寄存器或内存中，CPU保留其在执行指令前的状态。</p>
+<p>对于如软件异常之类的挂起异常，异常在指令执行结果已被反映（reflected）后被确认。</p>
+<p><strong>注意：</strong> 如果在执行以下指令期间确认异常，可能会将中间结果应用于内存或通用寄存器。然而，SP&#x2F;EP不会更新。</p>
+<ul>
+<li>PREPARE, DISPOSE, PUSHSP, POPSP, STM.MP, LDM.MP</li>
+</ul>
+<h5 id="3-Exceptions-and-Interrupts"><a href="#3-Exceptions-and-Interrupts" class="headerlink" title="3 Exceptions and Interrupts"></a>3 Exceptions and Interrupts</h5><p>异常和中断是导致正在执行的程序跳转到另一个程序的异常事件。异常和中断由各种来源触发，包括外设中断和程序异常。</p>
+<h6 id="3-1-异常的类型"><a href="#3-1-异常的类型" class="headerlink" title="3.1 异常的类型"></a>3.1 异常的类型</h6><p>根据异常的目的，该CPU的异常分为以下三种类型：</p>
+<ul>
+<li>终止异常（Terminating exception）</li>
+<li>可恢复异常（Resumable exception）</li>
+<li>挂起异常（Pending exception）</li>
+</ul>
+<p><strong>终止异常</strong>：终止异常是在指令操作执行之前，通过打断指令来确认的异常。终止异常包括中断等。此类异常，例如中断或硬件错误，会启动另一个与当前处理程序无关的程序。</p>
+<p><strong>可恢复异常</strong>：可恢复异常是在指令操作执行期间发生的异常，并且在指令未完成时被确认。这也称为精确异常，因为它是在相关指令未完成或后续指令未执行的情况下被精确地确认的。与终止异常不同，可恢复异常发生在指令执行期间，并取消指令的执行，因此允许在异常处理后再次执行指令。因此，通过在异常处理后适当地配置，重复执行相同的指令，可以在保持程序逻辑操作一致性的同时执行复杂的内存管理。</p>
+<p><strong>挂起异常</strong>：挂起异常是指在指令操作执行后发生的异常，并在指令完成后被确认。挂起异常包括软件异常等。挂起异常的发生被定义为指令的正常操作；因此，与可恢复异常不同，挂起异常通常完成导致它的指令，并且不会重新执行该指令。此异常主要用于调用门，例如，用于调用管理程序。</p>
+<h6 id="3-2-异常级别"><a href="#3-2-异常级别" class="headerlink" title="3.2 异常级别"></a>3.2 异常级别</h6><p>在该CPU中，如果在处理一个异常时发生了一个紧急程度较高的异常，则会优先处理紧急异常。为了在确认紧急异常后能够返回被中断的异常处理，即使上下文未保存到内存中，异常原因被分为以下两个层级进行管理：</p>
+<ul>
+<li><strong>EI</strong> 级异常</li>
+<li><strong>FE</strong> 级异常</li>
+</ul>
+<p><strong>EI</strong> 级异常用于处理常规用户处理、中断服务和操作系统处理等。<br><strong>FE</strong> 级异常用于在处理 <strong>EI</strong> 级异常时，使系统中的高紧急程度中断或在操作系统处理期间可能发生的内存管理功能异常得到确认。</p>
+<h5 id="4-Coprocessors"><a href="#4-Coprocessors" class="headerlink" title="4 Coprocessors"></a>4 Coprocessors</h5><p>在该CPU中，集成了单精度和双精度浮点运算单元（FPU）和扩展浮点运算单元（FXU）。（根据产品的型号，这些协处理器可能不可用。）</p>
+<h6 id="4-1-协处理器使用权限"><a href="#4-1-协处理器使用权限" class="headerlink" title="4.1 协处理器使用权限"></a>4.1 协处理器使用权限</h6><p>要执行协处理器指令，需要有权限使用相应的协处理器指令。协处理器使用权限由<code>PSW.CU2</code>到<code>PSW.CU0</code>位指定，如果尝试执行相应协处理器使用权限被清除为0的指令，则会发生协处理器不可用异常（UCPOP）。</p>
+<p>在以下情况下，PSW.CU2到CU0位的值固定为0并且不能更改：</p>
+<ul>
+<li>协处理器功能未集成在产品中</li>
+<li>根据产品功能，协处理器功能不可用</li>
+</ul>
+<h6 id="4-2-协处理器使用权限与协处理器之间的对应关系"><a href="#4-2-协处理器使用权限与协处理器之间的对应关系" class="headerlink" title="4.2 协处理器使用权限与协处理器之间的对应关系"></a>4.2 协处理器使用权限与协处理器之间的对应关系</h6><p>该CPU定义了协处理器使用权限，以在CPU操作期间控制每个程序的协处理器可用性。有三种协处理器使用权限（CU0到CU2），它们与协处理器的对应关系如下表所示。该CPU没有具有CU2协处理器使用权限的协处理器。CU2的协处理器使用权限是为将来与该CPU兼容的CPU保留的功能。</p>
+<table>
+<thead>
+<tr>
+<th>协处理器使用权限</th>
+<th>协处理器</th>
+<th>异常原因代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CU0</td>
+<td>单精度&#x2F;双精度FPU</td>
+<td>80<sub>H</sub></td>
+</tr>
+<tr>
+<td>CU1</td>
+<td>FXU</td>
+<td>81<sub>H</sub></td>
+</tr>
+<tr>
+<td>CU2</td>
+<td>预留</td>
+<td>82<sub>H</sub></td>
+</tr>
+</tbody></table>
+<h6 id="4-3-协处理器不可用异常"><a href="#4-3-协处理器不可用异常" class="headerlink" title="4.3 协处理器不可用异常"></a>4.3 协处理器不可用异常</h6><p>如果在没有相应协处理器使用权限（PSW.CUn &#x3D; 0）的情况下尝试执行协处理器指令或访问协处理器的系统寄存器，则会发生协处理器不可用异常。如果使用寄存器组功能，在自动上下文保存和<code>RESBANK</code>指令执行时，会访问FPU的系统寄存器FPSR。在这种情况下，即使没有给予协处理器使用权限（PSW.CU0 &#x3D; 0），也不会发生协处理器不可用异常。</p>
+<h6 id="4-4-系统寄存器"><a href="#4-4-系统寄存器" class="headerlink" title="4.4 系统寄存器"></a>4.4 系统寄存器</h6><p>某些协处理器功能具有特定的系统寄存器。访问协处理器功能的系统寄存器需要协处理器使用权限。对于某些系统寄存器，除了协处理器使用权限外，还需要监督特权（SV特权）。</p>
+<h5 id="5-Registers"><a href="#5-Registers" class="headerlink" title="5 Registers"></a>5 Registers</h5><p>该CPU定义了程序寄存器（通用寄存器和程序计数器PC）和系统寄存器，用于控制状态和存储异常信息。</p>
+<h6 id="5-1-程序寄存器"><a href="#5-1-程序寄存器" class="headerlink" title="5.1 程序寄存器"></a>5.1 程序寄存器</h6><p>程序寄存器包括通用寄存器（r0到r31）和程序计数器（PC）。</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>访问权限</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>程序计数器</td>
+<td>用户模式 (UM)</td>
+<td>PC</td>
+</tr>
+<tr>
+<td>通用寄存器</td>
+<td>用户模式 (UM)</td>
+<td>r0-r31</td>
+</tr>
+</tbody></table>
+<p>备注：对具有用户模式（UM）访问权限的寄存器的访问始终被允许。</p>
+<h6 id="5-2-系统寄存器"><a href="#5-2-系统寄存器" class="headerlink" title="5.2 系统寄存器"></a>5.2 系统寄存器</h6><p>系统寄存器被放置在基于 Selection ID 和寄存器编号两种地址信息定义的专用地址空间中。最多可以定义32个 Selection ID，每个 Selection ID包括最多32个系统寄存器。因此，可以在系统寄存器的地址空间中定义最多1024个系统寄存器。基本上，该CPU分配 Selection ID如下：</p>
+<ul>
+<li>Selection ID 0到3：基本功能相关寄存器</li>
+<li>Selection ID 4和5：内存管理功能相关寄存器</li>
+<li>Selection ID 10和11：从传统架构扩展的功能相关寄存器</li>
+<li>Selection ID 12和13：该CPU特定硬件功能相关寄存器</li>
+<li>其他ID：保留用于与该CPU兼容的未来CPU的扩展</li>
+</ul>
+<h6 id="5-3-寄存器更新"><a href="#5-3-寄存器更新" class="headerlink" title="5.3 寄存器更新"></a>5.3 寄存器更新</h6><p>有几种方法可以更新寄存器。通常，使用指令更新寄存器时没有特别的限制。然而，当使用以下指令更新寄存器时，根据操作模式可能会有一些限制：</p>
+<ul>
+<li>LDSR</li>
+<li>STSR</li>
+</ul>
+<p>LDSR和STSR指令可以访问所有系统寄存器。但是，如果在没有适当权限的情况下访问系统寄存器，可能会发生PIE异常或UCPOP异常。</p>
+<h6 id="5-4-访问未定义寄存器"><a href="#5-4-访问未定义寄存器" class="headerlink" title="5.4 访问未定义寄存器"></a>5.4 访问未定义寄存器</h6><p>如果访问没有分配任何寄存器的系统寄存器编号或访问不可访问的寄存器，会发生以下结果：</p>
+<ul>
+<li>未定义寄存器被视为具有SV权限。当在用户模式（PSW.UM &#x3D; 1）下通过LDSR或STSR指令访问它们时，会发生PIE异常。</li>
+<li>对于读取操作，读取结果未定义。如果程序中使用了读取值，可能会发生意外行为。</li>
+<li>对于写入操作，写入操作被忽略。</li>
+</ul>
+<h6 id="5-5-监督锁定设置"><a href="#5-5-监督锁定设置" class="headerlink" title="5.5 监督锁定设置"></a>5.5 监督锁定设置</h6><p>如果设置了SVLOCK.SVL位，则即使在监督模式下也不能更新以下系统寄存器： SPID, MPM, MPLA, MPUA, MPAT, MPIDn, 和 MPBK。<br>然而，如果设置了SVLOCK.SVL位，尝试更新上述系统寄存器不会导致PIE异常。此外，即使设置了SVLOCK.SVL位，仍然可以读取上述系统寄存器。此功能旨在确保集成此CPU的系统的安全性。它防止在监督模式下运行的程序由于编程错误等原因突然更改内存保护设置，从而可能导致非法内存访问并损害安全性。</p>
+<h5 id="6-Data-Types"><a href="#6-Data-Types" class="headerlink" title="6 Data Types"></a>6 Data Types</h5><h6 id="6-1-数据格式"><a href="#6-1-数据格式" class="headerlink" title="6.1 数据格式"></a>6.1 数据格式</h6><p>该CPU以小端格式处理数据。这意味着半字或字的第0字节，始终是最低有效（最右边的）字节。 支持的数据格式如下：</p>
+<ul>
+<li>字节（8位数据）: 从任何字节边界开始的8个连续位的数据</li>
+<li>半字（16位数据）: 半字是从任何字节边界开始的两个连续字节数据</li>
+<li>字（32位数据）:字是从任何字节边界开始的四个连续字节数据</li>
+<li>双字（64位数据）: 双字是从任何4字节边界开始的八个连续字节数据</li>
+<li>四字（128位数据）: 四字是从任何8字节边界开始的十六个连续字节数据。</li>
+<li>位（1位数据）</li>
+</ul>
+<p><strong>在该CPU中，对双字数据的一次内存访问被划分为对字数据的两次非原子内存访问，对四字数据的一次内存访问被划分为对字数据的四次非原子内存访问</strong></p>
+<h6 id="6-2-数据表示"><a href="#6-2-数据表示" class="headerlink" title="6.2 数据表示"></a>6.2 数据表示</h6><p><strong>整数</strong>:<br>整数以二进制值表示，使用二进制补码表示，并且以64位、32位、16位或8位的长度使用。由于这是二进制补码表示，最高有效位用作符号位。 各种数据长度的整数范围如下：</p>
+<ul>
+<li>双字（64位）：−9223372036854775808 到 +9223372036854775807</li>
+<li>字（32位）：−2147483648 到 +2147483647</li>
+<li>半字（16位）：−32768 到 +32767</li>
+<li>字节（8位）：−128 到 +127</li>
+</ul>
+<p>虽然定义了四字（128位）数据格式，但该CPU不使用四字数据表示。这是因为四字数据由四个字数据或两个双字数据组成，但该CPU不直接处理四字数据。</p>
+<p><strong>无符号整数</strong>:<br>与可以取正负符号的“整数”不同，“无符号整数”永远不是负数。与整数一样，无符号整数以二进制值表示，并且以64位、32位、16位或8位的长度使用。无符号整数不使用符号位。 各种数据长度的无符号整数范围如下：</p>
+<ul>
+<li>双字（64位）：0 到 18446744073709551615</li>
+<li>字（32位）：0 到 4294967295</li>
+<li>半字（16位）：0 到 65535</li>
+<li>字节（8位）：0 到 255</li>
+</ul>
+<p><strong>位</strong>:<br>位数据作为单个位数据处理，值为清除（0）或设置（1）。有四种类型的位相关操作（如下所列），它们只针对内存空间中的单字节数据：</p>
+<ul>
+<li>设置（Set）</li>
+<li>清除（Clear）</li>
+<li>反转（Invert）</li>
+<li>测试（Test）</li>
+</ul>
+<h6 id="6-3-数据对齐"><a href="#6-3-数据对齐" class="headerlink" title="6.3 数据对齐"></a>6.3 数据对齐</h6><p>在该CPU中，禁止未对齐的数据分配。当地址计算的结果是未对齐地址时，会发生未对齐异常（MAE）。 未对齐访问表示以下地址的数据大小的访问：</p>
+<ul>
+<li>半字大小：访问不在半字边界（地址的最低有效位 &#x3D; 0）上的地址</li>
+<li>字大小：访问不在字边界（地址的最低两位 &#x3D; 0）上的地址</li>
+<li>双字大小：访问不在双字边界（地址的最低三位 &#x3D; 0）上的地址</li>
+<li>四字大小：访问不在四字边界（地址的最低四位 &#x3D; 0）上的地址</li>
+</ul>
+<p><strong>仅对于双字格式，当数据放置在字边界而不在双字边界时，不会发生未对齐访问异常，并且可以正常访问双字数据。</strong></p>
+<h5 id="7-Address-Space"><a href="#7-Address-Space" class="headerlink" title="7  Address Space"></a>7  Address Space</h5><p>该CPU支持高达4GB的线性地址空间。内存和I&#x2F;O都可以映射到这个地址空间（使用内存映射I&#x2F;O方法）。CPU为内存和I&#x2F;O输出32位地址，其中最高地址编号为“2³² - 1”。 放置在各个地址的字节数据定义为位0为LSB（最低有效位），位7为MSB（最高有效位）。当数据由多个字节组成时，它定义为最低地址的字节数据是LSB，最高地址的字节数据是MSB（即小端格式）。 本手册规定，在表示由多个字节组成的数据时，右边代表低序地址，左边代表高序地址。</p>
+<h6 id="7-1-内存映射"><a href="#7-1-内存映射" class="headerlink" title="7.1 内存映射"></a>7.1 内存映射</h6><p>该CPU是32位架构，支持高达4GB的线性地址空间。整个4GB的地址空间可以通过指令寻址（指令获取访问）和数据寻址（数据访问）来寻址。</p>
+<h6 id="7-2-指令寻址"><a href="#7-2-指令寻址" class="headerlink" title="7.2 指令寻址"></a>7.2 指令寻址</h6><p>指令地址基于程序计数器（PC）的内容确定，并根据执行指令的字节数自动递增。当执行分支指令时，使用下文所述的寻址方式将分支目标地址设置为PC。 如果地址计算结果通过加法超过正最大值FFFF FFFFH，则回绕到0000 0000H。如果地址计算结果通过减法低于正最小值0000 0000H，则回绕到FFFF FFFFH。</p>
+<p><strong>相对寻址（PC相对）</strong>：<br>指令代码中的有符号N位数据（位移：disp N）加到程序计数器（PC）。在这种情况下，位移作为二进制补码数据处理，MSB为符号位（S）。如果位移小于32位，高位扩展为符号扩展（N因指令不同而异）。 JARL, JR 和 Bcond 指令使用此类型的寻址。</p>
+<p><strong>寄存器寻址（寄存器间接）</strong>:<br>指令指定的通用寄存器（reg1）或系统寄存器（regID）的内容传送到程序计数器（PC）。 JMP, CTRET, EIRET, FERET 和 DISPOSE 指令使用此类型的寻址。</p>
+<p><strong>基址寻址</strong>:<br>指令指定的通用寄存器（reg1）和N位位移（dispN）的内容相加并传送到程序计数器（PC）。此时，位移作为二进制补码数据处理，MSB为符号位（S）。如果位移小于32位，高位扩展为符号扩展（N因指令不同而异）。 JMP 指令使用此类型的寻址。</p>
+<p><strong>其他寻址</strong>：<br>指令指定的值传送到程序计数器（PC）。值的指定方式在每条指令的[Operation]或[Description]部分解释。 CALLT, SYSCALL, TRAP, FETRAP 和 RIE 指令，以及异常情况下的分支使用此类型的寻址。</p>
+<h6 id="7-3-数据寻址"><a href="#7-3-数据寻址" class="headerlink" title="7.3 数据寻址"></a>7.3 数据寻址</h6><p>执行指令时可以使用以下方法访问目标寄存器或内存。 如果地址计算结果通过加法超过正最大值FFFF FFFFH，则回绕到0000 0000H。如果地址计算结果通过减法低于正最小值0000 0000H，则回绕到FFFF FFFFH。</p>
+<p><strong>寄存器寻址</strong>：<br>此寻址方法访问在通用寄存器字段中指定为操作数的通用寄存器或系统寄存器。 任何包括操作数reg1、reg2、reg3或regID的指令都使用此类型的寻址。</p>
+<p><strong>立即数寻址</strong>：<br>此地址模式使用指令代码中的任意大小数据作为操作目标。 任何包括操作数imm5、imm16、vector或cccc的指令都使用此类型的寻址。</p>
+<p>注：</p>
+<ul>
+<li>vector：这是指定异常向量（00H到1FH）的立即数数据，是TRAP、FETRAP和SYSCALL指令使用的操作数。数据宽度因指令而异。</li>
+<li>cccc：这是指定条件码的4位数据，是Bcond指令、CMOV指令、SASF指令和SETF指令使用的操作数。</li>
+</ul>
+<p><strong>基址寻址</strong>：<br>基地址寻址有两种类型，如下所述：</p>
+<ul>
+<li><p>类型1 ：在指令代码中的寻址规范字段中指定的通用寄存器（reg1）的内容与N位位移（dispN）数据加上符号扩展到字长后得到操作数地址，并使用该操作数地址访问目标内存。在此过程中，位移作为二进制补码数据处理，最高有效位（MSB）作为符号位（S）。如果位移小于32位，则高位进行符号扩展（N因指令不同而不同）。 LD、ST、LDV和STV指令使用这种寻址类型。</p>
+</li>
+<li><p>类型2 ：元素指针（r30）的内容与N位位移数据（dispN）加零扩展到字长后得到操作数地址，并使用该操作数地址访问目标内存。如果位移小于32位，则高位进行零扩展（N因指令不同而不同）。 SLD和SST指令使用这种寻址类型。</p>
+</li>
+</ul>
+<p><strong>位寻址</strong>：<br>在指令代码中指定的通用寄存器（reg1）的内容与N位位移（dispN）数据加上符号扩展到字长后得到操作数地址，并使用该操作数地址访问目标内存中的一个字节中的一个位（由3位数据“bit #3”指定）。在此过程中，位移作为二进制补码数据处理，最高有效位（MSB）作为符号位（S）。如果位移小于32位，则高位进行符号扩展（N因指令不同而不同）。 CLR1、SET1、NOT1和TST1指令使用这种寻址类型。</p>
+<p><strong>后索引递增&#x2F;递减寻址</strong>：<br>通用寄存器（reg1）的内容用作操作数地址以访问目标内存，然后更新通用寄存器（reg1）。有两种更新通用寄存器的方法，分别是递增和递减。 如果递增通用寄存器（reg1）的值超过正最大值FFFF FFFFH，则结果回绕到0000 0000H；如果递减通用寄存器的值小于正最小值0000 0000H，则结果回绕到FFFF FFFFH。</p>
+<ul>
+<li>类型1 ：通用寄存器（reg1）通过向其内容添加一个依赖于访问数据类型（访问数据的大小）的常量进行更新。如果访问数据的类型是字节，添加1；如果是半字，添加2；如果是字，添加4；如果是双字，添加8。</li>
+<li>类型2 ：通用寄存器（reg1）通过从其内容中减去一个依赖于访问数据大小的常量进行更新。如果访问数据的大小是字节，减去1；如果是半字，减去2；如果是字，减去4；如果是双字，减去8。</li>
+</ul>
+<p><strong>其他寻址</strong>：<br>目标内存使用指令指定的值作为操作数地址进行访问。如何指定值在每个指令的[操作]或[描述]中说明。 SWITCH、CALLT、SYSCALL、PREPARE、DISPOSE、PUSHSP、POPSP、STM.MP和LDM.MP指令使用这种类型的寻址。</p>
+<h5 id="8-Execution-Timing-of-a-Store-Instruction"><a href="#8-Execution-Timing-of-a-Store-Instruction" class="headerlink" title="8 Execution Timing of a Store Instruction"></a>8 Execution Timing of a Store Instruction</h5><p>存储指令写入完成的时间可能因要访问的内存类型而异。有关详细信息，请参见第3.2.7.2节。</p>
+<h5 id="9-Memory-Ordering"><a href="#9-Memory-Ordering" class="headerlink" title="9  Memory Ordering"></a>9  Memory Ordering</h5><p>该CPU保证按照编程顺序访问内存。然而，在包含多个总线主控设备（如DMA或多核的总线系统）的系统中，需要考虑对内存的访问顺序。对于这些情况，请参见第3.2.7.1节，同步处理。</p>
+<h5 id="10-Acquiring-the-CPU-Number"><a href="#10-Acquiring-the-CPU-Number" class="headerlink" title="10 Acquiring the CPU Number"></a>10 Acquiring the CPU Number</h5><p>该CPU提供了一种在多处理器系统中识别CPU的方法。在多处理器配置中，可以通过参考PEID寄存器来识别哪个CPU核正在运行一个程序。根据产品的规格，PEID寄存器被分配了一个在多处理器系统中唯一的编号。</p>
+<h5 id="11-System-Protection-Identifier-SPID"><a href="#11-System-Protection-Identifier-SPID" class="headerlink" title="11 System Protection Identifier (SPID)"></a>11 System Protection Identifier (SPID)</h5><p>在该CPU中，内存资源和外设设备由系统保护组管理。通过指定正在执行的程序所属的组，可以为该程序分配可访问的内存资源和外设设备。执行的程序属于由SPID指定的组，并且是否可访问内存资源和外设设备由SPID决定。值可以由监督者设置到SPID寄存器。</p>
+<h5 id="12-Timestamp-Counter"><a href="#12-Timestamp-Counter" class="headerlink" title="12 Timestamp Counter"></a>12 Timestamp Counter</h5><p>该CPU具有一个64位时间戳计数器。它可以测量很长的时间，因此可以用作时间识别的特定信息。由于时间戳计数器被分配到系统寄存器，因此可以通过使用LDSR&#x2F;STSR指令快速访问。如果在计数操作期间发生溢出，则不会发生异常。</p>
+<p><strong>时间戳计数器的操作方法</strong>：<br>时间戳计数器的值在复位时初始化为0。因此，如果希望在复位期间保留计数器的值，则在复位之前将计数器的值保存到未被复位初始化的内存中，复位后将值恢复到计数器，并重新开始计数。计数器的宽度为64位，因此计数器由两个32位系统寄存器TSCOUNTL和TSCOUNTH组成。需要使用LDSR&#x2F;STSR指令访问这两个寄存器。</p>
+<p>当计数器未运行时（TSCTRL.CEN位的值为0），访问这两个寄存器不需要特别注意。然而，如果计数器正在运行（TSCTRL.CEN位的值为1），不建议使用LDSR指令更新计数器。在这种情况下，更新计数器的时序不受保证。建议在计数器未运行时更新计数器。</p>
+<p>此外，当在计数器运行时使用STSR指令读取计数器的值时，建议遵循以下步骤：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">TSCNTRD:</span><br><span class="line">    STSR 1, r21, 11      ; 读取计数器的高位</span><br><span class="line">    STSR 0, r20, 11      ; 读取计数器的低位</span><br><span class="line">    STSR 1, r22, 11      ; 再次读取计数器的高位</span><br><span class="line">    CMP   r21, r22       ; 比较两次读取的高位值</span><br><span class="line">    BNE   TSCNTRD        ; 如果它们不相同，则发生进位。再次读取。</span><br></pre></td></tr></table></figure>
+<p><strong>即使在执行HALT或SNOOZE指令后CPU核心不在运行，时间戳计数器也会继续计数。</strong></p>
+<h5 id="13-Performance-Measurement-Function"><a href="#13-Performance-Measurement-Function" class="headerlink" title="13 Performance Measurement Function"></a>13 Performance Measurement Function</h5><p>该CPU具有性能测量功能。性能测量功能可以通过计数由PMCTRLn.CND位指定的事件的发生次数来测量执行的程序的性能、操作期间生成的中断的影响等。</p>
+<p>性能测量功能使用的系统寄存器在复位后只能在监督模式下访问。然而，通过更改PMUMCTRL寄存器的设置，也可以在用户模式下访问。无论PMUMCTRL寄存器的设置如何，性能测量功能本身在用户模式下工作。即使使用PMUMCTRL寄存器使所有性能测量通道在用户模式下不可访问，在监督模式下的配置也允许在用户模式下操作期间进行性能测量。</p>
+<p>该CPU具有为性能测量功能设置的八个系统寄存器通道。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2024/12/04/Renesas-CPU_System-CPU-Processor_Model/" title="Renesas-RH850  CPU System - CPU - Processor Mode">http://fengxun2017.github.io/2024/12/04/Renesas-CPU_System-CPU-Processor_Model/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/12/03/Renesas-CPU_System-CPU-Core_Functions/" rel="prev" title="Renesas-RH850  CPU System - CPU Core Functions">
+                  <i class="fa fa-chevron-left"></i> Renesas-RH850  CPU System - CPU Core Functions
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">368k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">7:40</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
