@@ -387,7 +387,20 @@ F f O 符号是函数名称(F)，文件名称(f)，对象名称(O)或只是普�
 控制字符串中UTF-8编码的多字节字符的显示。默认（--unicode=default）是对它们不做特殊处理。--unicode=locale选项会在当前区域设置下显示序列，当前区域设置可能支持也可能不支持它们。--unicode=hex和--unicode=invalid选项将它们显示为用尖括号或大括号括起来的十六进制字节序列。
 --unicode=escape选项将它们显示为转义序列（\uxxxx），--unicode=highlight选项将它们显示为高亮红色的转义序列（如果输出设备支持）。着色旨在引起人们对可能意料之外的Unicode序列的注意。
 
+#### -V --version
+打印objdump的版本号并退出。
 
+#### -x --all-headers 
+显示所有可用的头信息，包括符号表和重定位条目。使用-x等同于指定了-a -f -h -p -r -t。
+
+#### -w --wide
+将某些行格式化为适用于超过80列的输出设备。同时在显示时不要截断符号名称。
+
+#### -z --disassemble-zeroes
+通常反汇编输出会跳过零块。此选项指示反汇编器像处理其他数据一样反汇编这些块。
+
+#### -Z --decompress 
+-Z选项应与-s选项一起使用。它指示objdump在显示内容之前解压任何压缩的部分。
 
 #### 参考连接：
-【1】[https://sourceware.org/binutils/docs/binutils/objdump.html](https://sourceware.org/binutils/docs/binutils/objdump.html)
+【1】[https://sourceware.org/binutils/docs-2.42/binutils/objdump.html](https://sourceware.org/binutils/docs-2.42/binutils/objdump.html)
