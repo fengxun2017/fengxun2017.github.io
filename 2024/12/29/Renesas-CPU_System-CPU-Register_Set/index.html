@@ -1,0 +1,5564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Renesas学习笔记CPU System : CPU - Register Set">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Renesas-RH850  CPU System - CPU - Register Set">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/12/29/Renesas-CPU_System-CPU-Register_Set/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="Renesas学习笔记CPU System : CPU - Register Set">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-12-29T13:45:35.735Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2024/12/29/Renesas-CPU_System-CPU-Register_Set/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/12/29/Renesas-CPU_System-CPU-Register_Set/","path":"2024/12/29/Renesas-CPU_System-CPU-Register_Set/","title":"Renesas-RH850  CPU System - CPU - Register Set"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Renesas-RH850  CPU System - CPU - Register Set | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Program-Registers"><span class="nav-number">1.</span> <span class="nav-text">1  Program Registers</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-%E9%80%9A%E7%94%A8%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 通用寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8%EF%BC%88PC%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 程序计数器（PC）</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Basic-System-Registers"><span class="nav-number">2.</span> <span class="nav-text">2 Basic System Registers</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-1-EIPC-%E2%80%94-%E7%A1%AE%E8%AE%A4EI%E7%BA%A7%E5%BC%82%E5%B8%B8%E6%97%B6%E7%9A%84%E7%8A%B6%E6%80%81%E4%BF%9D%E5%AD%98%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 EIPC — 确认EI级异常时的状态保存寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-EIPSW-%E2%80%94-%E7%A1%AE%E8%AE%A4EI%E7%BA%A7%E5%BC%82%E5%B8%B8%E6%97%B6%E7%9A%84%E7%8A%B6%E6%80%81%E4%BF%9D%E5%AD%98%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 EIPSW — 确认EI级异常时的状态保存寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-3-FEPC-%E2%80%94-%E7%A1%AE%E8%AE%A4FE%E7%BA%A7%E5%BC%82%E5%B8%B8%E6%97%B6%E7%9A%84%E7%8A%B6%E6%80%81%E4%BF%9D%E5%AD%98%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 FEPC — 确认FE级异常时的状态保存寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-4-FEPSW-%E2%80%94-%E7%A1%AE%E8%AE%A4FE%E7%BA%A7%E5%BC%82%E5%B8%B8%E6%97%B6%E7%9A%84%E7%8A%B6%E6%80%81%E4%BF%9D%E5%AD%98%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 FEPSW — 确认FE级异常时的状态保存寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-5-PSW-%E2%80%94-%E7%A8%8B%E5%BA%8F%E7%8A%B6%E6%80%81%E5%AD%97"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 PSW — 程序状态字</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-6-EIIC-EI-Level-Exception-Cause"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 EIIC - EI Level Exception Cause</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-7-FEIC-%E2%80%94-FE-Level-Exception-Cause"><span class="nav-number">2.7.</span> <span class="nav-text">2.7 FEIC — FE Level Exception Cause</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-8-CTPC-%E2%80%94-%E6%89%A7%E8%A1%8C-CALLT-%E6%97%B6%E7%9A%84%E7%8A%B6%E6%80%81%E4%BF%9D%E5%AD%98%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.8.</span> <span class="nav-text">2.8 CTPC — 执行 CALLT 时的状态保存寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-9-CTPSW-%E2%80%94-%E6%89%A7%E8%A1%8C-CALLT-%E6%97%B6%E7%9A%84%E7%8A%B6%E6%80%81%E4%BF%9D%E5%AD%98%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.9.</span> <span class="nav-text">2.9 CTPSW — 执行 CALLT 时的状态保存寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-10-CTBP-%E2%80%94-CALLT-%E5%9F%BA%E6%8C%87%E9%92%88"><span class="nav-number">2.10.</span> <span class="nav-text">2.10 CTBP — CALLT 基指针</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-11-SNZCFG-%E2%80%94-SNOOZE-%E9%85%8D%E7%BD%AE"><span class="nav-number">2.11.</span> <span class="nav-text">2.11 SNZCFG — SNOOZE 配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-12-EIWR-%E2%80%94-EI-%E7%BA%A7%E5%BC%82%E5%B8%B8%E5%B7%A5%E4%BD%9C%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.12.</span> <span class="nav-text">2.12 EIWR — EI 级异常工作寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-13-FEWR-%E2%80%94-FE-%E7%BA%A7%E5%BC%82%E5%B8%B8%E5%B7%A5%E4%BD%9C%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.13.</span> <span class="nav-text">2.13 FEWR — FE 级异常工作寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-14-SPID-%E2%80%94-%E7%B3%BB%E7%BB%9F%E4%BF%9D%E6%8A%A4%E6%A0%87%E8%AF%86%E7%AC%A6"><span class="nav-number">2.14.</span> <span class="nav-text">2.14 SPID — 系统保护标识符</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-15-SPIDLIST-%E2%80%94-%E5%90%88%E6%B3%95%E7%B3%BB%E7%BB%9F%E4%BF%9D%E6%8A%A4%E6%A0%87%E8%AF%86%E7%AC%A6%E5%88%97%E8%A1%A8"><span class="nav-number">2.15.</span> <span class="nav-text">2.15 SPIDLIST — 合法系统保护标识符列表</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-16-RBASE-%E2%80%94-%E5%A4%8D%E4%BD%8D%E5%90%91%E9%87%8F%E5%9F%BA%E5%9C%B0%E5%9D%80"><span class="nav-number">2.16.</span> <span class="nav-text">2.16 RBASE — 复位向量基地址</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-17-EBASE-%E2%80%94-%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F%E5%90%91%E9%87%8F%E5%9C%B0%E5%9D%80"><span class="nav-number">2.17.</span> <span class="nav-text">2.17 EBASE — 异常处理程序向量地址</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-18-INTBP-%E2%80%94-%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86%E7%A8%8B%E5%BA%8F%E5%9C%B0%E5%9D%80%E8%A1%A8%E7%9A%84%E5%9F%BA%E5%9C%B0%E5%9D%80"><span class="nav-number">2.18.</span> <span class="nav-text">2.18 INTBP — 中断处理程序地址表的基地址</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-19-MCTL-%E2%80%94-%E6%9C%BA%E5%99%A8%E6%8E%A7%E5%88%B6"><span class="nav-number">2.19.</span> <span class="nav-text">2.19 MCTL — 机器控制</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-20-PID-%E5%A4%84%E7%90%86%E5%99%A8ID"><span class="nav-number">2.20.</span> <span class="nav-text">2.20 PID - 处理器ID</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-21-SVLOCK-%E2%80%94-Supervisor-Lock"><span class="nav-number">2.21.</span> <span class="nav-text">2.21 SVLOCK —  Supervisor Lock</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-22-SCCFG-%E2%80%94-SYSCALL-%E6%93%8D%E4%BD%9C%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.22.</span> <span class="nav-text">2.22 SCCFG — SYSCALL 操作设置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-23-SCBP-%E2%80%94-SYSCALL-%E5%9F%BA%E6%8C%87%E9%92%88"><span class="nav-number">2.23.</span> <span class="nav-text">2.23 SCBP — SYSCALL 基指针</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-24-PEID-%E2%80%94-Processor-Element-Identifier"><span class="nav-number">2.24.</span> <span class="nav-text">2.24 PEID — Processor Element Identifier</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-25-BMID-%E2%80%94-%E6%80%BB%E7%BA%BF%E4%B8%BB%E6%8E%A7%E6%A0%87%E8%AF%86%E7%AC%A6"><span class="nav-number">2.25.</span> <span class="nav-text">2.25 BMID — 总线主控标识符</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-26-MEA-%E2%80%94-%E5%86%85%E5%AD%98%E9%94%99%E8%AF%AF%E5%9C%B0%E5%9D%80"><span class="nav-number">2.26.</span> <span class="nav-text">2.26 MEA — 内存错误地址</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-27-MEI-%E2%80%94-%E5%86%85%E5%AD%98%E9%94%99%E8%AF%AF%E4%BF%A1%E6%81%AF"><span class="nav-number">2.27.</span> <span class="nav-text">2.27 MEI — 内存错误信息</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-28-RBCR0-%E2%80%94-%E5%AF%84%E5%AD%98%E5%99%A8%E7%BB%84%E6%8E%A7%E5%88%B6-0"><span class="nav-number">2.28.</span> <span class="nav-text">2.28 RBCR0 — 寄存器组控制 0</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-29-RBCR1-%E2%80%94-%E5%AF%84%E5%AD%98%E5%99%A8%E7%BB%84%E6%8E%A7%E5%88%B6-1"><span class="nav-number">2.29.</span> <span class="nav-text">2.29 RBCR1 — 寄存器组控制 1</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-30-RBNR-%E2%80%94-%E5%AF%84%E5%AD%98%E5%99%A8%E7%BB%84%E7%BC%96%E5%8F%B7"><span class="nav-number">2.30.</span> <span class="nav-text">2.30 RBNR — 寄存器组编号</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-31-RBIP-%E2%80%94-%E5%AF%84%E5%AD%98%E5%99%A8%E7%BB%84%E5%88%9D%E5%A7%8B%E6%8C%87%E9%92%88"><span class="nav-number">2.31.</span> <span class="nav-text">2.31 RBIP — 寄存器组初始指针</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E4%B8%AD%E6%96%AD%E5%8A%9F%E8%83%BD%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">3 中断功能寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#3-1-ISPR-%E2%80%94-%E6%9C%8D%E5%8A%A1%E4%B8%AD%E7%9A%84%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 ISPR — 服务中的中断优先级</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-2-IMSR-%E2%80%94-%E4%B8%AD%E6%96%AD%E5%B1%8F%E8%94%BD%E7%8A%B6%E6%80%81"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 IMSR — 中断屏蔽状态</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-3-ICSR-%E2%80%94-%E4%B8%AD%E6%96%AD%E6%8E%A7%E5%88%B6%E7%8A%B6%E6%80%81"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 ICSR — 中断控制状态</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-4-INTCFG-%E2%80%94-%E4%B8%AD%E6%96%AD%E5%8A%9F%E8%83%BD%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 INTCFG — 中断功能设置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-5-PLMR-%E2%80%94-%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7%E7%BA%A7%E5%88%AB%E5%B1%8F%E8%94%BD"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 PLMR — 中断优先级级别屏蔽</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-FPU-%E5%8A%9F%E8%83%BD%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text">4 FPU 功能寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#4-1-FPSR-%E2%80%94-%E6%B5%AE%E7%82%B9%E9%85%8D%E7%BD%AE-x2F-%E7%8A%B6%E6%80%81"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 FPSR — 浮点配置&#x2F;状态</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-2-FPEPC-%E2%80%94-%E6%B5%AE%E7%82%B9%E5%BC%82%E5%B8%B8%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 FPEPC — 浮点异常程序计数器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-3-FPST-%E2%80%94-%E6%B5%AE%E7%82%B9%E8%BF%90%E7%AE%97%E7%8A%B6%E6%80%81"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 FPST — 浮点运算状态</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-4-FPCC-%E2%80%94-%E6%B5%AE%E7%82%B9%E8%BF%90%E7%AE%97%E6%AF%94%E8%BE%83%E7%BB%93%E6%9E%9C"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 FPCC — 浮点运算比较结果</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-5-FPCFG-%E2%80%94-%E6%B5%AE%E7%82%B9%E8%BF%90%E7%AE%97%E9%85%8D%E7%BD%AE"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 FPCFG — 浮点运算配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-6-%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="nav-number">4.6.</span> <span class="nav-text">4.6 总结：</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-FXU-%E5%8A%9F%E8%83%BD%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">5.</span> <span class="nav-text">5 FXU 功能寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#5-1-FXSR-%E2%80%94-%E6%89%A9%E5%B1%95%E6%B5%AE%E7%82%B9%E8%BF%90%E7%AE%97%E9%85%8D%E7%BD%AE-x2F-%E7%8A%B6%E6%80%81"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 FXSR — 扩展浮点运算配置&#x2F;状态</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#5-2-FXST-%E2%80%94-%E6%89%A9%E5%B1%95%E6%B5%AE%E7%82%B9%E8%BF%90%E7%AE%97%E7%8A%B6%E6%80%81"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 FXST — 扩展浮点运算状态</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#5-3-FXINFO-%E2%80%94-FXU-%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 FXINFO — FXU 配置信息</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#5-4-FXCFG-%E2%80%94-%E6%89%A9%E5%B1%95%E6%B5%AE%E7%82%B9%E8%BF%90%E7%AE%97%E9%85%8D%E7%BD%AE"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 FXCFG — 扩展浮点运算配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#5-5-FXXC-%E2%80%94-%E5%90%84%E6%93%8D%E4%BD%9C%E6%96%B9%E5%BC%8F%E7%9A%84-XC%EF%BC%88%E5%8E%9F%E5%9B%A0%EF%BC%89%E4%BD%8D"><span class="nav-number">5.5.</span> <span class="nav-text">5.5 FXXC — 各操作方式的 XC（原因）位</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#5-6-FXXP-%E2%80%94-%E5%90%84%E6%93%8D%E4%BD%9C%E6%96%B9%E5%BC%8F%E7%9A%84-XP%EF%BC%88%E4%BF%9D%E5%AD%98%EF%BC%89%E4%BD%8D"><span class="nav-number">5.6.</span> <span class="nav-text">5.6 FXXP — 各操作方式的 XP（保存）位</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-MPU-%E5%8A%9F%E8%83%BD%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">5.7.</span> <span class="nav-text">6 MPU 功能寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-1-MPM-%E2%80%94-%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4%E6%93%8D%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="nav-number">5.8.</span> <span class="nav-text">6.1 MPM — 内存保护操作模式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-2-MPCFG-%E2%80%94-MPU-%E9%85%8D%E7%BD%AE"><span class="nav-number">5.9.</span> <span class="nav-text">6.2 MPCFG — MPU 配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-3-MCA-%E2%80%94-%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4%E8%AE%BE%E7%BD%AE%E6%A3%80%E6%9F%A5%E5%9C%B0%E5%9D%80"><span class="nav-number">5.10.</span> <span class="nav-text">6.3 MCA — 内存保护设置检查地址</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-4-MCS-%E2%80%94-%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4%E8%AE%BE%E7%BD%AE%E6%A3%80%E6%9F%A5%E5%A4%A7%E5%B0%8F"><span class="nav-number">5.11.</span> <span class="nav-text">6.4 MCS — 内存保护设置检查大小</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-5-MCC-%E2%80%94-%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4%E8%AE%BE%E7%BD%AE%E6%A3%80%E6%9F%A5%E5%91%BD%E4%BB%A4"><span class="nav-number">5.12.</span> <span class="nav-text">6.5 MCC — 内存保护设置检查命令</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-6-MCR-%E2%80%94-%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4%E8%AE%BE%E7%BD%AE%E6%A3%80%E6%9F%A5%E7%BB%93%E6%9E%9C"><span class="nav-number">5.13.</span> <span class="nav-text">6.6 MCR — 内存保护设置检查结果</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-7-MCI-%E2%80%94-%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4%E8%AE%BE%E7%BD%AE%E6%A3%80%E6%9F%A5-SPID"><span class="nav-number">5.14.</span> <span class="nav-text">6.7 MCI — 内存保护设置检查 SPID</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-8-MPIDX-%E2%80%94-%E8%A6%81%E8%AE%BF%E9%97%AE%E7%9A%84%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4%E8%AE%BE%E7%BD%AE%E5%AF%84%E5%AD%98%E5%99%A8%E7%B4%A2%E5%BC%95"><span class="nav-number">5.15.</span> <span class="nav-text">6.8 MPIDX — 要访问的内存保护设置寄存器索引</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-9-MPBK-%E2%80%94-MPU-bank%E8%AE%BE%E7%BD%AE"><span class="nav-number">5.16.</span> <span class="nav-text">6.9 MPBK — MPU bank设置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-10-MPLA-%E2%80%94-%E4%BF%9D%E6%8A%A4%E5%8C%BA%E6%9C%80%E5%B0%8F%E5%9C%B0%E5%9D%80"><span class="nav-number">5.17.</span> <span class="nav-text">6.10 MPLA — 保护区最小地址</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-11-MPUA-%E2%80%94-%E4%BF%9D%E6%8A%A4%E5%8C%BA%E6%9C%80%E5%A4%A7%E5%9C%B0%E5%9D%80"><span class="nav-number">5.18.</span> <span class="nav-text">6.11 MPUA — 保护区最大地址</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-12-MPAT-%E2%80%94-%E4%BF%9D%E6%8A%A4%E5%8C%BA%E5%B1%9E%E6%80%A7"><span class="nav-number">5.19.</span> <span class="nav-text">6.12 MPAT — 保护区属性</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-13-MPIDn-%E2%80%94-%E5%8F%AF%E4%BB%A5%E8%AE%BF%E9%97%AE%E4%BF%9D%E6%8A%A4%E5%8C%BA%E7%9A%84-SPID"><span class="nav-number">5.20.</span> <span class="nav-text">6.13 MPIDn — 可以访问保护区的 SPID</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-Cache-Operation-Function-Registers"><span class="nav-number">6.</span> <span class="nav-text">7 Cache Operation Function Registers</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#7-1-ICTAGL-%E2%80%94-%E6%8C%87%E4%BB%A4%E7%BC%93%E5%AD%98%E6%A0%87%E8%AE%B0%E4%BD%8E%E8%AE%BF%E9%97%AE"><span class="nav-number">6.1.</span> <span class="nav-text">7.1 ICTAGL — 指令缓存标记低访问</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-2-ICTAGH-%E2%80%94-%E6%8C%87%E4%BB%A4%E7%BC%93%E5%AD%98%E6%A0%87%E8%AE%B0%E9%AB%98%E8%AE%BF%E9%97%AE"><span class="nav-number">6.2.</span> <span class="nav-text">7.2 ICTAGH — 指令缓存标记高访问</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-3-ICDATL-%E2%80%94-%E6%8C%87%E4%BB%A4%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E4%BD%8E%E8%AE%BF%E9%97%AE"><span class="nav-number">6.3.</span> <span class="nav-text">7.3 ICDATL — 指令缓存数据低访问</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-4-ICDATH-%E2%80%94-%E6%8C%87%E4%BB%A4%E7%BC%93%E5%AD%98%E6%95%B0%E6%8D%AE%E9%AB%98%E8%AE%BF%E9%97%AE"><span class="nav-number">6.4.</span> <span class="nav-text">7.4 ICDATH — 指令缓存数据高访问</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-5-ICCTRL-%E2%80%94-%E6%8C%87%E4%BB%A4%E7%BC%93%E5%AD%98%E6%8E%A7%E5%88%B6"><span class="nav-number">6.5.</span> <span class="nav-text">7.5 ICCTRL — 指令缓存控制</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-6-ICCFG-%E2%80%94-%E6%8C%87%E4%BB%A4%E7%BC%93%E5%AD%98%E9%85%8D%E7%BD%AE"><span class="nav-number">6.6.</span> <span class="nav-text">7.6 ICCFG — 指令缓存配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-7-ICERR-%E2%80%94-%E6%8C%87%E4%BB%A4%E7%BC%93%E5%AD%98%E9%94%99%E8%AF%AF"><span class="nav-number">6.7.</span> <span class="nav-text">7.7 ICERR — 指令缓存错误</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-Count-Function-Registers%EF%BC%9A"><span class="nav-number">7.</span> <span class="nav-text">8 Count Function Registers：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#8-1-TSCOUNTL-%E2%80%94-%E6%97%B6%E9%97%B4%E6%88%B3%E8%AE%A1%E6%95%B0%E4%BD%8E%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">7.1.</span> <span class="nav-text">8.1 TSCOUNTL — 时间戳计数低位寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#8-2-TSCOUNTH-%E2%80%94-%E6%97%B6%E9%97%B4%E6%88%B3%E8%AE%A1%E6%95%B0%E9%AB%98%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">7.2.</span> <span class="nav-text">8.2 TSCOUNTH — 时间戳计数高位寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#8-3-TSCTRL-%E2%80%94-%E6%97%B6%E9%97%B4%E6%88%B3%E8%AE%A1%E6%95%B0%E6%8E%A7%E5%88%B6"><span class="nav-number">7.3.</span> <span class="nav-text">8.3 TSCTRL — 时间戳计数控制</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#8-4-PMUMCTRL-%E2%80%94-%E6%80%A7%E8%83%BD%E8%AE%A1%E6%95%B0%E5%99%A8%E7%94%A8%E6%88%B7%E6%A8%A1%E5%BC%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">7.4.</span> <span class="nav-text">8.4 PMUMCTRL — 性能计数器用户模式控制</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#8-5-PMCTRLn-%E2%80%94-%E6%80%A7%E8%83%BD%E8%AE%A1%E6%95%B0%E6%8E%A7%E5%88%B6"><span class="nav-number">7.5.</span> <span class="nav-text">8.5 PMCTRLn — 性能计数控制</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#8-6-PMCOUNTn-%E2%80%94-%E6%80%A7%E8%83%BD%E8%AE%A1%E6%95%B0"><span class="nav-number">7.6.</span> <span class="nav-text">8.6 PMCOUNTn — 性能计数</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#8-7-PMSUBCNDn-%E2%80%94-%E6%80%A7%E8%83%BD%E8%AE%A1%E6%95%B0%E5%AD%90%E6%9D%A1%E4%BB%B6"><span class="nav-number">7.7.</span> <span class="nav-text">8.7 PMSUBCNDn — 性能计数子条件</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#9-Hardware-Function-Registers"><span class="nav-number">7.8.</span> <span class="nav-text">9 Hardware Function Registers</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#9-1-LSTEST0-%E2%80%94-%E9%94%81%E6%AD%A5%E5%8A%9F%E8%83%BD%E8%87%AA%E6%A3%80%E5%AF%84%E5%AD%98%E5%99%A8-0"><span class="nav-number">7.9.</span> <span class="nav-text">9.1 LSTEST0 — 锁步功能自检寄存器 0</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#9-2-LSTEST1-%E2%80%94-%E9%94%81%E6%AD%A5%E5%8A%9F%E8%83%BD%E8%87%AA%E6%A3%80%E5%AF%84%E5%AD%98%E5%99%A8-1"><span class="nav-number">7.10.</span> <span class="nav-text">9.2 LSTEST1 — 锁步功能自检寄存器 1</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#9-3-LSCFG-%E2%80%94-%E9%94%81%E6%AD%A5%E5%8A%9F%E8%83%BD%E9%85%8D%E7%BD%AE"><span class="nav-number">7.11.</span> <span class="nav-text">9.3 LSCFG — 锁步功能配置</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9-4-IFCR-%E2%80%94-%E6%8C%87%E4%BB%A4%E5%8F%96%E5%9B%9E%E6%8E%A7%E5%88%B6%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">8.</span> <span class="nav-text">9.4 IFCR — 指令取回控制寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#9-5-BRPCTRL0-%E2%80%94-%E5%88%86%E6%94%AF%E9%A2%84%E6%B5%8B%E5%8A%9F%E8%83%BD%E6%8E%A7%E5%88%B6%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">8.1.</span> <span class="nav-text">9.5 BRPCTRL0 — 分支预测功能控制寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#9-5-L1RCFG-%E2%80%94-L1RAM-%E9%85%8D%E7%BD%AE"><span class="nav-number">8.2.</span> <span class="nav-text">9.5 L1RCFG — L1RAM 配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#9-6-RDBCR-%E2%80%94-ROM-%E6%95%B0%E6%8D%AE%E7%BC%93%E5%86%B2%E5%8C%BA%E6%8E%A7%E5%88%B6%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">8.3.</span> <span class="nav-text">9.6 RDBCR — ROM 数据缓冲区控制寄存器</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/12/29/Renesas-CPU_System-CPU-Register_Set/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Renesas-RH850  CPU System - CPU - Register Set | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Renesas-RH850  CPU System - CPU - Register Set
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-12-29 00:00:00" itemprop="dateCreated datePublished" datetime="2024-12-29T00:00:00+08:00">2024-12-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Renesas/" itemprop="url" rel="index"><span itemprop="name">Renesas</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>45k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>56 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+
+<p>Renesas学习笔记<br>CPU System : CPU - Register Set</p>
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p>本章介绍此CPU上的程序寄存器和系统寄存器。</p>
+<h5 id="1-Program-Registers"><a href="#1-Program-Registers" class="headerlink" title="1  Program Registers"></a>1  Program Registers</h5><p>程序寄存器包括通用寄存器（r0到r31）和程序计数器（PC）。r0始终保持为0。复位后，通用寄存器r1到r31的值未定义。复位后PC的值为RBASE寄存器的值。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>功能</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>r0</td>
+<td>零寄存器</td>
+<td>始终保持为0</td>
+</tr>
+<tr>
+<td>r1</td>
+<td>汇编程序保留寄存器</td>
+<td>用作生成地址的工作寄存器</td>
+</tr>
+<tr>
+<td>r2</td>
+<td>地址和数据变量寄存器</td>
+<td>当使用的实时操作系统不使用此寄存器时使用</td>
+</tr>
+<tr>
+<td>r3</td>
+<td>堆栈指针（SP）</td>
+<td>用于在调用函数时生成堆栈帧</td>
+</tr>
+<tr>
+<td>r4</td>
+<td>全局指针（GP）</td>
+<td>用于访问数据区域中的全局变量</td>
+</tr>
+<tr>
+<td>r5</td>
+<td>文本指针（TP）</td>
+<td>用作指示文本区域开始的寄存器（放置程序代码的区域）</td>
+</tr>
+<tr>
+<td>r6到r29</td>
+<td></td>
+<td>地址和数据变量寄存器</td>
+</tr>
+<tr>
+<td>r30</td>
+<td>元素指针（EP）</td>
+<td>用作访问内存时生成地址的基指针</td>
+</tr>
+<tr>
+<td>r31</td>
+<td>连接指针（LP）</td>
+<td>编译器调用函数时使用</td>
+</tr>
+<tr>
+<td>PC</td>
+<td>程序计数器</td>
+<td>在程序执行期间保持指令地址</td>
+</tr>
+<tr>
+<td>r30</td>
+<td>元素指针（EP）</td>
+<td>用作访问内存时生成地址的基指针</td>
+</tr>
+<tr>
+<td>r31</td>
+<td>链接指针（LP）</td>
+<td>编译器调用函数时使用</td>
+</tr>
+<tr>
+<td>PC</td>
+<td></td>
+<td>在程序执行期间保留指令地址</td>
+</tr>
+</tbody></table>
+<h6 id="1-1-通用寄存器"><a href="#1-1-通用寄存器" class="headerlink" title="1.1 通用寄存器"></a>1.1 通用寄存器</h6><p>提供了总共32个通用寄存器（r0到r31）。所有这些寄存器都可以用于数据变量或地址变量。 在软件开发环境中，假定通用寄存器r0到r5、r30和r31用于特殊用途，因此在使用它们时需要注意以下几点：</p>
+<ul>
+<li><p>r0、r3和r30 这些寄存器由指令隐式使用。 r0是始终保持为0的寄存器。它用于使用0进行操作，以0为基地址的寻址等。 r3由PREPARE、DISPOSE、PUSHSP和POPSP指令隐式使用。 r30在SLD指令或SST指令访问内存时用作基指针。</p>
+</li>
+<li><p>r1、r4、r5和r31 这些寄存器由汇编器和C编译器隐式使用。 在使用这些寄存器时，必须首先保存寄存器内容，以便在使用后不丢失并且可以恢复。</p>
+</li>
+<li><p>r2 这个寄存器在某些情况下由实时操作系统使用。如果正在使用的实时操作系统不使用r2，则r2可以用作地址变量或数据变量的寄存器。</p>
+</li>
+</ul>
+<h6 id="1-2-程序计数器（PC）"><a href="#1-2-程序计数器（PC）" class="headerlink" title="1.2 程序计数器（PC）"></a>1.2 程序计数器（PC）</h6><p>PC 保持正在执行的指令的地址。<br>PC的第0位固定为0，并且禁用分支（branching）到奇数地址。</p>
+<h5 id="2-Basic-System-Registers"><a href="#2-Basic-System-Registers" class="headerlink" title="2 Basic System Registers"></a>2 Basic System Registers</h5><p>基本系统寄存器用于控制CPU状态并保存异常信息。基本系统寄存器通过使用LDSR和STSR指令并指定系统寄存器号（由寄存器编号和selection ID组成）进行读写。</p>
+<table>
+<thead>
+<tr>
+<th>寄存器号 (regID, selID)</th>
+<th>符号</th>
+<th>功能</th>
+<th>访问权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SR0, 0</td>
+<td>EIPC</td>
+<td>确认EI级异常时的状态保存寄存器</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR1, 0</td>
+<td>EIPSW</td>
+<td>确认EI级异常时的状态保存寄存器</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR2, 0</td>
+<td>FEPC</td>
+<td>确认FE级异常时的状态保存寄存器</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR3, 0</td>
+<td>FEPSW</td>
+<td>确认FE级异常时的状态保存寄存器</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR5, 0</td>
+<td>PSW</td>
+<td>程序状态字</td>
+<td>*1</td>
+</tr>
+<tr>
+<td>SR6, 0</td>
+<td>FPSR</td>
+<td>参见第3.2.3.4节，FPU功能寄存器</td>
+<td>CU0和SV</td>
+</tr>
+<tr>
+<td>SR7, 0</td>
+<td>FPEPC</td>
+<td>参见第3.2.3.4节，FPU功能寄存器</td>
+<td>CU0和SV</td>
+</tr>
+<tr>
+<td>SR8, 0</td>
+<td>FPST</td>
+<td>参见第3.2.3.4节，FPU功能寄存器</td>
+<td>CU0</td>
+</tr>
+<tr>
+<td>SR9, 0</td>
+<td>FPCC</td>
+<td>参见第3.2.3.4节，FPU功能寄存器</td>
+<td>CU0</td>
+</tr>
+<tr>
+<td>SR10, 0</td>
+<td>FPCFG</td>
+<td>参见第3.2.3.4节，FPU功能寄存器</td>
+<td>CU0</td>
+</tr>
+<tr>
+<td>SR13, 0</td>
+<td>EIIC</td>
+<td>EI级异常原因</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR14, 0</td>
+<td>FEIC</td>
+<td>FE级异常原因</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR16, 0</td>
+<td>CTPC</td>
+<td>CALLT执行状态保存寄存器</td>
+<td>UM</td>
+</tr>
+<tr>
+<td>SR17, 0</td>
+<td>CTPSW</td>
+<td>CALLT执行状态保存寄存器</td>
+<td>UM</td>
+</tr>
+<tr>
+<td>SR20, 0</td>
+<td>CTBP</td>
+<td>CALLT基指针</td>
+<td>UM</td>
+</tr>
+<tr>
+<td>SR21, 0</td>
+<td>SNZCFG</td>
+<td>SNOOZE控制寄存器</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR28, 0</td>
+<td>EIWR</td>
+<td>EI级异常工作寄存器</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR29, 0</td>
+<td>FEWR</td>
+<td>FE级异常工作寄存器</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR0, 1</td>
+<td>SPID</td>
+<td>系统保护标识符</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR1, 1</td>
+<td>SPIDLIST</td>
+<td>可在SPID中指定的系统保护标识符列表</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR2, 1</td>
+<td>RBASE</td>
+<td>复位向量基地址</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR3, 1</td>
+<td>EBASE</td>
+<td>异常处理程序向量地址</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR4, 1</td>
+<td>INTBP</td>
+<td>中断处理程序“地址”表的基地址</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR5, 1</td>
+<td>MCTL</td>
+<td>CPU控制</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR6, 1</td>
+<td>PID</td>
+<td>处理器ID</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR8, 1</td>
+<td>SVLOCK</td>
+<td>监督锁定</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR11, 1</td>
+<td>SCCFG</td>
+<td>SYSCALL操作设置</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR12, 1</td>
+<td>SCBP</td>
+<td>SYSCALL基指针</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR0, 2</td>
+<td>PEID</td>
+<td>处理器元件标识符</td>
+<td>UM</td>
+</tr>
+<tr>
+<td>SR1, 2</td>
+<td>BMID</td>
+<td>总线主控标识符</td>
+<td>UM</td>
+</tr>
+<tr>
+<td>SR6, 2</td>
+<td>MEA</td>
+<td>内存错误地址</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR8, 2</td>
+<td>MEI</td>
+<td>内存错误信息</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR15, 2</td>
+<td>RBCR0</td>
+<td>寄存器组控制0</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR16, 2</td>
+<td>RBCR1</td>
+<td>寄存器组控制1</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR17, 2</td>
+<td>RBNR</td>
+<td>寄存器组编号</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR18, 2</td>
+<td>RBIP</td>
+<td>寄存器组初始指针</td>
+<td>SV</td>
+</tr>
+</tbody></table>
+<p>*1：访问权限因位的不同而有所不同。有关详细信息，请参见第3.2.4.1(3)节，“异常类型”。</p>
+<h6 id="2-1-EIPC-—-确认EI级异常时的状态保存寄存器"><a href="#2-1-EIPC-—-确认EI级异常时的状态保存寄存器" class="headerlink" title="2.1 EIPC — 确认EI级异常时的状态保存寄存器"></a>2.1 EIPC — 确认EI级异常时的状态保存寄存器</h6><p>当确认EI级异常时，发生异常时正在执行的指令地址或下一条指令地址会保存到EIPC寄存器中（参见第3.2.4.1(3)节，异常的类型）。</p>
+<p>由于只有一对EI级异常状态保存寄存器，在处理多个异常时，必须通过程序保存这些寄存器的内容。</p>
+<p>请确保向EIPC寄存器设置一个偶数地址，不得指定奇数地址。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写 (R&#x2F;W)</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31到1</td>
+<td>EIPC31到EIPC1</td>
+<td>这些位表示在确认EI级异常时保存的PC。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>0</td>
+<td>EIPC0</td>
+<td>该位表示在确认EI级异常时保存的PC。 始终将该位设置为0，即使设置为1，在执行EIRET指令时传输到PC的值仍然是0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="2-2-EIPSW-—-确认EI级异常时的状态保存寄存器"><a href="#2-2-EIPSW-—-确认EI级异常时的状态保存寄存器" class="headerlink" title="2.2 EIPSW — 确认EI级异常时的状态保存寄存器"></a>2.2 EIPSW — 确认EI级异常时的状态保存寄存器</h6><p>当确认EI级异常时，当前的PSW设置将被保存到EIPSW寄存器中。 由于只有一对EI级异常状态保存寄存器，在处理多个异常时，必须通过程序保存这些寄存器的内容。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>31</th>
+<th>—</th>
+<th>30</th>
+<th>—</th>
+<th>29至26</th>
+<th>—</th>
+<th>25至20</th>
+<th>—</th>
+<th>19</th>
+<th>—</th>
+<th>18至16</th>
+<th>—</th>
+<th>15</th>
+<th>—</th>
+<th>14至8</th>
+<th>—</th>
+<th>7</th>
+<th>—</th>
+<th>6</th>
+<th>—</th>
+<th>5</th>
+<th>—</th>
+<th>4</th>
+<th>—</th>
+<th>3</th>
+<th>—</th>
+<th>2</th>
+<th>—</th>
+<th>1</th>
+<th>—</th>
+<th>0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>位名称</td>
+<td>-</td>
+<td>—</td>
+<td>UM</td>
+<td>—</td>
+<td>-</td>
+<td>—</td>
+<td>EIMASK</td>
+<td>—</td>
+<td>-</td>
+<td>—</td>
+<td>CU2至CU0</td>
+<td>—</td>
+<td>EBV</td>
+<td>—</td>
+<td>-</td>
+<td>—</td>
+<td>NP</td>
+<td>—</td>
+<td>EP</td>
+<td>—</td>
+<td>ID</td>
+<td>—</td>
+<td>SAT</td>
+<td>—</td>
+<td>CY</td>
+<td>—</td>
+<td>OV</td>
+<td>—</td>
+<td>S</td>
+<td>—</td>
+<td>Z</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>位</th>
+<th>位名称</th>
+<th>描述</th>
+<th>R&#x2F;W</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31</td>
+<td>—</td>
+<td>(保留以供将来扩展。请确保设置为0)</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>30</td>
+<td>UM</td>
+<td>当确认EI级异常时，此位存储PSW.UM位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>29至26</td>
+<td>—</td>
+<td>(保留以供将来扩展。请确保设置为0)</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>25至20</td>
+<td>EIMASK</td>
+<td>当确认EI级异常时，此位存储PSW.EIMASK位设置。*1</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>19</td>
+<td>—</td>
+<td>(保留以供将来扩展。请确保设置为0)</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>18至16</td>
+<td>CU2至CU0</td>
+<td>当确认EI级异常时，这些位存储PSW.CU2-0字段设置。*2</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>15</td>
+<td>EBV</td>
+<td>当确认EI级异常时，此位存储PSW.EBV位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>14至8</td>
+<td>—</td>
+<td>(保留以供将来扩展。请确保设置为0)</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7</td>
+<td>NP</td>
+<td>当确认EI级异常时，此位存储PSW. NP位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>6</td>
+<td>EP</td>
+<td>当确认EI级异常时，此位存储PSW.EP位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>ID</td>
+<td>当确认EI级异常时，此位存储PSW. ID位设置。</td>
+<td>R&#x2F;W</td>
+<td>1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>SAT</td>
+<td>当确认EI级异常时，此位存储PSW.SAT位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>CY</td>
+<td>当确认EI级异常时，此位存储PSW.CY位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>OV</td>
+<td>当确认EI级异常时，此位存储PSW.OV位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>S</td>
+<td>当确认EI级异常时，此位存储PSW.S位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>Z</td>
+<td>当确认EI级异常时，此位存储PSW.Z位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<ul>
+<li>*1: 只有当INTCFG.EPL设置为1时，该字段才可以设置为非零值。如果INTCFG.EPL清零，该字段的值也变为0。请注意，如果在该字段值为非零时清零INTCFG.EPL，该字段的值将变为0。</li>
+<li>*2: CU2保留用于未来兼容该CPU的CPU。在该CPU中，它始终设置为0。</li>
+</ul>
+<h6 id="2-3-FEPC-—-确认FE级异常时的状态保存寄存器"><a href="#2-3-FEPC-—-确认FE级异常时的状态保存寄存器" class="headerlink" title="2.3 FEPC — 确认FE级异常时的状态保存寄存器"></a>2.3 FEPC — 确认FE级异常时的状态保存寄存器</h6><p>当确认FE级异常时，发生FE级异常时正在执行的指令或下一条指令的地址会被保存到FEPC寄存器（参见第3.2.4.1(3)节，异常类型）。由于只有一对FE级异常状态保存寄存器，因此在处理多个异常时，必须由程序保存这些寄存器的内容。</p>
+<p>务必将偶数地址设置到FEPC寄存器。不得指定奇数地址。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至1</td>
+<td>FEPC31至1</td>
+<td>这些位指示确认FE级异常时保存的PC。</td>
+<td>R&#x2F;W</td>
+<td>*1</td>
+</tr>
+<tr>
+<td>0</td>
+<td>FEPC0</td>
+<td>此位指示确认FE级异常时保存的PC。始终将此位设置为0。即使将其设置为1，在执行FERET指令时传输到PC的值也是0。</td>
+<td>R&#x2F;W</td>
+<td>*1</td>
+</tr>
+</tbody></table>
+<p>注 *1：当复位发生时，在复位发生之前完成执行的指令中，最后执行的指令的程序计数器值被保存。如果在复位发生之前没有完成执行的指令，则复位后的值未定义。没有信息表明复位后的值是执行完成的指令的程序计数器值还是未定义的值。</p>
+<h6 id="2-4-FEPSW-—-确认FE级异常时的状态保存寄存器"><a href="#2-4-FEPSW-—-确认FE级异常时的状态保存寄存器" class="headerlink" title="2.4 FEPSW — 确认FE级异常时的状态保存寄存器"></a>2.4 FEPSW — 确认FE级异常时的状态保存寄存器</h6><p>当确认FE级异常时，当前的PSW设置会被保存到FEPSW寄存器。由于只有一对FE级异常状态保存寄存器，因此在处理多个异常时，必须由程序保存这些寄存器的内容。</p>
+<h6 id="2-5-PSW-—-程序状态字"><a href="#2-5-PSW-—-程序状态字" class="headerlink" title="2.5 PSW — 程序状态字"></a>2.5 PSW — 程序状态字</h6><p>PSW（程序状态字）是一组标志，用于指示程序状态（指令执行结果）和CPU的操作状态（标志是PSW中的位，由条件指令（Bcond、CMOV等）引用）。</p>
+<p>注意事项:<br>当使用LDSR指令更改此寄存器的内容时，更改后的内容从后续指令开始生效。有关详细信息，请参见第3.2.7.3节，系统寄存器更新后的危害管理。</p>
+<p>PSW寄存器的访问权限因位而异。所有位都可以读取，但某些位只能在特定条件下写入。有关每个位的访问权限，如下标所示：</p>
+<table>
+<thead>
+<tr>
+<th>位</th>
+<th>名称</th>
+<th>读取时的访问权限</th>
+<th>写入时的访问权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>30</td>
+<td>UM</td>
+<td>UM</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>25至20</td>
+<td>EIMASK</td>
+<td>UM</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>18至16</td>
+<td>CU2至CU0</td>
+<td>UM</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>15</td>
+<td>EBV</td>
+<td>UM</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>7</td>
+<td>NP</td>
+<td>UM</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>EP</td>
+<td>UM</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>5</td>
+<td>ID</td>
+<td>UM</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>4</td>
+<td>SAT</td>
+<td>UM</td>
+<td>UM</td>
+</tr>
+<tr>
+<td>3</td>
+<td>CY</td>
+<td>UM</td>
+<td>UM</td>
+</tr>
+<tr>
+<td>2</td>
+<td>OV</td>
+<td>UM</td>
+<td>UM</td>
+</tr>
+<tr>
+<td>1</td>
+<td>S</td>
+<td>UM</td>
+<td>UM</td>
+</tr>
+<tr>
+<td>0</td>
+<td>Z</td>
+<td>UM</td>
+<td>UM</td>
+</tr>
+</tbody></table>
+<p>注 *1：整个PSW寄存器的访问权限是UM，因此即使在PSW.UM为1时使用LDSR指令写入寄存器，也不会发生PIE异常。在这种情况下，写入操作被忽略。</p>
+<p><strong>PSW寄存器内容：</strong></p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>描述</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>30</td>
+<td>UM</td>
+<td>此位指示CPU处于用户模式（UM模式）。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>0：监督模式</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1：用户模式</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>29至26</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>25至20</td>
+<td>EIMASK</td>
+<td>此字段指示启用和禁用中断（EIINTn）确认的中断优先级边界。对于优先级高于此字段设置值的中断（EIINTn），启用确认。对于优先级低于或等于此字段设置值的中断（EIINTn），禁用确认。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>0：所有优先级不可接受</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1：可接受优先级为0</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>2：可接受优先级为0至1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>…</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>62：可接受优先级为0至61</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>63：可接受优先级为0至62</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>只有在INTCFG.EPL设置为1时，中断确认控制才会按此字段的值进行。如果INTCFG.EPL清除为0，则不会按此字段的值进行中断确认控制*1。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>如果INTCFG.EPL设置为1且确认中断（EIINTn），则中断优先级将作为PSW更改的一部分保存在此字段中，以确认中断（EIINTn）。指定优先级为63的中断（EIINTn）始终被禁用。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>但是，由于HALT或SNOOZE引起的CPU停机状态也会被优先级为63的中断（EIINTn）释放。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>19</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>18至16</td>
+<td>CU2至CU0</td>
+<td>这些位指示协处理器使用权限。当对应于协处理器的位为0时，如果执行协处理器指令或访问协处理器资源（系统寄存器），则会发生协处理器不可用异常。</td>
+<td>R&#x2F;W</td>
+<td>000</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>位18（CU2）：固定为0*2。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>位17（CU1）：FXU</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>位16（CU0）：FPU</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>在没有相应协处理器的设备中，CU2至CU0固定为0。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>15</td>
+<td>EBV</td>
+<td>此位指示复位向量和异常向量操作。参见第3.2.3.2(16)节，RBASE — 复位向量基地址和第3.2.3.2(17)节，EBASE — 异常处理程序向量地址。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>14至8</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7</td>
+<td>NP</td>
+<td>此位禁用FE级异常的确认。当确认FE级异常时，此位设置为1以禁用EI级和FE级异常的确认。有关NP位禁用确认的异常，请参见表3.102，异常原因列表。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>0：启用FE级异常的确认。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1：禁用FE级异常的确认。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>EP</td>
+<td>此位指示正在服务除中断以外的异常。当发生相应异常时，它被设置为1。即使设置为1，此位也不影响确认异常请求。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>0：没有正在服务的中断以外的异常。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1：正在服务除中断以外的异常。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>ID</td>
+<td>此位禁用EI级异常的确认。当确认EI级或FE级异常时，此位设置为1以禁用EI级异常的确认。有关ID位禁用确认的异常，请参见表3.102，异常原因列表。此位还用于在服务普通程序或中断时禁用EI级异常的确认，作为关键区。在执行DI指令时设置为1，执行EI指令时清除为0。通过EI或ID指令更改ID位将在下一条指令生效。</td>
+<td>R&#x2F;W</td>
+<td>1</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>0：启用EI级异常的确认。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1：禁用EI级异常的确认。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>SAT*3</td>
+<td>此位指示饱和算术运算指令导致溢出并对结果应用饱和处理。这是一个累积标志，即一旦发生饱和，它被设置为1，并且不会被后续没有饱和结果的指令清除为0。此位由LDSR指令清除。请注意，执行算术运算指令既不会设置也不会清除此标志。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>0：结果没有饱和</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1：结果饱和。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>CY</td>
+<td>此位指示操作结果是否发生了进位或借位。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>0：未发生进位和借位。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1：发生了进位或借位。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>OV*3</td>
+<td>此位指示操作期间是否发生了溢出。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>0：未发生溢出。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1：发生了溢出。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>S*3</td>
+<td>此位指示操作结果是否为负数。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>0：操作结果为正或0。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1：操作结果为负。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>0</td>
+<td>Z</td>
+<td>此位指示操作结果是否为0。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>0：操作结果不为0。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>1：操作结果为0。</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>备注：</p>
+<ul>
+<li><p>*1：只有当INTCFG.EPL &#x3D; 1时，该字段中才可以设置非0值。如果INTCFG.EPL &#x3D; 0，该字段的值变为0。请注意，如果当该字段的值为非0时INTCFG.EPL被清除为0，该字段的值变为0。</p>
+</li>
+<li><p>*2：协处理器使用权限CU2保留用于将来与此CPU兼容的CPU。</p>
+</li>
+<li><p>*3：饱和处理根据OV和S标志的内容应用于操作结果。只有在饱和算术操作中OV标志设置为1时，SAT标志才会设置为1。</p>
+</li>
+</ul>
+<h6 id="2-6-EIIC-EI-Level-Exception-Cause"><a href="#2-6-EIIC-EI-Level-Exception-Cause" class="headerlink" title="2.6 EIIC - EI Level Exception Cause"></a>2.6 EIIC - EI Level Exception Cause</h6><p>EIIC（EI级异常原因）寄存器用于保存发生任何EI级异常时的异常原因。保存在该寄存器中的值是对应特定异常原因的异常代码（参见表3.102，异常原因列表）。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>EIIC31至EIIC0</td>
+<td>当发生EI级异常时，这些位存储异常原因代码。EIIC15-0字段存储表3.102中显示的异常原因代码。EIIC31-16字段存储为每个异常单独定义的详细异常原因代码。如果没有特别的定义，这些位将设置为0。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="2-7-FEIC-—-FE-Level-Exception-Cause"><a href="#2-7-FEIC-—-FE-Level-Exception-Cause" class="headerlink" title="2.7 FEIC — FE Level Exception Cause"></a>2.7 FEIC — FE Level Exception Cause</h6><p>FEIC（FE级异常原因）寄存器用于保存发生任何FE级异常时的异常原因。保存在该寄存器中的值是对应特定异常原因的异常代码（参见表3.102，异常原因列表）。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>FEIC31至FEIC0</td>
+<td>当发生FE级异常时，这些位存储异常原因代码。FEIC15-0字段存储表3.102中显示的异常原因代码。FEIC31-16字段存储为每个异常单独定义的详细异常原因代码。如果没有特别的定义，这些位将设置为0。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="2-8-CTPC-—-执行-CALLT-时的状态保存寄存器"><a href="#2-8-CTPC-—-执行-CALLT-时的状态保存寄存器" class="headerlink" title="2.8 CTPC — 执行 CALLT 时的状态保存寄存器"></a>2.8 CTPC — 执行 CALLT 时的状态保存寄存器</h6><p>当执行 CALLT 指令时，CALLT 指令之后的下一条指令的地址会被保存到 CTPC 寄存器中。</p>
+<p>确保将偶数地址设置到 CTPC 寄存器。不得指定奇数地址。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至1</td>
+<td>CTPC31至CTPC1</td>
+<td>这些位表示 CALLT 指令之后的指令的 PC。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>0</td>
+<td>CTPC0</td>
+<td>此位表示 CALLT 指令之后的指令的 PC。始终将此位设置为0。即使将其设置为1，在执行 CTRET 指令时传输到 PC 的值也是0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="2-9-CTPSW-—-执行-CALLT-时的状态保存寄存器"><a href="#2-9-CTPSW-—-执行-CALLT-时的状态保存寄存器" class="headerlink" title="2.9 CTPSW — 执行 CALLT 时的状态保存寄存器"></a>2.9 CTPSW — 执行 CALLT 时的状态保存寄存器</h6><p>当执行 CALLT 指令时，部分 PSW（程序状态字）的设置会被保存到 CTPSW 寄存器中。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至5</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>SAT</td>
+<td>此位存储执行 CALLT 指令时的 PSW. SAT 位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>CY</td>
+<td>此位存储执行 CALLT 指令时的 PSW. CY 位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>OV</td>
+<td>此位存储执行 CALLT 指令时的 PSW. OV 位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>S</td>
+<td>此位存储执行 CALLT 指令时的 PSW. S 位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>Z</td>
+<td>此位存储执行 CALLT 指令时的 PSW. Z 位设置。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="2-10-CTBP-—-CALLT-基指针"><a href="#2-10-CTBP-—-CALLT-基指针" class="headerlink" title="2.10 CTBP — CALLT 基指针"></a>2.10 CTBP — CALLT 基指针</h6><p>CTBP 寄存器用于指定 CALLT 指令的表地址并生成目标地址。</p>
+<p>确保将 CTBP 寄存器设置为半字地址。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至1</td>
+<td>CTBP31至CTBP1</td>
+<td>这些位表示 CALLT 指令的基指针地址。这些位表示 CALLT 指令使用的表的起始地址。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>CTBP0</td>
+<td>此位表示 CALLT 指令的基指针地址。始终将此位设置为0。</td>
+<td>R</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="2-11-SNZCFG-—-SNOOZE-配置"><a href="#2-11-SNZCFG-—-SNOOZE-配置" class="headerlink" title="2.11 SNZCFG — SNOOZE 配置"></a>2.11 SNZCFG — SNOOZE 配置</h6><p>SNZCFG 寄存器用于配置 SNOOZE 指令的操作。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至8</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7至0</td>
+<td>SNZCNT</td>
+<td>这些位指定由 SNOOZE 指令暂时停止执行的时钟周期数。</td>
+<td>R&#x2F;W</td>
+<td>20H</td>
+</tr>
+</tbody></table>
+<h6 id="2-12-EIWR-—-EI-级异常工作寄存器"><a href="#2-12-EIWR-—-EI-级异常工作寄存器" class="headerlink" title="2.12 EIWR — EI 级异常工作寄存器"></a>2.12 EIWR — EI 级异常工作寄存器</h6><p>当发生EI级别异常时，EIWR寄存器用作工作寄存器。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>EIWR31至EIWR0</td>
+<td>这些位构成一个工作寄存器，可以在处理 EI 级异常时用于任何用途。使用该寄存器存储通用寄存器的值等。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="2-13-FEWR-—-FE-级异常工作寄存器"><a href="#2-13-FEWR-—-FE-级异常工作寄存器" class="headerlink" title="2.13 FEWR — FE 级异常工作寄存器"></a>2.13 FEWR — FE 级异常工作寄存器</h6><p>FEWR寄存器在发生FE级异常时用作工作寄存器</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>FEWR31至FEWR0</td>
+<td>这些位构成一个工作寄存器，可以在处理 FE 级异常时用于任何用途。使用该寄存器存储通用寄存器的值等。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="2-14-SPID-—-系统保护标识符"><a href="#2-14-SPID-—-系统保护标识符" class="headerlink" title="2.14 SPID — 系统保护标识符"></a>2.14 SPID — 系统保护标识符</h6><p>SPID 寄存器保存 CPU 的系统保护标识符。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至5</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>SPID</td>
+<td>这些位表示系统保护标识符。系统保护标识符是一个可变ID，用于在由包括此CPU在内的两个或多个总线主控器组成的产品中进行访问保护。在此CPU中，SPID用于检查MPU的区域匹配，使产品定义的系统规范能够在MPU的保护功能中得到反映。如果尝试设置非法的系统保护标识符，SPID寄存器不会更新并保持原始值。有关其用途和值的约束，请参见第3.9.7节，G4MH寄存器的初始值产品信息。</td>
+<td>R&#x2F;W</td>
+<td>*1</td>
+</tr>
+</tbody></table>
+<p>注 *1：请参见第3.9.7节，G4MH寄存器的初始值信息。</p>
+<h6 id="2-15-SPIDLIST-—-合法系统保护标识符列表"><a href="#2-15-SPIDLIST-—-合法系统保护标识符列表" class="headerlink" title="2.15 SPIDLIST — 合法系统保护标识符列表"></a>2.15 SPIDLIST — 合法系统保护标识符列表</h6><p>SPIDLIST 寄存器包含可以设置到 SPID 寄存器的系统保护标识符列表。</p>
+<p>对应于可设置系统保护标识符的位被设置为 1。对应于非法系统保护标识符的位被清除为 0。这些值是在 CPU 外部作为系统规范设置的，不能被此 CPU 修改。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>SPIDLIST 寄存器内容</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31</td>
+<td>SL31</td>
+<td>此位表示 31 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>30</td>
+<td>SL30</td>
+<td>此位表示 30 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>29</td>
+<td>SL29</td>
+<td>此位表示 29 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>28</td>
+<td>SL28</td>
+<td>此位表示 28 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>27</td>
+<td>SL27</td>
+<td>此位表示 27 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>26</td>
+<td>SL26</td>
+<td>此位表示 26 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>25</td>
+<td>SL25</td>
+<td>此位表示 25 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>24</td>
+<td>SL24</td>
+<td>此位表示 24 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>23</td>
+<td>SL23</td>
+<td>此位表示 23 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>22</td>
+<td>SL22</td>
+<td>此位表示 22 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>21</td>
+<td>SL21</td>
+<td>此位表示 21 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>20</td>
+<td>SL20</td>
+<td>此位表示 20 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>19</td>
+<td>SL19</td>
+<td>此位表示 19 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>18</td>
+<td>SL18</td>
+<td>此位表示 18 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>17</td>
+<td>SL17</td>
+<td>此位表示 17 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>16</td>
+<td>SL16</td>
+<td>此位表示 16 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>15</td>
+<td>SL15</td>
+<td>此位表示 15 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>14</td>
+<td>SL14</td>
+<td>此位表示 14 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>13</td>
+<td>SL13</td>
+<td>此位表示 13 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>12</td>
+<td>SL12</td>
+<td>此位表示 12 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>11</td>
+<td>SL11</td>
+<td>此位表示 11 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>10</td>
+<td>SL10</td>
+<td>此位表示 10 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>9</td>
+<td>SL9</td>
+<td>此位表示 9 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td>SL8</td>
+<td>此位表示 8 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td>SL7</td>
+<td>此位表示 7 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td>SL6</td>
+<td>此位表示 6 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td>SL5</td>
+<td>此位表示 5 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td>SL4</td>
+<td>此位表示 4 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>SL3</td>
+<td>此位表示 3 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>SL2</td>
+<td>此位表示 2 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>SL1</td>
+<td>此位表示 1 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+<tr>
+<td>0</td>
+<td>SL0</td>
+<td>此位表示 0 是否可以设置为系统保护标识符。</td>
+<td>R</td>
+<td>*1</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>注 *1：参见第 3.9.7 节，G4MH 寄存器的初始值产品信息。</p>
+<h6 id="2-16-RBASE-—-复位向量基地址"><a href="#2-16-RBASE-—-复位向量基地址" class="headerlink" title="2.16 RBASE — 复位向量基地址"></a>2.16 RBASE — 复位向量基地址</h6><p>RBASE 寄存器在复位时指示复位向量地址。如果 PSW.EBV 位为 0，此寄存器还指示异常处理程序向量地址和异常处理程序地址的选择方法。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至9</td>
+<td>RBASE31至RBASE9</td>
+<td>这些位在复位时指示复位向量。当 PSW.EBV &#x3D; 0 时，此地址也用作异常向量。</td>
+<td>R</td>
+<td>*1</td>
+</tr>
+<tr>
+<td>8至2</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>DV</td>
+<td>当设置 DV 位时，中断的异常处理程序地址使用直接向量方法确定。详细信息参见第 3.2.4.4(1)(b) 节——表参考方法。此位在 PSW.EBV &#x3D; 0 时有效。</td>
+<td>R</td>
+<td>*1</td>
+</tr>
+<tr>
+<td>0</td>
+<td>RINT</td>
+<td>当设置 RINT 位时，中断处理的异常处理程序地址减少。详细信息参见第 3.2.4.4(1)(a) 节——直接向量方法。此位在 PSW.EBV &#x3D; 0 时有效。</td>
+<td>R</td>
+<td>*1</td>
+</tr>
+</tbody></table>
+<p>注 *1：参见第 3.9.7 节，G4MH 寄存器的初始值产品信息。</p>
+<h6 id="2-17-EBASE-—-异常处理程序向量地址"><a href="#2-17-EBASE-—-异常处理程序向量地址" class="headerlink" title="2.17 EBASE — 异常处理程序向量地址"></a>2.17 EBASE — 异常处理程序向量地址</h6><p>EBASE 寄存器指示异常处理程序向量地址和异常处理程序地址的选择方法。当 PSW.EBV 位为 1 时，此寄存器有效。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至9</td>
+<td>EBASE31至EBASE9</td>
+<td>异常处理程序例程地址改变为通过将每个异常的偏移地址添加到此寄存器指定的基地址而得到的地址。EBASE8到EBASE0位不作为名称分配，因为这些位总是0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>8至2</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>DV</td>
+<td>当设置 DV 位时，中断的异常处理程序地址使用直接向量方法确定。详细信息参见第 3.2.4.4(1)(b) 节，表参考方法。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>0</td>
+<td>RINT</td>
+<td>当设置 RINT 位时，中断处理的异常处理程序地址简化。详细信息参见第 3.2.4.4(1)(a) 节，直接向量方法。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="2-18-INTBP-—-中断处理程序地址表的基地址"><a href="#2-18-INTBP-—-中断处理程序地址表的基地址" class="headerlink" title="2.18 INTBP — 中断处理程序地址表的基地址"></a>2.18 INTBP — 中断处理程序地址表的基地址</h6><p>INTBP 寄存器在选择表参考方法作为中断处理程序地址选择方法时指示表的基地址。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至9</td>
+<td>INTBP31至INTBP9</td>
+<td>这些位指示在使用表参考方法时中断的基指针地址。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>8至0</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="2-19-MCTL-—-机器控制"><a href="#2-19-MCTL-—-机器控制" class="headerlink" title="2.19 MCTL — 机器控制"></a>2.19 MCTL — 机器控制</h6><p>MCTL 寄存器用于控制 CPU。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至1</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>UIC</td>
+<td>此位用于控制用户模式下的中断启用&#x2F;禁用操作。当此位设置为 1 时，可以在用户模式下执行 EI&#x2F;DI 指令。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="2-20-PID-处理器ID"><a href="#2-20-PID-处理器ID" class="headerlink" title="2.20 PID - 处理器ID"></a>2.20 PID - 处理器ID</h6><p>PDI寄存器保留了一个唯一标识 CPU 的处理器标识符。PID 寄存器是只读寄存器。</p>
+<p>注意： PID 寄存器指示用于识别所包含的 CPU 内核和 CPU 内核配置的信息。不假设软件行为会根据 PID 寄存器信息动态变化。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至24</td>
+<td>体系结构标识符,该标识符指示处理器的体系结构。</td>
+<td>R</td>
+<td>*1</td>
+</tr>
+<tr>
+<td>23至8</td>
+<td>该标识符指示处理器的功能。这些位指示每个位定义的功能是否实现（1：实现，0：未实现）。位 23至19：保留；位 18：寄存器组；位 17至12：保留；位 11：扩展浮点运算功能；位 10：双精度浮点运算功能；位 9：单精度浮点运算功能；位 8：内存保护单元（MPU）功能。注意：如果实现了双精度浮点运算功能（位 10 为 1），则一定会实现单精度浮点运算功能（位 9 为 1）。</td>
+<td>R</td>
+<td>*1</td>
+</tr>
+<tr>
+<td>7至0</td>
+<td>该标识符指示处理器的版本。</td>
+<td>R</td>
+<td>*1</td>
+</tr>
+</tbody></table>
+<p>注 *1：详情参见第 3.9.7 节，G4MH 寄存器的初始值产品信息。</p>
+<h6 id="2-21-SVLOCK-—-Supervisor-Lock"><a href="#2-21-SVLOCK-—-Supervisor-Lock" class="headerlink" title="2.21 SVLOCK —  Supervisor Lock"></a>2.21 SVLOCK —  Supervisor Lock</h6><p>SVLOCK 寄存器用于限制 CPU 在监督模式下的操作。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至1</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>SVL</td>
+<td>此位指定是否在监督模式下限制 CPU 操作。0：不限制；1：限制。如果SVL位设置为1，则以下系统寄存器在CPU处于管理模式时也不能更新：SPID， MPM， MPLA， MPUA， MPAT, MPIDn， MPBK</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>注意 1：目标系统寄存器是那些与内存访问相关的寄存器。此寄存器防止这些寄存器被不慎重写并防止在 CPU 外部执行无意的内存访问。</p>
+<h6 id="2-22-SCCFG-—-SYSCALL-操作设置"><a href="#2-22-SCCFG-—-SYSCALL-操作设置" class="headerlink" title="2.22 SCCFG — SYSCALL 操作设置"></a>2.22 SCCFG — SYSCALL 操作设置</h6><p>SCCFG 寄存器用于设置与 SYSCALL 指令相关的操作。在使用 SYSCALL 指令之前，请确保为此寄存器设置适当的值。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至8</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7至0</td>
+<td>SIZE</td>
+<td>这些位指定 SYSCALL 指令引用的表的最大条目数。如果 SIZE 为 0，则最大条目数为 1；如果 SIZE 为 255，则最大条目数为 256。通过根据 SYSCALL 指令分支的功能数量适当地设置最大条目数，可以有效地使用内存区域。果为 SYSCALL 指令指定了超过最大条目数的向量，则选择第一个条目。请将错误处理程序放置在第一个条目。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="2-23-SCBP-—-SYSCALL-基指针"><a href="#2-23-SCBP-—-SYSCALL-基指针" class="headerlink" title="2.23 SCBP — SYSCALL 基指针"></a>2.23 SCBP — SYSCALL 基指针</h6><p>SCBP 寄存器用于指定 SYSCALL 指令的表地址并生成目标地址。在使用 SYSCALL 指令之前，请确保为此寄存器设置适当的值。<br>需要确保是将一个字地址（最低两位为0）设置到 SCBP 寄存器。</p>
+<h6 id="2-24-PEID-—-Processor-Element-Identifier"><a href="#2-24-PEID-—-Processor-Element-Identifier" class="headerlink" title="2.24 PEID — Processor Element Identifier"></a>2.24 PEID — Processor Element Identifier</h6><p>仅可读，用于获取 CPPU CORE ID。</p>
+<h6 id="2-25-BMID-—-总线主控标识符"><a href="#2-25-BMID-—-总线主控标识符" class="headerlink" title="2.25 BMID — 总线主控标识符"></a>2.25 BMID — 总线主控标识符</h6><p>仅可读，用于获取 CPU 的总线主控标识符。</p>
+<h6 id="2-26-MEA-—-内存错误地址"><a href="#2-26-MEA-—-内存错误地址" class="headerlink" title="2.26 MEA — 内存错误地址"></a>2.26 MEA — 内存错误地址</h6><p>MEA 寄存器用于记录内存对齐错误（MAE）或内存保护单元（MPU）违规发生时的地址。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>MEA</td>
+<td>这些位保存发生内存对齐错误（MAE）或 MPU 违规的地址。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="2-27-MEI-—-内存错误信息"><a href="#2-27-MEI-—-内存错误信息" class="headerlink" title="2.27 MEI — 内存错误信息"></a>2.27 MEI — 内存错误信息</h6><p>MEI 寄存器保存导致未对齐异常（MAE）或内存保护异常（MDP）的指令信息。该信息可用作软件仿真时的提示信息。</p>
+<p>注1：即使由于硬件规格的原因，数据被分割并多次访问，指令指示的原始数据类型仍然会被存储。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至28</td>
+<td>LEN</td>
+<td>这些位指示导致异常的指令的代码大小。<br>0: 非指令因素<br>2: 16位<br>4: 32位<br>6: 48位<br>8: 64位<br>其他值保留以供将来使用，并且永不存储在此处。详细信息参见表3.37。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>27至21</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>20至16</td>
+<td>REG</td>
+<td>这些位指示导致异常的指令的源寄存器号或目标寄存器号。详细信息参见表3.37。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>15至12</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>11至9</td>
+<td>DS</td>
+<td>这些位指示导致异常的指令的数据类型。<br>0: 字节（8位）<br>1: 半字（16位）<br>2: 字（32位）<br>3: 双字（64位）<br>4: 四字（128位）<br>其他值保留以供将来使用，并且永不存储在此处。详细信息参见表3.37。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>8</td>
+<td>U</td>
+<td>该位指示导致异常的指令的符号扩展方法。<br>0: 有符号<br>1: 无符号<br>详细信息参见表3.37。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>7至6</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5至1</td>
+<td>ITYPE</td>
+<td>这些位指示导致异常的指令。详细信息参见表3.37。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>0</td>
+<td>RW</td>
+<td>该位指示导致异常的指令执行的操作是读取（Load-memory）还是写入（Store-memory）。<br>0: 读取（Load-memory）<br>1: 写入（Store-memory）<br>详细信息参见表3.37。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="2-28-RBCR0-—-寄存器组控制-0"><a href="#2-28-RBCR0-—-寄存器组控制-0" class="headerlink" title="2.28 RBCR0 — 寄存器组控制 0"></a>2.28 RBCR0 — 寄存器组控制 0</h6><p>RBCR0 寄存器控制寄存器组功能的操作。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至17</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>16</td>
+<td>MD</td>
+<td>此位指定寄存器组的保存模式。<br>0: 保存模式 0<br>1: 保存模式 1<br>保存的寄存器列表：</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>15</td>
+<td>BE15</td>
+<td>此位指定是否在优先级 15 至 63 的中断（EIINTn）上使用寄存器组。<br>0: 不在优先级 15 至 63 的中断上使用寄存器组。<br>1: 在优先级 15 至 63 的中断上使用寄存器组。<br>当此位设置为 1 时，如果优先级 15 至 63 的 EI 级中断（EIINTn）被确认，可以使用寄存器组功能。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>14至0</td>
+<td>BE14至BE0</td>
+<td>这些位指定寄存器组将要使用的中断的优先级级别。<br>0: 不在与该位对应的级别的中断上使用寄存器组。<br>1: 在与该位对应的级别的中断上使用寄存器组。<br>这些位的位置与中断的优先级级别对应如下：当接受到与该级别对应的中断（EIINTn）时，如果该级别的对应位被设置（1），则使用寄存器组。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>寄存器组的保存模式如下：<br><br>✓: 保存<br>—: 不保存</p>
+<table>
+<thead>
+<tr>
+<th>目标寄存器</th>
+<th>保存模式 0</th>
+<th>保存模式 1</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PC</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>PSW</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>EIIC</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>FPSR</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>r1-r19</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>r20-r29</td>
+<td>—</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>r30</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>r31</td>
+<td>—</td>
+<td>✓</td>
+</tr>
+</tbody></table>
+<p>备注：按照该功能的定义，优先级为 63 的中断（EIINTn）包括在内。然而，由于优先级为 63 的中断总是被 PSW.EIMASK 和 PLMR 寄存器屏蔽，因此寄存器组功能不会被优先级为 63 的中断（EIINTn）使用。</p>
+<h6 id="2-29-RBCR1-—-寄存器组控制-1"><a href="#2-29-RBCR1-—-寄存器组控制-1" class="headerlink" title="2.29 RBCR1 — 寄存器组控制 1"></a>2.29 RBCR1 — 寄存器组控制 1</h6><p>RBCR1 寄存器控制寄存器组功能的操作。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至16</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>15</td>
+<td>NC15</td>
+<td>当确认优先级为 15 至 63 的中断（EIINTn）时，指定设置在 PSW. ID 位中的值。<br>0: 为优先级为 15 至 63 的中断确认设置 PSW. ID &#x3D; 0<br>1: 为优先级为 15 至 63 的中断确认设置 PSW. ID &#x3D; 1（初始设置）<br>然而，只有当中断处理程序地址选择方法为表参考方法且寄存器组可用时，此设置才有效。</td>
+<td>R&#x2F;W</td>
+<td>1</td>
+</tr>
+<tr>
+<td>14至0</td>
+<td>NC14至NC0</td>
+<td>这些位指定在接受与位位置对应的优先级级别的中断（EIINTn）时设置在 PSW. ID 位中的值。<br>0: 接受与位位置对应优先级级别的中断时设置 PSW. ID 为 0。<br>1: 接受与位位置对应优先级级别的中断时设置 PSW. ID 为 1（初始值）。<br>然而，只有当中断处理程序地址选择方法设置为表参考方法且使用寄存器组时，此设置才有效。</td>
+<td>R&#x2F;W</td>
+<td>7FFFH</td>
+</tr>
+</tbody></table>
+<p>注1：按照该功能的定义，优先级为 63 的中断（EIINTn）包括在内。然而，由于优先级为 63 的中断总是被 PSW.EIMASK 和 PLMR 寄存器屏蔽，因此寄存器组功能不会被优先级为 63 的中断（EIINTn）使用。</p>
+<h6 id="2-30-RBNR-—-寄存器组编号"><a href="#2-30-RBNR-—-寄存器组编号" class="headerlink" title="2.30 RBNR — 寄存器组编号"></a>2.30 RBNR — 寄存器组编号</h6><p>RBNR 寄存器指示下一个使用的寄存器组功能的编号。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至6</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5至0</td>
+<td>BN</td>
+<td>这些位指示下一个使用的寄存器组的编号。<br>当接受使用寄存器组的中断（EIINTn）时，这些位的值加 1。如果 BN 的值大于 INTCFG.ULNR，或 BN 的值为 63，则如果发生使用寄存器组的中断（EIINTn），则会生成 SYSERR 异常。该中断不被接受，并被挂起。<br>当执行 RESBANK 指令时，BN 的值减 1。如果在 BN 的值为 0 时执行 RESBANK 指令，则指令不被执行并生成 SYSERR 异常。在这种情况下，BN 不会更新，其值保持不变。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="2-31-RBIP-—-寄存器组初始指针"><a href="#2-31-RBIP-—-寄存器组初始指针" class="headerlink" title="2.31 RBIP — 寄存器组初始指针"></a>2.31 RBIP — 寄存器组初始指针</h6><p>RBIP 寄存器指示寄存器组所在的内存区域的起始地址。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至4</td>
+<td>RBIP31至RBIP4</td>
+<td>这些位指示寄存器组的初始指针。RBCR0. MD 和 RBNR. BN 的值与此值一起确定要使用的下一个寄存器组分配的内存地址，如下所示：<br>• 保存模式 0 (RBCR0. MD &#x3D; 0): RBIP − RBNR. BN × 60H<br>• 保存模式 1 (RBCR0. MD &#x3D; 1): RBIP − RBNR. BN × 90H</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>3至0</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h5 id="3-中断功能寄存器"><a href="#3-中断功能寄存器" class="headerlink" title="3 中断功能寄存器"></a>3 中断功能寄存器</h5><p>中断功能系统寄存器通过使用 LDSR 和 STSR 指令并指定系统寄存器号（由寄存器号和选择 ID 组成）进行读写。</p>
+<table>
+<thead>
+<tr>
+<th>寄存器编号 (regID, selID)</th>
+<th>符号</th>
+<th>功能</th>
+<th>访问权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SR10, 2</td>
+<td>ISPR</td>
+<td>服务中的中断优先级</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR11, 2</td>
+<td>IMSR</td>
+<td>中断屏蔽状态</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR12, 2</td>
+<td>ICSR</td>
+<td>中断控制状态</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR13, 2</td>
+<td>INTCFG</td>
+<td>中断功能设置</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR14, 2</td>
+<td>PLMR</td>
+<td>中断优先级屏蔽</td>
+<td>SV</td>
+</tr>
+</tbody></table>
+<h6 id="3-1-ISPR-—-服务中的中断优先级"><a href="#3-1-ISPR-—-服务中的中断优先级" class="headerlink" title="3.1 ISPR — 服务中的中断优先级"></a>3.1 ISPR — 服务中的中断优先级</h6><p>ISPR 寄存器保存 CPU 处理的 EI 级中断（EIINTn）的中断优先级，当发生多重中断时，按中断优先级进行优先级封顶。</p>
+<p>对于 ISPR 寄存器，当 INTCFG.EPL 被清除为 0 时，功能启用。当 INTCFG.EPL 设置为 1 时，ISPR 寄存器的功能被禁用，不控制中断（EIINTn）的确认。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至16</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>15至0</td>
+<td>ISP15至ISP0</td>
+<td>这些位指示与相关位位置对应的优先级<sup>*1</sup>的 EIINTn 中断的确认状态。<br>0: 未确认优先级对应位位置的中断请求。<br>1: CPU 内核正在服务优先级对应位置的中断请求。</td>
+<td>R*3</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="3-2-IMSR-—-中断屏蔽状态"><a href="#3-2-IMSR-—-中断屏蔽状态" class="headerlink" title="3.2 IMSR — 中断屏蔽状态"></a>3.2 IMSR — 中断屏蔽状态</h6><p>IMSR 寄存器用于指示，通知 CPU 的中断是否被 CPU 中的屏蔽功能屏蔽接受。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至5</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>FNP</td>
+<td>此位指定由 PSW. NP 屏蔽接受的 FEINT 是否存在。<br>0: 不存在由 PSW. NP 屏蔽的 FEINT<br>1: 存在由 PSW. NP 屏蔽的 FEINT</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ENP</td>
+<td>此位指定由 PSW. NP 屏蔽接受的 EIINT 是否存在。<br>0: 不存在由 PSW. NP 屏蔽的 EIINT<br>1: 存在由 PSW. NP 屏蔽的 EIINT</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>EID</td>
+<td>此位指定由 PSW. ID 屏蔽接受的 EIINT 是否存在。<br>0: 不存在由 PSW. ID 屏蔽的 EIINT<br>1: 存在由 PSW. ID 屏蔽的 EIINT</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>EPLM</td>
+<td>此位指定由 PLMR. PLM 屏蔽接受的 EIINT 是否存在。<br>0: 不存在由 PLMR.PLM 屏蔽的 EIINT<br>1: 存在由 PLMR.PLM 屏蔽的 EIINT</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>EEIM</td>
+<td>此位指定当 INTCFG. EPL 被清除为 0 时由 ISPR.ISP 屏蔽接受的 EIINT 是否存在，或当 INTCFG.EPL 被设置为 1 时由 PSW.EIMASK 屏蔽接受的 EIINT 是否存在。<br>0: 不存在由 ISPR.ISP 或 PSW.EIMASK 屏蔽的 EIINT<br>1: 存在由 ISPR.ISP 或 PSW.EIMASK 屏蔽的 EIINT</td>
+<td>R</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>IMSR 的更新顺序：<br>在通知 CPU 的中断中，接受条件按 ISPR 或 PSW.EIMASK（由 INTCFG.EPL 选择）、PLMR、PSW. ID、PSW. NP 的顺序确认。如果接受条件设置为屏蔽中断的值，则中断请求在此处被屏蔽，并且不确认后续顺序中的接受条件。注意，根据异常的类型，不属于接受条件的条件的确认不属于接受条件。</p>
+<h6 id="3-3-ICSR-—-中断控制状态"><a href="#3-3-ICSR-—-中断控制状态" class="headerlink" title="3.3 ICSR — 中断控制状态"></a>3.3 ICSR — 中断控制状态</h6><p>ICSR 寄存器指示 CPU 中的中断控制状态。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至1</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>PMEI</td>
+<td>此位指示存在由 PLMR 寄存器屏蔽优先级级别的中断（EIINTn）。详情参见第 3.2.4.1(5) 节，中断异常优先级和优先级屏蔽。</td>
+<td>R</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="3-4-INTCFG-—-中断功能设置"><a href="#3-4-INTCFG-—-中断功能设置" class="headerlink" title="3.4 INTCFG — 中断功能设置"></a>3.4 INTCFG — 中断功能设置</h6><p>INTCFG 寄存器用于指定与 CPU 内部中断功能相关的设置。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至22</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>21至16</td>
+<td>ULNR</td>
+<td>指定可用寄存器组编号的最大值。<br>如果 RBNR.BN 的值大于 ULNR，或者 RBNR.BN 的值为 63，并且发生启用寄存器组功能的中断（EIINTn），将发生 SYSERR 异常。注意，该中断（EIINTn）不被接受，并被挂起。</td>
+<td>R&#x2F;W</td>
+<td>F</td>
+</tr>
+<tr>
+<td>15至2</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>EPL</td>
+<td>对于中断（EIINTn），指定是否启用中断优先级级别扩展功能。<br>0: 禁用中断优先级级别扩展功能<br>1: 启用中断优先级级别扩展功能</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>ISPC</td>
+<td>此位更改 ISPR 寄存器的写入方式。<br>0: ISPR 寄存器自动更新。程序触发的更新（通过执行 LDSR 指令）被忽略。<br>1: ISPR 寄存器不自动更新。程序触发的更新（通过执行 LDSR 指令）被执行。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="3-5-PLMR-—-中断优先级级别屏蔽"><a href="#3-5-PLMR-—-中断优先级级别屏蔽" class="headerlink" title="3.5 PLMR — 中断优先级级别屏蔽"></a>3.5 PLMR — 中断优先级级别屏蔽</h6><p>PLMR 寄存器屏蔽优先级不高于这些位指定的级别的中断（EIINTn）。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至6</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5至0</td>
+<td>PLM</td>
+<td>这些位用于屏蔽优先级不高于这些位指定级别的中断（EIINTn）。<br>当中断（EIINTn）被此寄存器屏蔽时，不被接受。<br>由于为该 CPU 定义的中断最高优先级为 0，如果在 PLM 位中指定为 0，则所有中断（EIINTn）均由此寄存器屏蔽。<br>由于该 CPU 定义的最低中断优先级为 63，优先级为 63 的中断（EIINTn）总是被屏蔽。<br>无论 INTCFG.EPL 设置如何，通过 PLMR 进行的中断屏蔽由 PLM 位的值和从中断控制器通知的中断优先级值完成。<br>如果通过 LDSR 指令更改 PLMR 的值，新 PLMR 值将在该 LDSR 指令之后的指令中反映。</td>
+<td>R&#x2F;W</td>
+<td>10<sub>H</sub></td>
+</tr>
+</tbody></table>
+<p>PLM 位的值与要屏蔽的最高优先级中断的对应关系</p>
+<table>
+<thead>
+<tr>
+<th>PLM 位的值</th>
+<th>要屏蔽的最高优先级中断</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>优先级 0（所有优先级均不可接受）</td>
+</tr>
+<tr>
+<td>1</td>
+<td>优先级 1（仅可接受优先级 0）</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>14</td>
+<td>优先级 14（可接受优先级 0 到 13）</td>
+</tr>
+<tr>
+<td>15</td>
+<td>优先级 15（可接受优先级 0 到 14）</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>62</td>
+<td>优先级 62（可接受优先级 0 到 61）</td>
+</tr>
+<tr>
+<td>63</td>
+<td>优先级 63（可接受优先级 0 到 62）</td>
+</tr>
+</tbody></table>
+<h5 id="4-FPU-功能寄存器"><a href="#4-FPU-功能寄存器" class="headerlink" title="4 FPU 功能寄存器"></a>4 FPU 功能寄存器</h5><p><strong>浮点寄存器</strong>：<br>FPU 使用 CPU 的通用寄存器（r0 到 r31）。没有仅用于浮点运算的寄存器文件。</p>
+<p>单精度浮点指令：<br>可以指定 32 个 32 位寄存器。这些通用寄存器对应于 r0 到 r31。</p>
+<p>双精度浮点指令：<br>可以指定 16 个 64 位寄存器。成对的通用寄存器作为寄存器对使用（{r1, r0}, {r3, r2}…{r31, r30}）。在指令格式中，每对寄存器由偶数寄存器指定。因为 r0 是一个零寄存器（总是持有 0），原则上双精度浮点指令不能使用 {r1, r0}。</p>
+<p><strong>浮点功能系统寄存器</strong><br>FPU 可以使用以下系统寄存器来控制浮点运算。浮点功能系统寄存器通过使用 LDSR 和 STSR 指令并指定系统寄存器号（由寄存器号和选择 ID 组成）进行读写。</p>
+<p>FPSR：用于控制和监视异常。它还保存比较操作的结果，并设置 FPU 操作模式。其位用于设置条件代码、次正规数冲洗使能、舍入模式控制、原因、异常使能和保存。<br>FPEPC：存储发生浮点运算异常的指令的程序计数器值。<br>FPST：反映与操作状态相关的 FPSR 寄存器位的内容。<br>FPCC：反映 FPSR. CC（7:0）位的内容。<br>FPCFG：反映与操作设置相关的 FPSR 寄存器位的内容。</p>
+<table>
+<thead>
+<tr>
+<th>寄存器编号 (regID, selID)</th>
+<th>浮点功能系统寄存器</th>
+<th>符号</th>
+<th>功能</th>
+<th>访问权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SR6, 0</td>
+<td>FPSR</td>
+<td>FPSR</td>
+<td>浮点运算配置&#x2F;状态</td>
+<td>CU0 和 SV</td>
+</tr>
+<tr>
+<td>SR7, 0</td>
+<td>FPEPC</td>
+<td>FPEPC</td>
+<td>浮点运算异常程序计数器</td>
+<td>CU0 和 SV</td>
+</tr>
+<tr>
+<td>SR8, 0</td>
+<td>FPST</td>
+<td>FPST</td>
+<td>浮点运算状态</td>
+<td>CU0</td>
+</tr>
+<tr>
+<td>SR9, 0</td>
+<td>FPCC</td>
+<td>FPCC</td>
+<td>浮点运算比较结果</td>
+<td>CU0</td>
+</tr>
+<tr>
+<td>SR10, 0</td>
+<td>FPCFG</td>
+<td>FPCFG</td>
+<td>浮点运算配置</td>
+<td>CU0</td>
+</tr>
+</tbody></table>
+<h6 id="4-1-FPSR-—-浮点配置-x2F-状态"><a href="#4-1-FPSR-—-浮点配置-x2F-状态" class="headerlink" title="4.1 FPSR — 浮点配置&#x2F;状态"></a>4.1 FPSR — 浮点配置&#x2F;状态</h6><p>FPSR 寄存器指示浮点运算的执行状态和发生的任何异常。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至24</td>
+<td>CC[7:0]</td>
+<td>这些是条件码（condition code）位。保存浮点比较指令的结果。CC7 到 CC0 位不受比较指令和 LDSR 指令之外的任何指令影响。<br>0: 比较结果为假<br>1: 比较结果为真</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>23</td>
+<td>FN</td>
+<td>此位启用向最近值冲洗模式。当 FN 位设置为 1 时，如果舍入模式为 RN 且操作结果为次正规数，则该数字被冲洗到最近的数字。详情参见第 3.2.6.1 (9) 节，向最近值冲洗。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22</td>
+<td>IF</td>
+<td>此位累计并指示输入操作数冲洗的信息。有关冲洗次正规数的详细信息，请参见第 3.2.6.1 (8) 节，冲洗次正规数。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>21</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为1。）</td>
+<td>R</td>
+<td>1</td>
+</tr>
+<tr>
+<td>20</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>19至18</td>
+<td>RM</td>
+<td>这些是舍入模式控制位。RM 位定义 FPU 用于所有浮点指令的舍入模式。<br>RM 位的值：<br>0 0 向最接近的可表示值舍入。如果值恰好在两个最接近的可表示值之间，则结果舍入到最低有效位为 0 的值。<br>0 1 向 0 舍入。结果是最接近不超过准确结果绝对值的值。<br>1 0 向 +∞ 舍入。结果是最接近不小于准确结果的值。<br>1 1 向 -∞ 舍入。结果是最接近不大于准确结果的值。</td>
+<td>R&#x2F;W</td>
+<td>00</td>
+</tr>
+<tr>
+<td>17</td>
+<td>FS</td>
+<td>此位启用无法标准化的值（次正规数）冲洗。如果 FS 位设置，次正规数的输入操作数和操作结果会被冲洗而不会导致未实现的操作异常。次正规数的输入操作数被冲洗到 0 且符号相同。次正规数的操作结果根据舍入模式要么变成 0，要么变成最小的标准化数。详细信息参见第 3.2.6.1 (9) 节，向最近值冲洗。</td>
+<td>R&#x2F;W</td>
+<td>1</td>
+</tr>
+<tr>
+<td>16</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>15至10</td>
+<td>XC (E,V,Z,O,U,I)</td>
+<td>这些是原因位。指示浮点运算异常的发生和原因。详细信息参见第 3.2.3.4 (1) 节，原因位（XC）。</td>
+<td>R</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>9至5</td>
+<td>XE (V,Z,O,U,I)</td>
+<td>这些是使能位。启用浮点运算异常。发生由 IEEE754 定义的异常时，如果对应的使能位已设置为 1，则发生浮点运算异常。详细信息参见第 3.2.3.4 (1) 节，使能位（XE）。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>XP (V,Z,O,U,I)</td>
+<td>这些是保存位。详细信息参见第 3.2.3.4 (1) 节，保存位（XP）。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<p>**原因位 (XC)**：<br>FPSR 寄存器中的位 15 至 10 是原因位，指示浮点运算异常的发生及其原因。如果生成 IEEE754 定义的异常，当对应异常的使能位设置为 1 时，原因位设置，随后发生异常。单条指令期间发生两个或多个异常时，各对应位设置为 1。</p>
+<p>检测到两个或多个异常时，只要其中一个异常的使能位设置为 1，就会发生异常。在这种情况下，所有检测到的异常的原因位，包括使能位清除为 0 的异常，均设置为 1。</p>
+<p>在发生浮点运算异常的浮点指令（TRFSR 指令除外）重写原因位。当需要软件仿真时，E 位设置为 1，否则清除为 0。其他位根据是否发生 IEEE754 定义的异常设置为 1 或清除为 0。</p>
+<p>发生浮点运算异常时，操作结果不会存储，只有原因位受到影响。</p>
+<p>通过 LDSR 指令将原因位设置为 1 时，不会发生浮点运算异常。</p>
+<p><strong>使能位 (XE)</strong><br>FPSR 寄存器中的位 9 至 5 是使能位，启用浮点运算异常。当发生 IEEE754 定义的异常时，如果对应异常的使能位已设置为 1，则发生浮点运算异常。</p>
+<p>未实现的操作异常（E）没有对应的使能位。未实现的操作异常（E）总是作为浮点运算异常发生。</p>
+<p>如果对应的使能位未设置为 1，不会发生异常，且存储由 IEEE754 定义的默认结果。</p>
+<p><strong>保存位 (XP)</strong><br>FPSR 寄存器中的位 4 至 0 是保存位。这些位在重置后存储并指示检测到的异常。当发生 IEEE754 定义的异常且未生成浮点运算异常时，保存位设置为 1，否则不会更改。浮点运算不会将保存位清除为 0。然而，当使用 LDSR 指令将新值写入 FPSR 寄存器时，这些位可以由软件设置和清除。</p>
+<p>未实现的操作异常（E）没有对应的保存位。未实现的操作异常（E）总是作为浮点运算异常发生。</p>
+<p>注意： 有关异常类型及其与特定位的关系的详细信息，请参见图 3.37，FPSR 寄存器的原因、使能和保存位。</p>
+<p><strong>实际作用：</strong><br>原因位 (XC)</p>
+<ul>
+<li>功能：原因位用于指示浮点运算异常的发生及其原因。当生成 IEEE754 定义的异常时，如果对应的使能位（XE）设置为 1，则原因位会被设置为 1，并且异常发生。每当在单条指令期间发生两个或多个异常时，各个对应的原因位均会被设置为 1。</li>
+<li>实际使用：在浮点运算过程中，当发生异常时，原因位用于记录具体的异常类型，方便后续的异常处理或调试。这些位在发生异常时由浮点指令（TRFSR 指令除外）重写。</li>
+</ul>
+<p>使能位 (XE)</p>
+<ul>
+<li>功能：使能位用于启用浮点运算异常。当发生 IEEE754 定义的异常时，如果对应的使能位设置为 1，则发生浮点运算异常。</li>
+<li>实际使用：通过设置使能位，可以控制哪些浮点运算异常会触发异常处理。这在需要对特定类型的异常进行特殊处理或忽略某些类型的异常时特别有用。</li>
+</ul>
+<p>保存位 (XP)</p>
+<ul>
+<li><p>功能：保存位用于存储和指示在重置后检测到的异常。当发生 IEEE754 定义的异常且未生成浮点运算异常时，保存位设置为 1，否则不发生变化。保存位不会被浮点运算清除为 0，但可以通过使用 LDSR 指令写入新值时由软件设置和清除。</p>
+</li>
+<li><p>实际使用：保存位在异常处理过程中，用于记录异常的发生情况，即使异常未触发实际的异常处理程序。通过保存位，可以在后续操作中检测到先前发生的异常，以便进行必要的纠正或日志记录。</p>
+</li>
+</ul>
+<h6 id="4-2-FPEPC-—-浮点异常程序计数器"><a href="#4-2-FPEPC-—-浮点异常程序计数器" class="headerlink" title="4.2 FPEPC — 浮点异常程序计数器"></a>4.2 FPEPC — 浮点异常程序计数器</h6><p>当由使能位启用的异常发生时，存储导致异常的指令的程序计数器 (PC)。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至1</td>
+<td>FPEPC31至FPEPC1</td>
+<td>当由使能位启用的浮点运算异常发生时，这些位存储导致异常的浮点指令的程序计数器 (PC)。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>0</td>
+<td>FPEPC0</td>
+<td>当由使能位启用的浮点运算异常发生时，这个位存储导致异常的浮点指令的程序计数器 (PC)。</td>
+<td>R</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="4-3-FPST-—-浮点运算状态"><a href="#4-3-FPST-—-浮点运算状态" class="headerlink" title="4.3 FPST — 浮点运算状态"></a>4.3 FPST — 浮点运算状态</h6><p>此寄存器反映与操作状态相关的 FPSR 寄存器位的内容。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至14</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>13至8</td>
+<td>XC (E,V,Z,O,U,I)</td>
+<td>这些是原因位。详细信息参见第 3.2.3.4(1) 节，原因位 (XC)。写入这些位的值会反映在 FPSR.XC 位中。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>7, 6</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>IF</td>
+<td>此位累计并指示输入操作数冲洗的信息。有关冲洗次正规数的详细信息，请参见第 3.2.6.1 (8) 节，冲洗次正规数。写入此位的值会反映在 FPSR.IF 位中。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>XP (V,Z,O,U,I)</td>
+<td>这些是保存位。详细信息参见第 3.2.3.4(1) 节，保存位 (XP)。写入这些位的值会反映在 FPSR.XP 位中。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<p>备注：FPST寄存器为获取和监控浮点运算状态提供了更简洁和高效的方式，而FPSR寄存器则提供了更多的配置和控制选项。</p>
+<h6 id="4-4-FPCC-—-浮点运算比较结果"><a href="#4-4-FPCC-—-浮点运算比较结果" class="headerlink" title="4.4 FPCC — 浮点运算比较结果"></a>4.4 FPCC — 浮点运算比较结果</h6><p>此寄存器反映 FPSR.CC7 到 FPSR.CC0 位的内容。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至8</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7至0</td>
+<td>CC[7:0]</td>
+<td>这些是条件码 (CC) 位。它们存储浮点比较指令的结果。除比较指令和 LDSR 指令外，CC7 到 CC0 位不受任何指令影响。写入这些位的值反映在FPSR的CC7到CC0位中。<br>0: 比较结果为假<br>1: 比较结果为真</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="4-5-FPCFG-—-浮点运算配置"><a href="#4-5-FPCFG-—-浮点运算配置" class="headerlink" title="4.5 FPCFG — 浮点运算配置"></a>4.5 FPCFG — 浮点运算配置</h6><p>此寄存器反映 FPSR 寄存器中与操作设置相关的位的内容。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至10</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>9, 8</td>
+<td>RM</td>
+<td>这些是舍入模式控制位。RM 位定义 FPU 用于所有浮点指令的舍入模式。写入这些位的值会反映在 FPSR 的 RM 位中。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7至5</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>XE (V,Z,O,U,I)</td>
+<td>这些是使能位。详细信息参见第 3.2.3.4(1) 节，使能位 (XE)。写入这些位的值会反映在 FPSR 的 XE 位中。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>RM 位</p>
+<table>
+<thead>
+<tr>
+<th>RM 位</th>
+<th>助记符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0 0</td>
+<td>RN</td>
+<td>向最接近的可表示值舍入。如果值恰好在两个可表示值之间，则结果舍入到最低有效位为 0 的值。</td>
+</tr>
+<tr>
+<td>0 1</td>
+<td>RZ</td>
+<td>向 0 舍入。结果是最接近不超过结果绝对值的值。</td>
+</tr>
+<tr>
+<td>1 0</td>
+<td>RP</td>
+<td>向 +∞ 舍入。结果是最接近不小于准确结果的值。</td>
+</tr>
+<tr>
+<td>1 1</td>
+<td>RM</td>
+<td>向 -∞ 舍入。结果是最接近不大于准确结果的值。</td>
+</tr>
+</tbody></table>
+<h6 id="4-6-总结："><a href="#4-6-总结：" class="headerlink" title="4.6 总结："></a>4.6 总结：</h6><p>FPSR（浮点配置&#x2F;状态寄存器）中的信息被拆分到多个寄存器中，以便更加专门化地处理和监控浮点运算的不同方面。这样做有以下几个好处：</p>
+<p><strong>专门化：</strong></p>
+<ul>
+<li><p>FPSR（浮点配置&#x2F;状态寄存器）：依然是主要的配置和状态寄存器，包含了操作模式（如舍入模式、次正规数处理模式）和整体状态（如条件码、异常使能、异常原因等）。</p>
+</li>
+<li><p>FPEPC（浮点异常程序计数器）：专门用于存储发生异常的浮点指令的程序计数器值，便于在异常处理时快速定位问题指令。</p>
+</li>
+<li><p>FPST（浮点运算状态寄存器）：反映操作状态相关的FPSR内容，便于简化状态监控和处理。</p>
+</li>
+<li><p>FPCC（浮点运算比较结果寄存器）：反映FPSR中的条件码（CC）位，专门用于存储和读取浮点比较指令的结果。</p>
+</li>
+<li><p>FPCFG（浮点运算配置寄存器）：反映FPSR中的操作设置相关位，便于配置和调整浮点运算模式。</p>
+</li>
+</ul>
+<p><strong>简化和优化：</strong></p>
+<ul>
+<li><p>性能优化：通过将不同类型的信息分散到多个寄存器中，可以避免频繁读取和解析单一寄存器，提高系统的性能和效率。</p>
+</li>
+<li><p>简化监控和调试：在需要监控特定状态或处理特定异常时，可以直接访问相应的寄存器，而无需处理大量无关的信息。</p>
+</li>
+<li><p>灵活性增强：这种设计使得系统在进行浮点运算配置和状态管理时更加灵活，能够根据具体需求进行定制和优化。</p>
+</li>
+</ul>
+<h5 id="5-FXU-功能寄存器"><a href="#5-FXU-功能寄存器" class="headerlink" title="5 FXU 功能寄存器"></a>5 FXU 功能寄存器</h5><p>提供 32 个向量寄存器（wr0-wr31）作为专用于扩展浮点运算单元（FXU）的数据寄存器。所有这些寄存器都可以用于存储数据变量。这些寄存器的数据宽度为 128 位。复位后，向量寄存器 wr0 至 wr31 的值是未定义的。</p>
+<p>一个向量寄存器由 4 个操作方式组成。一个单精度浮点数据存储在一个操作方式中。这允许一个扩展浮点操作指令执行四个单精度浮点操作。</p>
+<table>
+<thead>
+<tr>
+<th>向量寄存器</th>
+<th>操作方式 3</th>
+<th>操作方式 2</th>
+<th>操作方式 1</th>
+<th>操作方式 0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>WR[0]</td>
+<td>w3</td>
+<td>w2</td>
+<td>w1</td>
+<td>w0</td>
+</tr>
+<tr>
+<td>WR[1]</td>
+<td>w3</td>
+<td>w2</td>
+<td>w1</td>
+<td>w0</td>
+</tr>
+<tr>
+<td>WR[2]</td>
+<td>w3</td>
+<td>w2</td>
+<td>w1</td>
+<td>w0</td>
+</tr>
+<tr>
+<td>WR[3]</td>
+<td>w3</td>
+<td>w2</td>
+<td>w1</td>
+<td>w0</td>
+</tr>
+<tr>
+<td>WR[4]</td>
+<td>w3</td>
+<td>w2</td>
+<td>w1</td>
+<td>w0</td>
+</tr>
+<tr>
+<td>WR[5]</td>
+<td>w3</td>
+<td>w2</td>
+<td>w1</td>
+<td>w0</td>
+</tr>
+<tr>
+<td>WR[6]</td>
+<td>w3</td>
+<td>w2</td>
+<td>w1</td>
+<td>w0</td>
+</tr>
+<tr>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr>
+<td>WR[31]</td>
+<td>w3</td>
+<td>w2</td>
+<td>w1</td>
+<td>w0</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>位</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>W0</td>
+<td>[31:0]</td>
+<td>操作方式 0 的数据</td>
+</tr>
+<tr>
+<td>W1</td>
+<td>[63:32]</td>
+<td>操作方式 1 的数据</td>
+</tr>
+<tr>
+<td>W2</td>
+<td>[95:64]</td>
+<td>操作方式 2 的数据</td>
+</tr>
+<tr>
+<td>W3</td>
+<td>[127:96]</td>
+<td>操作方式 3 的数据</td>
+</tr>
+</tbody></table>
+<p><strong>扩展浮点功能系统寄存器</strong>：<br>FXU 可以使用以下系统寄存器来控制算术运算。扩展浮点功能系统寄存器通过使用 LDSR 和 STSR 指令并指定由寄存器号和选择 ID 组成的系统寄存器号进行读写。</p>
+<ul>
+<li>FXSR：用于控制和监视扩展浮点运算异常。还用于设置 FXU 的操作模式。它有用于次正规数冲洗使能、舍入模式控制、异常原因、异常使能和保存的位。</li>
+<li>FXST：反映与操作状态相关的 FXSR 寄存器位的内容。</li>
+<li>FXINFO：反映关于 FXU 配置的信息。</li>
+<li>FXCFG：反映与操作设置相关的 FXSR 寄存器位的内容。</li>
+<li>FXXC：保存每个操作方式的扩展浮点运算异常的 XC（原因）位。</li>
+<li>FXXP：保存每个操作方式的扩展浮点运算异常的 XP（保存）位。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>寄存器编号 (regID, selID)</th>
+<th>名称</th>
+<th>功能</th>
+<th>访问权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SR6, 10</td>
+<td>FXSR</td>
+<td>扩展浮点运算配置&#x2F;状态</td>
+<td>CU1 和 SV</td>
+</tr>
+<tr>
+<td>SR8, 10</td>
+<td>FXST</td>
+<td>扩展浮点运算状态</td>
+<td>CU1</td>
+</tr>
+<tr>
+<td>SR9, 10</td>
+<td>FXINFO</td>
+<td>FXU 配置信息</td>
+<td>CU1</td>
+</tr>
+<tr>
+<td>SR10, 10</td>
+<td>FXCFG</td>
+<td>扩展浮点运算配置</td>
+<td>CU1</td>
+</tr>
+<tr>
+<td>SR12, 10</td>
+<td>FXXC</td>
+<td>每个操作方式的 XC（原因）位</td>
+<td>CU1</td>
+</tr>
+<tr>
+<td>SR13, 10</td>
+<td>FXXP</td>
+<td>每个操作方式的 XP（保存）位</td>
+<td>CU1</td>
+</tr>
+</tbody></table>
+<h6 id="5-1-FXSR-—-扩展浮点运算配置-x2F-状态"><a href="#5-1-FXSR-—-扩展浮点运算配置-x2F-状态" class="headerlink" title="5.1 FXSR — 扩展浮点运算配置&#x2F;状态"></a>5.1 FXSR — 扩展浮点运算配置&#x2F;状态</h6><p>FXSR 寄存器指示扩展浮点运算的执行状态和异常的发生。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至24</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>23</td>
+<td>FN</td>
+<td>此位启用向最近值冲洗模式。当 FN 位设置为 1 时，如果舍入模式为 RN 且操作结果为次正规数，则该数字被冲洗到最近的数字。详情参见第 3.2.6.1 (9) 节，向最近值冲洗。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22</td>
+<td>IF</td>
+<td>此位累计并指示输入操作数冲洗的信息。有关冲洗次正规数的详细信息，请参见第 3.2.6.2 节，第 3.2.6.1 (8) 节，冲洗次正规数。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>21</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为1。）</td>
+<td>R</td>
+<td>1</td>
+</tr>
+<tr>
+<td>20</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>19, 18</td>
+<td>RM</td>
+<td>这些是舍入模式控制位。RM 位定义 FXU 用于所有扩展浮点指令的舍入模式。</td>
+<td>R&#x2F;W</td>
+<td>00</td>
+</tr>
+<tr>
+<td>17</td>
+<td>FS</td>
+<td>此位启用无法标准化的值（次正规数）冲洗。如果 FS 位设置，输入操作数和操作结果次正规数被冲洗而不会导致未实现的操作异常（E）。一个次正规数的输入操作数被冲洗到 0 且符号相同。次正规数的操作结果根据舍入模式要么变成 0，要么变成最小的标准化数。详情参见第 3.2.6.1 (9) 节，向最近值冲洗。</td>
+<td>R&#x2F;W</td>
+<td>1</td>
+</tr>
+<tr>
+<td>16</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>15至10</td>
+<td>XC (E,V,Z,O,U,I)</td>
+<td>这些是原因位。详细信息参见第 3.2.3.4(1) 节，原因位 (XC)。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>9至5</td>
+<td>XE (V,Z,O,U,I)</td>
+<td>这些是使能位。详细信息参见第 3.2.3.4(1) 节，使能位 (XE)。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>XP (V,Z,O,U,I)</td>
+<td>这些是保存位。详细信息参见第 3.2.3.4(1) 节，保存位 (XP)。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<p>舍入模式控制位 (RM Bits)</p>
+<table>
+<thead>
+<tr>
+<th>助记符</th>
+<th>描述</th>
+<th>19</th>
+<th>18</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RN</td>
+<td>向最接近的可表示值舍入。如果值恰好在两个最接近的可表示值之间，则结果舍入到最低有效位为 0 的值。</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>RZ</td>
+<td>向 0 舍入。结果是最接近不超过结果绝对值的值。</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>RP</td>
+<td>向 +∞ 舍入。结果是最接近不小于准确结果的值。</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>RM</td>
+<td>向 -∞ 舍入。结果是最接近不大于准确结果的值。</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p><strong>原因位 (XC)</strong>:<br>FXSR 寄存器中的位 15 至 10 是原因位，指示扩展浮点运算异常的发生及其原因。FXSR.XC 位保存发生在操作方式中的扩展浮点运算异常的检测结果的“或”（OR）。如果生成 IEEE754 定义的异常，当对应异常的使能位设置为 1 时，原因位会被设置，随后发生异常。单条指令期间发生两个或多个异常时，各对应位均会被设置为 1。</p>
+<p>检测到两个或多个异常时，只要其中一个异常的使能位设置为 1，就会发生异常。在这种情况下，所有检测到的异常的原因位，包括使能位清除为 0 的异常，均设置为 1。</p>
+<p>发生扩展浮点运算异常的扩展浮点操作指令重写原因位。当需要软件仿真时，E 位设置为 1，否则清除为 0。其他位根据是否发生 IEEE754 定义的异常设置为 1 或清除为 0。</p>
+<p>发生扩展浮点运算异常时，操作结果不会存储，只有原因位受到影响。</p>
+<p>通过 LDSR 指令将原因位设置为 1 时，不会发生扩展浮点运算异常。</p>
+<p>**使能位 (XE)**：<br>FXSR 寄存器中的位 9 至 5 是使能位，启用扩展浮点运算异常。当发生 IEEE754 定义的异常时，如果对应异常的使能位已设置为 1，则发生扩展浮点运算异常。</p>
+<p>未实现的操作异常（E）没有对应的使能位。未实现的操作异常（E）总是作为扩展浮点运算异常发生。</p>
+<p>FXSR.XE 位不能按操作方式设置。所有操作方式使用相同的设置。</p>
+<p>如果对应的使能位未设置为 1，不会发生异常，且存储由 IEEE754 定义的默认结果。</p>
+<p><strong>保存位 (XP)</strong><br>FXSR 寄存器中的位 4 至 0 是保存位，累积并指示自复位以来检测到的异常。发生 IEEE754 定义的异常时，如果未生成扩展浮点运算异常，则保存位设置为 1，否则不会改变。扩展浮点运算不会将保存位清除为 0。然而，当使用 LDSR 指令将新值写入 FXSR 寄存器时，这些位可以由软件设置和清除。</p>
+<p>未实现的操作异常（E）没有对应的保存位。未实现的操作异常（E）总是作为扩展浮点运算异常发生。</p>
+<h6 id="5-2-FXST-—-扩展浮点运算状态"><a href="#5-2-FXST-—-扩展浮点运算状态" class="headerlink" title="5.2 FXST — 扩展浮点运算状态"></a>5.2 FXST — 扩展浮点运算状态</h6><p>此寄存器反映 FXSR 寄存器中与操作状态相关的位的内容。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至14</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>13至8</td>
+<td>XC</td>
+<td>这些是原因位。详细信息参见第 3.2.3.4(1) 节，原因位 (XC)。写入这些位的值会反映在 FXSR.XC 位中。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>7, 6</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>IF</td>
+<td>此位累计并指示输入操作数冲洗的信息。有关冲洗次正规数的详细信息，请参见第 3.2.6.1 (8) 节，冲洗次正规数。写入此位的值会反映在 FXSR.IF 位中。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>XP</td>
+<td>这些是保存位。详细信息参见第 3.2.3.4(1) 节，保存位 (XP)。写入这些位的值会反映在 FXSR.XP 位中。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="5-3-FXINFO-—-FXU-配置信息"><a href="#5-3-FXINFO-—-FXU-配置信息" class="headerlink" title="5.3 FXINFO — FXU 配置信息"></a>5.3 FXINFO — FXU 配置信息</h6><p>此寄存器反映 FXU 的配置信息。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至2</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>NFPU</td>
+<td>此位指示提供了 4-way SIMD 算术单元。</td>
+<td>R</td>
+<td>1</td>
+</tr>
+<tr>
+<td>0</td>
+<td>RSIZE</td>
+<td>此位指示提供了 32 个 128 位向量寄存器。</td>
+<td>R</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<h6 id="5-4-FXCFG-—-扩展浮点运算配置"><a href="#5-4-FXCFG-—-扩展浮点运算配置" class="headerlink" title="5.4 FXCFG — 扩展浮点运算配置"></a>5.4 FXCFG — 扩展浮点运算配置</h6><p>此寄存器反映 FXSR 寄存器中与操作设置相关的位的内容。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至10</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>9, 8</td>
+<td>RM</td>
+<td>这些是舍入模式控制位。RM 位定义 FXU 用于所有扩展浮点指令的舍入模式。写入这些位的值会反映在 FXSR 的 RM 位中。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7至5</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>XE</td>
+<td>这些是使能位。详细信息参见第 3.2.3.4(1) 节，使能位 (XE)。写入这些位的值会反映在 FXSR 的 XE 位中。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>舍入模式控制位 (RM Bits)</p>
+<table>
+<thead>
+<tr>
+<th>助记符</th>
+<th>描述</th>
+<th>9</th>
+<th>8</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0 0</td>
+<td>RN</td>
+<td>向最接近的可表示值舍入。如果值恰好在两个可表示值之间，则结果舍入到最低有效位为 0 的值。</td>
+<td></td>
+</tr>
+<tr>
+<td>0 1</td>
+<td>RZ</td>
+<td>向 0 舍入。结果是最接近不超过结果绝对值的值。</td>
+<td></td>
+</tr>
+<tr>
+<td>1 0</td>
+<td>RP</td>
+<td>向 +∞ 舍入。结果是最接近不小于准确结果的值。</td>
+<td></td>
+</tr>
+<tr>
+<td>1 1</td>
+<td>RM</td>
+<td>向 -∞ 舍入。结果是最接近不大于准确结果的值。</td>
+<td></td>
+</tr>
+</tbody></table>
+<h6 id="5-5-FXXC-—-各操作方式的-XC（原因）位"><a href="#5-5-FXXC-—-各操作方式的-XC（原因）位" class="headerlink" title="5.5 FXXC — 各操作方式的 XC（原因）位"></a>5.5 FXXC — 各操作方式的 XC（原因）位</h6><p>此寄存器保存每个操作方式的扩展浮点运算异常的 XC（原因）位。任何尝试写入此寄存器的操作都不会影响 FXSR 寄存器的 XC 位的值。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31, 30</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>29至24</td>
+<td>XC3</td>
+<td>这些位保存与操作方式 3 相关的原因位（E3,V3,Z3,O3,U3,I3）。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>23, 22</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>21至16</td>
+<td>XC2</td>
+<td>这些位保存与操作方式 2 相关的原因位（E2,V2,Z2,O2,U2,I2）。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>15, 14</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>13至8</td>
+<td>XC1</td>
+<td>这些位保存与操作方式 1 相关的原因位（E1,V1,Z1,O1,U1,I1）。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>7, 6</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5至0</td>
+<td>XC0</td>
+<td>这些位保存与操作方式 0 相关的原因位（E0,V0,Z0,O0,U0,I0）。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="5-6-FXXP-—-各操作方式的-XP（保存）位"><a href="#5-6-FXXP-—-各操作方式的-XP（保存）位" class="headerlink" title="5.6 FXXP — 各操作方式的 XP（保存）位"></a>5.6 FXXP — 各操作方式的 XP（保存）位</h6><p>此寄存器保存每个操作方式的扩展浮点运算异常的 XP（保存）位。任何尝试写入此寄存器的操作都不会影响 FXSR 寄存器的 XP 位的值。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至29</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>28至24</td>
+<td>XP3</td>
+<td>这些位保存与操作方式 3 相关的保存位（V3,Z3,O3,U3,I3）。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>23至21</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>20至16</td>
+<td>XP2</td>
+<td>这些位保存与操作方式 2 相关的保存位（V2,Z2,O2,U2,I2）。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>15至13</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>12至8</td>
+<td>XP1</td>
+<td>这些位保存与操作方式 1 相关的保存位（V1,Z1,O1,U1,I1）。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>7至5</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>XP0</td>
+<td>这些位保存与操作方式 0 相关的保存位（V0,Z0,O0,U0,I0）。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="6-MPU-功能寄存器"><a href="#6-MPU-功能寄存器" class="headerlink" title="6 MPU 功能寄存器"></a>6 MPU 功能寄存器</h6><p>MPU 功能系统寄存器通过使用 LDSR 和 STSR 指令并指定由寄存器号和选择 ID 组成的系统寄存器号进行读写。</p>
+<table>
+<thead>
+<tr>
+<th>寄存器编号 (regID, selID)</th>
+<th>符号</th>
+<th>功能</th>
+<th>访问权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SR0, 5</td>
+<td>MPM</td>
+<td>内存保护操作模式设置</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR2, 5</td>
+<td>MPCFG</td>
+<td>MPU 配置</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR8, 5</td>
+<td>MCA</td>
+<td>内存保护设置检查地址</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR9, 5</td>
+<td>MCS</td>
+<td>内存保护设置检查大小</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR10, 5</td>
+<td>MCC</td>
+<td>内存保护设置检查命令</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR11, 5</td>
+<td>MCR</td>
+<td>内存保护设置检查结果</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR12, 5</td>
+<td>MCI</td>
+<td>内存保护设置检查 SPID</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR16, 5</td>
+<td>MPIDX</td>
+<td>要访问的内存保护设置寄存器索引</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR17, 5</td>
+<td>MPBK</td>
+<td>MPU bank设置</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR20, 5</td>
+<td>MPLA</td>
+<td>保护区最小地址</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR21, 5</td>
+<td>MPUA</td>
+<td>保护区最大地址</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR22, 5</td>
+<td>MPAT</td>
+<td>保护区属性</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR24, 5</td>
+<td>MPID0</td>
+<td>可以访问保护区的 SPID</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR25, 5</td>
+<td>MPID1</td>
+<td>可以访问保护区的 SPID</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR26, 5</td>
+<td>MPID2</td>
+<td>可以访问保护区的 SPID</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR27, 5</td>
+<td>MPID3</td>
+<td>可以访问保护区的 SPID</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR28, 5</td>
+<td>MPID4</td>
+<td>可以访问保护区的 SPID</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR29, 5</td>
+<td>MPID5</td>
+<td>可以访问保护区的 SPID</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR30, 5</td>
+<td>MPID6</td>
+<td>可以访问保护区的 SPID</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR31, 5</td>
+<td>MPID7</td>
+<td>可以访问保护区的 SPID</td>
+<td>SV</td>
+</tr>
+</tbody></table>
+<h6 id="6-1-MPM-—-内存保护操作模式"><a href="#6-1-MPM-—-内存保护操作模式" class="headerlink" title="6.1 MPM — 内存保护操作模式"></a>6.1 MPM — 内存保护操作模式</h6><p>内存保护操作模式寄存器用于定义内存保护功能的基本操作模式。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读写</th>
+<th>复位值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至2</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>SVP</td>
+<td>在 SV 模式下（当 PSW.UM &#x3D; 0 时），此位用于指定是否根据每个保护区的 MPAT 寄存器的 SX、SW 和 SR 位限制访问。<br> 0: 在 SV 模式下启用所有访问。<br> 1: 在 SV 模式下根据 SX、SW 和 SR 位限制访问。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>MPE</td>
+<td>此位用于指定是否启用或禁用 MPU 功能。<br> 0: 禁用<br> 1: 启用</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p><strong>注意：</strong></p>
+<ul>
+<li>当通过 LDSR 指令设置 SVP 位为 1 时，设置从后续指令的操作数访问开始生效。另一方面，由于指令获取访问独立于 SVP 位的设置执行，因此无法确定新设置应用于指令获取访问的时间。在这种情况下，请提前设置保护区，以确保设置 SVP 位的程序本身不会被阻止。</li>
+<li>如果SVP位设置为1，如果不允许MDP或MIP异常处理程序访问必要的内存区域，则无法执行该异常处理程序。一定要提前设置保护区域，以便异常处理程序可以访问必要的内存区域。</li>
+</ul>
+<h6 id="6-2-MPCFG-—-MPU-配置"><a href="#6-2-MPCFG-—-MPU-配置" class="headerlink" title="6.2 MPCFG — MPU 配置"></a>6.2 MPCFG — MPU 配置</h6><p>此寄存器保存有关 MPU 配置信息。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至22</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>21, 20</td>
+<td>NBK</td>
+<td>值为此CPU上的 MPU bank数量 - 1。由于此 CPU 上的 MPU bank只有一个，因此读取值为 0。</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>19至16</td>
+<td>ARCH</td>
+<td>这些位指示 MPU 架构规范的版本。此 CPU 的读取值为 2。</td>
+<td>R</td>
+<td>2</td>
+</tr>
+<tr>
+<td>15至5</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>NMPUE</td>
+<td>这些位指示此 CPU 实现的 MPU 条目数减 1。由于此 CPU 包含 32 个 MPU 条目，因此读取值为 31。</td>
+<td>R</td>
+<td>31</td>
+</tr>
+</tbody></table>
+<p><strong>注意：</strong><br>安装在 MPU 上的 MPU bank数量不少于一个。MPU bank由 MPU 条目（MPAT、MPUA、MPLA）组成，其数量由 NMPUE 指定。如果配备了两个bank，配备的 MPU 条目数量是 NMPUE 指示值的两倍。但是，每个 MPU bank是专用的。只有由 MPBK 寄存器指示的 MPU bank用于内存保护。因此，即使配备了多bank，可同时用于内存保护的 MPU 条目最大数量也不超过 NMPUE 指示的值。</p>
+<h6 id="6-3-MCA-—-内存保护设置检查地址"><a href="#6-3-MCA-—-内存保护设置检查地址" class="headerlink" title="6.3 MCA — 内存保护设置检查地址"></a>6.3 MCA — 内存保护设置检查地址</h6><p>此寄存器用于指定要执行内存保护设置检查的区域的基地址。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>MCA31至MCA0</td>
+<td>这些位用于指定要进行内存保护设置检查的内存区域的起始地址（以字节为单位）。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="6-4-MCS-—-内存保护设置检查大小"><a href="#6-4-MCS-—-内存保护设置检查大小" class="headerlink" title="6.4 MCS — 内存保护设置检查大小"></a>6.4 MCS — 内存保护设置检查大小</h6><p>此寄存器用于指定要执行内存保护设置检查的区域大小。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>MCS31至MCS0</td>
+<td>这些位用于指定内存保护设置检查的内存区域大小（以字节为单位）。由于指定大小被假定为无符号整数，因此无法检查相对于 MCA 寄存器值地址值减小方向的区域。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="6-5-MCC-—-内存保护设置检查命令"><a href="#6-5-MCC-—-内存保护设置检查命令" class="headerlink" title="6.5 MCC — 内存保护设置检查命令"></a>6.5 MCC — 内存保护设置检查命令</h6><p>此命令寄存器用于启动内存保护设置检查。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>MCC31至MCC0</td>
+<td>向 MCC 寄存器写入任何值时，将启动内存保护设置检查。通过设置 MCA&#x2F;MCS 寄存器，然后写入 MCC 寄存器，结果存储在 MCR 中。因为通过写入任何值启动检查，所以可以使用 r0 作为源寄存器，而不使用任何多余的寄存器。<br><br>注意，对于检查，结果根据每个区域设置应用，而不考虑 PSW.UM 位的状态。<br>此检查适用于由 MPBK 寄存器指定的 MPU bank 的内存保护设置。<br>读取 MCC 寄存器时，总是返回值 0000 0000H。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="6-6-MCR-—-内存保护设置检查结果"><a href="#6-6-MCR-—-内存保护设置检查结果" class="headerlink" title="6.6 MCR — 内存保护设置检查结果"></a>6.6 MCR — 内存保护设置检查结果</h6><p>此寄存器用于存储内存保护设置检查的结果。</p>
+<p>当写入 MCC 寄存器时，检查每个 MPAT 寄存器的 MPIDn 寄存器（n &#x3D; 0 到 7）、WMPIDn 位（n &#x3D; 0 到 7）（用于写权限）和 RMPIDn 位（n &#x3D; 0 到 7）（用于执行和读权限），以验证由 MCI 寄存器指定的 SPID 是否匹配允许访问的 SPID。</p>
+<p>然而，如果 MPAT 寄存器的 WG 位或 RG 位设置为 1，则假定 MCI 寄存器指定的 SPID 匹配允许写或执行和读取访问的 SPID，无论上述 SPID 匹配结果如何。</p>
+<p>如果找到 SPID 匹配，包含 MCA 和 MCS 寄存器指定的地址区域的保护区域的保护属性存储在 MCR 寄存器的相应属性位中。如果多个保护区域包括指定的地址区域，并且任何保护区域都允许访问，则 MCR 寄存器的相应属性位中存储表示允许访问的 1。</p>
+<p>如果未找到 SPID 匹配或不存在包含指定地址区域的保护区域，则 MCR 寄存器的每个属性位中存储表示不允许访问的 0。</p>
+<p>注意：</p>
+<p>如果要检查的指定区域跨越 0000 0000H 或 7FFF FFFFH，则判断为区域设置错误，MCR.OV 位设置为 1。这意味着必须读取 MCR.OV 位以确认结果不是无效的（OV &#x3D; 0）然后参考每个属性位的检查结果。当 MCR.OV 位设置为 1 时，除非 MPM.SVP 位为 0，否则所有属性位被清除为 0。如果 MPM.SVP 位为 0，则即使 MCR.OV 位设置为 1，MCR.SXE、SWE 和 SRE 位也被设置为 1。即使未找到 SPID 匹配，如果区域设置错误，MCR.OV 位也设置为 1。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至9</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>8</td>
+<td>OV</td>
+<td>如果指定区域包括 00000000H 或 7FFFFFFFH，则在此位存储 1。在其他情况下，此位存储 0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>7, 6</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>SXE</td>
+<td>如果指定区域包含在一个保护区域内，并且在管理模式下允许执行，则在此位存储 1。在其他情况下，此位存储 0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>4</td>
+<td>SWE</td>
+<td>如果指定区域包含在一个保护区域内，并且在管理模式下允许写入，则在此位存储 1。在其他情况下，此位存储 0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>3</td>
+<td>SRE</td>
+<td>如果指定区域包含在一个保护区域内，并且在管理模式下允许读取，则在此位存储 1。在其他情况下，此位存储 0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>2</td>
+<td>UXE</td>
+<td>如果指定区域包含在一个保护区域内，并且在用户模式下允许执行，则在此位存储 1。在其他情况下，此位存储 0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>1</td>
+<td>UWE</td>
+<td>如果指定区域包含在一个保护区域内，并且在用户模式下允许写入，则在此位存储 1。在其他情况下，此位存储 0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>0</td>
+<td>URE</td>
+<td>如果指定区域包含在一个保护区域内，并且在用户模式下允许读取，则在此位存储 1。在其他情况下，此位存储 0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="6-7-MCI-—-内存保护设置检查-SPID"><a href="#6-7-MCI-—-内存保护设置检查-SPID" class="headerlink" title="6.7 MCI — 内存保护设置检查 SPID"></a>6.7 MCI — 内存保护设置检查 SPID</h6><p>此寄存器用于指定要执行内存保护设置检查的 SPID。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至5</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>SPID</td>
+<td>这些位用于指定要进行内存保护设置检查的 SPID。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h6 id="6-8-MPIDX-—-要访问的内存保护设置寄存器索引"><a href="#6-8-MPIDX-—-要访问的内存保护设置寄存器索引" class="headerlink" title="6.8 MPIDX — 要访问的内存保护设置寄存器索引"></a>6.8 MPIDX — 要访问的内存保护设置寄存器索引</h6><p>此寄存器用于指定要访问的内存保护设置寄存器的索引。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至5</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>IDX</td>
+<td>这些位用于指定 LDSR 或 STSR 指令要访问的 MPLA、MPUA 和 MPAT 寄存器的 MPU 条目索引。更改此寄存器值的结果反映在紧随其后的指令中。可以为 IDX 指定从 0 到 MPCFG.NMPUE 指示的最大条目号的值。如果为 IDX 指定了超过最大条目号的值，并通过 LDSR 或 STSR 指令访问 MPLA、MPUA 或 MPAT 寄存器，则该寄存器被处理为未定义寄存器。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="6-9-MPBK-—-MPU-bank设置"><a href="#6-9-MPBK-—-MPU-bank设置" class="headerlink" title="6.9 MPBK — MPU bank设置"></a>6.9 MPBK — MPU bank设置</h6><p>MPBK 寄存器选择 MPU bank。 如果设置了 SVLOCK.SVL 位为 1，则不会更新此寄存器。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至2</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1, 0</td>
+<td>BK</td>
+<td>这些位指定用于内存保护的 MPU bank。<br>0: MPU bank 0<br>其他：设置禁止<br><br>BK 字段中指定的 MPU bank受内存保护、内存保护设置检查功能、LDM.MP 指令、STM.MP 指令的影响。BK 字段中未指定的每个 MPU bank的寄存器对 MPU 功能没有影响。无法使用 LDSR 和 STSR 指令操作此类寄存器。<br>无法在 BK 字段中设置超过 MPCFG.NBK 的值。如果尝试写入此类值，该值将被忽略并保留原值。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="6-10-MPLA-—-保护区最小地址"><a href="#6-10-MPLA-—-保护区最小地址" class="headerlink" title="6.10 MPLA — 保护区最小地址"></a>6.10 MPLA — 保护区最小地址</h6><p>此寄存器指示保护区的最小地址。通过 LDSR 指令写入此寄存器的值被设置为 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）的最小地址。通过 STSR 指令从此寄存器读取的值是 MPIDX 寄存器指定的区域 n 的最小地址。无法在不使用 MPIDX 寄存器和此寄存器的情况下操作区域 n 的最小地址。</p>
+<p>如果在 MPIDX 寄存器中指定了超过 MPCFG.NMPUE 的值，则将该寄存器视为未定义寄存器。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至2</td>
+<td>MPLA31至MPLA2</td>
+<td>这些位指定由 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）的最小地址。指定的最小地址包括在区域匹配范围内。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>1, 0</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="6-11-MPUA-—-保护区最大地址"><a href="#6-11-MPUA-—-保护区最大地址" class="headerlink" title="6.11 MPUA — 保护区最大地址"></a>6.11 MPUA — 保护区最大地址</h6><p>此寄存器指示保护区的最大地址。通过 LDSR 指令写入此寄存器的值被设置为 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）的最大地址。通过 STSR 指令从此寄存器读取的值是 MPIDX 寄存器指定的区域 n 的最大地址。无法在不使用 MPIDX 寄存器和此寄存器的情况下操作区域 n 的最大地址。</p>
+<p>如果在 MPIDX 寄存器中指定了超过 MPCFG.NMPUE 的值，则将该寄存器视为未定义寄存器。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至2</td>
+<td>MPUA31至MPUA2</td>
+<td>这些位指定由 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）的最大地址。指定的最大地址包括在区域匹配范围内。位 1 和 0 的最大地址被视为 1。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>1, 0</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="6-12-MPAT-—-保护区属性"><a href="#6-12-MPAT-—-保护区属性" class="headerlink" title="6.12 MPAT — 保护区属性"></a>6.12 MPAT — 保护区属性</h6><p>此寄存器指示保护区的属性。通过 LDSR 指令写入此寄存器的值被设置为 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）的保护属性。通过 STSR 指令从此寄存器读取的值是 MPIDX 寄存器指定的区域 n 的保护属性。无法在不使用 MPIDX 寄存器和此寄存器的情况下操作区域 n 的属性。</p>
+<p>如果在 MPIDX 寄存器中指定了超过 MPCFG.NMPUE 的值，则将该寄存器视为未定义寄存器。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至24</td>
+<td>WMPID7至WMPID0</td>
+<td>这些位指示 MPIDn（n &#x3D; 0 到 7）寄存器中指定的 SPID 的写权限。<br>0: 禁止 SPID 写入<br>1: 启用 SPID 写入</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>23至16</td>
+<td>RMPID7至RMPID0</td>
+<td>这些位指示 MPIDn（n &#x3D; 0 到 7）寄存器中指定的 SPID 的执行和读取权限。<br>0: 禁止 SPID 执行和读取<br>1: 启用 SPID 执行和读取</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>15</td>
+<td>WG</td>
+<td>此位指示任何 SPID 的写权限。<br>0: 根据 MPIDn 寄存器和 WMPIDn 位的设置启用写入<br>1: 启用任何 SPID 写入，无论 MPIDn 寄存器和 WMPIDn 位的设置如何</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>14</td>
+<td>RG</td>
+<td>此位指示任何 SPID 的执行和读取权限。<br>0: 根据 MPIDn 寄存器和 RMPIDn 位的设置启用执行和读取<br>1: 启用任何 SPID 执行和读取，无论 MPIDn 寄存器和 RMPIDn 位的设置如何</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>13至8</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7</td>
+<td>E</td>
+<td>此位指示由 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）是启用还是禁用。<br>0: 区域 n 被禁用<br>1: 区域 n 被启用</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>6</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>SX</td>
+<td>此位指示管理模式下由 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）的执行权限。<br>0: 禁止执行<br>1: 启用执行</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>4</td>
+<td>SW</td>
+<td>此位指示管理模式下由 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）的写权限。<br>0: 禁止写入<br>1: 启用写入</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>3</td>
+<td>SR</td>
+<td>此位指示管理模式下由 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）的读取权限。<br>0: 禁止读取<br>1: 启用读取</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>2</td>
+<td>UX</td>
+<td>此位指示用户模式下由 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）的执行权限。<br>0: 禁止执行<br>1: 启用执行</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>1</td>
+<td>UW</td>
+<td>此位指示用户模式下由 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）的写权限。<br>0: 禁止写入<br>1: 启用写入</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>0</td>
+<td>UR</td>
+<td>此位指示用户模式下由 MPIDX 寄存器指定的区域 n（n &#x3D; 0 到 MPCFG.NMPUE）的读取权限。<br>0: 禁止读取<br>1: 启用读取</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<ul>
+<li>如果在 SV 模式下限制访问，则可能无法根据设置执行 MDP 或 MIP 异常处理程序。请务必提前设置保护区，以确保异常处理程序可以访问必要的内存区域。</li>
+<li>对于 CALLT、SWITCH 和 SYSCALL 指令及中断（表引用方法），如果不允许读取存储表的地址，则会发生 MDP 异常。SYSCAL 指令和表引用方法中的中断的权限在 CPU 切换到管理模式后进行判断。因此，当 MPM.SVP 位设置（1）时，还需要设置 SR 位（1）。</li>
+</ul>
+<h6 id="6-13-MPIDn-—-可以访问保护区的-SPID"><a href="#6-13-MPIDn-—-可以访问保护区的-SPID" class="headerlink" title="6.13 MPIDn — 可以访问保护区的 SPID"></a>6.13 MPIDn — 可以访问保护区的 SPID</h6><p>此寄存器指定可以访问保护区的 SPID。指定的 SPID 的可访问性与通过 MPAT 寄存器指定的 WMPIDn 和 RMPIDn 位（n &#x3D; 0 到 7）相关联。此 CPU 有 8 个 MPID 寄存器。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至5</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4至0</td>
+<td>SPID</td>
+<td>这些位指定可以访问保护区的 SPID。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<h5 id="7-Cache-Operation-Function-Registers"><a href="#7-Cache-Operation-Function-Registers" class="headerlink" title="7 Cache Operation Function Registers"></a>7 Cache Operation Function Registers</h5><p>缓存控制功能系统寄存器通过使用 LDSR 和 STSR 指令并指定由寄存器号和选择 ID 组成的系统寄存器号进行读写。</p>
+<table>
+<thead>
+<tr>
+<th>寄存器编号 (regID, selID)</th>
+<th>符号</th>
+<th>功能</th>
+<th>访问权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SR16, 4</td>
+<td>ICTAGL</td>
+<td>指令缓存标记低访问</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR17, 4</td>
+<td>ICTAGH</td>
+<td>指令缓存标记高访问</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR18, 4</td>
+<td>ICDATL</td>
+<td>指令缓存数据低访问</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR19, 4</td>
+<td>ICDATH</td>
+<td>指令缓存数据高访问</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR24, 4</td>
+<td>ICCTRL</td>
+<td>指令缓存控制</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR26, 4</td>
+<td>ICCFG</td>
+<td>指令缓存配置</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR28, 4</td>
+<td>ICERR</td>
+<td>指令缓存错误</td>
+<td>SV</td>
+</tr>
+</tbody></table>
+<h6 id="7-1-ICTAGL-—-指令缓存标记低访问"><a href="#7-1-ICTAGL-—-指令缓存标记低访问" class="headerlink" title="7.1 ICTAGL — 指令缓存标记低访问"></a>7.1 ICTAGL — 指令缓存标记低访问</h6><p>此寄存器用于与指令缓存相关的 CIST&#x2F;CILD 指令。在执行 CIST 指令期间，存储到指令缓存标记 RAM 的值被存储。在执行 CILD 指令期间，从指令缓存标记 RAM 读取的值被存储。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至11</td>
+<td>LPN</td>
+<td>这些位保存地址位 27 到 11。位 31 到 28 必须始终设置为 0。如果缓存大小为 8 Kbytes，则保存位 27 到 11。如果缓存大小为 16 Kbytes，则保存位 27 到 12，位 11 始终设置为 0。如果缓存大小为 32 Kbytes，则保存位 27 到 13，位 12 和 11 始终设置为 0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>10至6</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5, 4</td>
+<td>LRU</td>
+<td>这些位指示指定缓存线的 LRU 信息。LRU 信息不能通过 CIST 指令自由更改为任何值。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>3</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>L</td>
+<td>此位保存锁定信息。<br>0: 缓存线未锁定<br>1: 缓存线已锁定</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>1</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>V</td>
+<td>此位保存指定缓存线的有效&#x2F;无效信息。<br>0: 缓存线已禁用<br>1: 缓存线已启用</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<ul>
+<li>如果缓存大小为 16 Kbytes，则不能通过 LDSR 指令向位 11 写入任何值。它始终设置为 0。</li>
+<li>如果缓存大小为 32 Kbytes，则不能通过 LDSR 指令更改位 12 和 11。它们始终设置为 0。</li>
+<li>如果通过 CIST 指令设置标记 RAM，则只有在启用 V 位时，其他位的设置才有效。当 V 位被禁用时，无论 LPN 位中的值为何，缓存线始终被判断为缓存未命中。此外，当 V 位被禁用时，即使通过设置 L 位锁定缓存线，缓存线仍成为替换目标。</li>
+</ul>
+<h6 id="7-2-ICTAGH-—-指令缓存标记高访问"><a href="#7-2-ICTAGH-—-指令缓存标记高访问" class="headerlink" title="7.2 ICTAGH — 指令缓存标记高访问"></a>7.2 ICTAGH — 指令缓存标记高访问</h6><p>此寄存器用于与指令缓存相关的 CIST&#x2F;CILD 指令。在执行 CIST 指令期间，存储到标记 RAM 和数据 RAM 的 ECC 值被存储。在执行 CILD 指令期间，从标记 RAM 和数据 RAM 的 ECC 读取的值被存储。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31</td>
+<td>WD</td>
+<td>此位指定在执行 CIST 指令期间是否更新缓存的数据 RAM。<br>0: 缓存的数据 RAM 未更新<br>1: 缓存的数据 RAM 已更新</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>30</td>
+<td>PD</td>
+<td>此位指定当 WD 位设置为 1 并执行 CIST 指令时要写入数据 RAM 的 ECC 的数据。<br>0: 自动生成的 ECC 写入数据 RAM 的 ECC<br>1: DATAECC 字段中的值写入数据 RAM 的 ECC</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>29</td>
+<td>WT</td>
+<td>此位指定在执行 CIST 指令期间是否更新缓存的标记 RAM。当此位设置为 1 时，缓存线的 V 位和 L 位也会更新。<br>0: 缓存的标记 RAM 未更新<br>1: 缓存的标记 RAM 已更新</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>28</td>
+<td>PT</td>
+<td>此位指定当 WT 位设置为 1 并执行 CIST 指令时要写入标记 RAM 的 ECC 的数据。<br>0: 自动生成的 ECC 写入标记 RAM 的 ECC<br>1: TAGECC 字段中的值写入标记 RAM 的 ECC</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>27至24</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>23至16</td>
+<td>DATAECC</td>
+<td>这些位保存数据 RAM 的 ECC。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>15至8</td>
+<td>TAGECC</td>
+<td>这些位保存标记 RAM 的 ECC。第 15 位固定为 0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>7至0</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="7-3-ICDATL-—-指令缓存数据低访问"><a href="#7-3-ICDATL-—-指令缓存数据低访问" class="headerlink" title="7.3 ICDATL — 指令缓存数据低访问"></a>7.3 ICDATL — 指令缓存数据低访问</h6><p>此寄存器用于与指令缓存相关的 CIST&#x2F;CILD 指令。在执行 CIST 指令期间，存储到指令缓存数据 RAM 的值被存储。在执行 CILD 指令期间，从指令缓存数据 RAM 读取的值被存储。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>DATAL</td>
+<td>这些位保存指定缓存线块中 64 位指令数据的低 32 位。要保存的位由索引的偏移量指定。<br>偏移量为 00: 位 31 到 0<br>偏移量为 01: 位 95 到 64<br>偏移量为 10: 位 159 到 128<br>偏移量为 11: 位 223 到 192</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<ul>
+<li>缓存线块中指令数据的对齐与内存的数据对齐不同。详细信息，请参见第 3.2.5.2 (10) 节，指令缓存配置。</li>
+<li>有关如何指定偏移量的详细信息，请参见第 3.2.5.2 (6) 节，缓存索引指定方法。</li>
+<li>有关位位置的详细信息，请参见第 3.2.5.2 (10) 节中的图 3.31，指令缓存配置。</li>
+</ul>
+<h6 id="7-4-ICDATH-—-指令缓存数据高访问"><a href="#7-4-ICDATH-—-指令缓存数据高访问" class="headerlink" title="7.4 ICDATH — 指令缓存数据高访问"></a>7.4 ICDATH — 指令缓存数据高访问</h6><p>此寄存器用于与指令缓存相关的 CIST&#x2F;CILD 指令。在执行 CIST 指令期间，存储到指令缓存数据 RAM 的值被存储。在执行 CILD 指令期间，从指令缓存数据 RAM 读取的值被存储。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>DATAH</td>
+<td>这些位保存指定缓存线块中 64 位指令数据的高 32 位。要保存的位由索引的偏移量指定。<br>偏移量为 00: 位 63 到 32<br>偏移量为 01: 位 127 到 96<br>偏移量为 10: 位 191 到 160<br>偏移量为 11: 位 255 到 224</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<ul>
+<li>缓存线块中指令数据的对齐与内存的数据对齐不同。详细信息，请参见第 3.2.5.2 (10) 节，指令缓存配置。</li>
+<li>有关如何指定偏移量的详细信息，请参见第 3.2.5.2 (6) 节，缓存索引指定方法。</li>
+<li>有关位位置的详细信息，请参见第 3.2.5.2 (10) 节中的图 3.31，指令缓存配置。</li>
+</ul>
+<h6 id="7-5-ICCTRL-—-指令缓存控制"><a href="#7-5-ICCTRL-—-指令缓存控制" class="headerlink" title="7.5 ICCTRL — 指令缓存控制"></a>7.5 ICCTRL — 指令缓存控制</h6><p>此寄存器用于控制指令缓存。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至17</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>16</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 1。）</td>
+<td>R</td>
+<td>1</td>
+</tr>
+<tr>
+<td>15至9</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>8</td>
+<td>ICHCLR</td>
+<td>当此位设置为 1 时，整个指令缓存被清除。这将清除 V 和 L 位（置为 0）并初始化 LRU 信息。此位始终读取为 0。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7至3</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>ICHEIV</td>
+<td>当此位设置为 1 时，每当发生缓存错误时，指令缓存会自动设置为无效（ICHEN 位清除为 0）。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>ICHEMK</td>
+<td>当此位设置为 1 时，在发生缓存错误后，屏蔽 CPU 的缓存错误异常通知。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>ICHEN</td>
+<td>此位指示指令缓存的有效&#x2F;无效状态。<br>0: 指令缓存无效<br>1: 指令缓存有效</td>
+<td>R&#x2F;W</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<ul>
+<li>复位后的值由硬件规格决定。详细信息，请参见第 3.9.7 节，G4MH 寄存器初始值的产品信息。</li>
+<li>有关缓存错误的详细信息，请参见第 3.2.5.2 (10) 节，指令缓存配置。</li>
+</ul>
+<h6 id="7-6-ICCFG-—-指令缓存配置"><a href="#7-6-ICCFG-—-指令缓存配置" class="headerlink" title="7.6 ICCFG — 指令缓存配置"></a>7.6 ICCFG — 指令缓存配置</h6><p>此寄存器指示指令缓存的配置。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至15</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>14至8</td>
+<td>ICHSIZE</td>
+<td>这些位指示指令缓存的大小（以 Kbytes 为单位）。<br>000 1000: 8 Kbytes<br>001 0000: 16 Kbytes<br>010 0000: 32 Kbytes<br>其他：设置禁止</td>
+<td>R</td>
+<td>硬件规格决定</td>
+</tr>
+<tr>
+<td>7至4</td>
+<td>ICHLINE</td>
+<td>这些位指示指令缓存中每个路（way）的行数。<br>0010: 64 行<br>0100: 128 行<br>1000: 256 行<br>其他：设置禁止</td>
+<td>R</td>
+<td>硬件规格决定</td>
+</tr>
+<tr>
+<td>3至0</td>
+<td>ICHWAY</td>
+<td>这些位指示指令缓存中的路数。<br>0100: 4 路<br>其他：设置禁止</td>
+<td>R</td>
+<td>硬件规格决定</td>
+</tr>
+</tbody></table>
+<h6 id="7-7-ICERR-—-指令缓存错误"><a href="#7-7-ICERR-—-指令缓存错误" class="headerlink" title="7.7 ICERR — 指令缓存错误"></a>7.7 ICERR — 指令缓存错误</h6><p>此寄存器用于存储指令缓存的缓存错误信息。</p>
+<p>在设置 ICHERR 位为 1 后，任何后续生成的缓存错误信息将不会存储，直到明确将此设置清除为 0。然而，错误状态信息（ESAFE、ESMH、ESPBSE、ESTE1、ESTE2、ESDC 和 ESDE）将累积。</p>
+<p>注意：</p>
+<ul>
+<li>如果缓存大小为 8 Kbytes，则不能通过 LDSR 指令向位 12 和 11 写入任何值。它们始终设置为 0。</li>
+<li>如果缓存大小为 16 Kbytes，则不能通过 LDSR 指令向位 12 写入任何值。它始终设置为 0。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31</td>
+<td>CISTW</td>
+<td>此位设置为表示 CISTI 指令指定的目标路有误。尽管条目信息被覆盖以完成写入，但下次读取缓存线时，V 位将被清除（即判断读取未命中缓存）。然而，设置此位不会伴随 CPU 的异常。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>30</td>
+<td>ESAFE</td>
+<td>错误状态：地址反馈错误</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>29</td>
+<td>ESMH</td>
+<td>错误状态：多重命中</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>28</td>
+<td>ESPBSE</td>
+<td>错误状态：WAY 错误</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>27</td>
+<td>ESTE1</td>
+<td>错误状态：标记 RAM 1 位错误</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>26</td>
+<td>ESTE2</td>
+<td>错误状态：标记 RAM 2 位错误</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>25</td>
+<td>ESDC</td>
+<td>错误状态：数据 RAM 1 位错误</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>24</td>
+<td>ESDE</td>
+<td>错误状态：数据 RAM 2 位错误</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>23</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22</td>
+<td>ERMAFE</td>
+<td>错误异常通知屏蔽：地址反馈错误</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>21</td>
+<td>ERMMH</td>
+<td>错误异常通知屏蔽：多重命中</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>20</td>
+<td>ERMPBSE</td>
+<td>错误异常通知屏蔽：WAY 错误</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>19</td>
+<td>ERMTE1</td>
+<td>错误异常通知屏蔽：标记 RAM 1 位错误</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>18</td>
+<td>ERMTE2</td>
+<td>错误异常通知屏蔽：标记 RAM 2 位错误</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>17</td>
+<td>ERMDC</td>
+<td>错误异常通知屏蔽：数据 RAM 1 位错误</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>16</td>
+<td>ERMDE</td>
+<td>错误异常通知屏蔽：数据 RAM 2 位错误</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>15至13</td>
+<td>ICHEWY</td>
+<td>这些位保存发生缓存错误的路号。位 15 始终设置为 0。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>12至5</td>
+<td>ICHEIX</td>
+<td>这些位保存发生缓存错误的缓存索引。<br>缓存大小为 8 Kbytes 时，保存位 10 到 5，位 12 和 11 固定为 0。<br>缓存大小为 16 Kbytes 时，保存位 11 到 5，位 12 固定为 0。<br>缓存大小为 32 Kbytes 时，保存位 12 到 5。</td>
+<td>R&#x2F;W</td>
+<td>未定义</td>
+</tr>
+<tr>
+<td>4</td>
+<td>ICHERQ</td>
+<td>当此位设置为 1 时，表示正在进行缓存错误异常通知。然而，如果已屏蔽缓存错误异常通知，则即使设置为 1，CPU 也不会收到通知。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ICHED</td>
+<td>此位表示数据 RAM 中发生了错误。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>ICHET</td>
+<td>此位表示标记 RAM 中发生了错误。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>ICHERR</td>
+<td>当发生缓存错误时，此位设置为 1。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>注意：<br>当每个错误原因的错误异常通知屏蔽位清除（置为 0）时，如果发生相应错误，则更新 ICHERR、ICHERQ、ICHED&#x2F;ICHET、ICHEIX 和 ICHEWY 位，并设置相应的错误状态位（置为 1）。当错误异常通知屏蔽位设置（置为 1）时，如果发生相应错误，仅设置相应的错误状态位（置为 1）。</p>
+<h5 id="8-Count-Function-Registers："><a href="#8-Count-Function-Registers：" class="headerlink" title="8 Count Function Registers："></a>8 Count Function Registers：</h5><p>计数功能系统寄存器通过使用 LDSR 和 STSR 指令并指定由寄存器号和选择 ID 组成的系统寄存器号进行读写。</p>
+<p>注意：通过配置 PMUMCTRL 寄存器，可以在用户模式下进行访问。</p>
+<table>
+<thead>
+<tr>
+<th>寄存器编号 (regID, selID)</th>
+<th>符号</th>
+<th>功能</th>
+<th>访问权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SR0, 11</td>
+<td>TSCOUNTL</td>
+<td>时间戳计数低位寄存器</td>
+<td>UM 读, SV 写</td>
+</tr>
+<tr>
+<td>SR1, 11</td>
+<td>TSCOUNTH</td>
+<td>时间戳计数高位寄存器</td>
+<td>UM 读, SV 写</td>
+</tr>
+<tr>
+<td>SR2, 11</td>
+<td>TSCTRL</td>
+<td>时间戳计数控制寄存器</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR8, 11</td>
+<td>PMUMCTRL</td>
+<td>性能计数器用户模式控制寄存器</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR0, 14</td>
+<td>PMCTRL0</td>
+<td>性能计数控制 0 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR1, 14</td>
+<td>PMCTRL1</td>
+<td>性能计数控制 1 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR2, 14</td>
+<td>PMCTRL2</td>
+<td>性能计数控制 2 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR3, 14</td>
+<td>PMCTRL3</td>
+<td>性能计数控制 3 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR4, 14</td>
+<td>PMCTRL4</td>
+<td>性能计数控制 4 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR5, 14</td>
+<td>PMCTRL5</td>
+<td>性能计数控制 5 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR6, 14</td>
+<td>PMCTRL6</td>
+<td>性能计数控制 6 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR7, 14</td>
+<td>PMCTRL7</td>
+<td>性能计数控制 7 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR16, 14</td>
+<td>PMCOUNT0</td>
+<td>性能计数 0 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR17, 14</td>
+<td>PMCOUNT1</td>
+<td>性能计数 1 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR18, 14</td>
+<td>PMCOUNT2</td>
+<td>性能计数 2 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR19, 14</td>
+<td>PMCOUNT3</td>
+<td>性能计数 3 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR20, 14</td>
+<td>PMCOUNT4</td>
+<td>性能计数 4 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR21, 14</td>
+<td>PMCOUNT5</td>
+<td>性能计数 5 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR22, 14</td>
+<td>PMCOUNT6</td>
+<td>性能计数 6 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR23, 14</td>
+<td>PMCOUNT7</td>
+<td>性能计数 7 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR0, 15</td>
+<td>PMSUBCND0</td>
+<td>性能计数子条件 0 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR1, 15</td>
+<td>PMSUBCND1</td>
+<td>性能计数子条件 1 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR2, 15</td>
+<td>PMSUBCND2</td>
+<td>性能计数子条件 2 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR3, 15</td>
+<td>PMSUBCND3</td>
+<td>性能计数子条件 3 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR4, 15</td>
+<td>PMSUBCND4</td>
+<td>性能计数子条件 4 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR5, 15</td>
+<td>PMSUBCND5</td>
+<td>性能计数子条件 5 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR6, 15</td>
+<td>PMSUBCND6</td>
+<td>性能计数子条件 6 寄存器</td>
+<td>SV*1</td>
+</tr>
+<tr>
+<td>SR7, 15</td>
+<td>PMSUBCND7</td>
+<td>性能计数子条件 7 寄存器</td>
+<td>SV*1</td>
+</tr>
+</tbody></table>
+<h6 id="8-1-TSCOUNTL-—-时间戳计数低位寄存器"><a href="#8-1-TSCOUNTL-—-时间戳计数低位寄存器" class="headerlink" title="8.1 TSCOUNTL — 时间戳计数低位寄存器"></a>8.1 TSCOUNTL — 时间戳计数低位寄存器</h6><p>此寄存器与时间戳计数高位寄存器一起实现 64 位计数器。此寄存器作为 64 位计数器的低 32 位。</p>
+<p>此寄存器只能在用户模式下读取。如果在用户模式下尝试写入此寄存器，将发生 PIE 异常。在管理模式下可以读取和写入此寄存器。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>TSCNTL31至TSCNTL0</td>
+<td>这些位占 64 位计数器的低 32 位。如果 TSCTRL 寄存器启用计数，则每个时钟周期将此寄存器的值增加 1。当此寄存器从 FFFF FFFFH 计数到 0000 0000H 时，TSCOUNTH 寄存器将作为进位增加 1，并且此寄存器将回绕到 0000 0000H。此寄存器可以在任意时间访问，无论是否启用计数。此外，可以在开始计数前将任意值加载到此寄存器中，以实现从任意计数开始计数。</td>
+<td>R&#x2F;W*1</td>
+<td>0000 0000H</td>
+</tr>
+</tbody></table>
+<p>注意：要使用此寄存器组成精确的 64 位计数器，请参见第 3.2.2.12 节，时间戳计数器。</p>
+<h6 id="8-2-TSCOUNTH-—-时间戳计数高位寄存器"><a href="#8-2-TSCOUNTH-—-时间戳计数高位寄存器" class="headerlink" title="8.2 TSCOUNTH — 时间戳计数高位寄存器"></a>8.2 TSCOUNTH — 时间戳计数高位寄存器</h6><p>此寄存器与时间戳计数低位寄存器一起实现 64 位计数器。此寄存器作为 64 位计数器的高 32 位。</p>
+<p>此寄存器只能在用户模式下读取。如果在用户模式下尝试写入此寄存器，将发生 PIE 异常。在管理模式下可以读取和写入此寄存器。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>TSCNTH31至TSCNTH0</td>
+<td>这些位占 64 位计数器的高 32 位。如果 TSCTRL 寄存器启用计数，当 TSCOUNTL 寄存器计数并生成进位时，此寄存器的值增加 1。如果当此寄存器保持 FFFF FFFFH 值时，TSCOUNTL 寄存器中发生进位，TSCTRL.OVF 位设置为 1，并且此寄存器回绕到 0000 0000H。此寄存器可以在任意时间访问，无论是否启用计数。此外，可以在开始计数前将任意值加载到此寄存器中，以实现从任意计数开始计数。</td>
+<td>R&#x2F;W*1</td>
+<td>0000 0000H</td>
+</tr>
+</tbody></table>
+<p>注意：要使用此寄存器组成精确的 64 位计数器，请参见第 3.2.2.12 节，时间戳计数器。</p>
+<h6 id="8-3-TSCTRL-—-时间戳计数控制"><a href="#8-3-TSCTRL-—-时间戳计数控制" class="headerlink" title="8.3 TSCTRL — 时间戳计数控制"></a>8.3 TSCTRL — 时间戳计数控制</h6><p>此寄存器用于控制通过组合 TSCOUNTH 和 TSCOUNTL 寄存器实现的 64 位时间戳计数器。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至2</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>OVF</td>
+<td>此位用作溢出标志。当 TSCOUNTH 寄存器因其计数操作发生溢出时，此位设置为 1。此位不会自动清除为 0。要重置溢出状态，请将 0 写入此位。由于此位可以写入 1，因此无论计数操作如何，它都可以成为溢出条件。尽管它不影响计数器操作，但必须注意不要将该条件视为溢出。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>CEN</td>
+<td>此位用于启用或禁用通过组合 TSCOUNTH 和 TSCOUNTL 寄存器实现的 64 位时间戳计数器的计数操作。<br>0: 禁用计数操作<br>1: 启用计数操作<br>如果此位在设置为 0 时写入 1，则计数器立即开始计数。如果此位在设置为 1 时写入 0，则计数器停止立即计数。如果此位为 0，则保留 TSCOUNTH 和 TSCOUNTL 寄存器的值。没有任何因素会自动改变这个位的值。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="8-4-PMUMCTRL-—-性能计数器用户模式控制"><a href="#8-4-PMUMCTRL-—-性能计数器用户模式控制" class="headerlink" title="8.4 PMUMCTRL — 性能计数器用户模式控制"></a>8.4 PMUMCTRL — 性能计数器用户模式控制</h6><p>此寄存器指定在用户模式下访问性能测量功能系统寄存器的权限。系统寄存器的可访问性是针对性能测量功能的每个对应通道指定的。</p>
+<p>当用户模式下访问被禁用时，任何尝试访问这些系统寄存器的操作都会生成 PIE 异常。当用户模式下访问被启用时，可以读写系统寄存器。</p>
+<p>性能测量功能本身在用户模式下运行，无论此寄存器的设置如何。即使通过此寄存器禁用了用户模式下的所有通道访问，如果在主管模式下完成设置，仍然可以在用户模式下进行性能测量。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至8</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7</td>
+<td>PMUE7</td>
+<td>此位指定在用户模式下访问 PMCTRL7、PMCOUNT7 和 PMSUBCND7 寄存器的权限。<br>0: 禁用用户模式下对 PMCTRL7&#x2F;PMCOUNT7&#x2F;PMSUBCND7 的访问<br>1: 启用用户模式下对 PMCTRL7&#x2F;PMCOUNT7&#x2F;PMSUBCND7 的访问</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>6</td>
+<td>PMUE6</td>
+<td>此位指定在用户模式下访问 PMCTRL6、PMCOUNT6 和 PMSUBCND6 寄存器的权限。<br>0: 禁用用户模式下对 PMCTRL6&#x2F;PMCOUNT6&#x2F;PMSUBCND6 的访问<br>1: 启用用户模式下对 PMCTRL6&#x2F;PMCOUNT6&#x2F;PMSUBCND6 的访问</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td>PMUE5</td>
+<td>此位指定在用户模式下访问 PMCTRL5、PMCOUNT5 和 PMSUBCND5 寄存器的权限。<br>0: 禁用用户模式下对 PMCTRL5&#x2F;PMCOUNT5&#x2F;PMSUBCND5 的访问<br>1: 启用用户模式下对 PMCTRL5&#x2F;PMCOUNT5&#x2F;PMSUBCND5 的访问</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>PMUE4</td>
+<td>此位指定在用户模式下访问 PMCTRL4、PMCOUNT4 和 PMSUBCND4 寄存器的权限。<br>0: 禁用用户模式下对 PMCTRL4&#x2F;PMCOUNT4&#x2F;PMSUBCND4 的访问<br>1: 启用用户模式下对 PMCTRL4&#x2F;PMCOUNT4&#x2F;PMSUBCND4 的访问</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>PMUE3</td>
+<td>此位指定在用户模式下访问 PMCTRL3、PMCOUNT3 和 PMSUBCND3 寄存器的权限。<br>0: 禁用用户模式下对 PMCTRL3&#x2F;PMCOUNT3&#x2F;PMSUBCND3 的访问<br>1: 启用用户模式下对 PMCTRL3&#x2F;PMCOUNT3&#x2F;PMSUBCND3 的访问</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>PMUE2</td>
+<td>此位指定在用户模式下访问 PMCTRL2、PMCOUNT2 和 PMSUBCND2 寄存器的权限。<br>0: 禁用用户模式下对 PMCTRL2&#x2F;PMCOUNT2&#x2F;PMSUBCND2 的访问<br>1: 启用用户模式下对 PMCTRL2&#x2F;PMCOUNT2&#x2F;PMSUBCND2 的访问</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>PMUE1</td>
+<td>此位指定在用户模式下访问 PMCTRL1、PMCOUNT1 和 PMSUBCND1 寄存器的权限。<br>0: 禁用用户模式下对 PMCTRL1&#x2F;PMCOUNT1&#x2F;PMSUBCND1 的访问<br>1: 启用用户模式下对 PMCTRL1&#x2F;PMCOUNT1&#x2F;PMSUBCND1 的访问</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>PMUE0</td>
+<td>此位指定在用户模式下访问 PMCTRL0、PMCOUNT0 和 PMSUBCND0 寄存器的权限。<br>0: 禁用用户模式下对 PMCTRL0&#x2F;PMCOUNT0&#x2F;PMSUBCND0 的访问<br>1: 启用用户模式下对 PMCTRL0&#x2F;PMCOUNT0&#x2F;PMSUBCND0 的访问</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="8-5-PMCTRLn-—-性能计数控制"><a href="#8-5-PMCTRLn-—-性能计数控制" class="headerlink" title="8.5 PMCTRLn — 性能计数控制"></a>8.5 PMCTRLn — 性能计数控制</h6><p>此寄存器控制 PMCOUNTn 寄存器的计数操作。此 CPU 有 8 个性能计数控制寄存器通道 (n &#x3D; 0 到 7)。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至16</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>15至8</td>
+<td>CND</td>
+<td>这些位指定要计数的事件的编号。如果 CEN 位设置为 1 并指定无效的事件编号，则不会更新 PMCOUNTn 寄存器。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>7至2</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>OVF</td>
+<td>此位用作溢出标志。当 PMCOUNTn 寄存器因其计数操作发生溢出时，此位设置为 1。此位不会自动清除为 0。要重置溢出状态，请将 0 写入此位。由于此位可以写入 1，因此无论计数操作如何，它都可以成为溢出条件。尽管它不影响计数器操作，但必须注意不要将该条件视为溢出。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>CEN</td>
+<td>此位用于启用或禁用 PMCOUNTn 寄存器的计数操作。<br>0: 禁用计数操作<br>1: 启用计数操作<br>如果此位设置为 1，计数器立即开始计数。如果此位设置为 0，计数器立即停止计数。如果此位为 0，则保留 PMCOUNTn 寄存器的值。没有会自动更改此位值的因素。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>事件编号及详情</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>事件详情</th>
+<th>推测操作<sup>*1</sup></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>00H</td>
+<td>所有时钟周期数<sup>*2</sup></td>
+<td>无</td>
+</tr>
+<tr>
+<td>10H</td>
+<td>所有指令的执行次数<sup>*3</sup></td>
+<td>无</td>
+</tr>
+<tr>
+<td>18H</td>
+<td>引起分支的指令数<sup>*4</sup></td>
+<td>无</td>
+</tr>
+<tr>
+<td>19H</td>
+<td>条件分支指令的执行次数 (Bcond&#x2F;Loop)<sup>*5</sup></td>
+<td>无</td>
+</tr>
+<tr>
+<td>1AH</td>
+<td>条件分支指令的分支预测未命中的次数 (Bcond&#x2F;Loop)<sup>*5</sup></td>
+<td>无</td>
+</tr>
+<tr>
+<td>20H</td>
+<td>EIINTn 接受次数<sup>*6</sup></td>
+<td>无</td>
+</tr>
+<tr>
+<td>21H</td>
+<td>FEINT 接受次数</td>
+<td>无</td>
+</tr>
+<tr>
+<td>22H</td>
+<td>终止型异常接受次数<sup>*6</sup> (包括 EIINTn 和 FEINT)</td>
+<td>无</td>
+</tr>
+<tr>
+<td>23H</td>
+<td>可恢复和挂起型异常接受次数</td>
+<td>无</td>
+</tr>
+<tr>
+<td>28H</td>
+<td>无中断处理的时钟周期数 (期间 ISPR 寄存器保持 0000H*7)</td>
+<td>无</td>
+</tr>
+<tr>
+<td>29H</td>
+<td>无中断处理且禁用中断的时钟周期数 (期间 ISPR 寄存器保持 0000H<sup>*7</sup> 且 PSW.ID &#x3D; 1)</td>
+<td>无</td>
+</tr>
+<tr>
+<td>30H</td>
+<td>指令取回请求数<sup>*8</sup></td>
+<td>是</td>
+</tr>
+<tr>
+<td>31H</td>
+<td>指令缓存命中数<sup>*9</sup></td>
+<td>是</td>
+</tr>
+<tr>
+<td>40H</td>
+<td>指令未发射到指令执行单元的停顿周期数<sup>*10</sup></td>
+<td>是</td>
+</tr>
+<tr>
+<td>50H</td>
+<td>向 Flash ROM 的指令取回请求数<sup>*11</sup></td>
+<td>是</td>
+</tr>
+<tr>
+<td>51H</td>
+<td>向 Flash ROM 的数据读取请求数<sup>*12</sup></td>
+<td>是</td>
+</tr>
+</tbody></table>
+<p>注意项：</p>
+<ul>
+<li>*1：对于推测操作列为“是”的事件，执行结果被取消的事件也会被计数。</li>
+<li>*2：所有从开始计数到结束的时钟周期，包括未执行指令的期间，都会被计数。</li>
+<li>*3：开始计数的 LDSR 指令不包括在内，但停止计数的 LDSR 指令包括在内。</li>
+<li>*4：适用指令包括 JR、JMP、Bcond（仅在条件满足时）、JARL、LOOP（仅在条件满足时）、CALLT、DISPOSE、SWITCH、SYSCALL、CTRET、EIRET 和 FERET 指令。其他带有分支处理的指令不计数。如果条件不满足，Bcond 和 LOOP 指令不计数。</li>
+<li>*5：通过测量条件分支指令的执行次数和分支预测未命中的次数，可以获得分支预测未命中率（命中率）。注意，Bcond 指令的无条件分支（BR）计入“条件分支指令的执行次数”（CND &#x3D; 19H），但不计入“条件分支指令的分支预测未命中次数”（CND &#x3D; 1AH）。</li>
+<li>*6：对于表引用方法的 EIINTn，如果在读取表或自动保存上下文到寄存器组期间检测到异常，则不计入此数。</li>
+<li>*7：此事件假设在接受和返回中断时自动更新 ISPR 寄存器，如果与 INTCFG.ISPC 位设置为 1 一起使用，则无法正确测量。</li>
+<li>*8：此 CPU 以 64 位单位获取指令代码。每次 64 位获取计为一次指令取回请求。请注意，这不是指令的数量。CACHE 指令和 PREF 指令的指令取回不计数。</li>
+<li>*9：在此 CPU 中，缓存命中表示单次指令取回请求数，而不是指令数量。CACHE 指令的缓存操作不计数。</li>
+<li>*10：当 CPU 满足以下条件之一时，指令发射停顿发生：<br>– 在执行读取 PSW 寄存器的 STSR 指令时，指令的发射停顿直到所有前面的指令完成。<br>– 在执行 SYNCP、SYNCM 或 SYNCI 指令时，指令的发射停顿直到指令的等待条件清除。详细信息参见第 3.2.7.1 节，同步处理。<br>– 在执行操作缓存控制功能系统寄存器的 LDSR 或 STSR 指令时，指令的发射停顿直到所有前面的 CACHE 指令完成。<br>– 在执行操作 FPU 系统寄存器的 LDSR 或 STSR 指令时，指令的发射停顿直到所有前面的 FPU 指令完成。<br>– 在执行操作 FXU 系统寄存器的 LDSR 或 STSR 指令时，指令的发射停顿直到所有前面的 FXU 指令完成。<br>– 如果 LDSR 指令更新了保证其更新反映到后续指令的系统寄存器，指令的发射停顿直到系统寄存器的更新完成。详细信息参见第 3.2.7.3 节，系统寄存器更新后的冒险管理。<br>– 如果在开始执行 STSR 指令后开始执行 LDSR 指令，STSR 指令的发射停顿直到 LDSR 指令完成（即使 LDSR 和 STSR 指令的系统寄存器号不匹配）。<br>– 执行 HALT 指令时，指令的发射停顿直到产生解除暂停状态的条件。<br>– 执行 SNOOZE 指令时，指令的发射停顿直到产生解除休眠状态的条件。<br>– 当执行以下包含分支的指令时，指令的发射停顿直到分支完成并取消后续指令的执行。<br>SYSCALL、CALLT、EIRET、FERET、CTRET、TRAP、FETRAP、SYNCI<br>– 当检测到以下任何异常时，指令的发射停顿直到确认异常并取消后续指令的执行。<br>MIP、SYSERR（可恢复）、RIE、UCPOP、PIE</li>
+<li>*11：实际的 Flash ROM 访问请求会被计数。如果指令取回请求命中指令缓存，则不计数。CACHE 和 PREF 指令对 Flash ROM 的指令取回请求会被计数。Flash ROM 的指令预取也会被计数。</li>
+<li>*12：实际的 Flash ROM 访问请求会被计数。如果数据读取请求命中 ROM 数据缓冲区，则不计数。Flash ROM 的预取也会被计</li>
+</ul>
+<p>由于指令取回请求数 (30H) 和指令缓存命中数 (31H) 包括推测性指令取回，命中数除以请求数可能不是此 CPU 的准确指令缓存命中率。此 CPU 的指令缓存命中率可以通过指令取回请求数和向 Flash ROM 的指令取回请求数 (50H) 计算。在这种情况下，指令取回请求数减去向 Flash ROM 的指令取回请求数将是指令缓存命中数。然而，即使在这种情况下，指令缓存命中数也包括推测性指令取回。PREF 指令的预取被计算为指令取回请求数，但访问不可缓存区域不计为向 Flash ROM 的指令取回请求数</p>
+<h6 id="8-6-PMCOUNTn-—-性能计数"><a href="#8-6-PMCOUNTn-—-性能计数" class="headerlink" title="8.6 PMCOUNTn — 性能计数"></a>8.6 PMCOUNTn — 性能计数</h6><p>此寄存器用于计数由 PMCTRLn 寄存器指定的各种事件的发生次数。此 CPU 有 8 个性能计数寄存器通道（n &#x3D; 0 到 7）。</p>
+<p>表 3.91 PMCOUNTn 寄存器内容<br>markdown</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>PMCNT31至PMCNT0</td>
+<td>这些位形成一个 32 位计数器寄存器。<br>该计数器计数由 PMCTRLn.CND 位指定的事件的发生次数。当此寄存器从 FFFF FFFFH 计数到 0000 0000H 时，PMCTRLn.OVF 位设置为 1，并且寄存器回绕到 0000 0000H。此寄存器可以在任意时间访问，无论是否启用计数。此外，可以在开始计数前将该值加载到此寄存器中，以从任意计数开始计数。</td>
+<td>R&#x2F;W</td>
+<td>0000 0000H</td>
+</tr>
+</tbody></table>
+<h6 id="8-7-PMSUBCNDn-—-性能计数子条件"><a href="#8-7-PMSUBCNDn-—-性能计数子条件" class="headerlink" title="8.7 PMSUBCNDn — 性能计数子条件"></a>8.7 PMSUBCNDn — 性能计数子条件</h6><p>PMSUBCNDn 寄存器根据 PMCTRLn.CND 的设置指定计数执行的子条件。在 PMSUBCNDn 寄存器中，配备了 8 个通道 (n &#x3D; 0 到 7)。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至13</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>12至0</td>
+<td>SUBCND</td>
+<td>SUBCND 字段的值如何使用取决于 PMCTRLn.CND 的设置。如果 PMCTRLn.CND 的值不是下标中的值，SUBCND 字段的值不会影响性能计数器的操作。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>PMCTRLn.CND 的值</th>
+<th>性能计数器操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>20H</td>
+<td>可以限制计数的中断（EIINTn）的通道号。操作由第 12 位的值指定。<br>0: 不限制计数的通道号<br>1: 限制计数的通道号<br>如果第 12 位设置为 1，仅当接受的中断（EIINTn）的通道号 n 与位 11 到 0 指定的值匹配时，性能计数器才计数。</td>
+</tr>
+<tr>
+<td>21H</td>
+<td>可以限制计数的中断（FEINTm）的通道号。操作由第 4 位的值指定。<br>0: 不限制计数的通道号<br>1: 限制计数的通道号<br>如果第 4 位设置为 1，仅当接受的中断（FEINTm）的通道号 m 与位 3 到 0 指定的值匹配时，性能计数器才计数。位 12 到 5 的值不影响性能计数器的操作。</td>
+</tr>
+</tbody></table>
+<h6 id="9-Hardware-Function-Registers"><a href="#9-Hardware-Function-Registers" class="headerlink" title="9 Hardware Function Registers"></a>9 Hardware Function Registers</h6><p>硬件功能系统寄存器通过使用 LDSR 和 STSR 指令并指定由寄存器号和选择 ID 组成的系统寄存器号进行读写。</p>
+<table>
+<thead>
+<tr>
+<th>寄存器编号 (regID, selID)</th>
+<th>符号</th>
+<th>功能</th>
+<th>访问权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SR0, 12</td>
+<td>LSTEST0</td>
+<td>锁步功能自检寄存器 0</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR1, 12</td>
+<td>LSTEST1</td>
+<td>锁步功能自检寄存器 1</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR2, 12</td>
+<td>LSCFG</td>
+<td>锁步功能配置</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR5, 12</td>
+<td>IFCR</td>
+<td>指令取回控制寄存器</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR8, 12</td>
+<td>BRPCTRL0</td>
+<td>分支预测功能控制寄存器</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR12, 13</td>
+<td>L1RCFG</td>
+<td>L1RAM 配置</td>
+<td>SV</td>
+</tr>
+<tr>
+<td>SR24, 13</td>
+<td>RDBCR</td>
+<td>ROM 数据缓冲区控制寄存器</td>
+<td>SV</td>
+</tr>
+</tbody></table>
+<h6 id="9-1-LSTEST0-—-锁步功能自检寄存器-0"><a href="#9-1-LSTEST0-—-锁步功能自检寄存器-0" class="headerlink" title="9.1 LSTEST0 — 锁步功能自检寄存器 0"></a>9.1 LSTEST0 — 锁步功能自检寄存器 0</h6><p>此寄存器用于锁步功能的自检。可以与 LSTEST1 寄存器组合使用以进行锁步功能的自检。有关锁步功能及其可用性的详细信息，请参见第 44 节，功能安全。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>LSTEST0 31至LSTEST0 0</td>
+<td>[写入] 向 LSTEST0 寄存器的位写入任何值。<br>[读取] 锁步 CPU 的主 CPU 读取 LSTEST0 中的值。<br>锁步 CPU 的校验 CPU 读取 LSTEST1 中的值。</td>
+<td>R&#x2F;W</td>
+<td>0000 0000H</td>
+</tr>
+</tbody></table>
+<h6 id="9-2-LSTEST1-—-锁步功能自检寄存器-1"><a href="#9-2-LSTEST1-—-锁步功能自检寄存器-1" class="headerlink" title="9.2 LSTEST1 — 锁步功能自检寄存器 1"></a>9.2 LSTEST1 — 锁步功能自检寄存器 1</h6><p>此寄存器用于锁步功能的自检。可以与 LSTEST0 寄存器组合使用以进行锁步功能的自检。有关锁步功能及其可用性的详细信息，请参见第 44 节，功能安全。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至0</td>
+<td>LSTEST1 31至LSTEST1 0</td>
+<td>[写入] 向 LSTEST1 寄存器的位写入任何值。<br>[读取] 锁步 CPU 的主 CPU 读取 LSTEST1 中的值。<br>锁步 CPU 的校验 CPU 读取 LSTEST0 中的值。</td>
+<td>R&#x2F;W</td>
+<td>0000 0000H</td>
+</tr>
+</tbody></table>
+<h6 id="9-3-LSCFG-—-锁步功能配置"><a href="#9-3-LSCFG-—-锁步功能配置" class="headerlink" title="9.3 LSCFG — 锁步功能配置"></a>9.3 LSCFG — 锁步功能配置</h6><p>此寄存器指示锁步功能的配置。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至1</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>LSE</td>
+<td>此位指示锁步功能的可用性。<br>0: 锁步功能不可用<br>1: 锁步功能可用</td>
+<td>R</td>
+<td>*1</td>
+</tr>
+</tbody></table>
+<h5 id="9-4-IFCR-—-指令取回控制寄存器"><a href="#9-4-IFCR-—-指令取回控制寄存器" class="headerlink" title="9.4 IFCR — 指令取回控制寄存器"></a>9.4 IFCR — 指令取回控制寄存器</h5><p>此寄存器控制指令取回功能。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至1</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>PLEN</td>
+<td>此位指定是否启用指令取回预加载功能。<br>0: 禁用<br>1: 启用<sup>*1</sup></td>
+<td>R&#x2F;W<sup>*2</sup></td>
+<td>0000 0001H</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<ul>
+<li>*1：仅当启用指令缓存且取回到可缓存区域时，才执行指令取回预加载。</li>
+<li>*2：指令取回访问和系统寄存器访问是独立的。因此，即使预加载功能正在运行，也可以更改此寄存器的设置。在这种情况下，当前运行的预加载功能将正常完成旧设置，并从下一次预加载功能操作开始应用新设置。如果希望在更改寄存器设置之前、期间和之后抑制预加载，建议在不可缓存区域执行更改寄存器设置的指令。</li>
+</ul>
+<p>“指令取回预加载”功能是一种优化CPU性能的方法，其主要目的是通过预先加载指令来减少指令取回的延迟，从而提高系统的执行效率。具体而言，当启用该功能时，CPU会在需要执行某些指令之前，提前将这些指令加载到缓存中。这样，当实际需要执行这些指令时，它们已经在缓存中就绪，无需再等待从主存中取回，从而显著减少了指令取回的时间。<br>功能细节</p>
+<ul>
+<li>启用条件：指令取回预加载功能仅在指令缓存启用且取回的指令存储在可缓存区域时才会执行。</li>
+<li>独立运行：指令取回访问和系统寄存器访问是独立的。因此，当前运行的预加载功能可以正常完成旧设置，而新设置将在下一次预加载操作中生效。</li>
+<li>动态控制：即使预加载功能正在运行，也可以动态更改其设置。这提供了灵活性，使系统在运行时可以根据需要启用或禁用预加载功能，以适应不同的工作负载和性能需求。</li>
+</ul>
+<h6 id="9-5-BRPCTRL0-—-分支预测功能控制寄存器"><a href="#9-5-BRPCTRL0-—-分支预测功能控制寄存器" class="headerlink" title="9.5 BRPCTRL0 — 分支预测功能控制寄存器"></a>9.5 BRPCTRL0 — 分支预测功能控制寄存器</h6><p>此寄存器控制分支预测功能。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至2</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>BRPCLR</td>
+<td>将此位设置为 1 会清除与分支预测功能相关的缓冲区。此位始终读取为 0。</td>
+<td>R&#x2F;W<sup>*2</sup></td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>BRPEN</td>
+<td>此位指定是否启用分支预测功能<sup>*1</sup>。<br>0: 禁用<br>1: 启用</td>
+<td>R&#x2F;W<sup>*2</sup></td>
+<td>1</td>
+</tr>
+<tr>
+<td>注意：</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>启用此功能时，根据产品中集成的预测功能预测分支指令的分支目标地址，并从预测地址取回指令。如果禁用此功能，则不会进行分支预测，并且从下一条指令地址取回指令。<strong>只有在启用指令缓存且取回到可缓存区域时，才会执行分支预测</strong>。</p>
+<p>分支预测和系统寄存器访问是独立的。因此，即使分支预测功能正在运行，也可以更改此寄存器的设置。在这种情况下，当前运行的分支预测功能将正常完成旧设置，并从下一次分支预测操作开始应用新设置。如果希望在更改寄存器设置之前、期间和之后抑制分支预测，建议在不可缓存区域执行更改寄存器设置的指令。</p>
+<h6 id="9-5-L1RCFG-—-L1RAM-配置"><a href="#9-5-L1RCFG-—-L1RAM-配置" class="headerlink" title="9.5 L1RCFG — L1RAM 配置"></a>9.5 L1RCFG — L1RAM 配置</h6><p>此寄存器指示 L1RAM 的配置。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31, 30</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>29至8</td>
+<td>L1RSIZE</td>
+<td>此字段指示 L1RAM 的容量（Kbytes）。<br>例如：000020H: 32 Kbytes</td>
+<td>R</td>
+<td>*1</td>
+</tr>
+<tr>
+<td>7至4</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3至0</td>
+<td>L1RLNKE</td>
+<td>此字段指示 L1RAM 中可用链接条目的数量。<br>例如：0010B: 2 entries</td>
+<td>R</td>
+<td>*1</td>
+</tr>
+</tbody></table>
+<h6 id="9-6-RDBCR-—-ROM-数据缓冲区控制寄存器"><a href="#9-6-RDBCR-—-ROM-数据缓冲区控制寄存器" class="headerlink" title="9.6 RDBCR — ROM 数据缓冲区控制寄存器"></a>9.6 RDBCR — ROM 数据缓冲区控制寄存器</h6><p>此寄存器控制 ROM 数据缓冲区。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31至9</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>8</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 1。）</td>
+<td>R</td>
+<td>1</td>
+</tr>
+<tr>
+<td>7至2</td>
+<td>—</td>
+<td>（保留以供将来扩展。请确保设置为 0。）</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>RDBCLR</td>
+<td>将此位设置为 1 会清除 ROM 数据缓冲区并初始化 ROM 数据缓冲区中的 LRU 信息。<br>如果在加载处理中或预取功能发出的总线请求存在时将此位设置为 1，则加载数据不会注册到 ROM 数据缓冲区。此位始终读取为 0。</td>
+<td>R&#x2F;W<sup>*1</sup></td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>RDBEN</td>
+<td>此位指定是否启用 ROM 数据缓冲区。<br>0: 禁用 ROM 数据缓冲区<br>1: 启用 ROM 数据缓冲区</td>
+<td>R&#x2F;W<sup>*1</sup></td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<ul>
+<li>*1：此寄存器值的任何变化都独立于使用 ROM 数据缓冲区的任何加载指令进行处理。为了准确反映此寄存器值的变化，建议在完成所有加载操作后操作此寄存器。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2024/12/29/Renesas-CPU_System-CPU-Register_Set/" title="Renesas-RH850  CPU System - CPU - Register Set">http://fengxun2017.github.io/2024/12/29/Renesas-CPU_System-CPU-Register_Set/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/12/04/Renesas-CPU_System-CPU-Processor_Model/" rel="prev" title="Renesas-RH850  CPU System - CPU - Processor Mode">
+                  <i class="fa fa-chevron-left"></i> Renesas-RH850  CPU System - CPU - Processor Mode
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">413k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">8:37</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
