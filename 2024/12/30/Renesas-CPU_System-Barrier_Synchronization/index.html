@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Renesas学习笔记CPU System : Barrier-Synchronization">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Renesas-RH850  CPU System - Barrier-Synchronization">
+<meta property="og:url" content="http://fengxun2017.github.io/2024/12/30/Renesas-CPU_System-Barrier_Synchronization/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="Renesas学习笔记CPU System : Barrier-Synchronization">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-12-29T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-12-30T15:32:42.218Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2024/12/30/Renesas-CPU_System-Barrier_Synchronization/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2024/12/30/Renesas-CPU_System-Barrier_Synchronization/","path":"2024/12/30/Renesas-CPU_System-Barrier_Synchronization/","title":"Renesas-RH850  CPU System - Barrier-Synchronization"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Renesas-RH850  CPU System - Barrier-Synchronization | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Barrier-Synchronization-Overview"><span class="nav-number">1.</span> <span class="nav-text">1 Barrier-Synchronization Overview</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Barrier-Synchronization-Registers"><span class="nav-number">2.</span> <span class="nav-text">2 Barrier-Synchronization Registers</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-1-BRnINIT-%E2%80%94-%E5%B1%8F%E9%9A%9C%E5%90%8C%E6%AD%A5-n-%E5%88%9D%E5%A7%8B%E5%8C%96%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 BRnINIT — 屏障同步 n 初始化寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-BRnEN-%E2%80%94-%E5%B1%8F%E9%9A%9C%E5%90%8C%E6%AD%A5-n-%E5%B1%8F%E9%9A%9C%E5%8F%82%E4%B8%8E-PE-%E8%AE%BE%E7%BD%AE%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 BRnEN — 屏障同步 n 屏障参与 PE 设置寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-3-BRnCHKm-%E2%80%94-%E5%B1%8F%E9%9A%9C%E5%90%8C%E6%AD%A5-n-%E5%B1%8F%E9%9A%9C%E6%A3%80%E6%9F%A5%E5%AF%84%E5%AD%98%E5%99%A8-m"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 BRnCHKm — 屏障同步 n 屏障检查寄存器 m</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-4-BRnSYNCm-%E2%80%94-%E5%B1%8F%E9%9A%9C%E5%90%8C%E6%AD%A5-n-%E5%B1%8F%E9%9A%9C%E5%90%8C%E6%AD%A5%E5%AE%8C%E6%88%90%E5%AF%84%E5%AD%98%E5%99%A8-m"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 BRnSYNCm — 屏障同步 n 屏障同步完成寄存器 m</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-Barrier-Synchronization-Function"><span class="nav-number">3.</span> <span class="nav-text">3 Barrier-Synchronization Function</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#3-1-%E5%88%9D%E5%A7%8B%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 初始设置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-2-%E5%90%AF%E7%94%A8%E8%99%9A%E6%8B%9F%E5%8C%96%E6%97%B6%E7%9A%84%E7%94%A8%E6%B3%95"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 启用虚拟化时的用法</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2024/12/30/Renesas-CPU_System-Barrier_Synchronization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Renesas-RH850  CPU System - Barrier-Synchronization | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Renesas-RH850  CPU System - Barrier-Synchronization
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-12-30 00:00:00" itemprop="dateCreated datePublished" datetime="2024-12-30T00:00:00+08:00">2024-12-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Renesas/" itemprop="url" rel="index"><span itemprop="name">Renesas</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+
+<p>Renesas学习笔记<br>CPU System : Barrier-Synchronization</p>
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h5 id="1-Barrier-Synchronization-Overview"><a href="#1-Barrier-Synchronization-Overview" class="headerlink" title="1 Barrier-Synchronization Overview"></a>1 Barrier-Synchronization Overview</h5><p>在使用多核处理器进行并行处理时，可能需要使核心等待，直到下一处理所需的数据准备就绪，处理才能继续。通常，设置一个屏障以防止在所有相关核心完成预定处理之前启动下一处理的控制称为屏障同步。仅使用软件可以实现屏障同步，但这可能会因为来自各个核心的屏障到达通知和各个核心的内存访问而降低系统处理性能。</p>
+<p>屏障同步寄存器通过接收来自各个 PE 的完成通知检测所有相关核心是否完成了所需处理，同时提供自动清除来自各个 PE 的完成通知以准备下一个屏障同步的屏障同步支持功能，从而实现轻松的屏障同步。此功能减少了屏障同步的内存访问次数，从而最大限度地减少了屏障同步对处理性能的负面影响。此功能还可用于形成集群的 PE 之间的屏障同步。屏障同步寄存器具有以下特点：</p>
+<ul>
+<li>提供 16 通道屏障同步寄存器。</li>
+<li>以使用相同代码实现所有核心的屏障同步。</li>
+<li>系统内所有集群和所有 PE 都可以访问。</li>
+<li>支持地址 EDC 功能</li>
+<li>支持数据 ECC 功能。</li>
+<li>支持防止未授权访问的保护功能。</li>
+</ul>
+<h5 id="2-Barrier-Synchronization-Registers"><a href="#2-Barrier-Synchronization-Registers" class="headerlink" title="2 Barrier-Synchronization Registers"></a>2 Barrier-Synchronization Registers</h5><table>
+<thead>
+<tr>
+<th>寄存器名称</th>
+<th>寄存器符号</th>
+<th>地址</th>
+<th>访问大小</th>
+<th>访问保护（IBG）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>屏障同步 n<sup>*2</sup> 初始化寄存器</td>
+<td>BRnINIT</td>
+<td><BARR_base> + 000H + 010H × n</BARR_base></td>
+<td>8</td>
+<td>BRGPROT0_n</td>
+</tr>
+<tr>
+<td>屏障同步 n<sup>*2</sup> 屏障参与 PE 设置寄存器</td>
+<td>BRnEN</td>
+<td><BARR_base> + 004H + 010H × n</BARR_base></td>
+<td>8</td>
+<td>BRGPROT0_n</td>
+</tr>
+<tr>
+<td>屏障同步 n<sup>*2</sup> 屏障检查寄存器 self<sup>*1</sup></td>
+<td>BRnCHKS</td>
+<td><BARR_base> + 100H + 010H × n</BARR_base></td>
+<td>8</td>
+<td>BRGPROT0_n</td>
+</tr>
+<tr>
+<td>屏障同步 n<sup>*2</sup> 屏障同步完成寄存器 self<sup>*1</sup></td>
+<td>BRnSYNCS</td>
+<td><BARR_base> + 104H + 010H × n</BARR_base></td>
+<td>8</td>
+<td>BRGPROT0_n</td>
+</tr>
+<tr>
+<td>屏障同步 n<sup>*2</sup> 屏障检查寄存器 m<sup>*3</sup></td>
+<td>BRnCHKm</td>
+<td><BARR_base> + 800H + 010H × n + 100H × m</BARR_base></td>
+<td>8</td>
+<td>BRGPROT0_16</td>
+</tr>
+<tr>
+<td>屏障同步 n<sup>*2</sup> 屏障同步完成寄存器 m<sup>*3</sup></td>
+<td>BRnSYNCm</td>
+<td><BARR_base> + 804H + 010H × n + 100H × m</BARR_base></td>
+<td>8</td>
+<td>BRGPROT0_16</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<ul>
+<li>*1：当 PE 访问 self 寄存器时，PE 可以访问每个 PE 对应的寄存器。例如，当 PE1 访问 BR0CHKS 寄存器时，PE1 可以访问 BR0CHK1 寄存器。</li>
+<li>*2：n &#x3D; 0 到 15。n 是屏障同步通道号。</li>
+<li>*3：m &#x3D; 0 到 3。m 是 PEID 的值。</li>
+</ul>
+<p>自身区域<br>自身区域包含以下两种类型的寄存器：</p>
+<p>BRnCHKS — 屏障同步 n 通道- 屏障检查自寄存器</p>
+<p>BRnSYNCS — 屏障同步 n 通道- 屏障同步完成自寄存器</p>
+<p>self 寄存器是虚拟寄存器，物理上不存在。从每个 PE 到 self 寄存器的访问被路由到与访问源 PE 对应的实际寄存器。下表列出了访问源 PE 和路由目标寄存器。有关每个寄存器位的功能，请参阅路由目标寄存器的规格。当除了 PEx 以外的主设备访问 self 寄存器时，寄存器返回 0，写访问被忽略，并会通知错误响应。</p>
+<p><strong>基本假设是当 PE 使用屏障同步功能时，从 PE 通过 self 区域访问屏障同步寄存器。这使得 PE 可以使用相同的代码，因为不需要为每个 PE 指定不同的寄存器地址。</strong></p>
+<p>也可以通过指定实际寄存器的地址而不使用 self 寄存器直接访问寄存器。在这种情况下，目的是检查另一个 PE 的寄存器状态，或通过调试工具引用各个寄存器。</p>
+<table>
+<thead>
+<tr>
+<th>访问源 PE</th>
+<th>self 寄存器</th>
+<th>路由目标寄存器</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PE0</td>
+<td>BRnCHKS</td>
+<td>BRnCHK0</td>
+</tr>
+<tr>
+<td>PE1</td>
+<td>BRnCHKS</td>
+<td>BRnCHK1</td>
+</tr>
+<tr>
+<td>PE2</td>
+<td>BRnCHKS</td>
+<td>BRnCHK2</td>
+</tr>
+<tr>
+<td>PE3</td>
+<td>BRnCHKS</td>
+<td>BRnCHK3</td>
+</tr>
+<tr>
+<td>PE0</td>
+<td>BRnSYNCS</td>
+<td>BRnSYNC0</td>
+</tr>
+<tr>
+<td>PE1</td>
+<td>BRnSYNCS</td>
+<td>BRnSYNC1</td>
+</tr>
+<tr>
+<td>PE2</td>
+<td>BRnSYNCS</td>
+<td>BRnSYNC2</td>
+</tr>
+<tr>
+<td>PE3</td>
+<td>BRnSYNCS</td>
+<td>BRnSYNC3</td>
+</tr>
+</tbody></table>
+<h6 id="2-1-BRnINIT-—-屏障同步-n-初始化寄存器"><a href="#2-1-BRnINIT-—-屏障同步-n-初始化寄存器" class="headerlink" title="2.1 BRnINIT — 屏障同步 n 初始化寄存器"></a>2.1 BRnINIT — 屏障同步 n 初始化寄存器</h6><p>此寄存器初始化屏障同步通道 n（n &#x3D; 0 到 15）。此寄存器清除通道 n 的 BRnCHKm 寄存器和 BRnSYNCm 寄存器。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7至1</td>
+<td>保留</td>
+<td>写入时写入复位后的值。</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>BRINIT</td>
+<td>屏障同步 n 初始化<br>将 1 写入此位会清除同一通道的 BRnCHK0 到 3 寄存器和 BRnSYNC0 到 3 寄存器。此位在读取时始终返回 0。</td>
+<td>W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="2-2-BRnEN-—-屏障同步-n-屏障参与-PE-设置寄存器"><a href="#2-2-BRnEN-—-屏障同步-n-屏障参与-PE-设置寄存器" class="headerlink" title="2.2 BRnEN — 屏障同步 n 屏障参与 PE 设置寄存器"></a>2.2 BRnEN — 屏障同步 n 屏障参与 PE 设置寄存器</h6><p>此寄存器使 PE 能够参与通道 n 的屏障同步。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7至4</td>
+<td>保留</td>
+<td>读取时返回复位后的值。写入时写入复位后的值。</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3至0</td>
+<td>BREN[3:0]</td>
+<td>屏障同步通道 n 的参与使能<br>将 1 写入 x-th 位使能 PEx 的屏障同步支持功能。将 0 写入 x-th 位禁用 PEx 的屏障同步支持功能。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h6 id="2-3-BRnCHKm-—-屏障同步-n-屏障检查寄存器-m"><a href="#2-3-BRnCHKm-—-屏障同步-n-屏障检查寄存器-m" class="headerlink" title="2.3 BRnCHKm — 屏障同步 n 屏障检查寄存器 m"></a>2.3 BRnCHKm — 屏障同步 n 屏障检查寄存器 m</h6><p>此寄存器用于 PEm 通知信息：PEm 已到达通道 n 的屏障。到达屏障的 PE 将写入此寄存器的 BRCHK 位。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7至1</td>
+<td>保留</td>
+<td>读取时返回复位后的值。写入时写入复位后的值。</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>BRCHK</td>
+<td>通道 n 的屏障检查位<br>此位可以通过软件和硬件更新。<br><strong>软件</strong>：写入 BRnCHKm 寄存器时，无论写入值为何，此位的值都变为 1。即使 BRnEN.BRENm 位为 0，此位也可以设置，但不会影响通道 n 的屏障同步。<br><strong>硬件</strong>：当所有参与 PE（由 BRnEN 寄存器启用）的 BRnCHKm.BRCHK 位都设置时，硬件将清除此位。同时，所有参与 PE 的 BRnSYNCm.BRSYNC 位将设置。当写入 1 到 BRnINIT.BRINIT 位时，此位将被清除。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p>注意：如果 BRnEN 寄存器的所有位都为 0（无 PE 参与屏障同步），BRCHK 位无法设置。</p>
+<h6 id="2-4-BRnSYNCm-—-屏障同步-n-屏障同步完成寄存器-m"><a href="#2-4-BRnSYNCm-—-屏障同步-n-屏障同步完成寄存器-m" class="headerlink" title="2.4 BRnSYNCm — 屏障同步 n 屏障同步完成寄存器 m"></a>2.4 BRnSYNCm — 屏障同步 n 屏障同步完成寄存器 m</h6><p>此寄存器指示参与通道 n 屏障的所有 PE 已到达通道 n 的屏障。</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+<th>读&#x2F;写</th>
+<th>复位后的值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7至1</td>
+<td>保留</td>
+<td>读取时返回复位后的值。写入时写入复位后的值。</td>
+<td>R</td>
+<td>0</td>
+</tr>
+<tr>
+<td>0</td>
+<td>BRSYNC</td>
+<td>屏障同步完成<br>此位可以通过软件和硬件更新。<br><strong>软件</strong>：写入 BRnSYNCm 寄存器时，此位会根据写入的数据更新。<br><strong>硬件</strong>：如果 BRnEN.BRENm 位为 1，当所有参与 PE 的 BRnCHKm.BRCHK 位都设置时，屏障同步建立，此位会自动设置。如果 BRnEN.BRENm 位为 0，此位不会由硬件更新。写入 1 到 BRnINIT.BRINIT 位将清除此位。</td>
+<td>R&#x2F;W</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<h5 id="3-Barrier-Synchronization-Function"><a href="#3-Barrier-Synchronization-Function" class="headerlink" title="3 Barrier-Synchronization Function"></a>3 Barrier-Synchronization Function</h5><h6 id="3-1-初始设置"><a href="#3-1-初始设置" class="headerlink" title="3.1 初始设置"></a>3.1 初始设置</h6><p>在使用屏障同步寄存器之前，必须在 BRnEN 寄存器中进行初始设置。</p>
+<p>首先，为清除先前操作的设置，通过写操作清除 BR0EN 寄存器。清除 BR0EN 寄存器后，将 07H 写入 BR0EN 寄存器，以使 PE0、PE1 和 PE2 参与屏障同步。最后，PE0 将 1B 写入 BR0INIT 寄存器，以清除 BR0CHK0 到 3 和 BR0SYNC0 到 3 寄存器。在完成参与 PE 设置寄存器和初始化设置后，可以使用屏障同步寄存器进行屏障同步。</p>
+<h6 id="3-2-启用虚拟化时的用法"><a href="#3-2-启用虚拟化时的用法" class="headerlink" title="3.2 启用虚拟化时的用法"></a>3.2 启用虚拟化时的用法</h6><p>屏障同步设计用于支持同时运行的虚拟机的同步。在此架构中，通过分时复用实现虚拟化。因此，屏障同步不能用于在同一个 PE 上同步多个虚拟机。</p>
+<p>屏障同步寄存器的位为每个 PE 准备，而不是每个虚拟机。如果允许 PE 参与同步通道，屏障同步无法区分参与的虚拟机和不参与的虚拟机。为避免这种情况，请使用保护功能并为虚拟机分配不同的 SPID。然后，同一个通道的 PE 寄存器只能由一个虚拟机写入。在正常使用中，不参与的虚拟机进行读取访问不会造成危害。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2024/12/30/Renesas-CPU_System-Barrier_Synchronization/" title="Renesas-RH850  CPU System - Barrier-Synchronization">http://fengxun2017.github.io/2024/12/30/Renesas-CPU_System-Barrier_Synchronization/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/12/29/Renesas-CPU_System-CPU-Register_Set/" rel="prev" title="Renesas-RH850  CPU System - CPU - Register Set">
+                  <i class="fa fa-chevron-left"></i> Renesas-RH850  CPU System - CPU - Register Set
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/01/04/Renesas-CPU_System-CPU-%20Exceptions_and_Interrupts/" rel="next" title="Renesas-RH850  CPU System - CPU -  Exceptions and Interrupts">
+                  Renesas-RH850  CPU System - CPU -  Exceptions and Interrupts <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">429k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">8:57</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
