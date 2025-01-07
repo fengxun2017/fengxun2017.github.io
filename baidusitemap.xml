@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-%20Exceptions_and_Interrupts/</loc>
+    <loc>http://fengxun2017.github.io/2025/01/06/Renesas-CPU_System-CPU-Hazard_Control/</loc>
+    <lastmod>2025-01-07</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2025/01/06/Renesas-CPU_System-CPU-Coprocessor/</loc>
+    <lastmod>2025-01-06</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-Memory_Management/</loc>
+    <lastmod>2025-01-05</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-Exceptions_and_Interrupts/</loc>
     <lastmod>2025-01-05</lastmod>
   </url>
   <url>

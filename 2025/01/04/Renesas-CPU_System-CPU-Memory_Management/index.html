@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Renesas学习笔记CPU System : CPU - Memory Management">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Renesas-RH850  CPU System - CPU -  Memory Management">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-Memory_Management/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="Renesas学习笔记CPU System : CPU - Memory Management">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-03T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-01-05T15:08:18.701Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-Memory_Management/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-Memory_Management/","path":"2025/01/04/Renesas-CPU_System-CPU-Memory_Management/","title":"Renesas-RH850  CPU System - CPU -  Memory Management"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Renesas-RH850  CPU System - CPU -  Memory Management | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4%E5%8D%95%E5%85%83-MPU"><span class="nav-number">1.</span> <span class="nav-text">1 内存保护单元 (MPU)</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 特点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-%E4%BF%9D%E6%8A%A4%E5%8C%BA%E5%9F%9F%E8%AE%BE%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 保护区域设置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-3-%E4%BF%9D%E6%8A%A4%E5%8C%BA%E5%9F%9F%E8%AE%BE%E7%BD%AE%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 保护区域设置注意事项</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-4-%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 访问控制</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-5-%E8%BF%9D%E8%A7%84%E5%92%8C%E5%BC%82%E5%B8%B8"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 违规和异常</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-6-%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4%E8%AE%BE%E7%BD%AE%E6%A3%80%E6%9F%A5%E5%8A%9F%E8%83%BD"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 内存保护设置检查功能</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E7%BC%93%E5%AD%98"><span class="nav-number">2.</span> <span class="nav-text">2 缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-1-%E7%89%B9%E7%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 特点</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-%E7%BC%93%E5%AD%98%E6%93%8D%E4%BD%9C%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 缓存操作寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-3-%E6%9B%B4%E6%94%B9%E7%BC%93%E5%AD%98%E4%BD%BF%E7%94%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 更改缓存使用模式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-4-%E4%BD%BF%E7%94%A8-CACHE-%E6%8C%87%E4%BB%A4%E8%BF%9B%E8%A1%8C%E7%BC%93%E5%AD%98%E6%93%8D%E4%BD%9C"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 使用 CACHE 指令进行缓存操作</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-5-%E9%80%9A%E8%BF%87-PREF-%E6%8C%87%E4%BB%A4%E8%BF%9B%E8%A1%8C%E7%BC%93%E5%AD%98%E6%93%8D%E4%BD%9C"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 通过 PREF 指令进行缓存操作</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-6-%E7%BC%93%E5%AD%98%E7%B4%A2%E5%BC%95%E6%8C%87%E5%AE%9A%E6%96%B9%E6%B3%95"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 缓存索引指定方法</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-7-CACHE-x2F-PREF-%E6%8C%87%E4%BB%A4%E7%9A%84%E6%89%A7%E8%A1%8C%E6%9D%83%E9%99%90"><span class="nav-number">2.7.</span> <span class="nav-text">2.7 CACHE&#x2F;PREF 指令的执行权限</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-8-CACHE-%E5%92%8C-PREF-%E6%8C%87%E4%BB%A4%E7%9A%84%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4"><span class="nav-number">2.8.</span> <span class="nav-text">2.8 CACHE 和 PREF 指令的内存保护</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-9-%E4%BD%BF%E7%94%A8-CACHE-%E6%8C%87%E4%BB%A4%E6%93%8D%E4%BD%9C%E7%BC%93%E5%AD%98%E5%86%85%E5%AD%98%E7%9A%84%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.9.</span> <span class="nav-text">2.9 使用 CACHE 指令操作缓存内存的示例</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-10-%E6%8C%87%E4%BB%A4%E7%BC%93%E5%AD%98%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">2.10.</span> <span class="nav-text">2.10 指令缓存的配置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-11-%E6%95%B0%E6%8D%AE%E7%BC%93%E5%86%B2%E5%8C%BA%E5%8A%9F%E8%83%BD"><span class="nav-number">2.11.</span> <span class="nav-text">2.11 数据缓冲区功能</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-Memory_Management/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Renesas-RH850  CPU System - CPU -  Memory Management | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Renesas-RH850  CPU System - CPU -  Memory Management
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-01-04 00:00:00" itemprop="dateCreated datePublished" datetime="2025-01-04T00:00:00+08:00">2025-01-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Renesas/" itemprop="url" rel="index"><span itemprop="name">Renesas</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>11k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>14 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+
+<p>Renesas学习笔记<br>CPU System : CPU - Memory Management</p>
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p>此 CPU 提供以下功能来管理内存：</p>
+<ul>
+<li>内存保护单元 (MPU)</li>
+<li>指令缓存</li>
+</ul>
+<h5 id="1-内存保护单元-MPU"><a href="#1-内存保护单元-MPU" class="headerlink" title="1 内存保护单元 (MPU)"></a>1 内存保护单元 (MPU)</h5><p>MPU 提供内存保护功能，通过检测和防止不可靠程序、失控事件等对系统资源的未经授权使用来维护系统的稳定。</p>
+<h6 id="1-1-特点"><a href="#1-1-特点" class="headerlink" title="1.1 特点"></a>1.1 特点</h6><p>(a) 内存访问控制<br>多个保护区域可以分配到地址空间。因此，可以检测和防止用户程序的未经授权的程序执行或数据操作。每个区域的上下限地址可以指定，以便精确和高效地使用地址空间。</p>
+<p>(b) 每种 CPU 操作模式的访问管理<br>在此 CPU 中，使用多个状态位来控制对资源的访问，这些位组合起来执行适当的保护，适用于每个程序的可靠性级别。</p>
+<p>(c) 使用系统保护标识符 (SPID) 的保护<br>此 CPU 可以使用系统保护标识符 (SPID) 来检查区域匹配。SPID 寄存器的使用和设置限制取决于安装此 CPU 的产品的系统规格。将此类系统规格反映在内存访问控制中可以实现高效的访问管理。</p>
+<h6 id="1-2-保护区域设置"><a href="#1-2-保护区域设置" class="headerlink" title="1.2 保护区域设置"></a>1.2 保护区域设置</h6><p>(a) 保护区域属性设置<br>适当地设置各保护区域。有关寄存器的详细信息，请参见第 3.2.3 节，寄存器集。</p>
+<p>E 位：设置目标保护区域的启用或禁用。当禁用时，所有设置将被禁用。确保在将此位设置为 1 时，其他保护区域设置（MPUA、MPLA 和 MPAT）已经存储了有效的设置值。</p>
+<p>UX、UR 和 UW 位：这些位表示用户模式下目标保护区域的访问权限。位为 1 表示存在相应的访问权限。</p>
+<p>SX、SR 和 SW 位：这些位表示监督模式下目标保护区域的访问权限。除了 E 位，这些位只有在 MPM.SVP 位设置为 1 时才有效。如果 MPM.SVP 位被清除为 0，即使 E 位设置为 1，保护也不会在监督模式下执行，不论 SX、SR 和 SW 位的值如何，整个地址空间都将变为可访问。</p>
+<p>WG 和 WMPIDn 位及 MPIDn 寄存器 (n &#x3D; 0 至 7)：这些位指示在检查写入保护区域的权限时如何引用系统保护标识符 (SPID)。</p>
+<ul>
+<li>当 WG 位设置（为 1）时，所有写入访问的访问权限仅根据 UW 或 SW 位的设置来判断，而不管设置的 SPID 的值如何。</li>
+<li>当 WG 位清除（为 0）时：<ul>
+<li>如果 SPID 寄存器的值与 MPIDn 寄存器中指定的任何值匹配，并且与匹配的 MPIDn 寄存器对应的 WMPIDn 位设置（为 1），则根据 UW 或 SW 位的设置来判断访问权限。</li>
+<li>如果 SPID 寄存器的值与 MPIDn 寄存器中指定的任何值不匹配，或者与匹配的 MPIDn 寄存器对应的 WMPIDn 位被清除（为 0），则无论 UW 或 SW 位的设置如何，访问权限都被判断为“写入禁用”。</li>
+<li>当多个 MPIDn 寄存器的值与 SPID 寄存器的值匹配时，如果任何对应的 WMPIDn 位设置（为 1），则写入是可能的。</li>
+</ul>
+</li>
+</ul>
+<p>RG 位、RMPIDn 位及 MPIDn 寄存器 (n &#x3D; 0 至 7)：这些位指示在检查读取保护区域的权限时如何引用系统保护标识符 (SPID)。</p>
+<ul>
+<li>当 RG 位设置（为 1）时，所有读取访问的访问权限仅根据 UX 和 UR 位或 SX 和 SR 位的设置来判断，而不管设置的 SPID 的值如何。</li>
+<li>当 RG 位清除（为 0）时：<ul>
+<li>如果 SPID 寄存器的值与 MPIDn 寄存器中指定的任何值匹配，并且与匹配的 MPIDn 寄存器对应的 RMPIDn 位设置（为 1），则根据 UX 和 UR 位或 SX 和 SR 位的设置来判断访问权限。</li>
+<li>如果 SPID 寄存器的值与 MPIDn 寄存器中指定的任何值不匹配，或者与匹配的 MPIDn 寄存器对应的 RMPIDn 位被清除（为 0），则无论 UX 和 UR 位或 SX 和 SR 位的设置如何，访问权限都被判断为“读取禁用”。</li>
+<li>此外，当多个 MPIDn 寄存器的值与 SPID 寄存器的值匹配时，如果任何对应的 RMPIDn 位设置（为 1），则读取是可能的。</li>
+</ul>
+</li>
+</ul>
+<h6 id="1-3-保护区域设置注意事项"><a href="#1-3-保护区域设置注意事项" class="headerlink" title="1.3 保护区域设置注意事项"></a>1.3 保护区域设置注意事项</h6><p>(a) 交叉保护区域边界<br>当指定的保护区域重叠时，重叠部分的访问控制设置为“允许最多”。换句话说，当指定了多个保护区域时，如果任何一个保护区域允许访问，则访问被判断为允许。</p>
+<p>(b) 无效保护区域设置<br>在以下情况下，保护区域设置无效： 当设置的下限地址值大于设置的上限地址值</p>
+<p>注意：<br>地址被处理为无符号整数 (0H 至 FFFF FFFFH)。例如，仅以下设置不能使目标区域可访问（省略了 MPAT）：<br>MPLA0 &#x3D; FFFF FF80H, MPUA0 &#x3D; 0000 00FCH</p>
+<p>此设置应分为以下两个保护区域设置：<br>MPLA0 &#x3D; FFFF FF80H, MPUA0 &#x3D; FFFF FFFCH<br>MPLA1 &#x3D; 0000 0000H, MPUA1 &#x3D; 0000 00FCH<br>MPLA0 指的是保护区域 0 的 MPLA 寄存器。其他寄存器也是如此。</p>
+<p>(c) 在保护违规检查期间引用的上下限地址<br>下表列出了在保护违规检查期间与 MPLA 进行比较的下限地址和与 MPUA 进行比较的上限地址。</p>
+<table>
+<thead>
+<tr>
+<th>指令&#x2F;事件</th>
+<th>访问大小</th>
+<th>下限地址</th>
+<th>上限地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SLD, SST, LD, ST, LDL, STC, LDV, STV</td>
+<td>字节</td>
+<td>根据指令中指定的寻址计算的地址</td>
+<td>与下限地址相同</td>
+</tr>
+<tr>
+<td></td>
+<td>半字</td>
+<td>下限地址 + 1</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>字</td>
+<td>下限地址 + 3</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>双字 <sup>*1</sup></td>
+<td>下限地址 + 7</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>四字 <sup>*1</sup></td>
+<td>下限地址 + 15</td>
+<td></td>
+</tr>
+<tr>
+<td>CAXI</td>
+<td>字</td>
+<td>reg1 的值</td>
+<td>下限地址 + 3</td>
+</tr>
+<tr>
+<td>SET1, NOT1, CLR1, TST1</td>
+<td>字节</td>
+<td>根据指令中指定的寻址计算的地址</td>
+<td>与下限地址相同</td>
+</tr>
+<tr>
+<td>PREPARE, DISPOSE, PUSHSP, POPSP, STM, LDM</td>
+<td>字 <sup>*2</sup></td>
+<td>根据 SP 的值和访问次数计算的地址</td>
+<td>下限地址 + 3</td>
+</tr>
+<tr>
+<td>SWITCH, CALLT</td>
+<td>半字</td>
+<td>根据指令中指定的寻址计算的地址</td>
+<td>下限地址 + 1</td>
+</tr>
+<tr>
+<td>SYSCALL</td>
+<td>字</td>
+<td>根据默认寻址计算的地址</td>
+<td>下限地址 + 3</td>
+</tr>
+<tr>
+<td>CACHE (CHBII, CFALI), PREF</td>
+<td>缓存行大小 <sup>*3</sup></td>
+<td>根据缓存行大小四舍五入的 reg1 值</td>
+<td>下限地址 + 缓存行大小 - 1</td>
+</tr>
+<tr>
+<td>表引用类型 EIINTn</td>
+<td>字</td>
+<td>当选择表引用方法时，从中读取异常处理程序地址的地址</td>
+<td>下限地址 + 3</td>
+</tr>
+<tr>
+<td>自动保存上下文到寄存器组</td>
+<td>字 <sup>*2</sup></td>
+<td>根据 RBIP 和 RBNR.BN 位的值计算的地址</td>
+<td>下限地址 + 3</td>
+</tr>
+<tr>
+<td>RESBANK</td>
+<td>字 <sup>*2</sup></td>
+<td>根据 RBIP 和 RBNR.BN 位的值计算的地址</td>
+<td>下限地址 + 3</td>
+</tr>
+<tr>
+<td>内存保护配置检查功能</td>
+<td>MCS 的值</td>
+<td>MCA 的值</td>
+<td>MCA 的值 + MCS - 1</td>
+</tr>
+<tr>
+<td>指令提取</td>
+<td>指令提取大小 <sup>*4</sup></td>
+<td>根据指令提取大小四舍五入的 PC 值</td>
+<td>下限地址 + 指令提取大小 - 1</td>
+</tr>
+</tbody></table>
+<p>注意</p>
+<ul>
+<li><p>*1：由于最小保护区域单位是字大小，因此在指定双字或四字访问的上下限地址时，可能不在单个保护区域设置指定的地址范围内。如果上下限地址中的任何一个不在指定的地址范围内，则检测到保护违规，并生成 MDP 异常。有关两个连续保护区域设置的操作，请参见第 3.2.5.1(3)(d) 节，跨连续保护区域的内存访问。</p>
+</li>
+<li><p>*2：指令访问连续的多字节区域，但单个寄存器的内存访问是按字大小进行的。内存保护在每个字大小的访问上生效。因此，在执行一些字大小的内存访问时检测到数据保护违规，并且仍有内存访问尚未执行。在这些情况下，MDP 异常在指令处理中发生，并且指令被中止。内存或寄存器由指令的已完成处理更新。</p>
+</li>
+<li><p>*3：有关缓存行大小的信息，请参见第 3.9.9 节，缓存结构产品信息。</p>
+</li>
+<li><p>*4：有关指令提取大小的信息，请参见第 3.9.10 节，提取大小产品信息。</p>
+</li>
+</ul>
+<p>(d) 跨连续保护区域的内存访问<br>对于操作数访问的内存保护，相关的内存访问必须完全包含在单个可访问区域内。即使可访问区域分配在连续空间，也不允许跨越两个或更多区域的访问。在此 CPU 中，由于最小保护区域单位是字大小且不能执行未对齐访问，因此在双字大小内存访问（LD.DW、ST.DW、LDV.DW 和 STV.DW）或四字内存访问（LDV.QW、STV.QW）期间可能会发生跨区域的内存访问。</p>
+<p>另一方面，与指令 PREPARE、DISPOSE、PUSHSP、POPSP、STM.MP、LDM.MP 和 RESBANK 相关的内存访问，以及与将上下文自动保存到寄存器组相关的内存访问，可能跨越两个或多个可访问区域，因为它们被处理为两个或多个字大小访问的重复。</p>
+<p>对于指令提取的内存保护，如果提取访问跨越保护区域，则提取的指令代码根据以字大小为界的内存保护结果进行处理。由于执行指令只需要提取的指令代码的特定部分，即使提取的指令跨越启用和禁用区域，启用区域中的指令代码也可以执行。如果使用禁用区域中的指令代码，将发生 MIP 异常。</p>
+<p>由于指令代码按半字分配，对于指令长度为字大小或更长的指令，指令本身可能跨越保护区域。在这种情况下，如果两个区域都启用，则可以执行指令。然而，如果一个区域被禁用，则即使另一个区域启用，指令也不能执行。</p>
+<p>(e) 跨越地址 0000 0000H 的内存访问<br>表 3.113 总结了在内存访问跨越地址 FFFF FFFFH 到 0000 0000H 时执行的操作，前提是所有地址空间通过以下单一保护区域设置启用： 保护区域设置 0：MPLA0 &#x3D; 0000 0000H，MPUA0 &#x3D; FFFF FFFCH</p>
+<p>表 3.113 跨越地址 0000 0000H 的内存访问操作</p>
+<table>
+<thead>
+<tr>
+<th>指令&#x2F;事件</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LD.DW, ST.DW</td>
+<td>MDP 异常</td>
+</tr>
+<tr>
+<td>PREPARE、DISPOSE、PUSHSP、POPSP、RESBANK、自动保存上下文到寄存器组</td>
+<td>执行访问</td>
+</tr>
+</tbody></table>
+<p>对于上述未提及的指令和事件，单个指令或事件不会生成跨越地址 0000 0000H 的内存访问。</p>
+<h6 id="1-4-访问控制"><a href="#1-4-访问控制" class="headerlink" title="1.4 访问控制"></a>1.4 访问控制</h6><p>在此 CPU 中，访问根据第 3.2.5.1 (2) 节中描述的设置进行适当控制。在下列任一情况下，CPU 通过限制实际访问、在指令执行完成之前检测违规并设置异常来确保逻辑完整性。</p>
+<ul>
+<li><p>即将在可执行区域外的地址执行指令时</p>
+</li>
+<li><p>即将在可读取区域外的地址读取时</p>
+</li>
+<li><p>即将在可写入区域外的地址写入时</p>
+</li>
+</ul>
+<p>访问控制的具体内容如下:</p>
+<ul>
+<li>判断为禁止的访问结果不会反映在内存或 I&#x2F;O 设备中。</li>
+<li>判断为启用的访问结果会反映在内存或 I&#x2F;O 设备中。</li>
+</ul>
+<p>注意事项:<br>即使启用了访问，也可能会有其他功能阻止访问。<br>在某些情况下，判断为禁止的访问可能会对内存执行。这些情况如下所示。</p>
+<ul>
+<li>读取本地 RAM</li>
+<li>通过指令缓存的指令预取读取代码闪存</li>
+</ul>
+<p>由于读取本地 RAM 的指令或执行预取指令的执行被异常抑制，因此此类访问不会影响指令的执行。然而，当调试器监视对本地 RAM 或代码闪存的访问时，可能会观察到判断为禁止的访问。</p>
+<h6 id="1-5-违规和异常"><a href="#1-5-违规和异常" class="headerlink" title="1.5 违规和异常"></a>1.5 违规和异常</h6><p>在此 CPU 中，根据保护区域设置在指令提取访问或操作数访问期间检测到违规，并生成异常。</p>
+<ul>
+<li><p>执行保护违规（在指令提取访问期间）</p>
+</li>
+<li><p>数据保护违规（在操作数访问期间）</p>
+</li>
+</ul>
+<p>(a) 执行保护违规 (MIP 异常)<br>当执行指令时检测到此违规。当尝试执行放置在不可执行区域的指令时，检测到执行保护违规。检测到执行保护违规时，总是会发生 MIP 异常。</p>
+<p>(b) 数据保护违规 (MDP 异常)<br>在操作数访问期间检测到此违规。当内存访问指令等尝试从访问禁用区域访问数据时，检测到数据保护违规。检测到数据保护违规时，总是会发生 MDP 异常。</p>
+<p>(c) 异常原因代码和异常地址<br>当检测到执行保护违规或数据保护违规时，异常原因代码如表 3.114 所示确定。确定的异常原因代码设置到 FEIC 寄存器。MEA 寄存器用于存储检测到执行保护违规的指令的 PC 或发生数据保护违规时使用的访问地址。MEA 寄存器由 MIP 和 MDP 异常共享，因为这些异常不会同时发生。此外，当发生数据保护违规时，导致违规的指令或事件的信息存储在 MEI 寄存器中。</p>
+<h6 id="1-6-内存保护设置检查功能"><a href="#1-6-内存保护设置检查功能" class="headerlink" title="1.6 内存保护设置检查功能"></a>1.6 内存保护设置检查功能</h6><p>对于提供服务的程序（如操作系统），此 CPU 提供内存保护设置检查功能，以实现服务保护功能，预先检查请求操作的地址区域是否在请求服务的源可访问的区域内。通过使用此功能，在验证用户提供的系统服务参数的有效性时，操作系统可以比通过软件重复读取和检查区域设置更快地完成验证。</p>
+<p>(a) 检查细节<br>内存保护设置检查功能根据存储在 MPU 中的保护区域设置，检查为指定地址区域设置的访问权限。如果由 MCA 和 MCS 寄存器指定的地址区域包含在一个保护区域内（由 MPLA 和 MPUA 寄存器对指定），并且在监督模式&#x2F;用户模式下允许执行 MCI 寄存器指定的 SPID 的指令执行（指令提取）&#x2F;写访问&#x2F;读访问，则在 MCR 寄存器中设置相应位（为 1）。</p>
+<p>如果指定的地址区域不包含在一个保护区域内，或在操作模式下不允许访问指定的 SPID，则清除 MCR 寄存器中的相应位（为 0）。</p>
+<p>此检查操作通过执行与指定地址区域和 SPID 的操作数访问或指令提取访问相同的内存保护判断过程来实现。因此，当通过加载指令、存储指令或指令提取访问检查的地址区域时，根据检查结果判断访问是允许的还是发生内存保护异常。</p>
+<p>注意事项</p>
+<ul>
+<li><p>为使内存保护设置检查功能判断访问为允许，必须确保指定的地址区域包含在一个保护区域内。例如，当两个连续的保护区域设置为允许访问时（见第 3.2.5.1(3)(d) 节，跨连续保护区域的内存访问），对于跨越连续保护区域的地址区域，内存保护设置检查结果为“访问禁用（0）”。因此，如果存在这种内存保护设置，实际访问结果与内存保护设置检查功能的结果之间可能会存在差异。</p>
+</li>
+<li><p>内存保护检查功能与应用于实际内存访问的内存保护判断过程相同。例如，如果 MPM.MPE 位被清除（为 0），所有检查结果始终设置为“访问允许（1）”。如果 MPM.SVP 位被清除（为 0），则 MCR.SXE、SWE 和 SRE 位始终设置为“访问允许（1）”。或者，如果 MPM.MPE 位被设置（为 1）（假设 MPM.SVP 被清除）并且所有保护区域设置的 MPAT.E 位被清除（为 0），则 MCR.UXE、UWE 和 URE 位始终设置为“访问禁用（0）”。</p>
+</li>
+</ul>
+<p>(b) 检查程序<br>将目标地址区域的基地址（下限）设置到 MCA 寄存器，目标区域的大小设置到 MCS 寄存器，服务请求源的系统保护标识符（SPID）设置到 MCI 寄存器，然后使用 LDSR 指令（推荐使用 r0 规格）访问 MCC 寄存器并执行检查。检查结果可以通过 STSR 指令从 MCR 寄存器读取。</p>
+<p>注意：如果指定的检查区域跨越 0000 0000H 或 7FFF FFFFH，则判断为区域设置错误，并将 MCR.OV 位设置为 1。这意味着在访问检查结果之前必须检查 MCR.OV 位。除非确认结果有效（OV &#x3D; 0），否则不要使用检查结果。</p>
+<p>(c) 示例代码<br>假设内存保护设置检查功能将用于以下操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">_service_protection:</span><br><span class="line">    ...</span><br><span class="line">    MOV   ADDRESS, r10     // Store the start address of the area to be checked to r10</span><br><span class="line">    MOV   SIZE, r11        // Store the size of the area to be checked to r11</span><br><span class="line">    MOV   SPID, r12        // Store the system protection identifier to r12</span><br><span class="line">    DI</span><br><span class="line">    LDSR  r10, sr8, 5      // Set the address to MCA</span><br><span class="line">    LDSR  r11, sr9, 5      // Set the size to MCS</span><br><span class="line">    LDSR  r12, sr12, 5     // Set the system protection identifier to MCI         </span><br><span class="line">    LDSR  r0, sr10, 5      // Start checking with MCC</span><br><span class="line">    STSR  sr11, r13, 5     // Get the results from MCR</span><br><span class="line">    EI</span><br><span class="line">    ANDI  0x0100, r13, r0 </span><br><span class="line">    BNZ   _overflow        // Processing of invalid input when OV = 1</span><br><span class="line">    BR    _result_check    // Otherwise, result is checked</span><br></pre></td></tr></table></figure>
+
+<p>(d) 计算地址区域的方法<br>将要检查的地址区域按如下方式处理，并与内存保护设置进行比较。</p>
+<p>区域的下限地址：MCA 设置</p>
+<p>区域的上限地址：根据 MCA + (MCS - 1) 计算的值</p>
+<p>另外，当 MCS 设置为 0000 0000H 时，“MCS - 1”的值按 FFFF FFFFH 处理。此外，如果计算的上限地址超过 FFFF FFFFH，将按 33 位值计算，但表示溢出的最高有效位将被丢弃。<br>当 MCA 为 0000 0000H 且 MCS 为 0000 0000H 时，上限地址为 FFFF FFFFH。<br>当 MCA 为 FFFF FFFFH 且 MCS 为 0000 0002H 时，上限地址为 0000 0001H。</p>
+<h5 id="2-缓存"><a href="#2-缓存" class="headerlink" title="2 缓存"></a>2 缓存</h5><p>本节描述了 控制安装在此 CPU 中的缓存内存的功能。</p>
+<p>在正常操作中，CPU 在指令提取时隐式使用缓存内存。然而，如果要更改设置或通过 CACHE 指令直接操作缓存内存，必须保持与 CPU 正常操作的一致性。在许多情况下，硬件会进行调整，以避免 CPU 的正常操作与缓存操作之间出现不一致。然而，为确保缓存操作的结果达到预期状态，需注意操作不会影响隐式操作。</p>
+<p>有关安装在各个产品中的缓存内存的详细描述，请参见第 3.9.9 节，缓存结构的产品信息。</p>
+<h6 id="2-1-特点"><a href="#2-1-特点" class="headerlink" title="2.1 特点"></a>2.1 特点</h6><p>在 CPU 与代码闪存之间放置了 16 KB 的基于奇偶校验选择 (PBS) 的 4 路组相联指令缓存。指令缓存和代码闪存通过 256 位专用总线连接，以尽量减少缓存未命中导致的惩罚。还在 CPU 与代码闪存之间安装了数据缓冲区，以实现高速数据访问。地址空间中从 0000 0000H 到 0FFF FFFFH 的 256 MB 区域用于指令缓存和数据缓冲区。</p>
+<h6 id="2-2-缓存操作寄存器"><a href="#2-2-缓存操作寄存器" class="headerlink" title="2.2 缓存操作寄存器"></a>2.2 缓存操作寄存器</h6><p>操作需要监督特权。</p>
+<p>ICTAGH<br>ICTAGL<br>ICCTRL<br>ICDATH<br>ICDATL<br>ICCFG<br>ICERR</p>
+<h6 id="2-3-更改缓存使用模式"><a href="#2-3-更改缓存使用模式" class="headerlink" title="2.3 更改缓存使用模式"></a>2.3 更改缓存使用模式</h6><p>(a) 更改指令缓存的使用模式<br>可以使用 ICCTRL.ICHEN 位更改指令缓存的使用模式。</p>
+<ul>
+<li>要启用指令缓存，请将 ICHEN 位设置为 1。</li>
+<li>要禁用指令缓存，请将 ICHEN 位清除为 0。</li>
+</ul>
+<p>设置 ICHEN 的 LDSR 指令的完成可能与指令缓存设置更改的完成不同步。按照以下示例代码，通过在 LDSR 指令后执行 SYNCI 指令，确保指令缓存设置的更改在 SYNCI 指令之后生效。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LDSR r10, sr24, 4</span><br><span class="line"> SYNCI</span><br></pre></td></tr></table></figure>
+
+<h6 id="2-4-使用-CACHE-指令进行缓存操作"><a href="#2-4-使用-CACHE-指令进行缓存操作" class="headerlink" title="2.4 使用 CACHE 指令进行缓存操作"></a>2.4 使用 CACHE 指令进行缓存操作</h6><p>CACHE 指令操作缓存内存中的指定数据。</p>
+<p>CACHE 指令进行的数据操作在完成所有先前内存访问后开始更新缓存内存。因此，先前内存访问的结果保证是使用 CACHE 指令进行操作的目标。此外，在执行 CACHE 指令后，需要进行适当的同步操作，以确保结果反映在后续指令中。</p>
+<p>即使缓存被禁用，CACHE 指令也可以操作缓存内存。</p>
+<p>(a) CACHE 指令目标的指定方法<br>指定操作目标基本上有两种方法：</p>
+<p>直接指定要访问的地址： 在此 CPU 中，这称为地址指定方法。在这种情况下，包含指定地址的缓存行是操作对象。</p>
+<p>直接指定缓存内存的路号和行号： 在此 CPU 中，这称为索引指定方法。在这种情况下，不进行缓存命中判断，而是在指定的缓存索引上执行操作。有关缓存索引指定方法的详细信息，请参见第 3.2.5.2 (6) 节，缓存索引指定方法。</p>
+<p>(b) 使用 CACHE 指令执行的操作<br>对缓存内存执行的操作分为以下几种。有关每种操作的详细信息，请参见 RH850G4MH 用户手册：软件。</p>
+<p>缓存命中块无效 &#x2F; 缓存索引块无效 (CHBI &#x2F; CIBI) ：这将禁用指定的缓存行。当使用地址指定方法时，仅在命中时禁用缓存行。当使用索引方法时，指定的缓存行被禁用。如果指定的缓存行已锁定，则解锁。这种操作可以用于诸如软件初始化整个内存缓存的情况。 禁用缓存行指的是将对应于 ICTAGL.V 和 ICTAGL.L 位的缓存信息清除为 0。</p>
+<p>缓存提取并锁定 (CFAL) 这将指定地址的数据存储到缓存内存中：此时，存储数据的缓存行被锁定。这防止缓存行被替换。如果目标缓存行已存储在缓存内存中，则仅锁定它。如果目标缓存行已存储在缓存内存中并被锁定，则此操作不执行任何操作。 这种操作可以通过减少由于指定内存区域中的缓存未命中而导致的指令执行时间的变化来提高执行效率。 仅在启用时锁定缓存行。在执行 CFAL 指令期间，缓存行的启用和锁定同时进行，而仅使用 CIST 指令配置锁定时不锁定任何缓存行。有关详细信息，请参见第 3.2.3.7 (1) 节，ICTAGL — 指令缓存标签低访问。</p>
+<p>注意：在此 CPU 支持的指令缓存中，如果目标路径组中的同一索引的所有缓存行都被锁定，则不会替换缓存行。使用此操作高效地垄断缓存内存时，需要注意缓存锁定规范和缓存路径的数量。有关路径组的详细信息，请参见第 3.2.5.2 (10) 节，指令缓存的配置。有关详细信息，请参见第 3.9.9 节，缓存结构的产品信息。</p>
+<p>缓存索引加载 &#x2F; 缓存索引存储 (CILD &#x2F; CIST)：该操作用于直接访问缓存内存。可以通过系统寄存器在缓存内存中使用索引指定的位置进行读写。由于可以直接访问缓存数据和缓存标签，因此该操作可用于软件调试等目的。</p>
+<h6 id="2-5-通过-PREF-指令进行缓存操作"><a href="#2-5-通过-PREF-指令进行缓存操作" class="headerlink" title="2.5 通过 PREF 指令进行缓存操作"></a>2.5 通过 PREF 指令进行缓存操作</h6><p>提供 PREF 指令是为了通过通知 CPU 某个地址可能在不久的将来会被使用，实现高效的缓存访问。在使用数据之前，将数据预取到缓存内存中可以减少由于缓存未命中而导致的读取等待时间。</p>
+<p>假设编译器和其他工具的支持，PREF 指令可以在任何 CPU 操作模式下执行。执行 PREF 指令不会导致 MPU 生成异常，并且对逻辑操作没有影响，就像 NOP 指令一样。</p>
+<p>注意：由于 PREF 指令的数据读取请求是相当推测性的，因此可能不会根据系统条件执行。如果目标路径组中的同一索引的所有缓存行都被锁定，则不执行缓存填充。如果指定了缓存区外的区域，则不执行读取。</p>
+<h6 id="2-6-缓存索引指定方法"><a href="#2-6-缓存索引指定方法" class="headerlink" title="2.6 缓存索引指定方法"></a>2.6 缓存索引指定方法</h6><p>对于使用索引指定方法的缓存指令，显式指定要操作的缓存内存，如图 3.30 所示的格式，而不是指定地址。各字段的位位置取决于嵌入 CPU 内核的缓存内存的大小。关于嵌入的缓存内存和大小的信息可以从 ICCFG 寄存器读取。</p>
+<h6 id="2-7-CACHE-x2F-PREF-指令的执行权限"><a href="#2-7-CACHE-x2F-PREF-指令的执行权限" class="headerlink" title="2.7 CACHE&#x2F;PREF 指令的执行权限"></a>2.7 CACHE&#x2F;PREF 指令的执行权限</h6><p>由于 CACHE 指令直接操作缓存内存的内容，根据操作类型指定权限。当在没有执行 CACHE 操作所需权限的情况下执行 CACHE 指令时，会发生权限指令异常 (PIE)。</p>
+<p>另一方面，PREF 指令提供推测性执行的信息，因此可以在任何模式下执行。</p>
+<p>CACHE 指令执行的不同操作所需的权限如下所示。</p>
+<p>(a) 允许用户权限的操作<br>在地址指定方法操作中，无缓存锁定 (CHBI) 的操作可以在任何操作模式下执行。</p>
+<p>(b) 需要管理员权限的操作<br>在地址指定方法操作中，缓存锁定 (CFAL) 的操作需要管理员权限。此外，索引指定方法操作也需要管理员权限。</p>
+<h6 id="2-8-CACHE-和-PREF-指令的内存保护"><a href="#2-8-CACHE-和-PREF-指令的内存保护" class="headerlink" title="2.8 CACHE 和 PREF 指令的内存保护"></a>2.8 CACHE 和 PREF 指令的内存保护</h6><p>CACHE 和 PREF 指令的内存保护判断根据指令执行时的操作模式进行。这些指令被视为读取访问。当启用内存保护且 MPAT.SR 或 UR 位设置为 1 时，指令可以根据操作模式执行。</p>
+<p>使用地址指定模式的 CACHE 指令受 MPU 提供的内存保护。如果检测到保护违规，则不会执行缓存操作，并且会发生 MDP 异常。</p>
+<p>另一方面，由于使用索引指定方法的 CACHE 指令指定的是指令缓存中的数据位置，而不是内存地址，因此不受内存保护。不论为索引指定什么值，都不会发生 MDP 异常。</p>
+<p>如果检测到 PREF 指令的保护违规，则不会执行预取，并且不会发生 MDP 异常。</p>
+<p>对于 CACHE 和 PREF 指令，如果指定操作码的操作未定义，则根本不执行缓存操作和内存访问，因此不受内存保护的影响。</p>
+<p>下表显示了操作和访问权限之间的对应关系：</p>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>地址&#x2F;索引</th>
+<th>指令执行权限</th>
+<th>访问权限</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CHBII</td>
+<td>地址</td>
+<td>UM</td>
+<td>读取</td>
+</tr>
+<tr>
+<td>CIBII</td>
+<td>索引</td>
+<td>SV</td>
+<td>—</td>
+</tr>
+<tr>
+<td>CFALI</td>
+<td>地址</td>
+<td>SV</td>
+<td>读取</td>
+</tr>
+<tr>
+<td>CISTI</td>
+<td>索引</td>
+<td>SV</td>
+<td>—</td>
+</tr>
+<tr>
+<td>CILDI</td>
+<td>索引</td>
+<td>SV</td>
+<td>—</td>
+</tr>
+<tr>
+<td>PREF</td>
+<td>地址</td>
+<td>UM</td>
+<td>读取</td>
+</tr>
+</tbody></table>
+<h6 id="2-9-使用-CACHE-指令操作缓存内存的示例"><a href="#2-9-使用-CACHE-指令操作缓存内存的示例" class="headerlink" title="2.9 使用 CACHE 指令操作缓存内存的示例"></a>2.9 使用 CACHE 指令操作缓存内存的示例</h6><p>本节给出了使用 CACHE 指令进行缓存内存操作的示例，目的是设置自我修改代码。</p>
+<p>在以下示例中，在指令缓存中缓存的内存中生成指令代码，并禁用指令缓存。有关支持这种缓存内存操作的内存是否存在，请参见第 3.9.9 节，缓存结构的产品信息。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ST.W r20, 0[r10]        // 将目标数据写入内存</span><br><span class="line">SYNCM                   // 等待内存写入完成</span><br><span class="line">CACHE 0x00, [r10]       // CHBII: 禁用指令缓存对目标区域的缓存</span><br><span class="line">SYNCI                   // 等待指令缓存操作完成</span><br><span class="line">JMP [r12]               // 跳转到目标区域并执行更新的指令代码</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="2-10-指令缓存的配置"><a href="#2-10-指令缓存的配置" class="headerlink" title="2.10 指令缓存的配置"></a>2.10 指令缓存的配置</h6><p>本节描述了为此 CPU 安装的指令缓存配置。有关详细信息，请参见第 3.9.9 节，缓存结构的产品信息。</p>
+<p>此 CPU 支持以下配置的指令缓存：</p>
+<ul>
+<li>四路</li>
+<li>256 位缓存行大小（填充单位）</li>
+<li>256 MB 缓存目标区域</li>
+<li>ECC 保护</li>
+<li>缓存错误通知</li>
+</ul>
+<p>(a) 四路<br>由于为此 CPU 安装的指令缓存配置为四路，因此每一路的容量为整个缓存容量的四分之一。四路分为两个路组；路 0 和路 1 属于路组 A，而路 2 和路 3 属于路组 B。对于访问地址，如果要存储在标签中的位的奇偶校验为 0，则使用路组 A，而如果奇偶校验为 1，则使用路组 B。</p>
+<p>下表显示了每个缓存容量的奇偶校验生成地址。</p>
+<table>
+<thead>
+<tr>
+<th>缓存容量</th>
+<th>奇偶校验生成目标地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>8 KB</td>
+<td>位 24 到 11</td>
+</tr>
+<tr>
+<td>16 KB</td>
+<td>位 24 到 12</td>
+</tr>
+<tr>
+<td>32 KB</td>
+<td>位 24 到 13</td>
+</tr>
+</tbody></table>
+<p>当将数据存储在新的缓存行中时，LRU（最近最少使用）方法确定给定路组内的存储目标路。</p>
+<p>(b) 缓存行大小<br>缓存行大小（填充单位）是存储在缓存一行中的数据量，在此 CPU 的指令缓存中为 256 位。</p>
+<p>(c) 缓存数据分配<br>内存中的数据按下图所示的方式分配到缓存内存中。</p>
+<table>
+<thead>
+<tr>
+<th>数据</th>
+<th>地址</th>
+<th>数据</th>
+<th>地址</th>
+<th>数据</th>
+<th>地址</th>
+<th>数据</th>
+<th>地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Data0</td>
+<td>63-48</td>
+<td>Data1</td>
+<td>47-32</td>
+<td>Data2</td>
+<td>31-16</td>
+<td>Data3</td>
+<td>15-0</td>
+</tr>
+<tr>
+<td>Data4</td>
+<td>127-112</td>
+<td>Data5</td>
+<td>111-96</td>
+<td>Data6</td>
+<td>95-80</td>
+<td>Data7</td>
+<td>79-64</td>
+</tr>
+<tr>
+<td>Data8</td>
+<td>191-176</td>
+<td>Data9</td>
+<td>175-160</td>
+<td>Data10</td>
+<td>159-144</td>
+<td>Data11</td>
+<td>143-128</td>
+</tr>
+<tr>
+<td>Data12</td>
+<td>255-240</td>
+<td>Data13</td>
+<td>239-224</td>
+<td>Data14</td>
+<td>223-208</td>
+<td>Data15</td>
+<td>207-192</td>
+</tr>
+</tbody></table>
+<p>Data0: 地址 +00H 处的半字数据<br>Data1: 地址 +02H 处的半字数据<br>Data2: 地址 +04H 处的半字数据<br>Data3: 地址 +06H 处的半字数据<br>Data4: 地址 +08H 处的半字数据<br>Data5: 地址 +0AH 处的半字数据<br>Data6: 地址 +0CH 处的半字数据<br>Data7: 地址 +0EH 处的半字数据<br>Data8: 地址 +10H 处的半字数据<br>Data9: 地址 +12H 处的半字数据<br>Data10: 地址 +14H 处的半字数据<br>Data11: 地址 +16H 处的半字数据<br>Data12: 地址 +18H 处的半字数据<br>Data13: 地址 +1AH 处的半字数据<br>Data14: 地址 +1CH 处的半字数据<br>Data15: 地址 +1EH 处的半字数据</p>
+<p>(d) 可缓存区域<br>此 CPU 的指令缓存的可缓存区域为从 0000 0000H 到 0FFF FFFFH 的 256 MB。尽管可以从上述区域以外的位置提取指令，但在这种情况下，它们从不存储在指令缓存中。</p>
+<p>(e) ECC 保护<br>此 CPU 的指令缓存的数据 RAM 和标签 RAM 受 ECC 保护。当在 RAM 的任一区域中检测到 ECC 错误时，目标行被禁用，并且 CPU 在重新提取的同时提供外部错误通知。</p>
+<p>有关 ECC 保护的详细信息，请参见第 44 节，功能安全。</p>
+<p>(f) 缓存错误通知<br>此 CPU 的指令缓存检测以下五种类型的错误。缓存错误在指令提取或使用地址指定方法的 CACHE 指令进行读取操作时检测到。除了读取操作外，地址反馈错误也在缓存填充时进行写操作时检测到。此 CPU 提供这些错误的外部通知。对于这些错误发生时的操作，请参见第 44 节，功能安全和第 3.9.12 节，错误通知。</p>
+<ul>
+<li>数据 RAM 的 ECC 错误</li>
+<li>标签 RAM 的 ECC 错误</li>
+<li>多重命中错误</li>
+<li>路错误</li>
+<li>地址反馈错误</li>
+</ul>
+<p>当访问一个地址在同一个路组中的两条路上同时命中时，检测到多重命中错误。检测到多重命中错误时，目标行被禁用，并且 CPU 在重新提取的同时提供外部错误通知。</p>
+<p>当路组中的奇偶校验与存储在标签 RAM 中的数据的奇偶校验不匹配时，检测到路错误。检测到路错误时，目标行被禁用，并且 CPU 在重新提取的同时提供外部错误通知。</p>
+<p>当访问 RAM 的地址与反馈地址不匹配时，检测到地址反馈错误。读取缓存时检测到错误时，目标行被禁用，并且 CPU 在重新提取的同时提供外部错误通知。当写入缓存时检测到错误时，目标行被禁用，并且 CPU 提供错误的外部通知。</p>
+<h6 id="2-11-数据缓冲区功能"><a href="#2-11-数据缓冲区功能" class="headerlink" title="2.11 数据缓冲区功能"></a>2.11 数据缓冲区功能</h6><p>作为数据缓冲区，安装了四行缓冲区，每行 256 位。从代码闪存读取的 256 位数据以 256 位为单位存储在数据缓冲区中。当发生数据缓冲区命中时，从数据缓冲区读取数据，因此不会再次访问代码闪存。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-Memory_Management/" title="Renesas-RH850  CPU System - CPU -  Memory Management">http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-Memory_Management/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/01/04/Renesas-CPU_System-CPU-Exceptions_and_Interrupts/" rel="prev" title="Renesas-RH850  CPU System - CPU -  Exceptions and Interrupts">
+                  <i class="fa fa-chevron-left"></i> Renesas-RH850  CPU System - CPU -  Exceptions and Interrupts
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/01/06/Renesas-CPU_System-CPU-Hazard_Control/" rel="next" title="Renesas-RH850  CPU System - CPU - Hazard Control">
+                  Renesas-RH850  CPU System - CPU - Hazard Control <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">455k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">9:28</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

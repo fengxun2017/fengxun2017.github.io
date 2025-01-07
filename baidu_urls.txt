@@ -1,5 +1,5 @@
-http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-%20Exceptions_and_Interrupts/
+http://fengxun2017.github.io/2025/01/06/Renesas-CPU_System-CPU-Coprocessor/
+http://fengxun2017.github.io/2025/01/06/Renesas-CPU_System-CPU-Hazard_Control/
+http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-Memory_Management/
+http://fengxun2017.github.io/2025/01/04/Renesas-CPU_System-CPU-Exceptions_and_Interrupts/
 http://fengxun2017.github.io/2024/12/30/Renesas-CPU_System-Barrier_Synchronization/
-http://fengxun2017.github.io/2024/12/29/Renesas-CPU_System-CPU-Register_Set/
-http://fengxun2017.github.io/2024/12/04/Renesas-CPU_System-CPU-Processor_Model/
-http://fengxun2017.github.io/2024/12/03/Renesas-CPU_System-CPU-Core_Functions/
