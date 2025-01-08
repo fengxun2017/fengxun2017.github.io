@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Renesas学习笔记CPU System :  Inter-CPU Overview">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Renesas-RH850  CPU System -  Inter-CPU Overview">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="Renesas学习笔记CPU System :  Inter-CPU Overview">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-01-08T15:26:35.583Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/","path":"2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/","title":"Renesas-RH850  CPU System -  Inter-CPU Overview"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Renesas-RH850  CPU System -  Inter-CPU Overview | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Features"><span class="nav-number">1.</span> <span class="nav-text">1 Features</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-%E5%8D%95%E5%85%83%E6%95%B0%E9%87%8F"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 单元数量</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-%E5%AF%84%E5%AD%98%E5%99%A8%E5%9F%BA%E5%9C%B0%E5%9D%80"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 寄存器基地址</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-3-%E6%97%B6%E9%92%9F%E4%BE%9B%E7%BB%99"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 时钟供给</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-4-%E4%B8%AD%E6%96%AD%E8%AF%B7%E6%B1%82"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 中断请求</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-5-%E9%87%8D%E7%BD%AE%E6%9D%A5%E6%BA%90"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 重置来源</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-6-%E5%A4%96%E9%83%A8%E8%BE%93%E5%85%A5-x2F-%E8%BE%93%E5%87%BA%E4%BF%A1%E5%8F%B7"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 外部输入&#x2F;输出信号</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%A4%84%E7%90%86%E5%99%A8%E5%85%83%E6%A0%87%E8%AF%86%E7%AC%A6-PEID"><span class="nav-number">2.</span> <span class="nav-text">2 处理器元标识符 (PEID)</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">81</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Renesas-RH850  CPU System -  Inter-CPU Overview | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Renesas-RH850  CPU System -  Inter-CPU Overview
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-01-08 00:00:00" itemprop="dateCreated datePublished" datetime="2025-01-08T00:00:00+08:00">2025-01-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Renesas/" itemprop="url" rel="index"><span itemprop="name">Renesas</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+
+<p>Renesas学习笔记<br>CPU System :  Inter-CPU Overview</p>
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p>本节包括屏障同步（BARR）、处理器间中断（IPIR）和时间保护计时器（TPTM）。本节的第一部分描述了该产品的特定属性，如单元数量、寄存器基地址等。其余部分展示了功能和寄存器。</p>
+<h5 id="1-Features"><a href="#1-Features" class="headerlink" title="1 Features"></a>1 Features</h5><h6 id="1-1-单元数量"><a href="#1-1-单元数量" class="headerlink" title="1.1 单元数量"></a>1.1 单元数量</h6><table>
+<thead>
+<tr>
+<th>产品名称</th>
+<th>BARR 单元数量</th>
+<th>每个CPU的 IPIR通道数量</th>
+<th>IPIR 单元数量</th>
+<th>TPTM 单元数量</th>
+<th>每个 CPU 的 TPTM 通道数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RH850&#x2F;U2A-EVA</td>
+<td>1</td>
+<td>4</td>
+<td>1</td>
+<td>1</td>
+<td>2 interval timers <br>1 free-run timer <br> 2 Up timers</td>
+</tr>
+<tr>
+<td>RH850&#x2F;U2A16</td>
+<td>1</td>
+<td>4</td>
+<td>1</td>
+<td>1</td>
+<td>2 interval timers <br>1 free-run timer <br> 2 Up timers</td>
+</tr>
+<tr>
+<td>RH850&#x2F;U2A8</td>
+<td>1</td>
+<td>4</td>
+<td>1</td>
+<td>1</td>
+<td>2 interval timers <br>1 free-run timer <br> 2 Up timers</td>
+</tr>
+<tr>
+<td>RH850&#x2F;U2A6</td>
+<td>1</td>
+<td>4</td>
+<td>1</td>
+<td>1</td>
+<td>2 interval timers <br>1 free-run timer <br> 2 Up timers</td>
+</tr>
+</tbody></table>
+<h6 id="1-2-寄存器基地址"><a href="#1-2-寄存器基地址" class="headerlink" title="1.2 寄存器基地址"></a>1.2 寄存器基地址</h6><p>BARR、IPIR 和 TPTM 的基地址列于下表中。BARR、IPIR 和 TPTM 寄存器地址作为这些基地址的偏移量给出。</p>
+<table>
+<thead>
+<tr>
+<th>基地址名称</th>
+<th>基地址</th>
+<th>总线组</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><BARR_base></BARR_base></td>
+<td>FFFB 8000H</td>
+<td>I-总线组 1</td>
+</tr>
+<tr>
+<td><IPIR_base></IPIR_base></td>
+<td>FFFB 9000H</td>
+<td>I-总线组 0</td>
+</tr>
+<tr>
+<td><TPTM_base></TPTM_base></td>
+<td>FFFB B000H</td>
+<td>I-总线组 2</td>
+</tr>
+</tbody></table>
+<h6 id="1-3-时钟供给"><a href="#1-3-时钟供给" class="headerlink" title="1.3 时钟供给"></a>1.3 时钟供给</h6><p>时钟供给列于下表中。</p>
+<table>
+<thead>
+<tr>
+<th>单元名称</th>
+<th>单元时钟名称</th>
+<th>供给时钟名称</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BARR</td>
+<td>cpu_clk</td>
+<td>CLK_CPU</td>
+</tr>
+<tr>
+<td>IPIR</td>
+<td>cpu_clk</td>
+<td>CLK_CPU</td>
+</tr>
+<tr>
+<td>TPTM</td>
+<td>cpu_clk</td>
+<td>CLK_CPU</td>
+</tr>
+</tbody></table>
+<h6 id="1-4-中断请求"><a href="#1-4-中断请求" class="headerlink" title="1.4 中断请求"></a>1.4 中断请求</h6><p>中断请求列于下表中。</p>
+<table>
+<thead>
+<tr>
+<th>中断符号名称</th>
+<th>单元</th>
+<th>中断信号描述</th>
+<th>中断编号</th>
+<th>sDMA 触发编号</th>
+<th>DTS 触发编号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>INTIPIR0</td>
+<td>ipir_int_ch0</td>
+<td>IPIR CH0 中断</td>
+<td>EIINT0</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>INTIPIR1</td>
+<td>ipir_int_ch1</td>
+<td>IPIR CH1 中断</td>
+<td>EIINT1</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>INTIPIR2</td>
+<td>ipir_int_ch2</td>
+<td>IPIR CH2 中断</td>
+<td>EIINT2</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>INTIPIR3</td>
+<td>ipir_int_ch3</td>
+<td>IPIR CH3 中断</td>
+<td>EIINT3</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>FEINT 或 INTTPTM<sup>*1</sup></td>
+<td>TPTM_IRQ</td>
+<td>TPTM 间隔中断</td>
+<td>FEINT 或 EIINT31<sup>*1</sup></td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>INTTPTMU00</td>
+<td>INTTPTMU00</td>
+<td>TPTM 计时器上溢中断（比较值 0，针对 PE0）</td>
+<td>EIINT209</td>
+<td>—</td>
+<td>Group3-26</td>
+</tr>
+<tr>
+<td>INTTPTMU01</td>
+<td>INTTPTMU01</td>
+<td>TPTM 计时器上溢中断（比较值 1，针对 PE0）</td>
+<td>EIINT210</td>
+<td>—</td>
+<td>Group3-27</td>
+</tr>
+<tr>
+<td>INTTPTMU02</td>
+<td>INTTPTMU02</td>
+<td>TPTM 计时器上溢中断（比较值 2，针对 PE0）</td>
+<td>EIINT211</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>INTTPTMU03</td>
+<td>INTTPTMU03</td>
+<td>TPTM 计时器上溢中断（比较值 3，针对 PE0）</td>
+<td>EIINT212</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>INTTPTMU10</td>
+<td>INTTPTMU10</td>
+<td>TPTM 计时器上溢中断（比较值 0，针对 PE1）</td>
+<td>EIINT213</td>
+<td>—</td>
+<td>Group3-28</td>
+</tr>
+<tr>
+<td>INTTPTMU11</td>
+<td>INTTPTMU11</td>
+<td>TPTM 计时器上溢中断（比较值 1，针对 PE1）</td>
+<td>EIINT214</td>
+<td>—</td>
+<td>Group3-29</td>
+</tr>
+<tr>
+<td>INTTPTMU12</td>
+<td>INTTPTMU12</td>
+<td>TPTM 计时器上溢中断（比较值 2，针对 PE1）</td>
+<td>EIINT215</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>INTTPTMU13</td>
+<td>INTTPTMU13</td>
+<td>TPTM 计时器上溢中断（比较值 3，针对 PE1）</td>
+<td>EIINT216</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>INTTPTMU20</td>
+<td>INTTPTMU20</td>
+<td>TPTM 计时器上溢中断（比较值 0，针对 PE2）</td>
+<td>EIINT217</td>
+<td>—</td>
+<td>Group3-30</td>
+</tr>
+<tr>
+<td>INTTPTMU21</td>
+<td>INTTPTMU21</td>
+<td>TPTM 计时器上溢中断（比较值 1，针对 PE2）</td>
+<td>EIINT218</td>
+<td>—</td>
+<td>Group3-31</td>
+</tr>
+<tr>
+<td>INTTPTMU22</td>
+<td>INTTPTMU22</td>
+<td>TPTM 计时器上溢中断（比较值 2，针对 PE2）</td>
+<td>EIINT219</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>INTTPTMU23</td>
+<td>INTTPTMU23</td>
+<td>TPTM 计时器上溢中断（比较值 3，针对 PE2）</td>
+<td>EIINT220</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>INTTPTMU30</td>
+<td>INTTPTMU30</td>
+<td>TPTM 计时器上溢中断（比较值 0，针对 PE3）</td>
+<td>EIINT221</td>
+<td>—</td>
+<td>Group3-32</td>
+</tr>
+<tr>
+<td>INTTPTMU31</td>
+<td>INTTPTMU31</td>
+<td>TPTM 计时器上溢中断（比较值 1，针对 PE3）</td>
+<td>EIINT222</td>
+<td>—</td>
+<td>Group3-33</td>
+</tr>
+<tr>
+<td>INTTPTMU32</td>
+<td>INTTPTMU32</td>
+<td>TPTM 计时器上溢中断（比较值 2，针对 PE3）</td>
+<td>EIINT223</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>INTTPTMU33</td>
+<td>INTTPTMU33</td>
+<td>TPTM 计时器上溢中断（比较值 3，针对 PE3）</td>
+<td>EIINT224</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<p>注意 *1：此中断可以选择用作 FEINT 或 EIINT31。请参见第 6.3.15 节，TPTMSEL — TPTM 中断 FE EI 选择寄存器。</p>
+<h6 id="1-5-重置来源"><a href="#1-5-重置来源" class="headerlink" title="1.5 重置来源"></a>1.5 重置来源</h6><p>以下显示了重置来源。这些模块由以下重置来源初始化。</p>
+<table>
+<thead>
+<tr>
+<th>单元名称</th>
+<th>寄存器名称</th>
+<th>Power On Reset</th>
+<th>System Reset 1</th>
+<th>System Reset 2</th>
+<th>Application Reset</th>
+<th>DeepSTOP Reset</th>
+<th>Module Reset</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BARR</td>
+<td>所有寄存器</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>IPIR</td>
+<td>所有寄存器</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>TPTM</td>
+<td>所有寄存器</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h6 id="1-6-外部输入-x2F-输出信号"><a href="#1-6-外部输入-x2F-输出信号" class="headerlink" title="1.6 外部输入&#x2F;输出信号"></a>1.6 外部输入&#x2F;输出信号</h6><p>此模块没有外部输入&#x2F;输出信号。</p>
+<h5 id="2-处理器元标识符-PEID"><a href="#2-处理器元标识符-PEID" class="headerlink" title="2 处理器元标识符 (PEID)"></a>2 处理器元标识符 (PEID)</h5><p>PEID，即处理器元的 ID 号码，可以从 PEID 寄存器中读取。通过参考 PEID，可以知道哪个 CPU 核心执行特定的程序。以下显示了此产品的 PEID。</p>
+<table>
+<thead>
+<tr>
+<th>CPU 核心</th>
+<th>PEID</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CPU0 (PE0)</td>
+<td>000B</td>
+</tr>
+<tr>
+<td>CPU1 (PE1)</td>
+<td>001B</td>
+</tr>
+<tr>
+<td>CPU2 (PE2)</td>
+<td>010B</td>
+</tr>
+<tr>
+<td>CPU3 (PE3)</td>
+<td>011B</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/" title="Renesas-RH850  CPU System -  Inter-CPU Overview">http://fengxun2017.github.io/2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/01/07/Renesas-CPU_System-CPU-Hazard_Control/" rel="prev" title="Renesas-RH850  CPU System - CPU - Hazard Control">
+                  <i class="fa fa-chevron-left"></i> Renesas-RH850  CPU System - CPU - Hazard Control
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/01/08/Renesas-CPU_System-CPU-%20Ensuring_Coherency_after_Code_Flash_Programming/" rel="next" title="Renesas-RH850  CPU System - CPU -  Ensuring Coherency after Code Flash Programming">
+                  Renesas-RH850  CPU System - CPU -  Ensuring Coherency after Code Flash Programming <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">458k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">9:33</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

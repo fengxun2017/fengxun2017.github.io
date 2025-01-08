@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://fengxun2017.github.io/2025/01/06/Renesas-CPU_System-CPU-Hazard_Control/</loc>
-    <lastmod>2025-01-07</lastmod>
+    <loc>http://fengxun2017.github.io/2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/</loc>
+    <lastmod>2025-01-08</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2025/01/08/Renesas-CPU_System-CPU-%20Ensuring_Coherency_after_Code_Flash_Programming/</loc>
+    <lastmod>2025-01-08</lastmod>
+  </url>
+  <url>
+    <loc>http://fengxun2017.github.io/2025/01/07/Renesas-CPU_System-CPU-Hazard_Control/</loc>
+    <lastmod>2025-01-08</lastmod>
   </url>
   <url>
     <loc>http://fengxun2017.github.io/2025/01/06/Renesas-CPU_System-CPU-Coprocessor/</loc>
