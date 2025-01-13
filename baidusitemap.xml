@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://fengxun2017.github.io/2025/01/11/Renesas-CPU_System-Inter_Processor_Interrupt/</loc>
+    <lastmod>2025-01-11</lastmod>
+  </url>
+  <url>
     <loc>http://fengxun2017.github.io/2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/</loc>
     <lastmod>2025-01-08</lastmod>
   </url>

@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Renesas学习笔记CPU System :  Inter-Processor Interrupt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Renesas-RH850  CPU System -  Inter-Processor Interrupt">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/01/11/Renesas-CPU_System-Inter_Processor_Interrupt/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="Renesas学习笔记CPU System :  Inter-Processor Interrupt">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-01-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-01-11T13:25:42.040Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/01/11/Renesas-CPU_System-Inter_Processor_Interrupt/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/01/11/Renesas-CPU_System-Inter_Processor_Interrupt/","path":"2025/01/11/Renesas-CPU_System-Inter_Processor_Interrupt/","title":"Renesas-RH850  CPU System -  Inter-Processor Interrupt"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Renesas-RH850  CPU System -  Inter-Processor Interrupt | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%A4%84%E7%90%86%E5%99%A8%E9%97%B4%E4%B8%AD%E6%96%AD%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">1 处理器间中断概述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E5%A4%84%E7%90%86%E5%99%A8%E9%97%B4%E4%B8%AD%E6%96%AD%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.</span> <span class="nav-text">2 处理器间中断寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-1-Self-Region"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 Self Region</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-IPInENm-%E2%80%94-IPIRn-%E5%A4%84%E7%90%86%E5%99%A8%E9%97%B4%E4%B8%AD%E6%96%AD%E5%90%AF%E7%94%A8%E5%AF%84%E5%AD%98%E5%99%A8-m"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 IPInENm — IPIRn 处理器间中断启用寄存器 m</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-3-IPInFLGm-%E2%80%94-IPIRn-%E5%A4%84%E7%90%86%E5%99%A8%E9%97%B4%E4%B8%AD%E6%96%AD%E6%A0%87%E5%BF%97%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 IPInFLGm — IPIRn 处理器间中断标志寄存器</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-4-IPInFCLRm-%E2%80%94-IPIRn-%E5%A4%84%E7%90%86%E5%99%A8%E9%97%B4%E4%B8%AD%E6%96%AD%E6%B8%85%E9%99%A4%E5%AF%84%E5%AD%98%E5%99%A8-m"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 IPInFCLRm — IPIRn 处理器间中断清除寄存器 m</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-5-IPInREQm-%E2%80%94-IPIRn-%E5%A4%84%E7%90%86%E5%99%A8%E9%97%B4%E4%B8%AD%E6%96%AD%E8%AF%B7%E6%B1%82%E5%AF%84%E5%AD%98%E5%99%A8-m"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 IPInREQm — IPIRn 处理器间中断请求寄存器 m</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-6-IPInRCLRm-%E2%80%94-IPIRn-%E5%A4%84%E7%90%86%E5%99%A8%E9%97%B4%E4%B8%AD%E6%96%AD%E8%AF%B7%E6%B1%82%E6%B8%85%E9%99%A4%E5%AF%84%E5%AD%98%E5%99%A8-m"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 IPInRCLRm — IPIRn 处理器间中断请求清除寄存器 m</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E4%BA%92%E5%A4%84%E7%90%86%E5%99%A8%E4%B8%AD%E6%96%AD%E5%8A%9F%E8%83%BD"><span class="nav-number">3.</span> <span class="nav-text">3 互处理器中断功能</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#3-1-%E5%88%9D%E5%A7%8B%E8%AE%BE%E7%BD%AE"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 初始设置</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-2-%E5%A4%84%E7%90%86%E5%99%A8%E9%97%B4%E4%B8%AD%E6%96%AD%E8%AF%B7%E6%B1%82"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 处理器间中断请求</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-3-%E8%AF%B7%E6%B1%82%E5%B1%8F%E8%94%BD%E5%8A%9F%E8%83%BD"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 请求屏蔽功能</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-4-%E5%A4%9A%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BA%92PE%E4%B8%AD%E6%96%AD%E8%AF%B7%E6%B1%82"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 多系统的互PE中断请求</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-5-%E5%A4%84%E7%90%86%E5%99%A8%E9%97%B4%E4%B8%AD%E6%96%AD%E8%AF%B7%E6%B1%82%E6%B8%85%E9%99%A4%E5%8A%9F%E8%83%BD"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 处理器间中断请求清除功能</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E8%99%9A%E6%8B%9F%E5%8C%96%E5%90%AF%E7%94%A8%E6%97%B6%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">4 虚拟化启用时的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#4-1-%E6%A6%82%E8%BF%B0"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 概述</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">82</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/01/11/Renesas-CPU_System-Inter_Processor_Interrupt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Renesas-RH850  CPU System -  Inter-Processor Interrupt | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Renesas-RH850  CPU System -  Inter-Processor Interrupt
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-01-11 00:00:00" itemprop="dateCreated datePublished" datetime="2025-01-11T00:00:00+08:00">2025-01-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Renesas/" itemprop="url" rel="index"><span itemprop="name">Renesas</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+
+<p>Renesas学习笔记<br>CPU System :  Inter-Processor Interrupt</p>
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h5 id="1-处理器间中断概述"><a href="#1-处理器间中断概述" class="headerlink" title="1 处理器间中断概述"></a>1 处理器间中断概述</h5><p>处理器间中断寄存器 (IPIR) 是一种控制 PEs 之间快速中断请求的功能。使用 IPIR 可以比使用软件在 INTC2 中断通道上设置请求标志更快地处理 PEs 之间的中断。<br>IPIR 具有以下特点：</p>
+<ul>
+<li>支持 4 通道的 PEs 之间中断功能</li>
+<li>支持中断的电平检测。不支持边缘检测。</li>
+<li>所有集群和所有 PEs 可访问</li>
+<li>可以识别中断请求源 PE。</li>
+<li>可以通过屏蔽中断请求防止意外的 PEs 之间中断。</li>
+<li>可将 SET1、CLR1 和 NOT1 作为原子操作指令执行到 IPIR。</li>
+<li>支持地址 EDC 功能</li>
+<li>支持数据 ECC 功能</li>
+<li>支持防止未经授权访问的保护功能<ul>
+<li>也可以使用 LD 指令和 ST 指令进行读修改写操作，但不能作为原子操作。</li>
+</ul>
+</li>
+</ul>
+<h5 id="2-处理器间中断寄存器"><a href="#2-处理器间中断寄存器" class="headerlink" title="2 处理器间中断寄存器"></a>2 处理器间中断寄存器</h5><h6 id="2-1-Self-Region"><a href="#2-1-Self-Region" class="headerlink" title="2.1 Self Region"></a>2.1 Self Region</h6><p>Self Region 包含以下五种类型的寄存器：</p>
+<ul>
+<li>IPInENS — IPIRn 处理器间中断启用自寄存器</li>
+<li>IPInFLGS — IPIRn 处理器间中断标志自寄存器</li>
+<li>IPInFCLRS — IPIRn 处理器间中断清除自寄存器</li>
+<li>IPInREQS — IPIRn 处理器间中断请求自寄存器</li>
+<li>IPInRCLRS — IPIRn 处理器间中断请求清除自寄存器</li>
+</ul>
+<p>自寄存器是虚拟寄存器，实际上并不存在。从每个 PE 访问自寄存器被路由到访问源 PE 对应的实际寄存器。表 3.149 列出了访问源 PEs 和路由目标寄存器。有关每个寄存器位的功能，请参见路由目标寄存器的规范。当除 PEx 之外的主设备访问自寄存器时，寄存器返回 0，写访问被忽略，并将通知错误响应。</p>
+<p>基本上假设 PEs 使用 IPIR 功能时，通过自区域访问 IPIR 寄存器。这使 PEs 可以使用相同的代码，因为不需要为每个 PE 指定不同的寄存器地址。</p>
+<p>也可以通过指定实际寄存器的地址而不使用自寄存器直接访问寄存器。在这种情况下，目的是检查另一个 PE 的寄存器状态或通过调试工具引用单个寄存器。</p>
+<p>表 3.149 自区域寄存器路由列表</p>
+<table>
+<thead>
+<tr>
+<th>访问源 PE</th>
+<th>PE0</th>
+<th>PE1</th>
+<th>PE2</th>
+<th>PE3</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>IPInENS</td>
+<td></td>
+<td>IPInEN0</td>
+<td>IPInEN1</td>
+<td>IPInEN2</td>
+</tr>
+<tr>
+<td>IPInFLGS</td>
+<td></td>
+<td>IPInFLG0</td>
+<td>IPInFLG1</td>
+<td>IPInFLG2</td>
+</tr>
+<tr>
+<td>IPInFCLRS</td>
+<td></td>
+<td>IPInFCLR0</td>
+<td>IPInFCLR1</td>
+<td>IPInFCLR2</td>
+</tr>
+<tr>
+<td>IPInREQS</td>
+<td></td>
+<td>IPInREQ0</td>
+<td>IPInREQ1</td>
+<td>IPInREQ2</td>
+</tr>
+<tr>
+<td>IPInRCLRS</td>
+<td></td>
+<td>IPInRCLR0</td>
+<td>IPInRCLR1</td>
+<td>IPInRCLR2</td>
+</tr>
+</tbody></table>
+<h6 id="2-2-IPInENm-—-IPIRn-处理器间中断启用寄存器-m"><a href="#2-2-IPInENm-—-IPIRn-处理器间中断启用寄存器-m" class="headerlink" title="2.2 IPInENm — IPIRn 处理器间中断启用寄存器 m"></a>2.2 IPInENm — IPIRn 处理器间中断启用寄存器 m</h6><p>这个寄存器设置允许发送PE向PEm发出PE间中断请求</p>
+<p>此寄存器用于由接收 PE (PEm) 自身启用 PE (PEx) 的处理器间中断请求。</p>
+<p>访问方式：此寄存器可以以 8 位为单位进行读取或写入。</p>
+<p>地址：<IPIR_base> + 800H + 020H × n + 100H × m</IPIR_base></p>
+<p>复位后的值：00H</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7 到 4</td>
+<td>保留</td>
+<td>读取时返回复位后的值。写入时写复位后的值。</td>
+</tr>
+<tr>
+<td>3 到 0</td>
+<td>EN[3:0]</td>
+<td>处理器间中断启用。写入 1 到第 x 位以启用从 PEx 到 PEm 的处理器间中断请求。写入 0 到第 x 位以禁用从 PEx 到 PEm 的处理器间中断请求。<br>位 0：PE0 <br>位 1：PE1 <br>位 2：PE2 <br>位 3：PE3</td>
+</tr>
+</tbody></table>
+<h6 id="2-3-IPInFLGm-—-IPIRn-处理器间中断标志寄存器"><a href="#2-3-IPInFLGm-—-IPIRn-处理器间中断标志寄存器" class="headerlink" title="2.3 IPInFLGm — IPIRn 处理器间中断标志寄存器"></a>2.3 IPInFLGm — IPIRn 处理器间中断标志寄存器</h6><p>此寄存器指示向 PEm 发出处理器间中断请求的发送 PE。</p>
+<p>此寄存器用于在 PEm 接收到处理器间中断请求时区分请求的 PE。</p>
+<p>访问方式：此寄存器是只读寄存器，可以以 8 位为单位读取。</p>
+<p>地址：<IPIR_base> + 804H + 020H × n + 100H × m</IPIR_base></p>
+<p>复位后的值：00H</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7 到 4</td>
+<td>保留</td>
+<td>读取时返回复位后的值。</td>
+</tr>
+<tr>
+<td>3 到 0</td>
+<td>FLG[3:0]</td>
+<td>处理器间中断请求标志。此寄存器指示来自其他 PEs 的处理器间中断请求状态。当 IPInENm[x] 位的值为 1 时，第 x 位会根据 IPInREQx[m] 的变化自动更新。如果 IPInENm[x] 位为 0，即使 IPInREQx[m] 设置，第 x 位也不会设置。当设置 IPInFCLRm[x] 位时，第 x 位也会被清除。 <br> 位 0：PE0 <br> 位 1：PE1 <br> 位 2：PE2 <br> 位 3：PE3</td>
+</tr>
+</tbody></table>
+<h6 id="2-4-IPInFCLRm-—-IPIRn-处理器间中断清除寄存器-m"><a href="#2-4-IPInFCLRm-—-IPIRn-处理器间中断清除寄存器-m" class="headerlink" title="2.4 IPInFCLRm — IPIRn 处理器间中断清除寄存器 m"></a>2.4 IPInFCLRm — IPIRn 处理器间中断清除寄存器 m</h6><p>此寄存器清除对 PEm 的处理器间中断请求。</p>
+<p>此寄存器用于在接收到来自另一个 PE 的处理器间中断请求后清除请求标志 (IPInFLGm) 和请求 (IPInREQx)。</p>
+<p>访问方式：此寄存器是只写寄存器，可以以 8 位为单位写入。</p>
+<p>地址：<IPIR_base> + 808H + 020H × n + 100H × m</IPIR_base></p>
+<p>复位后的值：00H</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7 到 4</td>
+<td>保留</td>
+<td>写入时写复位后的值。</td>
+</tr>
+<tr>
+<td>3 到 0</td>
+<td>FCLR[3:0]</td>
+<td>处理器间中断请求标志清除。通过向此位写入 1 可以清除 IPInFLGm[x] 和 IPInREQx[m]。写入 0 被忽略。 <br> 位 0：PE0 <br>位 1：PE1 <br>位 2：PE2 <br>位 3：PE3</td>
+</tr>
+</tbody></table>
+<h6 id="2-5-IPInREQm-—-IPIRn-处理器间中断请求寄存器-m"><a href="#2-5-IPInREQm-—-IPIRn-处理器间中断请求寄存器-m" class="headerlink" title="2.5 IPInREQm — IPIRn 处理器间中断请求寄存器 m"></a>2.5 IPInREQm — IPIRn 处理器间中断请求寄存器 m</h6><p>此寄存器控制 PEm 到其他 PEs 的处理器间中断请求。</p>
+<p>访问：此寄存器可以按 8 位单位读取或写入。</p>
+<p>地址：<IPIR_base> + 810H + 020H × n + 100H × m</IPIR_base></p>
+<p>复位后的值：00H</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7 到 4</td>
+<td>保留</td>
+<td>读取时返回复位后的值。写入时写复位后的值。</td>
+</tr>
+<tr>
+<td>3 到 0</td>
+<td>REQ[3:0]</td>
+<td>处理器间中断请求。当向 x 位写入 1 ，且IPInENx[m] 位值为 1：x 位值变为 1；将高电平输出到 PEx 的处理器间中断请求，IPInFLGx[m] 自动设为 1。<br>当 向x 位写入 1 时，但IPInENx[m] 位值为 0：x 位值变为 1；没有其他操作。<br>写入 0 被忽略。当读取时：寄存器值会被读出。 <br> 位 0：PE0 <br>位 1：PE1 <br>位 2：PE2 <br>位 3：PE3</td>
+</tr>
+</tbody></table>
+<h6 id="2-6-IPInRCLRm-—-IPIRn-处理器间中断请求清除寄存器-m"><a href="#2-6-IPInRCLRm-—-IPIRn-处理器间中断请求清除寄存器-m" class="headerlink" title="2.6 IPInRCLRm — IPIRn 处理器间中断请求清除寄存器 m"></a>2.6 IPInRCLRm — IPIRn 处理器间中断请求清除寄存器 m</h6><p>此寄存器清除 PEm 对其他 PEs 的处理器间中断请求。</p>
+<p>假定此寄存器用于由传输 PE 清除处理器间中断请求。</p>
+<p>访问：此寄存器是一个只能写入的寄存器，可以按 8 位单位写入。</p>
+<p>地址：<IPIR_base> + 814H + 020H × n + 100H × m</IPIR_base></p>
+<p>复位后的值：00H</p>
+<table>
+<thead>
+<tr>
+<th>位位置</th>
+<th>位名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>7 到 4</td>
+<td>保留</td>
+<td>写入时写复位后的值。</td>
+</tr>
+<tr>
+<td>3 到 0</td>
+<td>RCLR[3:0]</td>
+<td>处理器间中断请求清除。向此位写入 1 可以清除 IPInREQm[x] 位。如果 IPInENx[m] 位的值为 1，则同时清除 IPInFLGx[m] 位。允许通过 IPInENm 寄存器发出处理器间中断请求的传输 PE 也可以使用此位取消处理器间中断请求，但在进行取消处理时，接收 PE 可能在某些情况下接受处理器间中断请求。写入 0 被忽略。此位在读取时始终返回 0。 <br> 位 0：PE0 <br>位 1：PE1 <br>位 2：PE2 <br>位 3：PE3</td>
+</tr>
+</tbody></table>
+<h5 id="3-互处理器中断功能"><a href="#3-互处理器中断功能" class="headerlink" title="3 互处理器中断功能"></a>3 互处理器中断功能</h5><h6 id="3-1-初始设置"><a href="#3-1-初始设置" class="headerlink" title="3.1 初始设置"></a>3.1 初始设置</h6><p>在使用IPIR之前，必须通过IPInENm寄存器对授权的PE进行初始设置。下面是初始设置的一个例子。</p>
+<p>(1) 接收PE的初始设置<br>图3.40展示了由PE1（接收PE）进行IPIR通道0的初始设置的例子。</p>
+<p>首先，如果IPIR已经被使用，并且IPI0REQ0到3[1]位的值和IPI0FLG1寄存器的值已经从初始值更改，PE1将0FH写入IPI0FCLRS（&#x3D; IPI0FCLR1）寄存器，以清除IPI0REQ0到3[1]位和IPI0FLG1寄存器的位。如果IPI0REQ0到3[1]位和IPI0FLG1寄存器的值是初始值，例如硬件复位后，则不需要执行此清除操作。</p>
+<p>接下来，PE1将01H写入IPI0ENS（&#x3D; IPI0EN1）寄存器，以接受从PE0到PE1的中断请求。与清除寄存器类似，完成使能寄存器的设置后，PE1可以接受来自PE0的中断请求。</p>
+<p>(2) 由控制 PE 执行的初始设置<br>以下显示了来自接收 PE 以外的 PE 的初始设置示例。在本节中，为方便起见，执行初始设置的 PE 被称为控制 PE。图 3.41 显示了由 PE3（控制 PE）进行的 IPIR 通道 0 的初始设置示例。在此图中，省略了每个寄存器的 PE0 至 PE3 位。</p>
+<p>首先，如果 IPIR 已经被使用，并且位 IPI0REQ0 至 3[1] 的值和 IPI0FLG1 寄存器的值已从初始值更改，则 PE3 写入 0FH 到 IPI0FCLR1 寄存器，以清除位 IPI0REQ0 至 3[1] 和 IPI0FLG1 寄存器。如果位 IPI0REQ0 至 3[1] 的值和 IPI0FLG1 寄存器的值为初始值，例如在硬件重置后，则不需要此清除操作。</p>
+<p>接下来，PE3 写入 01H 到 IPI0EN1 寄存器，以接受来自 PE0 到 PE1 的中断请求。与清除寄存器类似，在设置启用寄存器后，PE1 可以接受来自 PE0 的中断请求。</p>
+<h6 id="3-2-处理器间中断请求"><a href="#3-2-处理器间中断请求" class="headerlink" title="3.2 处理器间中断请求"></a>3.2 处理器间中断请求</h6><p>图 3.42 显示了 PE0 使用 IPIR 通道 0 向 PE1 发送处理器间中断请求时的操作示例。在此图中，省略了每个寄存器的 PE0 至 PE3 位。在此示例中，初始设置预先设置为 IPI0EN1，以启用来自 PE0 的处理器间中断请求。有关初始设置的操作示例，请参见第 3.4.3.1 节，初始设置。以下描述了通过自寄存器访问寄存器的示例。</p>
+<p>首先，作为发送 PE 的 PE0 读取 IPI0REQS (&#x3D; IPI0REQ0) 寄存器，并检查 IPI0REQS[1] (&#x3D; IPI0REQ0[1]) 位的值是否为 0B。如果 IPI0REQS[1] (&#x3D; IPI0REQ0[1]) 位的值为 1B，这意味着来自 PE0 到 PE1 的前一个处理器间中断请求尚未被 PE1 接受，因此无法发出新的处理器间中断请求。如果确认 IPI0REQS[1] (&#x3D; IPI0REQ0[1]) 位的值为 0B，从而启用了来自 PE0 到 PE1 的处理器间中断请求，PE0 将 IPI0REQS[1] (&#x3D; IPI0REQ0[1]) 位设置为 1B，以发出来自 PE1 的处理器间中断请求。由于 IPI0EN1 寄存器启用了来自 PE0 到 PE1 的处理器间中断，当 PE0 将 IPI0REQS[1] (&#x3D; IPI0REQ0[1]) 位设置为 1B 时，IPI0FLG1[1] 位会自动设置为 1B，并从 IPIR 向 PE1 输出处理器间中断请求信号。</p>
+<p>图 3.43 显示了 PE1 使用 IPIR 通道 0 接收来自 PE0 的处理器间中断请求时的操作示例。当接收 PE 的 PE1 接收处理器间中断请求信号时，它读取 IPI0FLGS (&#x3D; IPI0FLG1) 寄存器，并且由于 IPI0FLGS[0] (&#x3D; IPI0FLG1[0]) 位的值为 1B，它识别到处理器间中断请求已从 PE0 发送。但如果请求方清除了请求，其值为 0B。在验证处理器间中断的来源后，PE1 将 IPI0FCLRS[0] (&#x3D; IPI0FCLR1[0]) 位设置为 1B，处理转变为处理器间中断处理。当 PE1 将 IPI0FCLRS[0] (&#x3D; IPI0FCLR1[0]) 位设置为 1B 时，IPI0REQS[1] (&#x3D; IPI0REQ0[1]) 位和 IPI0FLGS (&#x3D; IPI0FLG1) 位会自动清除。</p>
+<p>图 3.44 显示了从接收 PE（PE1）进行 IPIR 初始设置，到发送 PE（PE0）发送处理器间中断请求，再到接收 PE（PE1）完成接收处理器间中断请求的操作流程。</p>
+<p>请注意，<strong>如果在源寄存器被接收 PE 使用清除寄存器清除之前，向相同接收 PE 生成新的处理器间中断请求，源寄存器中对应于新发送 PE 的位将设置为 1B，但处理器间中断请求信号保持高电平，第二个和后续的处理器间中断请求将不会输出。因此，接收 PE 在接收到处理器间中断请求时发生多个源时的处理必须由软件控制。</strong></p>
+<p>发送 PE 可以通过检查请求寄存器的值来检测前一个处理器间中断请求是否已成功被接收 PE 接收。为了通过轮询循环监视请求寄存器，建议在轮询循环中执行休眠指令，以避免长时间占用总线系统。</p>
+<p>3.4 请求屏蔽功能<br>通过IPInENm寄存器设置禁用的互PE中断请求将被忽略。图3.47展示了当禁用的PE请求互PE中断时的操作示例。在这个图中，每个寄存器的PE0到PE3位被省略。在这个示例中，初始设置提前设定为IPI0EN1，以禁止从PE2到PE1的互PE中断请求。关于初始设置的操作示例，请参见第3.4.3.1节，初始设置。</p>
+<p>即使PE2将IPI0REQS[1]（&#x3D; IPI0REQ2[1]）设置为1B，以请求PE1发出互PE中断，由于从PE2到PE1的互PE中断被禁止，因此IPInFLG1[2]位保持为0B，并且不会输出中断请求信号。</p>
+<p>如果通过IPInENm寄存器设置禁用的发送PE意外地将1B写入IPI0REQm寄存器，可以使用IPInRCLRm寄存器清除IPI0REQm寄存器。详情请参见第3.4.3.5节，互PE中断请求清除功能。</p>
+<h6 id="3-3-请求屏蔽功能"><a href="#3-3-请求屏蔽功能" class="headerlink" title="3.3 请求屏蔽功能"></a>3.3 请求屏蔽功能</h6><p>通过IPInENm寄存器设置禁用的互PE中断请求将被忽略。图3.47展示了当禁用的PE请求互PE中断时的操作示例。在这个图中，每个寄存器的PE0到PE3位被省略。在这个示例中，初始设置提前设定为IPI0EN1，以禁止从PE2到PE1的互PE中断请求。关于初始设置的操作示例，请参见第3.4.3.1节，初始设置。</p>
+<p>即使PE2将IPI0REQS[1]（&#x3D; IPI0REQ2[1]）设置为1B，以请求PE1发出PE间中断，由于从PE2到PE1的互PE中断被禁止，因此IPInFLG1[2]位保持为0B，并且不会输出中断请求信号。</p>
+<p>如果通过IPInENm寄存器设置禁用的发送PE意外地将1B写入IPI0REQm寄存器，可以使用IPInRCLRm寄存器清除IPI0REQm寄存器。详情请参见第3.4.3.5节，互PE中断请求清除功能。</p>
+<h6 id="3-4-多系统的互PE中断请求"><a href="#3-4-多系统的互PE中断请求" class="headerlink" title="3.4 多系统的互PE中断请求"></a>3.4 多系统的互PE中断请求</h6><p>如果发送PE和接收PE的组合不同，可以在IPIR的一个通道上同时输出多个PE间中断请求。例如，可以在IPIR的通道1上同时输出PE间中断请求A（PE0到PE1）和中断请求B（PE1到PE0）。当发送PE和接收PE的组合不同时，每个寄存器独立操作，因此可以同时输出多个互PE中断请求。</p>
+<h6 id="3-5-处理器间中断请求清除功能"><a href="#3-5-处理器间中断请求清除功能" class="headerlink" title="3.5 处理器间中断请求清除功能"></a>3.5 处理器间中断请求清除功能</h6><p>通过将 IPInRCLRm[x] 位设置为 1B，可以清除 IPInREQm[x] 位，从而取消来自发送 PE 的处理器间中断请求。如果 IPInENx[m] 位启用了来自发送 PE 的处理器间中断请求，当清除 IPInREQm[x] 位时，IPInFLGx[m] 位也会同时清除。但是，在进行取消处理时，接收 PE 可能在某些情况下接受处理器间中断。</p>
+<p>图 3.49 显示了清除来自 PE0 和 PE2 到 PE1 的处理器间中断请求的操作示例。当 PE0 将 1B 写入 IPI0RCLRS[1] (&#x3D; IPI0RCLR0[1]) 位时，IPI0REQ0[1] 位被清除。此外，由于 IPI0EN1 寄存器设置启用了来自 PE0 到 PE1 的处理器间中断请求，因此 IPI0FLG1[0] 也被清除。</p>
+<p>当 PE2 将 1B 写入 IPI0RCLRS[1] (&#x3D; IPI0RCLR2[1]) 位时，IPI0REQ2[1] 位被清除。在这里，由于 IPI0EN1 寄存器设置禁用了来自 PE2 到 PE1 的处理器间中断请求，因此 IPI0RCLR2 寄存器不影响 IPI0FLG1 寄存器的值。</p>
+<h5 id="4-虚拟化启用时的使用"><a href="#4-虚拟化启用时的使用" class="headerlink" title="4 虚拟化启用时的使用"></a>4 虚拟化启用时的使用</h5><h6 id="4-1-概述"><a href="#4-1-概述" class="headerlink" title="4.1 概述"></a>4.1 概述</h6><p>在本节中，VM 表示“主机或客户机”。</p>
+<p>IPIR 旨在支持从一个 PE 到另一个 PE 的中断。更确切地说，它是从源 PE 到目标 PE 的 INTC1。IPIR 寄存器的位为每个 PE 而不是每个 VM 准备。当它用于从一个 VM 到另一个 VM 的中断时，需要另外两个设置。</p>
+<p>目标 VM 使用 INTC1 的 EIBD 寄存器指定。源 VM 配置通过将不同的 SPID 分配给 VM 的保护功能间接实现。然后，通道的 PE 的寄存器只能由该 PE 的一个 VM 写入。非源 VM 的读取访问在正常使用中无害。IPIR 无法区分源 VM 到目标 VM。如果需要知道谁发送了中断，请通过某种方法发送 GPID 或避免时间相关的通道分配。</p>
+<p>还可以使用 IPIR 进行 PE 内中断，即在同一 PE 中从一个 VM 到另一个 VM 的中断。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/01/11/Renesas-CPU_System-Inter_Processor_Interrupt/" title="Renesas-RH850  CPU System -  Inter-Processor Interrupt">http://fengxun2017.github.io/2025/01/11/Renesas-CPU_System-Inter_Processor_Interrupt/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/01/08/Renesas-CPU_System-CPU-%20Ensuring_Coherency_after_Code_Flash_Programming/" rel="prev" title="Renesas-RH850  CPU System - CPU -  Ensuring Coherency after Code Flash Programming">
+                  <i class="fa fa-chevron-left"></i> Renesas-RH850  CPU System - CPU -  Ensuring Coherency after Code Flash Programming
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">464k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">9:41</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
