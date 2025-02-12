@@ -27,7 +27,7 @@
 <meta property="og:description" content="Renesas学习笔记Interrupts">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-01-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-01-22T15:11:20.525Z">
+<meta property="article:modified_time" content="2025-02-11T15:08:50.855Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
@@ -121,7 +121,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Overview"><span class="nav-number">1.</span> <span class="nav-text">1 Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-Outline"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 Outline</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-%E5%8A%9F%E8%83%BD%E6%A6%82%E8%BF%B0"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 功能概述</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Overview"><span class="nav-number">1.</span> <span class="nav-text">1 Overview</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-Outline"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 Outline</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-%E5%8A%9F%E8%83%BD%E6%A6%82%E8%BF%B0"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 功能概述</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Registers"><span class="nav-number">2.</span> <span class="nav-text">2 Registers</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#EIC0-%E8%87%B3-EIC767-%E2%80%94-EI-%E7%BA%A7%E4%B8%AD%E6%96%AD%E6%8E%A7%E5%88%B6%E5%AF%84%E5%AD%98%E5%99%A8-0-%E8%87%B3-767"><span class="nav-number">2.1.</span> <span class="nav-text">EIC0 至 EIC767 — EI 级中断控制寄存器 0 至 767</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#IMR0-%E8%87%B3-IMR23-%E2%80%94-EI-%E7%BA%A7%E4%B8%AD%E6%96%AD%E5%B1%8F%E8%94%BD%E5%AF%84%E5%AD%98%E5%99%A8-0-%E8%87%B3-23"><span class="nav-number">2.2.</span> <span class="nav-text">IMR0 至 IMR23 — EI 级中断屏蔽寄存器 0 至 23</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-Interrupt-Operation"><span class="nav-number">3.</span> <span class="nav-text">3 Interrupt Operation</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Level-Interrupts"><span class="nav-number">3.1.</span> <span class="nav-text">Level Interrupts</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Inter-Processor-Interrupts"><span class="nav-number">3.2.</span> <span class="nav-text">Inter-Processor Interrupts</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Broadcast-Interrupts"><span class="nav-number">3.3.</span> <span class="nav-text">Broadcast Interrupts</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E4%B8%AD%E6%96%AD"><span class="nav-number">3.4.</span> <span class="nav-text">软件中断</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#DTS-%E4%B8%AD%E6%96%AD%E5%90%88%E5%B9%B6%E5%8A%9F%E8%83%BD"><span class="nav-number">3.5.</span> <span class="nav-text">DTS 中断合并功能</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E5%A4%84%E7%90%86"><span class="nav-number">3.6.</span> <span class="nav-text">优先级处理</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -230,14 +230,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.2k</span>
+      <span>4.2k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>5 分钟</span>
     </span>
 </div>
 
@@ -341,6 +341,92 @@
 </ul>
 </li>
 </ul>
+<h5 id="2-Registers"><a href="#2-Registers" class="headerlink" title="2 Registers"></a>2 Registers</h5><h6 id="EIC0-至-EIC767-—-EI-级中断控制寄存器-0-至-767"><a href="#EIC0-至-EIC767-—-EI-级中断控制寄存器-0-至-767" class="headerlink" title="EIC0 至 EIC767 — EI 级中断控制寄存器 0 至 767"></a>EIC0 至 EIC767 — EI 级中断控制寄存器 0 至 767</h6><p>这些寄存器定义了对 EI 级中断的控制。每个 EI 中断源都有一个寄存器。 有关完整的中断源列表，请参见中断表。<br>除 EEICn 的 EIP[5:4] 位外，所有位与 EICn 共享（n 从 0 到 767，后续相同）。如果通道 n 设置为非广播通道（EIBDn.CST &#x3D; 0）并且通道 n 在 64 优先级模式下绑定到 PE（EIBDn.PEID &#x3D; m 和 PEm 的 INTCFG.EPL &#x3D; 1），则使用 EEICn 寄存器。EEICn 和 EICn 必须独占使用。 </p>
+<p>注意：<br>如果在外围模块生成相应的中断请求检测到边沿后（在 CPU 确认中断之前）立即将 EIRFn 位设置为 0，则请求可能会丢失。如果在外围模块生成第二个中断请求后立即将 EIOVn 位设置为 0，则溢出标志（EIOVn 位）可能会丢失。如果在 CPU 确认中断后立即将 EIRFn 位设置为 1，将会生成新的中断请求。这也适用于第 3.9.2 节中描述的位操作指令（set1、clr1、not1），即加载指令完成与后续指令生成的同步。对字节执行位操作指令不会影响其他字节。EIRFn 或 EIOVn 可能会因对字节的其他位进行位操作而被意外更新。 </p>
+<p><strong>EIC0 至 EIC767 寄存器内容</strong></p>
+<table>
+<thead>
+<tr>
+<th>Bit 位置</th>
+<th>Bit 名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>15</td>
+<td>EICTn</td>
+<td>此位指示中断检测类型。此位为只读。<br>0: 通过边沿检测<br>1: 通过电平检测<br>在 8 位或 16 位单元写入时，写入复位后的值。</td>
+</tr>
+<tr>
+<td>14, 13</td>
+<td>保留</td>
+<td>读时返回复位后的值。写时，写入复位后的值。</td>
+</tr>
+<tr>
+<td>12</td>
+<td>EIRFn</td>
+<td>中断请求标志<br>操作因中断输入接口而异。<br>0: 无中断请求（初始值）<br>1: 有中断请求<br>- 边沿检测<br>此标志在 CPU 核心确认其自身通道的中断请求时自动清除为 0。<br>- 电平检测<br>此位不能通过软件设置或清除。这是一个只读位。</td>
+</tr>
+<tr>
+<td>11, 8</td>
+<td>保留</td>
+<td>读时返回复位后的值。写时，写入复位后的值。</td>
+</tr>
+<tr>
+<td>7</td>
+<td>EIMKn</td>
+<td>中断屏蔽<br>如果该位设置为 1，由中断请求标志 (EIRFn) 设定的中断请求将被屏蔽，以禁止通道向 CPU 核心发出中断请求。未处理的中断不会报告，并且该通道的 PMEI 位在 ICSR 中未设置为 1。即使通过设置该位禁用了中断处理，输入的中断信号也不会被屏蔽，并且中断请求标志会设置。该位的状态也会反映在中断屏蔽寄存器 (IMR) 中。当通道的中断请求被 EIMKn &#x3D; 1 屏蔽时，EIRFn 仍然反映通道的中断请求，并且可以在软件中轮询。当 EIMKn 位清除时，来自该通道的中断请求将发送到 CPU 核心进行后续处理。EIMKn 位的状态也反映在相应的 IMRm 寄存器中。<br>0: 启用中断处理。<br>1: 禁用中断处理（初始值）。</td>
+</tr>
+<tr>
+<td>6</td>
+<td>EITBn</td>
+<td>中断向量方法选择<br>0: 直接向量方法<br>1: 表参考方法</td>
+</tr>
+<tr>
+<td>5</td>
+<td>EIOVn</td>
+<td>中断溢出<br>0: 无中断溢出<br>1: 在边沿检测模式 (mode_Eict[n] &#x3D; 0) 下，当 EICn.EIRF &#x3D; 1 时，EIINTn 发生。<br>此位与对 EICn.EIRF 的写访问无关。如果 EICn.EIRF&#x3D;1，EICn.EIOVn&#x3D;0，并且通过 8 位访问将 1 写入 EICn.EIRF，则不会设置 EICn.EIOV。<br>即使通过位操作指令对 EICn[7:0] 的其他位进行位操作，EICn.EIOV 位也可能被意外清除。为了避免这种情况，请使用 EEICn。</td>
+</tr>
+<tr>
+<td>4</td>
+<td>保留</td>
+<td>读时返回复位后的值。写时，写入复位后的值。</td>
+</tr>
+<tr>
+<td>3, 0</td>
+<td>EIPn</td>
+<td>这些位指定 16 个中断优先级级别（0: 最高优先级，15: 最低优先级）。<br>如果同时生成两个或更多 EI 级中断请求，则选择优先级较高的源，并将其发送到 CPU 核心。如果这些位指定的优先级相同，则选择具有较低默认优先级通道号的源。</td>
+</tr>
+</tbody></table>
+<p>注意<br>当通道 n 被定义为广播中断（EIBDn.CST&#x3D;1）时，在通道的初始配置后，必须将该通道的 EICn 寄存器中的 EIMKn 和 EIRFn 位设置为 0。在启用了 EIINTn 中断的期间，禁止屏蔽通道的中断处理（EIMKn&#x3D;1）。当需要屏蔽广播中断时，可以使用每个 PE 的 INTC1 中的 EIC4 至 EIC7 寄存器来屏蔽相应的广播中断。</p>
+<h6 id="IMR0-至-IMR23-—-EI-级中断屏蔽寄存器-0-至-23"><a href="#IMR0-至-IMR23-—-EI-级中断屏蔽寄存器-0-至-23" class="headerlink" title="IMR0 至 IMR23 — EI 级中断屏蔽寄存器 0 至 23"></a>IMR0 至 IMR23 — EI 级中断屏蔽寄存器 0 至 23</h6><p>这些寄存器是 EIC 寄存器中 EIMK 位的聚合。在 EIC 寄存器中设置 EIMK 位会反映在此寄存器中。同样地，在此寄存器中设置某个位也会反映在相应的 EIC 寄存器的 EIMK 位中。</p>
+<table>
+<thead>
+<tr>
+<th>Bit 位置</th>
+<th>Bit 名称</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>31 至 0</td>
+<td>EIMK (n × 32 + 31) 到 EIMK (n × 32 + 0)</td>
+<td>这些是 EI 级可屏蔽中断（INT）通道 0 到 767 的中断屏蔽位。<br>0: 启用中断处理<br>1: 禁用中断处理</td>
+</tr>
+</tbody></table>
+<p>注意：</p>
+<ul>
+<li>n &#x3D; 0 到 23 </li>
+<li>中断表中列出的给定通道号的保留 EIMK 位必须设置为 1。</li>
+</ul>
+<p>注意事项：<br>当通过写入 IMR1 到 23 寄存器来写入 EIMK 位时，仅允许相应通道中 EIBDn.PEID（n &#x3D; 32 到 767）寄存器中设置的 PE 进行访问。来自不同 PE 的写入不会更新 EIMK 位。</p>
+<p>当通道用作广播中断（EIBDn.CST&#x3D;1）时，通道对应的 EIMK 位必须设置为 0。</p>
+<h5 id="3-Interrupt-Operation"><a href="#3-Interrupt-Operation" class="headerlink" title="3 Interrupt Operation"></a>3 Interrupt Operation</h5><h6 id="Level-Interrupts"><a href="#Level-Interrupts" class="headerlink" title="Level Interrupts"></a>Level Interrupts</h6><p>有关Level Interrupts的操作，请参见第 6.5.1 节，Level Interrupts处理流程。</p>
+<h6 id="Inter-Processor-Interrupts"><a href="#Inter-Processor-Interrupts" class="headerlink" title="Inter-Processor Interrupts"></a>Inter-Processor Interrupts</h6><p>有关处理器间中断的操作，请参见第 3.4 节，处理器间中断。</p>
+<h6 id="Broadcast-Interrupts"><a href="#Broadcast-Interrupts" class="headerlink" title="Broadcast Interrupts"></a>Broadcast Interrupts</h6><p>INTC2 具有广播中断功能。通过此功能，EIINTn 请求输入被作为广播通知 0-3 转移到每个 CPU 的 INTC1 的 EIINT4-7，而无需优先级判断。 如果使用广播功能，EIINTn 的中断检测类型必须是边沿检测。如果 EIINTn 的中断检测类型配置为电平检测，则无法激活广播功能（EIBDn.CST 无法设置）。 当设置 EIBDn.CST 时，EIINTn 用作广播中断源。 EIBDn.BCP[1:0] 确定触发哪个广播中断端口（EIINT4-7）。禁止将多个中断通道分配到同一个广播中断（EIINT4-7）。 有关广播中断的操作，请参见第 6.3.5 节，EIBD32 至 EIBD767 — EI 级中断绑定寄存器 32 至 767 和第 6.5.4 节，广播中断处理流程。</p>
+<h6 id="软件中断"><a href="#软件中断" class="headerlink" title="软件中断"></a>软件中断</h6><p>有关软件中断的操作，请参见第 6.3.12 节，SINTR0 至 SINTR3 — 软件中断寄存器和第 6.4.6 节，优先级处理。</p>
+<h6 id="DTS-中断合并功能"><a href="#DTS-中断合并功能" class="headerlink" title="DTS 中断合并功能"></a>DTS 中断合并功能</h6><p>最多 128 个传输结束中断和最多 128 个传输计数匹配中断被汇聚为一种类型的中断，每 32 个中断为一个单元。所有 DTS 通道的 128 位组合成 8 个寄存器 PINT0 至 PINT7。如果同一状态寄存器（PINT0 至 PINT7）中的多个 DTS 通道请求中断，则仅设置该寄存器中最低 DTS 通道的位。有关更多信息，请参见第 6.3.13 节，PINTn + x — 外围中断状态寄存器和第 6.3.14 节，PINTCLRn + x — 外围中断状态清除寄存器。</p>
+<h6 id="优先级处理"><a href="#优先级处理" class="headerlink" title="优先级处理"></a>优先级处理</h6><p>FENMI 和 FEINT 没有优先级控制，因为它们只有一个通道。 EI 级可屏蔽中断的优先级在每个 PE 的 EIINT0-31 和 EIINT32-767 内部确定。优先级由每个中断通道指定的 64 个中断优先级级别（EEICn.EIPn[5:0]，EICn.EIPn[3:0]）确定。在具有相同优先级级别的通道中，优先选择通道号较低的通道。</p>
 
     </div>
 
@@ -408,14 +494,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">486k</span>
+    <span title="站点总字数">489k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:07</span>
+    <span title="站点阅读时长">10:11</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
