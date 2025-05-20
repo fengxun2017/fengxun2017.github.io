@@ -131,13 +131,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-count">90</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -169,6 +169,224 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/05/12/Armv7-M%20Architecture/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/05/12/Armv7-M%20Architecture/" class="post-title-link" itemprop="url">未命名</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-12 00:50:37" itemprop="dateCreated datePublished" datetime="2025-05-12T00:50:37+08:00">2025-05-12</time>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>782</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>1 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="1-V7-M-架构扩展："><a href="#1-V7-M-架构扩展：" class="headerlink" title="1 V7-M 架构扩展："></a>1 V7-M 架构扩展：</h1><h2 id="1-1-DSP-扩展（DSP-extension）"><a href="#1-1-DSP-扩展（DSP-extension）" class="headerlink" title="1.1 DSP 扩展（DSP extension）"></a>1.1 DSP 扩展（DSP extension）</h2><p>该可选扩展为 Armv7-M Thumb 指令集 添加了 Arm 数字信号处理（DSP）指令。这些指令包括饱和运算（saturating）和无符号单指令多数据（SIMD）指令。 如果 Armv7-M 处理器包含 DSP 扩展，那么该实现被称为 Armv7E-M，并且在指令详情章节中，会明确标注这些额外的指令属于 Armv7E-M 指令。</p>
+<h2 id="1-2-浮点扩展（Floating-point-Extension）"><a href="#1-2-浮点扩展（Floating-point-Extension）" class="headerlink" title="1.2 浮点扩展（Floating-point Extension）"></a>1.2 浮点扩展（Floating-point Extension）</h2><p>该可选扩展为 Armv7-M Thumb 指令集 添加了 浮点运算指令，并且有两个不同的版本：</p>
+<ul>
+<li>FPv4-SP: 这是 VFPv4-D16 扩展的单精度实现，该扩展定义于 Armv7-A 和 Armv7-R 架构配置文件。</li>
+<li>FPv5: 该扩展额外支持 双精度计算 并提供了更多的指令。</li>
+</ul>
+<p><strong>浮点扩展的完整分类（Floating-point Extension full characterizations）如下</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>扩展版本</th>
+<th>仅支持单精度</th>
+<th>支持单精度和双精度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>FPv4-SP</strong></td>
+<td>FPv4-SP-D16-M</td>
+<td>不适用</td>
+</tr>
+<tr>
+<td><strong>FPv5</strong></td>
+<td>FPv5-SP-D16-M</td>
+<td>FPv5-D16-M</td>
+</tr>
+</tbody></table>
+<h1 id="2-Application-Level-Programmers’-Model"><a href="#2-Application-Level-Programmers’-Model" class="headerlink" title="2 Application Level Programmers’ Model"></a>2 Application Level Programmers’ Model</h1><h2 id="2-1-About-the-application-level-programmers’-model"><a href="#2-1-About-the-application-level-programmers’-model" class="headerlink" title="2.1  About the application level programmers’ model"></a>2.1  About the application level programmers’ model</h2><p>操作系统同时支持 特权模式 和 非特权模式，但应用程序通常运行在非特权模式下。</p>
+<p>应用程序在 非特权模式（Unprivileged Mode） 运行时：</p>
+<ul>
+<li>允许操作系统为其分配 系统资源，这些资源可以是 专用（Private） 或 共享（Shared） 资源。</li>
+<li>提供一定程度的 进程和任务隔离保护，从而帮助操作系统免受 故障应用程序 的影响。</li>
+</ul>
+<p>处于 非特权模式 运行意味着处理器运行在 线程模式（Thread Mode）。</p>
+<h3 id="2-1-1-Interaction-with-the-system-level-architecture"><a href="#2-1-1-Interaction-with-the-system-level-architecture" class="headerlink" title="2.1.1 Interaction with the system level architecture"></a>2.1.1 Interaction with the system level architecture</h3>
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/05/12/tricore-architecture-overview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2025/05/12/tricore-architecture-overview/" class="post-title-link" itemprop="url">tricore architecture overview</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-12 00:00:00" itemprop="dateCreated datePublished" datetime="2025-05-12T00:00:00+08:00">2025-05-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tricore/" itemprop="url" rel="index"><span itemprop="name">Tricore</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <center>
+tricore architecture overview
+</center>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/05/12/tricore-architecture-overview/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -226,14 +444,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.9k</span>
+      <span>2.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -993,212 +1211,6 @@
 
 
 
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="feng xun">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fx">
-      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | fx">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/" class="post-title-link" itemprop="url">Renesas-RH850  CPU System -  Inter-CPU Overview</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-01-08 00:00:00" itemprop="dateCreated datePublished" datetime="2025-01-08T00:00:00+08:00">2025-01-08</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Renesas/" itemprop="url" rel="index"><span itemprop="name">Renesas</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>2.2k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>3 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <center>
-
-<p>Renesas学习笔记<br>CPU System :  Inter-CPU Overview</p>
-</center>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/01/08/Renesas-CPU_System-Inter_CPU_Overview/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/01/07/Renesas-CPU_System-CPU-Hazard_Control/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="feng xun">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="fx">
-      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | fx">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/01/07/Renesas-CPU_System-CPU-Hazard_Control/" class="post-title-link" itemprop="url">Renesas-RH850  CPU System - CPU - Hazard Control</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2025-01-07 00:00:00" itemprop="dateCreated datePublished" datetime="2025-01-07T00:00:00+08:00">2025-01-07</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/Renesas/" itemprop="url" rel="index"><span itemprop="name">Renesas</span></a>
-        </span>
-    </span>
-
-  
-    <span class="post-meta-break"></span>
-    <span class="post-meta-item" title="本文字数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-file-word"></i>
-      </span>
-      <span class="post-meta-item-text">本文字数：</span>
-      <span>7.5k</span>
-    </span>
-    <span class="post-meta-item" title="阅读时长">
-      <span class="post-meta-item-icon">
-        <i class="far fa-clock"></i>
-      </span>
-      <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>9 分钟</span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <center>
-
-<p>Renesas学习笔记<br>CPU System : CPU - Hazard Control</p>
-</center>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/01/07/Renesas-CPU_System-CPU-Hazard_Control/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
   <nav class="pagination">
     <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
@@ -1224,14 +1236,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">491k</span>
+    <span title="站点总字数">496k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:13</span>
+    <span title="站点阅读时长">10:20</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

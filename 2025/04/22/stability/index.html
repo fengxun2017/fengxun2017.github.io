@@ -27,7 +27,7 @@
 <meta property="og:description" content="稳定性问题总结">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-04-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-04-22T17:32:48.435Z">
+<meta property="article:modified_time" content="2025-04-24T14:33:13.344Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
@@ -134,13 +134,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-count">90</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -230,14 +230,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>1.9k</span>
+      <span>2.3k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>2 分钟</span>
+      <span>3 分钟</span>
     </span>
 </div>
 
@@ -304,15 +304,25 @@
 </ul>
 <p><strong>处理方法</strong>：根据使用场景，合理排布结构体成员排布、地址对齐声明。</p>
 <h3 id="6-调度异常相关问题："><a href="#6-调度异常相关问题：" class="headerlink" title="6 调度异常相关问题："></a>6 调度异常相关问题：</h3><ul>
-<li>单核锁 mutex 使用不规范，形成死锁。</li>
-<li>临界区（单核）使用不规范<ul>
+<li><p>单核锁 mutex 使用不规范，形成死锁。</p>
+</li>
+<li><p>临界区（单核）使用不规范</p>
+<ul>
 <li>在临界区中使用会导致系统阻塞的api，阻塞型api内部可能因当前api条件不满足而让出cpu，又由于在临界区内导致无法成功让出cpu，可能不符合os代码逻辑的预期，导致系统异常。</li>
 <li>在临界区中使用的 api，内部可能又打开了中断，引发非预期调度，破坏了预期的保护目的</li>
 </ul>
 </li>
-<li>核间锁（spinlock）使用不规范，spinlock一般由硬件提供相应机制实现。使用spinlock应该保护逻辑简单、纯粹的代码。如果在保护代码段中使用了 OS 中会引起调度的api，则可能会引入并发问题，破坏保护的初衷。</li>
-<li>在受控中断中，使用了错误的api接口（非中断专用接口），在不受控中断中，使用了os 的api（通常os设计上，不允许这种使用场景，会破坏内核中的临界区保护目的）</li>
-<li>跨核保护场景，错误使用了单核 mutex 进行保护（导致core A上的任务被异常调度到 core B上）。</li>
+<li><p>核间锁（spinlock）使用不规范，spinlock一般由硬件提供相应机制实现。使用spinlock应该保护逻辑简单、纯粹的代码。</p>
+<ul>
+<li>在保护代码段中使用了 OS 中会引起调度的api，则可能会引入并发问题或系统异常。</li>
+<li>在单核中使用spinlock保护数据，如果spinlock的实现没有关闭OS调度&#x2F;中断，则使用spinklock保护数据可能在spinlock保护区中，主动&#x2F;被动触发了OS调度并切换到另一个高优先级任务中，如果该任务也使用相同的spinlock，则形成死锁。处理措施：spinlock的实现，在获取api中应该关闭调度&#x2F;中断，释放api中恢复调度&#x2F;中断。</li>
+<li>多核场景下，访问多个spinlock时顺序不一致。例如，core0中的task A先获取spinlock 1，再获取spinlock 2，core1中的taskc先获取spinlock 2，再获取spinlock 1。这种情况下则可能形成死锁，处理措施：如果某个资源的获取涉及到多个spinlock的获取，则必须限定获取顺序。</li>
+</ul>
+</li>
+<li><p>在受控中断中，使用了错误的api接口（非中断专用接口），在不受控中断中，使用了os 的api（通常os设计上，不允许这种使用场景，会破坏内核中的临界区保护目的）</p>
+</li>
+<li><p>跨核保护场景，错误使用了单核 mutex 进行保护（导致core A上的任务被异常调度到 core B上）。</p>
+</li>
 </ul>
 <p><strong>处理方法</strong>：识别保护场景，并且做到任何保护方式，所保护的代码尽量做到为纯逻辑代码、不涉及 os 或其它模块api的调用。</p>
 <h3 id="7-资源使用问题："><a href="#7-资源使用问题：" class="headerlink" title="7 资源使用问题："></a>7 资源使用问题：</h3><ul>
@@ -361,6 +371,9 @@
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2025/05/12/tricore-architecture-overview/" rel="next" title="tricore architecture overview">
+                  tricore architecture overview <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -393,14 +406,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">491k</span>
+    <span title="站点总字数">496k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:13</span>
+    <span title="站点阅读时长">10:20</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
