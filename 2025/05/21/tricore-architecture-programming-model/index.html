@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Programming Model">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tricore architecture - Programming Model">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/05/21/tricore-architecture-programming-model/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="Programming Model">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-05-26T16:04:29.433Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/05/21/tricore-architecture-programming-model/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/05/21/tricore-architecture-programming-model/","path":"2025/05/21/tricore-architecture-programming-model/","title":"tricore architecture - Programming Model"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>tricore architecture - Programming Model | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">1 数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E5%B8%83%E5%B0%94%E5%80%BC%EF%BC%88Boolean%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 布尔值（Boolean）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E4%BD%8D%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%88Bit-String%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 位字符串（Bit String）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E5%AD%97%E8%8A%82%EF%BC%88Byte%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 字节（Byte）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E6%9C%89%E7%AC%A6%E5%8F%B7%E5%88%86%E6%95%B0%EF%BC%88Signed-Fraction%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 有符号分数（Signed Fraction）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-%E5%9C%B0%E5%9D%80%EF%BC%88Address%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 地址（Address）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-%E6%9C%89%E7%AC%A6%E5%8F%B7%E5%92%8C%E6%97%A0%E7%AC%A6%E5%8F%B7%E6%95%B4%E6%95%B0%EF%BC%88Signed-and-Unsigned-Integers%EF%BC%89"><span class="nav-number">1.6.</span> <span class="nav-text">1.6 有符号和无符号整数（Signed and Unsigned Integers）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-IEEE-754-%E5%8D%95%E7%B2%BE%E5%BA%A6%E6%B5%AE%E7%82%B9%E6%95%B0%EF%BC%88IEEE-754-Single-Precision-Floating-Point-Number%EF%BC%89"><span class="nav-number">1.7.</span> <span class="nav-text">1.7 IEEE-754 单精度浮点数（IEEE-754 Single-Precision Floating-Point Number）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F%EF%BC%88Data-Formats%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">2 数据格式（Data Formats）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%AF%B9%E9%BD%90%E8%A6%81%E6%B1%82%EF%BC%88Alignment-Requirements%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 对齐要求（Alignment Requirements）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Byte-Ordering"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Byte Ordering</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Memory-Model"><span class="nav-number">3.</span> <span class="nav-text">3 Memory Model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%BF%A1%E5%8F%B7%E9%87%8F%E4%B8%8E%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C"><span class="nav-number">4.</span> <span class="nav-text">4 信号量与原子操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%AF%BB%E5%9D%80%E6%A8%A1%E5%BC%8F%EF%BC%88Addressing-Modes%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">5 寻址模式（Addressing Modes）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E7%BB%9D%E5%AF%B9%E5%AF%BB%E5%9D%80%EF%BC%88Absolute-Addressing%EF%BC%89"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 绝对寻址（Absolute Addressing）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E5%9F%BA%E5%9C%B0%E5%9D%80-%E5%81%8F%E7%A7%BB%E5%AF%BB%E5%9D%80%EF%BC%88Base-Offset-Addressing%EF%BC%89"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 基地址 + 偏移寻址（Base + Offset Addressing）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E9%A2%84%E5%A2%9E%E9%87%8F%E5%92%8C%E9%A2%84%E5%87%8F%E9%87%8F%E5%AF%BB%E5%9D%80%EF%BC%88Pre-Increment-and-Pre-Decrement-Addressing%EF%BC%89"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 预增量和预减量寻址（Pre-Increment and Pre-Decrement Addressing）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-%E5%90%8E%E5%A2%9E%E9%87%8F%E5%92%8C%E5%90%8E%E5%87%8F%E9%87%8F%E5%AF%BB%E5%9D%80%EF%BC%88Post-Increment-and-Post-Decrement-Addressing%EF%BC%89"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 后增量和后减量寻址（Post-Increment and Post-Decrement Addressing）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-5-%E5%BE%AA%E7%8E%AF%E5%AF%BB%E5%9D%80%EF%BC%88Circular-Addressing%EF%BC%89"><span class="nav-number">5.5.</span> <span class="nav-text">5.5 循环寻址（Circular Addressing）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-6-%E4%BD%8D%E5%8F%8D%E8%BD%AC%E5%AF%BB%E5%9D%80%EF%BC%88Bit-Reverse-Addressing%EF%BC%89"><span class="nav-number">5.6.</span> <span class="nav-text">5.6 位反转寻址（Bit-Reverse Addressing）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-7-%E5%90%88%E6%88%90%E5%AF%BB%E5%9D%80%E6%A8%A1%E5%BC%8F%EF%BC%88Synthesized-Addressing-Modes%EF%BC%89"><span class="nav-number">5.7.</span> <span class="nav-text">5.7 合成寻址模式（Synthesized Addressing Modes）</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">90</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/05/21/tricore-architecture-programming-model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="tricore architecture - Programming Model | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          tricore architecture - Programming Model
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-21 00:00:00" itemprop="dateCreated datePublished" datetime="2025-05-21T00:00:00+08:00">2025-05-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tricore/" itemprop="url" rel="index"><span itemprop="name">Tricore</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+Programming Model
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h2 id="1-数据类型"><a href="#1-数据类型" class="headerlink" title="1 数据类型"></a>1 数据类型</h2><p>指令集支持以下数据类型的操作：</p>
+<ul>
+<li>布尔值（Boolean）</li>
+<li>位字符串（Bit String）</li>
+<li>字节（Byte）</li>
+<li>有符号分数（Signed Fraction）</li>
+<li>地址（Address）</li>
+<li>有符号和无符号整数（Signed and Unsigned Integers）</li>
+<li><strong>IEEE-754 单精度浮点数（Single-precision Floating-point Number）</strong></li>
+</ul>
+<p>注意：仅支持单精度浮点数。</p>
+<p>大多数指令针对特定的数据类型进行操作，而某些指令可用于处理多个数据类型。</p>
+<h3 id="1-1-布尔值（Boolean）"><a href="#1-1-布尔值（Boolean）" class="headerlink" title="1.1 布尔值（Boolean）"></a>1.1 布尔值（Boolean）</h3><p>布尔值仅有 TRUE（真） 或 FALSE（假）：</p>
+<ul>
+<li>TRUE：生成时的值为 1，测试时为 非零值。</li>
+<li>FALSE：值为 0。</li>
+</ul>
+<p>布尔值通常作为比较指令和逻辑指令的结果，并用于逻辑运算和条件跳转指令的源操作数。</p>
+<h3 id="1-2-位字符串（Bit-String）"><a href="#1-2-位字符串（Bit-String）" class="headerlink" title="1.2 位字符串（Bit String）"></a>1.2 位字符串（Bit String）</h3><p>位字符串是 一组紧密排列的位字段。<br>位字符串由逻辑指令、移位指令和位字段指令生成和使用。</p>
+<h3 id="1-3-字节（Byte）"><a href="#1-3-字节（Byte）" class="headerlink" title="1.3 字节（Byte）"></a>1.3 字节（Byte）</h3><p>字节是 8 位值，可用于表示字符或极短整数。不假设特定的编码格式。</p>
+<h3 id="1-4-有符号分数（Signed-Fraction）"><a href="#1-4-有符号分数（Signed-Fraction）" class="headerlink" title="1.4 有符号分数（Signed Fraction）"></a>1.4 有符号分数（Signed Fraction）</h3><p>该架构支持 16 位、32 位和 64 位 的 有符号分数数据，用于 DSP 算术运算。数据值采用最高位符号位：</p>
+<ul>
+<li>0 表示 正数（+）</li>
+<li>1 表示 负数（-）<br>后续位表示 隐含的二进制小数点和分数，其数值范围为 [-1,1)。</li>
+</ul>
+<h3 id="1-5-地址（Address）"><a href="#1-5-地址（Address）" class="headerlink" title="1.5 地址（Address）"></a>1.5 地址（Address）</h3><p>地址是 32 位无符号值，用于存储 内存地址。</p>
+<h3 id="1-6-有符号和无符号整数（Signed-and-Unsigned-Integers）"><a href="#1-6-有符号和无符号整数（Signed-and-Unsigned-Integers）" class="headerlink" title="1.6 有符号和无符号整数（Signed and Unsigned Integers）"></a>1.6 有符号和无符号整数（Signed and Unsigned Integers）</h3><p>有符号和无符号整数通常为 32位。当从内存加载到寄存器时，较短的有符号或无符号整数会被符号扩展（Sign-Extended）或 零扩展（Zero-Extended）到 32位。</p>
+<p><strong>多精度（Multi-precision）</strong><br>支持带进位的加法和减法，用于多精度整数运算。整数在移位和掩码操作中被视为位字符串。多精度移位可以通过 单精度移位（Single-precision Shifts）和位字段提取（Bit Field Extracts）组合实现。<br>备注：多精度计算用于处理 超大整数 和 高精度浮点数。</p>
+<h3 id="1-7-IEEE-754-单精度浮点数（IEEE-754-Single-Precision-Floating-Point-Number）"><a href="#1-7-IEEE-754-单精度浮点数（IEEE-754-Single-Precision-Floating-Point-Number）" class="headerlink" title="1.7 IEEE-754 单精度浮点数（IEEE-754 Single-Precision Floating-Point Number）"></a>1.7 IEEE-754 单精度浮点数（IEEE-754 Single-Precision Floating-Point Number）</h3><p>根据核心架构的具体实现，IEEE-754 浮点数可以通过协处理器硬件指令（Coprocessor Hardware Instructions）或软件库调用（Software Calls to a Library）进行支持。</p>
+<h2 id="2-数据格式（Data-Formats）"><a href="#2-数据格式（Data-Formats）" class="headerlink" title="2 数据格式（Data Formats）"></a>2 数据格式（Data Formats）</h2><p>所有通用寄存器（GPRs，General Purpose Registers） 均为 32 位宽，大多数指令操作 32 位字（Word） 数据。</p>
+<p>当 字节（Byte）或半字（Half-word）数据元素从内存加载时，它们会被 自动符号扩展（Sign-Extended）或零扩展（Zero-Extended） 以填充寄存器。</p>
+<p>扩展类型 由 加载指令（Load Instruction） 隐式决定：</p>
+<ul>
+<li>LD.B：加载 字节 并进行 符号扩展。</li>
+<li>LD.BU：加载 字节 并进行 零扩展。</li>
+</ul>
+<p>支持的数据格式</p>
+<ul>
+<li>位（Bit）</li>
+<li>字节（Byte）：有符号（Signed）、无符号（Unsigned）</li>
+<li>半字（Half-word）：有符号（Signed）、无符号（Unsigned）、分数（Fraction）</li>
+<li>字（Word）：有符号（Signed）、无符号（Unsigned）、分数（Fraction）、浮点数（Floating-point）</li>
+<li>48 位（48-bit）：有符号（Signed）、无符号（Unsigned）、分数（Fraction）</li>
+<li>双字（Double-word）：有符号（Signed）、无符号（Unsigned）、分数（Fraction）</li>
+</ul>
+<h3 id="2-1-对齐要求（Alignment-Requirements）"><a href="#2-1-对齐要求（Alignment-Requirements）" class="headerlink" title="2.1 对齐要求（Alignment Requirements）"></a>2.1 对齐要求（Alignment Requirements）</h3><p>TriCore 架构对 地址（Address） 和 数据（Data） 的对齐要求有所不同：</p>
+<ul>
+<li>地址变量：存入或加载到 地址寄存器（Address Register） 时，必须 按字（Word）对齐。</li>
+<li>数据：无论数据大小如何,可以在 半字（Half-Word）边界 上对齐（除非有特殊说明）。这使得 DSP 应用 可以在 半字边界 上加载或存储 两个或四个 16 位数据元素，以支持 打包算术运算（Packed Arithmetic Operations）。</li>
+</ul>
+<p>开发人员需要注意以下限制：</p>
+<ul>
+<li>LDMST、CMPSWAP.W、SWAPMSK.W 和 SWAP.W 指令 需要 按字（Word）对齐。</li>
+<li>字节操作（LD.B、ST.B、LD.BU、ST.T） 可以 按字节（Byte）对齐。</li>
+<li>所有外设空间访问 必须 自然对齐（Naturally Aligned，即根据访问大小对齐），但 双字（Double-Word）访问 可以 按字（Word）对齐。</li>
+</ul>
+<p><strong>非外设空间对齐规则：</strong></p>
+<table>
+<thead>
+<tr>
+<th>Access Type</th>
+<th>Access Size</th>
+<th>Alignment of Address in Memory</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Load, Store Data Register</td>
+<td>Byte</td>
+<td>Byte (1)</td>
+</tr>
+<tr>
+<td></td>
+<td>Half-Word</td>
+<td>2 bytes (2)</td>
+</tr>
+<tr>
+<td></td>
+<td>Word</td>
+<td>2 bytes (2)</td>
+</tr>
+<tr>
+<td></td>
+<td>Double-Word</td>
+<td>2 bytes (2)</td>
+</tr>
+<tr>
+<td>Load, Store Address Register</td>
+<td>Word</td>
+<td>4 bytes (4)</td>
+</tr>
+<tr>
+<td></td>
+<td>Double-Word</td>
+<td>4 bytes (4)</td>
+</tr>
+<tr>
+<td>SWAP.W, LDMST</td>
+<td>Word</td>
+<td>4 bytes (4)</td>
+</tr>
+<tr>
+<td>CMPSWAP.W, SWAPMSK.W</td>
+<td>Word</td>
+<td>4 bytes (4)</td>
+</tr>
+<tr>
+<td>ST.T</td>
+<td>Byte</td>
+<td>Byte (1)</td>
+</tr>
+<tr>
+<td>Context Load&#x2F;Store&#x2F;Restore&#x2F;Save</td>
+<td>16 x 32-bit registers</td>
+<td>64 bytes (64)</td>
+</tr>
+</tbody></table>
+<br>
+
+<p><strong>外设空间对齐规则：</strong></p>
+<table>
+<thead>
+<tr>
+<th>Access Type</th>
+<th>Access Size</th>
+<th>Alignment of Address in Memory</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Load, Store Data Register</td>
+<td>Byte</td>
+<td>Byte (1)</td>
+</tr>
+<tr>
+<td></td>
+<td>Half-Word</td>
+<td>2 bytes (2)</td>
+</tr>
+<tr>
+<td></td>
+<td>Word</td>
+<td>4 bytes (4)</td>
+</tr>
+<tr>
+<td></td>
+<td>Double-Word</td>
+<td>8 bytes (8)</td>
+</tr>
+<tr>
+<td>Load, Store Address Register</td>
+<td>Word</td>
+<td>4 bytes (4)</td>
+</tr>
+<tr>
+<td></td>
+<td>Double-Word</td>
+<td>8 bytes (8)</td>
+</tr>
+<tr>
+<td>SWAP.W, LDMST, ST.T</td>
+<td>Word</td>
+<td>4 bytes (4)</td>
+</tr>
+<tr>
+<td>CMPSWAP.W, SWAPMSK.W</td>
+<td>Word</td>
+<td>4 bytes (4)</td>
+</tr>
+<tr>
+<td>Context Load&#x2F;Store&#x2F;Restore&#x2F;Save</td>
+<td>16 x 32-bit registers</td>
+<td>Not Permitted</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-Byte-Ordering"><a href="#2-2-Byte-Ordering" class="headerlink" title="2.2 Byte Ordering"></a>2.2 Byte Ordering</h3><p>数据内存和 CPU 寄存器以小端格式存储，最低有效字节在低地址。</p>
+<h2 id="3-Memory-Model"><a href="#3-Memory-Model" class="headerlink" title="3 Memory Model"></a>3 Memory Model</h2><p>TriCore 处理器架构采用 32 位地址宽度，可访问 最多 4GB 内存。其地址空间被划分为 16 个区域或段（[0<sub>H</sub> - F<sub>H]</sub>），每个段大小为 256MB。地址的 高 4 位 用于选择特定的段，每个段的 <strong>前 16KB 可以使用 绝对寻址（Absolute Addressing） 访问</strong>。</p>
+<p><strong>数据访问与地址计算</strong><br>许多数据访问使用 基地址寄存器（Base Address Register） 加上 位移量（Displacement） 计算得到地址。<strong>位移量不能跨越段边界，否则会触发 MEM 陷阱（MEM Trap）</strong>。这一限制确保可以 直接从基地址确定访问的段。</p>
+<p><strong>物理内存属性（Physical Memory Attributes）</strong><br>段 [0<sub>H</sub> - 7<sub>H</sub>] 的物理内存属性取决于具体实现：如果 MMU（内存管理单元） 存在且启用，这些段被视为 虚拟地址，必须进行 地址转换。<br>如果 MMU 不存在，访问特性取决于具体实现。</p>
+<p><strong>物理内存地址（Physical Memory Addresses）</strong><br>段 F<sub>H</sub> 保证用于 外设空间（Peripheral Space）：所有访问都是非推测性（Non-Speculative）。User-0 模式无法访问。<br>非推测性：</p>
+<ul>
+<li>严格顺序性：所有操作按程序代码的顺序执行，不提前执行可能不需要的指令（如分支预测后的指令）。</li>
+<li>无预测性：不基于历史行为或统计模型推测未来的操作路径（如跳过未确定的分支）。</li>
+</ul>
+<p>核心特殊功能寄存器 CSFRs（Core Special Function Registers） 映射到 64KB 的内存空间。该 64KB 空间的基地址取决于具体实现。</p>
+<h2 id="4-信号量与原子操作"><a href="#4-信号量与原子操作" class="headerlink" title="4 信号量与原子操作"></a>4 信号量与原子操作</h2><p>以下指令以 原子方式（Atomic Fashion） 读取和&#x2F;或写入内存：</p>
+<ul>
+<li>LDMST（加载、修改、存储）</li>
+<li>SWAP.W（寄存器与内存交换）</li>
+<li>ST.T（存储位）</li>
+<li>CMPSWAP.W（条件交换）</li>
+<li>SWAPMSK.W（掩码交换）</li>
+</ul>
+<p>LDMST 指令使用掩码寄存器（Mask Register），将 源寄存器（Source Register） 的选定位写入 内存字（Memory Word）。但 LDMST 不返回值，因此 不能用于二进制信号量（Binary Semaphore）的“测试并设置（Test and Set）”操作。</p>
+<p>如果启用了内存保护（Memory Protection），则 LDMST、CMPSWAP.W、SWAPMSK.W、SWAP.W 或 ST.T 指令的有效地址 必须位于 同时具有读写权限的范围内。</p>
+<p>CMPSWAP.W 指令：条件交换，即 仅在特定条件满足时，才将 源寄存器的值 交换到 内存字。<br>SWAPMSK.W 指令：通过掩码（Mask）交换 源寄存器与内存字的内容。</p>
+<p><strong>原子指令的执行会强制完成 所有在其之前的内存访问</strong>。确保任何缓冲状态（Buffered State） 在 原子操作执行前 被 正确写入内存。</p>
+<h2 id="5-寻址模式（Addressing-Modes）"><a href="#5-寻址模式（Addressing-Modes）" class="headerlink" title="5 寻址模式（Addressing Modes）"></a>5 寻址模式（Addressing Modes）</h2><p>寻址模式允许 加载（Load） 和 存储（Store） 指令访问 简单数据元素，如：</p>
+<ul>
+<li>记录（Records）</li>
+<li>随机访问和顺序访问数组（Randomly and Sequentially Accessed Arrays）</li>
+<li>堆栈（Stacks）</li>
+<li>循环缓冲区（Circular Buffers）</li>
+</ul>
+<p>这些数据元素的宽度可以是 8 位、16 位、32 位或 64 位。TriCore 架构支持 七种寻址模式。</p>
+<table>
+<thead>
+<tr>
+<th><strong>寻址模式（Addressing Mode）</strong></th>
+<th><strong>地址寄存器使用（Address Register Use）</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>绝对寻址（Absolute）</strong></td>
+<td>无（None）</td>
+</tr>
+<tr>
+<td><strong>基地址 + 短偏移（Base + Short Offset）</strong></td>
+<td>地址寄存器（Address Register）</td>
+</tr>
+<tr>
+<td><strong>基地址 + 长偏移（Base + Long Offset）</strong></td>
+<td>地址寄存器（Address Register）</td>
+</tr>
+<tr>
+<td><strong>前增量（Pre-increment）</strong></td>
+<td>地址寄存器（Address Register）</td>
+</tr>
+<tr>
+<td><strong>后增量（Post-increment）</strong></td>
+<td>地址寄存器（Address Register）</td>
+</tr>
+<tr>
+<td><strong>循环寻址（Circular）</strong></td>
+<td>地址寄存器对（Address Register Pair）</td>
+</tr>
+<tr>
+<td><strong>位反转寻址（Bit-reverse）</strong></td>
+<td>地址寄存器对（Address Register Pair）</td>
+</tr>
+</tbody></table>
+<p>这些寻址模式支持高效编译 C&#x2F;C++ 代码，便捷访问外设寄存器，优化 DSP 数据结构（如 滤波器的循环缓冲区 和 FFT 的位反转索引）。</p>
+<p>指令格式（Instruction Formats）<br>指令格式提供尽可能多的地址位，用于 绝对寻址（Absolute Addressing）。尽可能大的偏移范围，用于 基地址 + 偏移（Base + Offset Addressing）。</p>
+<p>在某些情况下，地址寄存器（Address Register） 既可以作为 加载目标（Target of a Load），又可以作为 寻址模式更新的一部分（Update Associated with a Particular Addressing Mode）。</p>
+<h3 id="5-1-绝对寻址（Absolute-Addressing）"><a href="#5-1-绝对寻址（Absolute-Addressing）" class="headerlink" title="5.1 绝对寻址（Absolute Addressing）"></a>5.1 绝对寻址（Absolute Addressing）</h3><p>绝对寻址 适用于 引用 I&#x2F;O 外设寄存器 和 全局数据。</p>
+<p>绝对寻址使用指令指定的 18 位常量作为内存地址。完整的 32 位地址由 18 位常量的最高 4 位移动到 32 位地址的最高位生成。其余位填充为零，确保地址格式正确。</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">LD.W D[a], off18 (ABS)(Absolute Addressing Mode)</span><br><span class="line"></span><br><span class="line">对应执行内容：</span><br><span class="line">EA = &#123;off18[17:14], 14b&#x27;0, off18[13:0]&#125;;</span><br><span class="line">D[a] = M(EA, word);</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-基地址-偏移寻址（Base-Offset-Addressing）"><a href="#5-2-基地址-偏移寻址（Base-Offset-Addressing）" class="headerlink" title="5.2 基地址 + 偏移寻址（Base + Offset Addressing）"></a>5.2 基地址 + 偏移寻址（Base + Offset Addressing）</h3><p>基地址 + 偏移寻址 适用于：</p>
+<ul>
+<li>引用记录元素（Record Elements）</li>
+<li>访问局部变量（Local Variables）（使用栈指针（SP，Stack Pointer）作为基地址）</li>
+<li>访问静态数据（Static Data）（使用地址寄存器（Address Register）指向静态数据区域）</li>
+</ul>
+<p>完整的有效地址（Effective Address） 由 地址寄存器（Address Register）和符号扩展的 10 位偏移量（Sign-Extended 10-bit Offset） 相加得到。</p>
+<p>部分内存操作 提供 基地址 + 长偏移（Base + Long Offset） 寻址模式。偏移量为 16 位符号扩展值（Sign-Extended 16-bit Value）。允许使用两条指令序列 访问 内存中的任何位置。</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LD.W D[a], A[b], off10 (BO)(Base + Short Offset Addressing Mode)</span><br><span class="line">对应执行内容：</span><br><span class="line">EA = A[b] + sign_ext(off10);</span><br><span class="line">D[a] = M(EA, word);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">LD.W D[a], A[b], off16 (BOL)(Base + Long Offset Addressing Mode)</span><br><span class="line">对应执行内容：</span><br><span class="line">EA = A[b] + sign_ext(off16);</span><br><span class="line">D[a] = M(EA, word);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-预增量和预减量寻址（Pre-Increment-and-Pre-Decrement-Addressing）"><a href="#5-3-预增量和预减量寻址（Pre-Increment-and-Pre-Decrement-Addressing）" class="headerlink" title="5.3 预增量和预减量寻址（Pre-Increment and Pre-Decrement Addressing）"></a>5.3 预增量和预减量寻址（Pre-Increment and Pre-Decrement Addressing）</h3><p>预增量（Pre-Increment） 和 预减量（Pre-Decrement） 寻址模式可用于：向上增长的栈（Upward-Growing Stack）进行数据推入（Push）。向下增长的栈（Downward-Growing Stack）进行 数据推入（Push）（预减量寻址通过负偏移量（Negative Offset） 实现）等。</p>
+<p>预增量寻址模式 使用 地址寄存器 + 偏移量 作为有效地址（Effective Address），写回地址寄存器的值（Value Written Back into the Address Register）</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">LD.W D[a], A[b], off10 (BO)(Pre-increment Addressing Mode)</span><br><span class="line">实际执行内容：</span><br><span class="line">EA = A[b] + sign_ext(off10);</span><br><span class="line">D[a] = M(EA, word);</span><br><span class="line">A[b] = EA;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="5-4-后增量和后减量寻址（Post-Increment-and-Post-Decrement-Addressing）"><a href="#5-4-后增量和后减量寻址（Post-Increment-and-Post-Decrement-Addressing）" class="headerlink" title="5.4 后增量和后减量寻址（Post-Increment and Post-Decrement Addressing）"></a>5.4 后增量和后减量寻址（Post-Increment and Post-Decrement Addressing）</h3><p>后增量（Post-Increment） 和 后减量（Post-Decrement） 寻址模式可用于：</p>
+<ul>
+<li>顺序访问数组（Sequential Access of Arrays）：后增量 用于 向前访问（Forward Access），后减量 用于 向后访问（Backward Access）。</li>
+<li>栈操作（Stack Operations）：后增量 用于 从向上增长的栈弹出数据（Pop from an Upward-Growing Stack）。后减量 用于 从向下增长的栈弹出数据（Pop from a Downward-Growing Stack）。</li>
+</ul>
+<p>后增量寻址模式 使用 地址寄存器的当前值 作为 有效地址。然后通过添加符号扩展的 10 位偏移量到原始值，更新地址寄存器。</p>
+<p>例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">LD.W D[a], A[b], off10 (BO)(Post-increment Addressing Mode)</span><br><span class="line">实际执行内容：</span><br><span class="line">EA = A[b];</span><br><span class="line">D[a] = M(EA, word);</span><br><span class="line">A[b] = EA + sign_ext(off10);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-5-循环寻址（Circular-Addressing）"><a href="#5-5-循环寻址（Circular-Addressing）" class="headerlink" title="5.5 循环寻址（Circular Addressing）"></a>5.5 循环寻址（Circular Addressing）</h3><p>循环寻址主要用于访问循环缓冲区（Circular Buffers），特别是在 滤波计算（Filter Calculations） 中。</p>
+<p>循环寻址模式使用地址寄存器对（Address Register Pair） 来存储所需状态：</p>
+<p>偶数寄存器（Aeven） 始终存储 基地址（B）。奇数寄存器（Aodd）的高 16 位 存储 缓冲区大小（L），低 16 位 存储 缓冲区索引（I）。</p>
+<p>有效地址（Effective Address） 计算方式：Effective Address &#x3D; B + I<br>缓冲区的内存范围： Memory Range &#x3D; [B, B + L - 1]</p>
+<p>使用以下算法对索引进行后加（post-incremented）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">tmp = I + sign_ext(offset10);</span><br><span class="line">if (tmp &lt; 0)</span><br><span class="line">  I = tmp + L;</span><br><span class="line">else if (tmp &gt;= L)</span><br><span class="line">  I = tmp - L;</span><br><span class="line">else</span><br><span class="line">  I = tmp;</span><br></pre></td></tr></table></figure>
+<p>在 TriCore 处理器 的 循环寻址（Circular Addressing） 模式中，指令字（Instruction Word） 指定 10 位偏移量（Offset），单位为 字节。偏移量可以是正数或负数，用于调整索引位置。<br>只要偏移量的绝对值小于缓冲区大小，就能保证 正确的环绕行为（Wrap Around）。</p>
+<p>环绕行为示例：<br>假设一个 循环缓冲区 包含 25 个 16 位数据，当前索引（I）&#x3D; 48：</p>
+<ul>
+<li>使用 偏移量 2（每个值 2 字节）。新索引值 &#x3D; 0（48 + 2 &#x3D; 50，环绕到 0）。</li>
+<li>如果偏移量为 4：新索引值 &#x3D; 2（48 + 4 &#x3D; 52，环绕到 2）。</li>
+</ul>
+<p>如果当前索引为 4，偏移量为 -8：新索引值 &#x3D; 46（4 - 8 + 50 &#x3D; 46）。</p>
+<p><strong>循环缓冲区对齐规则：</strong></p>
+<ul>
+<li>缓冲区起始地址必须对齐到 64 位边界。</li>
+<li>缓冲区长度必须是数据大小的整数倍：</li>
+<li>如果使用 LD.W（加载 32 位数据），缓冲区长度必须是 4 字节的整数倍。</li>
+<li>如果使用 LD.D（加载 64 位数据），缓冲区长度必须是 8 字节的整数倍。</li>
+</ul>
+<p>如果 不满足对齐要求，触发对齐陷阱（ALN Trap）。如果索引（I）≥ 缓冲区长度（L），也会触发 ALN Trap。</p>
+<p><strong>循环寻址模式不能用于外设空间（Peripheral Space）</strong>。如果尝试访问外设空间，会触发 MEM 陷阱（MEM Trap）。</p>
+<p>指令示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">LD.W D[a], P[b], off10 (BO)(Circular Addressing Mode)</span><br><span class="line">实际执行动作： （P[b]为 A[b]、A[b+1]寄存器对构成的64位地址寄存器）</span><br><span class="line">index = zero_ext(A[b+1][15:0]);</span><br><span class="line">length = zero_ext(A[b+1][31:16]);</span><br><span class="line">EA0 = A[b] + index;</span><br><span class="line">EA2 = A[b] + (index + 2% length);</span><br><span class="line">D[a] = &#123;M(EA2, halfword), M(EA0, halfword)&#125;;</span><br><span class="line">new_index = index + sign_ext(off10);</span><br><span class="line">new_index = new_index &lt; 0 ? new_index + length : new_index % length;</span><br><span class="line">A[b+1] = &#123;length[15:0], new_index[15:0]&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-6-位反转寻址（Bit-Reverse-Addressing）"><a href="#5-6-位反转寻址（Bit-Reverse-Addressing）" class="headerlink" title="5.6 位反转寻址（Bit-Reverse Addressing）"></a>5.6 位反转寻址（Bit-Reverse Addressing）</h3><p>位反转寻址 主要用于 访问 FFT（快速傅里叶变换）算法中的数组。在 FFT 的常见实现 中，最终计算结果通常存储为 位反转顺序（Bit-Reversed Order）</p>
+<p>位反转寻址使用 地址寄存器对（Address Register Pair） 来存储所需状态：</p>
+<ul>
+<li>偶数寄存器（Aeven）：存储 数组的基地址（B）。</li>
+<li>奇数寄存器（Aodd）：低 16 位 存储 数组索引（I），高 16 位 存储 修正值（M），用于 每次访问后更新索引 I。</li>
+</ul>
+<p>有效地址（Effective Address） 计算方式：Effective Address &#x3D; B + I</p>
+<p>索引 I 的更新方式： I_new &#x3D; reverse[reverse(I) + reverse(M)]，reverse(I) 函数 交换 位 n 和位 (15 - n)，其中 n &#x3D; 0, …, 7。</p>
+<p>位反转寻址示例：<br>假设一个 1024 点的 FFT 使用 16 位数据：缓冲区大小（Buffer Size）&#x3D; 2048 字节。<br>使用位反转索引遍历数组，得到的字节索引序列如下：0, 1024, 512, 1536, …。该序列可以通过初始化 I &#x3D; 0 和 M &#x3D; 0x0400H 获得。</p>
+<p>M的要求值为缓冲区大小&#x2F;2，其中缓冲区大小以字节为单位给出。</p>
+<p>指令示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">LD.W D[a], P[b] (BO)(Bit-reverse Addressing Mode)</span><br><span class="line">实际执行内容：</span><br><span class="line">index = zero_ext(A[b+1][15:0]);</span><br><span class="line">incr = zero_ext(A[b+1][31:16]);</span><br><span class="line">EA = A[b] + index;</span><br><span class="line">D[a] = M(EA, word);</span><br><span class="line">new_index = reverse16(reverse16(index) + reverse16(incr));</span><br><span class="line">A[b+1] = &#123;incr[15:0], new_index[15:0]&#125;;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="5-7-合成寻址模式（Synthesized-Addressing-Modes）"><a href="#5-7-合成寻址模式（Synthesized-Addressing-Modes）" class="headerlink" title="5.7 合成寻址模式（Synthesized Addressing Modes）"></a>5.7 合成寻址模式（Synthesized Addressing Modes）</h3><p>某些硬件不直接支持的寻址模式可以通过短指令序列（Short Instruction Sequences）合成，以实现灵活的数据访问。</p>
+<p><strong>索引寻址（Indexed Addressing）</strong>：<br>索引寻址模式 可以使用 ADDSC.A（Add Scaled Index to Address） 指令合成。ADDSC.A 指令 通过 将缩放后的数据寄存器值 加到 地址寄存器 来计算地址。</p>
+<p>缩放因子（Scale Factor） 可以是 1、2、4 或 8，用于索引：</p>
+<ul>
+<li>字节数组（Bytes）</li>
+<li>半字数组（Half-Words）</li>
+<li>字数组（Words）</li>
+<li>双字数组（Double-Words）</li>
+</ul>
+<p>指令示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">ADDSC.A A[c], A[b], D[a], n (RR)</span><br><span class="line"></span><br><span class="line">实际执行动作：</span><br><span class="line">A[c] = A[b] + (D[a] &lt;&lt; n);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>位索引寻址（Bit Indexed Addressing）</strong><br>位索引寻址适用于访问索引位数组（Indexed Bit Arrays），在TriCore处理器中，使用 ADDSC.AT 指令进行索引计算。</p>
+<p>位索引寻址的计算方式<br>ADDSC.AT 指令通过将索引值右移 3 位（除以8）并加到地址寄存器来计算地址，结果地址的低两位被清零，确保访问包含目标位的字（Word）。</p>
+<p>之后，加载包含目标位的字（Word）。使用 EXTR.U 指令 提取 目标位。</p>
+<p>位提取示例:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">ADDSC.AT A0, A1, D2, 1  // 计算位索引地址</span><br><span class="line">LD.W D3, [A0]           // 加载包含目标位的字</span><br><span class="line">EXTR.U D4, D3, #5, #1   // 提取第 5 位</span><br></pre></td></tr></table></figure>
+
+<p>位存储示例：:<br>ADDSC.AT 指令 计算 目标位地址。<br>LDMST（Load&#x2F;Modify&#x2F;Store）指令 用于 存储单个位或位字段。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">ADDSC.AT A0, A1, D2, 1  // 计算目标位地址</span><br><span class="line">IMASK E8, D4, #5, #1    // 生成掩码和数据</span><br><span class="line">LDMST [A0], E8          // 存储目标位</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>PC 相对寻址（PC-Relative Addressing）</strong><br>PC 相对寻址是 分支（Branch）和 调用（Call） 的常规模式。然而，TriCore 架构不支持直接的 PC 相对数据寻址，原因如下：</p>
+<ul>
+<li>指令存储（Instruction Memory） 和 数据存储（Data Memory） 在芯片上是分开的。</li>
+<li>直接访问程序存储器中的数据 代价较高，因此不支持 PC 相对寻址。</li>
+</ul>
+<p>当需要 PC 相对寻址数据 时：将附近代码标签的地址存入地址寄存器（Address Register）。使用基地址 + 偏移（Base + Offset）模式 访问数据。一旦基地址寄存器被加载，它可以用于访问 附近的其他 PC 相对数据项。</p>
+<p>代码地址可以通过多种方式加载到地址寄存器。</p>
+<p>在静态链接（Statically Linked）的情况下，代码标签的绝对地址已知，可以使用 LEA（Load Effective Address）指令 加载。</p>
+<p>如果代码是 动态加载 的，或者 由位置无关的代码片段（Position-Independent Code）组成，而没有重定位链接器（Relocating Linker） 的支持：使用 JL（Jump and Link）指令 加载代码地址：JL 指令执行跳转并链接到下一条指令，将 该指令的地址存入返回地址（RA）寄存器 A[11]。（在执行 JL 之前，需要 将当前函数的返回地址保存，以确保正确的返回路径。）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/05/21/tricore-architecture-programming-model/" title="tricore architecture - Programming Model">http://fengxun2017.github.io/2025/05/21/tricore-architecture-programming-model/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/05/12/tricore-architecture-overview/" rel="prev" title="tricore architecture overview">
+                  <i class="fa fa-chevron-left"></i> tricore architecture overview
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">505k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:32</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
