@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="General Purpose and System Registers">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tricore architecture - General Purpose and System Registers">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/05/27/tricore-architecture-General%20Purpose%20and%20System%20Registers/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="General Purpose and System Registers">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-05-29T14:58:28.367Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/05/27/tricore-architecture-General%20Purpose%20and%20System%20Registers/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/05/27/tricore-architecture-General%20Purpose%20and%20System%20Registers/","path":"2025/05/27/tricore-architecture-General Purpose and System Registers/","title":"tricore architecture - General Purpose and System Registers"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>tricore architecture - General Purpose and System Registers | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%80%9A%E7%94%A8%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88General-Purpose-Registers%EF%BC%8CGPRs%EF%BC%89"><span class="nav-number">1.</span> <span class="nav-text">1 通用寄存器（General Purpose Registers，GPRs）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E7%A8%8B%E5%BA%8F%E7%8A%B6%E6%80%81%E4%BF%A1%E6%81%AF%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88Program-State-Information-Registers%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">2 程序状态信息寄存器（Program State Information Registers）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8%EF%BC%88PC%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 程序计数器（PC）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%A8%8B%E5%BA%8F%E7%8A%B6%E6%80%81%E5%AD%97%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88PSW%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 程序状态字寄存器（PSW）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E5%85%88%E5%89%8D%E4%B8%8A%E4%B8%8B%E6%96%87%E4%BF%A1%E6%81%AF%E5%92%8C%E6%8C%87%E9%92%88%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88Previous-Context-Information-and-Pointer-Register%EF%BC%8CPCXI%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 先前上下文信息和指针寄存器（Previous Context Information and Pointer Register，PCXI）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%A0%86%E6%A0%88%E7%AE%A1%E7%90%86%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88Stack-Management-Registers%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">3 堆栈管理寄存器（Stack Management Registers）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E7%B3%BB%E7%BB%9F%E6%8E%A7%E5%88%B6%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88SYSCON%EF%BC%89"><span class="nav-number">4.</span> <span class="nav-text">4 系统控制寄存器（SYSCON）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E4%B8%AD%E6%96%AD%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88Interrupt-Registers%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">5 中断寄存器（Interrupt Registers）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%86%85%E5%AD%98%E4%BF%9D%E6%8A%A4%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88Memory-Protection-Registers%EF%BC%89"><span class="nav-number">6.</span> <span class="nav-text">6 内存保护寄存器（Memory Protection Registers）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E9%99%B7%E9%98%B1%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88Trap-Registers%EF%BC%89"><span class="nav-number">7.</span> <span class="nav-text">7 陷阱寄存器（Trap Registers）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E6%A0%B8%E5%BF%83%E8%B0%83%E8%AF%95%E6%8E%A7%E5%88%B6%E5%99%A8%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88Core-Debug-Controller-Registers%EF%BC%89"><span class="nav-number">8.</span> <span class="nav-text">8 核心调试控制器寄存器（Core Debug Controller Registers）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E6%B5%AE%E7%82%B9%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88Floating-Point-Registers%EF%BC%89"><span class="nav-number">9.</span> <span class="nav-text">9 浮点寄存器（Floating Point Registers）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E8%AE%BF%E9%97%AE%E6%A0%B8%E5%BF%83%E7%89%B9%E6%AE%8A%E5%8A%9F%E8%83%BD%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88CSFRs%EF%BC%89"><span class="nav-number">10.</span> <span class="nav-text">10 访问核心特殊功能寄存器（CSFRs）</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">91</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/05/27/tricore-architecture-General%20Purpose%20and%20System%20Registers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="tricore architecture - General Purpose and System Registers | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          tricore architecture - General Purpose and System Registers
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-27 00:00:00" itemprop="dateCreated datePublished" datetime="2025-05-27T00:00:00+08:00">2025-05-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tricore/" itemprop="url" rel="index"><span itemprop="name">Tricore</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+General Purpose and System Registers
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p>核心寄存器（Core Register）分为两类：通用寄存器（GPRs）和核心特殊功能寄存器（Core Special Function Registers, CSFRs）。</p>
+<p>GPRs包括16个通用数据寄存器和16个通用地址寄存器。<br>CSFRs用于控制核心操作并提供核心状态信息。</p>
+<p>寄存器分类</p>
+<ul>
+<li>通用寄存器（General Purpose Registers）</li>
+<li>系统寄存器（System Registers）：PSW, PC, PCXI</li>
+<li>栈管理寄存器（Stack Management Registers）：A[10] 和 ISP</li>
+<li>SYSCON 和 CPU_ID 寄存器</li>
+<li>异常处理寄存器（Trap Registers）</li>
+<li>上下文管理寄存器（Context Management Registers）</li>
+<li>内存保护寄存器（Memory Protection Registers）</li>
+<li>内存管理寄存器（Memory Management Registers）</li>
+<li>调试寄存器（Debug Registers）</li>
+<li>浮点寄存器（Floating Point Registers）</li>
+<li>与核心相关的特殊功能寄存器（Special Function Registers associated with the core）</li>
+</ul>
+<p><strong>ENDINIT 保护（ENDINIT Protection）</strong><br>该架构支持初始化状态（initialisation state），在进入运行状态（operational state）之前，可以对所有核心特殊功能寄存器（CSFRs）进行修改。<br>在初始化状态时，所有 CSFRs 可以 通过 MTCR 指令 修改。在运行状态下，只有部分 CSFRs 可被修改，其他功能保持不变。</p>
+<p>仅可在初始化状态下修改的 CSFRs 被称为“ENDINIT 保护寄存器（ENDINIT protected）。</p>
+<p>初始化状态与运行状态的转换由系统实现决定，这种机制增加了对关键 CSFRs的保护，确保它们只能在初始化状态下修改。</p>
+<p>以下寄存器受 ENDINIT 保护：BTV, BIV, ISP, PMA0, PMA1, PMA2, PCON0, DCON0, SEGEN</p>
+<p>架构还提供了面向安全的 ENDINIT 保护，以下寄存器属于 SAFETY_ENDINIT 保护范围：SMACON, SYSCON, COMPAT, TPS_EXTIM_ENTRY_LVAL, TPS_EXTIM_EXIT_LVAL</p>
+<h2 id="1-通用寄存器（General-Purpose-Registers，GPRs）"><a href="#1-通用寄存器（General-Purpose-Registers，GPRs）" class="headerlink" title="1 通用寄存器（General Purpose Registers，GPRs）"></a>1 通用寄存器（General Purpose Registers，GPRs）</h2><p>通用寄存器（GPRs）均分为两类：</p>
+<ul>
+<li>16个数据寄存器（DGPRs）：D[0] 到 D[15]</li>
+<li>16个地址寄存器（AGPRs）：A[0] 到 A[15]</li>
+</ul>
+<p>数据寄存器和地址寄存器的分离有助于提高处理效率，使算术运算和内存操作可以并行执行。 多个指令支持数据寄存器与地址寄存器之间的信息交换，例如用于创建或计算表索引。</p>
+<p>两个连续的偶-奇数据寄存器可以拼接形成八个扩展大小寄存器， 以支持 64 位数据：E[0], E[2], E[4], E[6], E[8], E[10], E[12], E[14]（用于支持 64 位数据）<br>地址寄存器也可以同样拼接：P[0], P[2], P[4], P[6], P[8], P[10], P[12], P[14]</p>
+<p><strong>特殊寄存器:</strong></p>
+<ul>
+<li>系统全局寄存器：A[0], A[1], A[8], A[9]（这些寄存器的内容在调用、异常或中断时不会被保存或恢复）</li>
+<li>栈指针（Stack Pointer，SP）：A[10]（参见“栈管理寄存器”）</li>
+<li>返回地址（Return Address，RA）：A[11]（用于存储调用和链接跳转的返回地址，以及中断和异常的返回程序计数器 PC）</li>
+</ul>
+<p>指令对寄存器的使用:</p>
+<ul>
+<li>32位指令可以无限制地使用GPRs。</li>
+<li>许多16位指令会隐式使用 A[15] 作为地址寄存器，D[15] 作为数据寄存器，这种隐式使用有助于将指令编码压缩至16位。</li>
+</ul>
+<p>浮点运算:没有单独的浮点寄存器，数据寄存器用于执行浮点运算。浮点数据可通过快速上下文切换自动保存和恢复。</p>
+<h2 id="2-程序状态信息寄存器（Program-State-Information-Registers）"><a href="#2-程序状态信息寄存器（Program-State-Information-Registers）" class="headerlink" title="2 程序状态信息寄存器（Program State Information Registers）"></a>2 程序状态信息寄存器（Program State Information Registers）</h2><p>程序状态信息寄存器用于存储和恢复任务的上下文，包括：</p>
+<ul>
+<li>PC（程序计数器）：存储当前执行指令的地址，仅在核心停止时可写入。</li>
+<li>PSW（程序状态字）：记录任务的架构状态，包括保护机制、访问权限、调用深度等。</li>
+<li>PCXI（先前上下文信息）：用于任务切换时保存上一个任务的状态。</li>
+</ul>
+<h3 id="2-1-程序计数器（PC）"><a href="#2-1-程序计数器（PC）" class="headerlink" title="2.1 程序计数器（PC）"></a>2.1 程序计数器（PC）</h3><p>32 位，存储当前执行的指令地址。只能在核心暂停状态下修改，否则不会生效。</p>
+<h3 id="2-2-程序状态字寄存器（PSW）"><a href="#2-2-程序状态字寄存器（PSW）" class="headerlink" title="2.2 程序状态字寄存器（PSW）"></a>2.2 程序状态字寄存器（PSW）</h3><p>程序状态字寄存器（PSW）是一个32位寄存器，它存储了任务特定的架构状态，这些状态信息不会包含在通用寄存器（GPRs）中。 PSW包括以下参数：</p>
+<ul>
+<li><p>USB：程序状态字（PSW）的最高8位被定义为用户状态位（User Status Bits）。这些位可在执行指令时被设置或清除，通常用于记录运算结果的状态。 此外，某些指令可以使用这些位来影响其执行逻辑。例如：</p>
+<ul>
+<li>ADDX（扩展加法）和ADDC（带进位加法）指令使用第31位来记录加法运算中的进位信息。</li>
+<li>ADDC 指令在执行时，会读取该进位位的先前值，并将其影响到新的计算结果。</li>
+</ul>
+</li>
+<li><p>保护寄存器集合（PRS）：选择当前活动的数据与代码内存保护寄存器集。内存保护寄存器值控制当前进程内的加载、存储和指令获取。</p>
+</li>
+<li><p>安全任务标识符（Safety Task Identifier）：用于区分安全任务和普通任务。该标识符可以决定在内部总线上使用哪种 MASTER TAG ID，从而影响读&#x2F;写访问权限。</p>
+</li>
+<li><p>I&#x2F;O 特权级别（IO）：I&#x2F;O特权级别控制</p>
+<ul>
+<li>00b：User-0模式，禁止访问外设空间（触发PSE&#x2F;MPP陷阱），无权启用&#x2F;禁用中断</li>
+<li>01b：User-1模式，允许访问非保护外设（串行I&#x2F;O端口、定时器等），可禁用中断（默认行为可通过系统控制寄存器覆盖）</li>
+<li>10b：监管模式（Supervisor），允许访问所有外设和核心寄存器，可禁用中断</li>
+<li>11b：保留值</li>
+</ul>
+</li>
+<li><p>中断栈标志（IS）：中断栈控制</p>
+<ul>
+<li>0：用户栈，中断触发时从ISP寄存器加载栈指针</li>
+<li>1：共享全局栈，中断触发时直接使用当前栈指针</li>
+</ul>
+</li>
+<li><p>全局寄存器写入权限（GW）：该字段决定当前执行线程是否有权限修改全局地址寄存器。大多数任务和中断服务程序（ISR）将全局地址寄存器视为只读寄存器，用于指向全局字面量池和关键数据结构。但是，某些任务或 ISR 可以被指定为特定全局地址寄存器的“所有者”，并且允许修改该寄存器。系统设计者必须决定哪些全局地址变量在高频访问或关键代码中足够重要，以便将它们分配到全局地址寄存器。（A[0]通常被保留为短格式加载和存储的基址寄存器。A[1]也被保留给编译器使用。A[8] 和 A[9]编译器不会使用这两个寄存器，它们可以用于存储关键系统地址变量。）</p>
+<ul>
+<li>1 ：允许希望全局地址寄存器 A[0], A[1], A[8], A[9]</li>
+<li>0 ：禁止希望全局地址寄存器 A[0], A[1], A[8], A[9]</li>
+</ul>
+</li>
+<li><p>调用深度计数器（CDC）：调用深度计数使能</p>
+<ul>
+<li>0：临时禁用计数，执行下一条CALL指令后自动启用。（关闭后，第一次 CALL 不会增加 CDC，但不会永久禁用，只是暂时忽略当前调用。下一次 CALL 指令会自动恢复 CDC 计数，确保后续函数调用正确记录深度）</li>
+<li>1：启用计数，若CDC&#x3D;1111111b则强制禁用计数</li>
+</ul>
+</li>
+<li><p>调用深度计数启用字段（CDE）：调用深度计数器，CALL指令递增，RETURN指令递减，计数溢出时触发CDO陷阱。<br>特殊模式：</p>
+<ul>
+<li>1111110b：每次CALL触发陷阱（调用跟踪模式）</li>
+<li>1111111b：禁用调用深度计数</li>
+</ul>
+</li>
+</ul>
+<p><strong>访问特权级别控制（I&#x2F;O Privilege）</strong><br>软件管理任务（SMT，Software Managed Tasks），通过实时内核（RTOS）或操作系统创建，由调度软件进行任务调度。中断服务程序（ISR，Interrupt Service Routine）由硬件直接触发，处理外部或内部中断。<br>SMT 有时被称为“用户任务”（User Tasks），默认在用户模式（User Mode）下执行。<br>任务模式分类：每个任务根据其功能被分配不同的运行模式</p>
+<ul>
+<li>User-0 模式：适用于不需要访问外围设备的任务。无法启用或禁用中断。</li>
+<li>User-1 模式：适用于访问常规、未受保护的外设的任务，例如：串行端口的读写，定时器的读取，大多数 I&#x2F;O 状态寄存器。允许任务禁用中断（但其默认行为可由系统控制寄存器修改）。</li>
+<li>Supervisor 模式：允许访问所有系统寄存器和外设。任务可以启用或禁用中断。</li>
+</ul>
+<p><strong>任务上下文（Task Context）</strong><br>每个任务都有一组状态元素，统称为任务上下文，任务上下文包括：</p>
+<ul>
+<li>CPU 通用寄存器（General Purpose Registers）</li>
+<li>程序计数器（PC，Program Counter）</li>
+<li>程序状态信息（PCXI 和 PSW）</li>
+</ul>
+<p>这些信息是处理器定义任务状态并保持任务执行所需的关键数据。</p>
+<h3 id="2-3-先前上下文信息和指针寄存器（Previous-Context-Information-and-Pointer-Register，PCXI）"><a href="#2-3-先前上下文信息和指针寄存器（Previous-Context-Information-and-Pointer-Register，PCXI）" class="headerlink" title="2.3 先前上下文信息和指针寄存器（Previous Context Information and Pointer Register，PCXI）"></a>2.3 先前上下文信息和指针寄存器（Previous Context Information and Pointer Register，PCXI）</h3><p>先前上下文信息寄存器（PCXI）存储与先前执行上下文相关的链接信息，用于支持中断和自动上下文切换。该寄存器是任务状态信息的一部分，其中先前上下文指针（PCX） 保存前一个任务的上下文保存区（CSA）的地址。</p>
+<p>PCXI 寄存器字段包含这些字段：</p>
+<ul>
+<li>PCPN（存储被中断任务的优先级级别）</li>
+<li>PIE（存储被中断任务的中断使能位（ICR.IE）的状态。）</li>
+<li>UL（标识保存的上下文类型：上层或下层）<ul>
+<li>0：下层上下文（Lower Context）</li>
+<li>1：上层上下文（Upper Context）</li>
+</ul>
+</li>
+<li>PCXS：存储PCX 段地址，该字段与 PCXO（先前上下文指针偏移） 结合使用。</li>
+<li>PCXO（先前上下文指针偏移字段）</li>
+</ul>
+<p>PCXO 和 PCXS 共同形成 PCX 指针，用于指向先前任务的 CSA（上下文保存区）。</p>
+<p>PCXI 寄存器用于维护任务的上下文信息，特别是在任务切换、异常处理和中断处理时。它确保处理器可以正确恢复先前任务的运行状态，避免错误的上下文切换导致系统故障。</p>
+<h2 id="3-堆栈管理寄存器（Stack-Management-Registers）"><a href="#3-堆栈管理寄存器（Stack-Management-Registers）" class="headerlink" title="3 堆栈管理寄存器（Stack Management Registers）"></a>3 堆栈管理寄存器（Stack Management Registers）</h2><p>tricore架构的堆栈管理支持用户堆栈和中断堆栈，并使用地址寄存器 A[10]、中断堆栈指针（ISP）以及 PSW 寄存器中的一个位来管理堆栈。</p>
+<p>A[10] 作为堆栈指针（Stack Pointer，SP）使用。当一个任务被创建时，实时操作系统（RTOS）通常会初始化该寄存器的内容，以便为任务分配私有堆栈区域。</p>
+<p>ISP 的作用是防止中断服务程序（ISR） 访问任务的私有堆栈，避免影响任务的上下文。</p>
+<p>中断时的堆栈切换:</p>
+<ul>
+<li>如果被中断的任务使用的是私有堆栈（PSW.IS &#x3D;&#x3D; 0）：任务的上层上下文被保存。A[10]（SP）被加载为当前 ISP 的值。</li>
+<li>如果被中断的任务已经在使用中断堆栈（PSW.IS &#x3D;&#x3D; 1）：A[10]（SP）不会重新加载，ISR 继续使用中断堆栈，而不会切换到新的栈指针。</li>
+</ul>
+<p>通常在系统初始化时，只需要初始化 ISP 一次。</p>
+<p>在某些应用场景下，ISP 可能会在执行过程中动态修改。架构并未禁止 ISR 或系统服务程序使用私有堆栈，是否使用取决于系统的设计。</p>
+<h2 id="4-系统控制寄存器（SYSCON）"><a href="#4-系统控制寄存器（SYSCON）" class="headerlink" title="4 系统控制寄存器（SYSCON）"></a>4 系统控制寄存器（SYSCON）</h2><p>系统配置寄存器 SYSCON 提供以下功能：</p>
+<ul>
+<li><p>用于 时序保护系统（Temporal Protection System） 的使能位。</p>
+</li>
+<li><p>用于 内存保护系统（Memory Protection System） 的使能位：在将使能位设为 1 之前，必须先初始化保护寄存器组。</p>
+</li>
+<li><p>用于定义 中断处理程序（Interrupt Handlers） 中 PSW.S 位的初始状态的位。</p>
+</li>
+<li><p>用于定义 陷阱处理程序（Trap Handlers） 中 PSW.S 位的初始状态的位。</p>
+</li>
+<li><p>User-1 IO 模式外设访问的使能位：允许 User-1 模式任务 像 Supervisor 模式 一样访问外设，使 User-1 模式 能够访问 所有外设寄存器。</p>
+</li>
+<li><p>User-1 IO 模式中断使能&#x2F;禁用能力的禁用位：禁止 在 User-1 IO 模式下执行 User-1 指令（包含中断使能&#x2F;关闭指令）。</p>
+</li>
+<li><p>启动暂停状态（Boot Halt Status） 和 启动释放（Release Bit）:在复位后，CPU 可能会被立即置于暂停状态，此时 BHALT 位 被设为 1。CPU 将保持暂停状态，直到该位被写入 0。当 BHALT 从 1 写入 0 时，CPU 将开始执行，起始地址由 程序计数器（PC）寄存器 定义。如果尝试将该位写入 1，则该写入将被忽略。</p>
+</li>
+<li><p>空闲上下文列表耗尽（Free Context List Depletion Condition， FCDSF） 状态指示器：该粘滞位表示 自上次软件清除该位以来，是否发生了 FCD（空闲上下文列表耗尽）陷阱。</p>
+</li>
+</ul>
+<p>注意：<strong>此寄存器受 SAFETY_ENDINIT 保护，但 FCDSF 位除外</strong>。</p>
+<h2 id="5-中断寄存器（Interrupt-Registers）"><a href="#5-中断寄存器（Interrupt-Registers）" class="headerlink" title="5 中断寄存器（Interrupt Registers）"></a>5 中断寄存器（Interrupt Registers）</h2><p>在 TriCore 架构 中，典型的 服务请求控制寄存器（Service Request Control Register） 包含以下控制位：</p>
+<ul>
+<li>启用或禁用中断请求</li>
+<li>分配中断的优先级</li>
+<li>将中断请求指向特定的服务提供者</li>
+</ul>
+<p>核心特殊功能寄存器（CSFR） 负责控制中断功能，详细信息见“中断系统”</p>
+<h2 id="6-内存保护寄存器（Memory-Protection-Registers）"><a href="#6-内存保护寄存器（Memory-Protection-Registers）" class="headerlink" title="6 内存保护寄存器（Memory Protection Registers）"></a>6 内存保护寄存器（Memory Protection Registers）</h2><p>每个架构实现的内存保护寄存器组数量不同，最多可支持 8 组。</p>
+<p>每组包括 数据集（Data Set）和代码集（Code Set）。</p>
+<p>每个寄存器组由多个 范围寄存器（Range Table Entries） 组成：</p>
+<p>每个 范围表项 包含一个段保护寄存器对和一个模式寄存器的位字段，寄存器对用于定义内存范围的上下边界地址。</p>
+<p>核心特殊功能寄存器（CSFR） 负责控制 内存保护寄存器，详细信息见“内存保护系统”。</p>
+<h2 id="7-陷阱寄存器（Trap-Registers）"><a href="#7-陷阱寄存器（Trap-Registers）" class="headerlink" title="7 陷阱寄存器（Trap Registers）"></a>7 陷阱寄存器（Trap Registers）</h2><p>核心特殊功能寄存器（CSFR） 负责控制 陷阱寄存器，详细信息见“陷阱系统”。</p>
+<h2 id="8-核心调试控制器寄存器（Core-Debug-Controller-Registers）"><a href="#8-核心调试控制器寄存器（Core-Debug-Controller-Registers）" class="headerlink" title="8 核心调试控制器寄存器（Core Debug Controller Registers）"></a>8 核心调试控制器寄存器（Core Debug Controller Registers）</h2><p>TriCore 处理器中的调试支持寄存器 详细信息见“核心调试控制器”</p>
+<h2 id="9-浮点寄存器（Floating-Point-Registers）"><a href="#9-浮点寄存器（Floating-Point-Registers）" class="headerlink" title="9 浮点寄存器（Floating Point Registers）"></a>9 浮点寄存器（Floating Point Registers）</h2><p>TriCore 处理器可选的浮点运算单元（FPU）寄存器 详细信息见“FPU_TRAP_CON”。</p>
+<h2 id="10-访问核心特殊功能寄存器（CSFRs）"><a href="#10-访问核心特殊功能寄存器（CSFRs）" class="headerlink" title="10 访问核心特殊功能寄存器（CSFRs）"></a>10 访问核心特殊功能寄存器（CSFRs）</h2><p>核心特殊功能寄存器（CSFR） 通过以下指令访问：</p>
+<ul>
+<li>MFCR（Move From Core Register） → 读取 CSFR。</li>
+<li>MTCR（Move To Core Register） → 写入 CSFR。</li>
+</ul>
+<p>软件通常不需要频繁更新 CSFR。因此</p>
+<ul>
+<li>硬件实现不需要特殊结构来避免 CSFR 更新的竞争风险。</li>
+<li>软件实现中，在 MTCR 更新 CSFR 后，需插入 ISYNC 指令，确保 CSFR 更新的影响正确被后续指令识别。</li>
+</ul>
+<p>其他访问规则：</p>
+<ul>
+<li>MTCR 访问未定义寄存器时，不会产生任何影响。</li>
+<li>MFCR 访问未定义寄存器时，将返回未定义数据。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/05/27/tricore-architecture-General%20Purpose%20and%20System%20Registers/" title="tricore architecture - General Purpose and System Registers">http://fengxun2017.github.io/2025/05/27/tricore-architecture-General Purpose and System Registers/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/05/21/tricore-architecture-programming-model/" rel="prev" title="tricore architecture - Programming Model">
+                  <i class="fa fa-chevron-left"></i> tricore architecture - Programming Model
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">511k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">10:39</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

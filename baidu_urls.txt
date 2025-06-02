@@ -1,5 +1,5 @@
+http://fengxun2017.github.io/2025/05/27/tricore-architecture-General%20Purpose%20and%20System%20Registers/
 http://fengxun2017.github.io/2025/05/21/tricore-architecture-programming-model/
 http://fengxun2017.github.io/2025/05/12/tricore-architecture-overview/
 http://fengxun2017.github.io/2025/04/22/stability/
 http://fengxun2017.github.io/2025/01/22/Renesas-Interrupts/
-http://fengxun2017.github.io/2025/01/19/Renesas-Address_Space/
