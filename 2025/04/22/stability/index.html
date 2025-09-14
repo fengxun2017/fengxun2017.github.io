@@ -27,7 +27,7 @@
 <meta property="og:description" content="稳定性问题总结">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-04-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-04-24T14:33:13.344Z">
+<meta property="article:modified_time" content="2025-06-11T16:21:42.523Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
@@ -121,7 +121,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%A9%BA%E6%8C%87%E9%92%88%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1 空指针问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AE%BF%E9%97%AE%E5%BC%82%E5%B8%B8%E5%9C%B0%E5%9D%80%E9%94%99%E8%AF%AF"><span class="nav-number">2.</span> <span class="nav-text">2 访问异常地址错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%86%85%E5%AD%98%E8%B8%A9%E8%B8%8F%E7%9B%B8%E5%85%B3%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">3 内存踩踏相关：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">4.</span> <span class="nav-text">4 并发问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%9C%B0%E5%9D%80%E5%AF%B9%E9%BD%90%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">5 地址对齐问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E8%B0%83%E5%BA%A6%E5%BC%82%E5%B8%B8%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">6.</span> <span class="nav-text">6 调度异常相关问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">7.</span> <span class="nav-text">7 资源使用问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-CPU-%E8%B4%9F%E8%BD%BD%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">8.</span> <span class="nav-text">8 CPU 负载相关问题：</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%A9%BA%E6%8C%87%E9%92%88%E9%97%AE%E9%A2%98%EF%BC%9A%E9%AB%98%E9%A2%91%E5%B8%B8%E8%A7%81"><span class="nav-number">1.</span> <span class="nav-text">1 空指针问题：高频常见</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AE%BF%E9%97%AE%E5%BC%82%E5%B8%B8%E5%9C%B0%E5%9D%80%E9%94%99%E8%AF%AF"><span class="nav-number">2.</span> <span class="nav-text">2 访问异常地址错误</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%86%85%E5%AD%98%E8%B8%A9%E8%B8%8F%E7%9B%B8%E5%85%B3%EF%BC%9A%E9%AB%98%E9%A2%91%E5%B8%B8%E8%A7%81"><span class="nav-number">3.</span> <span class="nav-text">3 内存踩踏相关：高频常见</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%B9%B6%E5%8F%91%E9%97%AE%E9%A2%98%EF%BC%9A%E5%A4%9A%E6%A0%B8-x2F-%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F%E4%B8%8B%E5%B8%B8%E8%A7%81"><span class="nav-number">4.</span> <span class="nav-text">4 并发问题：多核&#x2F;多任务系统下常见</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%9C%B0%E5%9D%80%E5%AF%B9%E9%BD%90%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">5.</span> <span class="nav-text">5 地址对齐问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E8%B0%83%E5%BA%A6%E5%BC%82%E5%B8%B8%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">6.</span> <span class="nav-text">6 调度异常相关问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E8%B5%84%E6%BA%90%E4%BD%BF%E7%94%A8%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">7.</span> <span class="nav-text">7 资源使用问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-CPU-%E8%B4%9F%E8%BD%BD%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">8.</span> <span class="nav-text">8 CPU 负载相关问题：</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -134,13 +134,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-count">95</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -255,7 +255,7 @@
 <span id="more"></span>
 
 <hr>
-<h3 id="1-空指针问题："><a href="#1-空指针问题：" class="headerlink" title="1 空指针问题："></a>1 空指针问题：</h3><p>本质为访问异常地址，但空指针问题较为显著，一些芯片也针对空指针存在对应的硬件异常（infineon tricore处理器）</p>
+<h3 id="1-空指针问题：高频常见"><a href="#1-空指针问题：高频常见" class="headerlink" title="1 空指针问题：高频常见"></a>1 空指针问题：高频常见</h3><p>本质为访问异常地址，但空指针问题较为显著，一些芯片也针对空指针存在对应的硬件异常（infineon tricore处理器）</p>
 <ul>
 <li>函数入参错误，未检查是否为空指针就直接使用。</li>
 <li>远端发送了错误的数据，未检查直接使用导致。（例如接收的二进制数据直接强转为结构体指针进行访问）</li>
@@ -281,14 +281,14 @@
 <li><p>处理方法：合理的代码集成流程规范。程序编写者需要充分考虑是否存在兼容性场景以及对应的措施。具体代码逻辑中，合理地对外部输入进行数据检查。</p>
 </li>
 </ul>
-<h3 id="3-内存踩踏相关："><a href="#3-内存踩踏相关：" class="headerlink" title="3 内存踩踏相关："></a>3 内存踩踏相关：</h3><ul>
+<h3 id="3-内存踩踏相关：高频常见"><a href="#3-内存踩踏相关：高频常见" class="headerlink" title="3 内存踩踏相关：高频常见"></a>3 内存踩踏相关：高频常见</h3><ul>
 <li>中断栈溢出</li>
 <li>任务栈溢出</li>
 <li>应用数据溢出（如buffer变量写越界）</li>
 <li>程序错误、逻辑错误等原因导致对非目标地址进行了写操作</li>
 </ul>
 <p><strong>处理方法</strong>： 使用MPU，对数据读写进行保护。如果不使用MPU，数据踩踏造成的问题往往在第二现场才体现（使用异常数据的地方触发硬件异常，而不是破坏数据的地方），第二现场往往存在随机性，正向排查导致数据被破坏的根因难度大。</p>
-<h3 id="4-并发问题："><a href="#4-并发问题：" class="headerlink" title="4 并发问题："></a>4 并发问题：</h3><p>数据并发保护场景未覆盖全，导致出现数据竞争，使得目标数据被破坏，引起后续访问出现异常。一般竞争场景有：</p>
+<h3 id="4-并发问题：多核-x2F-多任务系统下常见"><a href="#4-并发问题：多核-x2F-多任务系统下常见" class="headerlink" title="4 并发问题：多核&#x2F;多任务系统下常见"></a>4 并发问题：多核&#x2F;多任务系统下常见</h3><p>数据并发保护场景未覆盖全，导致出现数据竞争，使得目标数据被破坏，引起后续访问出现异常。一般竞争场景有：</p>
 <ul>
 <li>单核任务与任务间数据竞争</li>
 <li>单核任务与中断间数据竞争</li>
@@ -406,14 +406,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">517k</span>
+    <span title="站点总字数">541k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:47</span>
+    <span title="站点阅读时长">11:16</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

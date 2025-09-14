@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Trap System">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tricore architecture - Trap System">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="Trap System">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/Trap%20Vector%20Table%20Entry%20Address%20Calculation.jpg">
+<meta property="article:published_time" content="2025-06-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-11T15:25:44.217Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/Trap%20Vector%20Table%20Entry%20Address%20Calculation.jpg">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/","path":"2025/06/10/tricore-architecture-Trap System/","title":"tricore architecture - Trap System"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>tricore architecture - Trap System | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%99%B7%E9%98%B1%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">1 陷阱类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%90%8C%E6%AD%A5%E9%99%B7%E9%98%B1%EF%BC%88Synchronous-Traps%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 同步陷阱（Synchronous Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%BC%82%E6%AD%A5%E9%99%B7%E9%98%B1%EF%BC%88Asynchronous-Traps%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 异步陷阱（Asynchronous Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E7%A1%AC%E4%BB%B6%E9%99%B7%E9%98%B1%EF%BC%88Hardware-Traps%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 硬件陷阱（Hardware Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E8%BD%AF%E4%BB%B6%E9%99%B7%E9%98%B1%EF%BC%88Software-Traps%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 软件陷阱（Software Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-%E4%B8%8D%E5%8F%AF%E6%81%A2%E5%A4%8D%E7%9A%84%E9%99%B7%E9%98%B1%EF%BC%88Unrecoverable-Traps%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 不可恢复的陷阱（Unrecoverable Traps）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%99%B7%E9%98%B1%E5%A4%84%E7%90%86%EF%BC%88Trap-Handling%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">2 陷阱处理（Trap Handling）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E6%A0%BC%E5%BC%8F%EF%BC%88Trap-Vector-Format%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 陷阱向量格式（Trap Vector Format）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E8%AE%BF%E9%97%AE%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%88Accessing-the-Trap-Vector-Table%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 访问陷阱向量表（Accessing the Trap Vector Table）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E8%BF%94%E5%9B%9E%E5%9C%B0%E5%9D%80%EF%BC%88Return-Address-RA%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 返回地址（Return Address, RA）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%88Trap-Vector-Table%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 陷阱向量表（Trap Vector Table）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E9%99%B7%E9%98%B1%E5%8F%91%E7%94%9F%E6%97%B6%E7%9A%84%E5%88%9D%E5%A7%8B%E7%8A%B6%E6%80%81%EF%BC%88Initial-State-upon-a-Trap%EF%BC%89"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 陷阱发生时的初始状态（Initial State upon a Trap）</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="tricore architecture - Trap System | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          tricore architecture - Trap System
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-06-10 00:00:00" itemprop="dateCreated datePublished" datetime="2025-06-10T00:00:00+08:00">2025-06-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tricore/" itemprop="url" rel="index"><span itemprop="name">Tricore</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.1k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+Trap System
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p>陷阱（Trap）是由于某些事件触发的，例如 不可屏蔽中断（NMI）、指令异常、内存管理异常或非法访问。陷阱始终处于使能状态，无法通过软件操作禁用。</p>
+<h3 id="1-陷阱类型"><a href="#1-陷阱类型" class="headerlink" title="1 陷阱类型"></a>1 陷阱类型</h3><p>TriCore 架构定义了 八种陷阱类别。每个类别都有各自的 陷阱处理程序，可通过 32 字节 的陷阱向量条目访问，并由 硬件定义的陷阱类别编号 进行索引。在每个类别中，具体的陷阱由 陷阱识别号（TIN，Trap Identification Number） 进行区分，Trap发生时，该编号由硬件加载到 D[15] 寄存器，然后执行陷阱处理程序的第一条指令。陷阱处理程序必须检查 D[15] 的值，并根据其分支到对应的子处理程序来处理特定的 TIN。</p>
+<p>此外，陷阱可以进一步分类：</p>
+<ul>
+<li>同步（Synchronous）或异步（Asynchronous）</li>
+<li>硬件触发（Hardware）或软件触发（Software）</li>
+</ul>
+<p>支持的 Trap 类型汇总：</p>
+<ul>
+<li><p>Class 0 — MMU：</p>
+<ul>
+<li>TIN &#x3D; 0 : VAF（同步、硬件触发）,Virtual Address Fill</li>
+<li>TIN &#x3D; 1 : VAF（同步、硬件触发）,Virtual Address Protection</li>
+</ul>
+</li>
+<li><p>Class 1 — Internal Protection Traps:</p>
+<ul>
+<li>TIN &#x3D; 1 : PRIV(同步、硬件触发)，Privileged Instruction.</li>
+<li>TIN &#x3D; 2 : MPR(同步、硬件触发)，Memory Protection Read.</li>
+<li>TIN &#x3D; 3 : MPW(同步、硬件触发)，Memory Protection Write.</li>
+<li>TIN &#x3D; 4 : MPX(同步、硬件触发)，Memory Protection Execution.</li>
+<li>TIN &#x3D; 5 : MPP(同步、硬件触发)，Memory Protection Peripheral Access.</li>
+<li>TIN &#x3D; 6 : MPN(同步、硬件触发)，Memory Protection Null Address.</li>
+<li>TIN &#x3D; 7 : GRWP(同步、硬件触发)，Global Register Write Protection.</li>
+</ul>
+</li>
+<li><p>Class 2 — Instruction Errors：</p>
+<ul>
+<li>TIN &#x3D; 1 : IOPC(同步、硬件触发)，Illegal Opcode.</li>
+<li>TIN &#x3D; 2 : UOPC(同步、硬件触发)，Unimplemented Opcode.</li>
+<li>TIN &#x3D; 3 : OPD(同步、硬件触发)，Invalid Operand specification.</li>
+<li>TIN &#x3D; 4 : ALN(同步、硬件触发)，Data Address Alignment.</li>
+<li>TIN &#x3D; 5 : MEM(同步、硬件触发)，Invalid Local Memory Address</li>
+</ul>
+</li>
+<li><p>Class 3 — Context Management：</p>
+<ul>
+<li>TIN &#x3D; 1 : FCD(同步、硬件触发)，Free Context List Depletion (FCX &#x3D; LCX)</li>
+<li>TIN &#x3D; 2 : CDO(同步、硬件触发)，Call Depth Overflow.</li>
+<li>TIN &#x3D; 3 : CDU(同步、硬件触发)，Call Depth Underflow.</li>
+<li>TIN &#x3D; 4 : FCU(同步、硬件触发)，Free Context List Underflow (FCX &#x3D; 0).</li>
+<li>TIN &#x3D; 5 : CSU(同步、硬件触发)，Call Stack Underflow (PCX &#x3D; 0).</li>
+<li>TIN &#x3D; 6 : CTYP(同步、硬件触发)，Context Type (PCXI.UL wrong).</li>
+<li>TIN &#x3D; 7 : NEST(同步、硬件触发)，Nesting Error: RFE with non-zero call depth.</li>
+</ul>
+</li>
+<li><p>Class 4 — System Bus and Peripheral Errors：</p>
+<ul>
+<li>TIN &#x3D; 1 : PSE(同步、硬件触发)，Program Fetch Synchronous Error.</li>
+<li>TIN &#x3D; 2 : DSE(同步、硬件触发)，Data Access Synchronous Error.</li>
+<li>TIN &#x3D; 3 : DAE(<strong>异步</strong>、硬件触发)，Data Access Asynchronous Error.</li>
+<li>TIN &#x3D; 4 : CAE(<strong>异步</strong>、硬件触发)，Coprocessor Trap Asynchronous Error.</li>
+<li>TIN &#x3D; 5 : PIE(同步、硬件触发)，Program Memory Integrity Error.</li>
+<li>TIN &#x3D; 6 : DIE(<strong>异步</strong>、硬件触发)，Data Memory Integrity Error.</li>
+<li>TIN &#x3D; 7 : TAE(<strong>异步</strong>、硬件触发)，Temporal Asynchronous Error</li>
+</ul>
+</li>
+<li><p>Class 5— Assertion Traps：</p>
+<ul>
+<li>TIN &#x3D; 1 : OVF(同步、<strong>软件触</strong>发)，Arithmetic Overflow.</li>
+<li>TIN &#x3D; 2 : SOVF(同步、<strong>软件触发</strong>)，Sticky Arithmetic Overflow</li>
+</ul>
+</li>
+<li><p>Class 6 — System Call</p>
+<ul>
+<li>TIN &#x3D; X : SYS(同步、<strong>软件触发</strong>)，System Call。TIN 取自 SYSCALL 指令中指定的立即数常量[0-255]。</li>
+</ul>
+</li>
+<li><p>Class 7 — Non-Maskable Interrupt</p>
+<ul>
+<li>TIN &#x3D; 1 : NMI(<strong>异步</strong>、硬件触发)，Non-Maskable Interrupt.</li>
+</ul>
+</li>
+</ul>
+<h4 id="1-1-同步陷阱（Synchronous-Traps）"><a href="#1-1-同步陷阱（Synchronous-Traps）" class="headerlink" title="1.1 同步陷阱（Synchronous Traps）"></a>1.1 同步陷阱（Synchronous Traps）</h4><p>同步陷阱与特定指令的执行或尝试执行相关，或者与访问需要内存管理系统介入的虚拟地址相关。触发陷阱的指令是精确可识别的。陷阱会立即触发，并且在处理完成之前，执行不会继续超出该指令。</p>
+<h4 id="1-2-异步陷阱（Asynchronous-Traps）"><a href="#1-2-异步陷阱（Asynchronous-Traps）" class="headerlink" title="1.2 异步陷阱（Asynchronous Traps）"></a>1.2 异步陷阱（Asynchronous Traps）</h4><p>异步陷阱类似于中断，因为它们与外部检测到的硬件条件相关，并且会反馈到 CPU 。<br>有些异步陷阱是间接由先前执行的指令导致的，但与这些指令的直接关联已经丢失。<br>其它异步陷阱，例如不可屏蔽中断（NMI），属于外部事件。<br>异步陷阱与中断的区别在于：它们通过陷阱向量而不是中断向量进行路由。它们不能被屏蔽，并且不会改变当前 CPU 的中断优先级。</p>
+<h4 id="1-3-硬件陷阱（Hardware-Traps）"><a href="#1-3-硬件陷阱（Hardware-Traps）" class="headerlink" title="1.3 硬件陷阱（Hardware Traps）"></a>1.3 硬件陷阱（Hardware Traps）</h4><p>硬件陷阱是由硬件检测到的异常条件触发的。在大多数情况下，这些异常条件与尝试执行某个指令相关。常见的例子包括非法指令陷阱、内存保护陷阱和数据内存未对齐陷阱。</p>
+<h4 id="1-4-软件陷阱（Software-Traps）"><a href="#1-4-软件陷阱（Software-Traps）" class="headerlink" title="1.4 软件陷阱（Software Traps）"></a>1.4 软件陷阱（Software Traps）</h4><p>软件陷阱是执行系统调用或断言指令的有意结果。受支持的断言指令包括TRAPV（溢出陷阱）和TRAPSV（粘性溢出陷阱）。系统调用由SYSCALL 指令触发。</p>
+<h4 id="1-5-不可恢复的陷阱（Unrecoverable-Traps）"><a href="#1-5-不可恢复的陷阱（Unrecoverable-Traps）" class="headerlink" title="1.5 不可恢复的陷阱（Unrecoverable Traps）"></a>1.5 不可恢复的陷阱（Unrecoverable Traps）</h4><p>不可恢复的陷阱是软件无法恢复的错误，即触发陷阱的任务无法简单地重新启动。 在 TriCore 体系结构中，FCU（一个致命上下文异常）是一种不可恢复的错误。</p>
+<h3 id="2-陷阱处理（Trap-Handling）"><a href="#2-陷阱处理（Trap-Handling）" class="headerlink" title="2 陷阱处理（Trap Handling）"></a>2 陷阱处理（Trap Handling）</h3><p>陷阱处理机制对陷阱采取的操作与对外部或软件中断采取的操作略有不同。<strong>处理陷阱时，不会改变 CPU 的中断优先级，因此 ICR.CCPN 字段不会被更新</strong>。</p>
+<h4 id="2-1-陷阱向量格式（Trap-Vector-Format）"><a href="#2-1-陷阱向量格式（Trap-Vector-Format）" class="headerlink" title="2.1 陷阱向量格式（Trap Vector Format）"></a>2.1 陷阱向量格式（Trap Vector Format）</h4><p>陷阱处理程序向量，存储在代码存储器中的 陷阱向量表（Trap Vector Table）中。BTV（Base Trap Vector）寄存器的值指定了陷阱向量表的基地址。 这些向量由多个短代码段组成，每段代码之间间隔八个字。 如果陷阱处理程序较短，则可能完全适应向量代码段中的八个字。如果它不能完全适应，则应包含一些初始指令，并随后跳转到完整的处理程序代码。</p>
+<h4 id="2-2-访问陷阱向量表（Accessing-the-Trap-Vector-Table）"><a href="#2-2-访问陷阱向量表（Accessing-the-Trap-Vector-Table）" class="headerlink" title="2.2 访问陷阱向量表（Accessing the Trap Vector Table）"></a>2.2 访问陷阱向量表（Accessing the Trap Vector Table）</h4><p>当发生陷阱时，硬件会生成一个 陷阱标识符（Trap Identifier），该标识符由两个组成部分构成：</p>
+<ul>
+<li>陷阱类别编号（TCN，Trap Class Number），用于索引陷阱向量表。</li>
+<li>陷阱识别编号（TIN，Trap Identification Number），该编号会被加载到数据寄存器 D[15]。</li>
+</ul>
+<p>陷阱类别编号会左移 5 位，然后与 BTV 寄存器中的地址进行 OR 运算，以生成陷阱处理程序的入口地址。</p>
+<h4 id="2-3-返回地址（Return-Address-RA）"><a href="#2-3-返回地址（Return-Address-RA）" class="headerlink" title="2.3 返回地址（Return Address, RA）"></a>2.3 返回地址（Return Address, RA）</h4><p>返回地址保存在 A[11] 寄存器中。<strong>对于大多数同步陷阱，返回地址是触发陷阱的指令所在的 PC（程序计数器）</strong>。仅 SYS 陷阱和 FCD 陷阱有所不同：</p>
+<ul>
+<li>对于 SYS 陷阱（由 SYSCALL 指令触发），返回地址指向 SYSCALL 之后的下一条指令。</li>
+<li>对于 FCD 陷阱，FCD Trap会在触发上下文保存指令完成后立刻触发。因此，FCD 陷阱的返回地址（Return Address）将会是：陷阱、 中断 或 被调用例程的第一条指令，或者 SVLCX 或 BISR 指令后面的指令（这样，在FCD trap处理中，通过合适的扩容，可以正常返回，并继续正常执行）。</li>
+</ul>
+<p>对于异步陷阱，<strong>返回地址是如果未发生该陷阱，接下来应该执行的指令地址。 中断的返回地址规则与异步陷阱相同</strong>。</p>
+<h4 id="2-4-陷阱向量表（Trap-Vector-Table）"><a href="#2-4-陷阱向量表（Trap-Vector-Table）" class="headerlink" title="2.4 陷阱向量表（Trap Vector Table）"></a>2.4 陷阱向量表（Trap Vector Table）</h4><p>所有陷阱服务程序（Trap Service Routine，TSR）的入口点都存储在内存中的 陷阱向量表（Trap Vector Table）。 BTV 寄存器用于指定陷阱向量表的基地址，它可以分配到任何可用的代码存储器中。<br>在系统初始化阶段，可以使用 MTCR 指令修改 BTV 寄存器（该寄存器受 ENDINIT 保护）。 这种机制使得系统可以有多个陷阱向量表，并且可以通过修改 BTV 寄存器内容在它们之间切换。</p>
+<p>当陷阱事件发生时，硬件检测到该事件并生成陷阱标识符。 陷阱标识符由 陷阱类别编号（TCN）和 陷阱识别编号（TIN）组成：TCN 左移 5 位，然后与 BTV 寄存器中的地址进行 OR 运算，以形成 TSR 的入口地址。因此，建议在 BTV 寄存器的位 [7:5] 设为 0，如下图：<br><img src="/2025/06/10/tricore-architecture-Trap%20System/Trap%20Vector%20Table%20Entry%20Address%20Calculation.jpg"><br>BTV 寄存器的位 0 始终为 0，不可写入（指令必须对齐到偶数字节边界）。</p>
+<p>左移 TCN 5 位会创建在陷阱向量表中的条目，且条目之间间隔 8 个字。 如果陷阱处理程序 TSR 很短，它可能完全适应 陷阱向量表条目中的 8 个字。 否则，进入点代码必须最终跳转到存储器中其余部分的 TSR 代码。</p>
+<p><strong>与 中断向量表（Interrupt Vector Table）不同，陷阱向量表中的条目不能跨越多个存储单元</strong>。(Trap 机制都是启用状态，且不可关闭，不能像中断系统一样，关闭一些不使用的中断)</p>
+<h4 id="2-5-陷阱发生时的初始状态（Initial-State-upon-a-Trap）"><a href="#2-5-陷阱发生时的初始状态（Initial-State-upon-a-Trap）" class="headerlink" title="2.5 陷阱发生时的初始状态（Initial State upon a Trap）"></a>2.5 陷阱发生时的初始状态（Initial State upon a Trap）</h4><p>当发生陷阱时，初始状态定义如下：</p>
+<ul>
+<li>上层上下文被保存。</li>
+<li>返回地址存储到 A[11] 并更新。</li>
+<li>陷阱识别编号（TIN）加载到 D[15]。</li>
+<li>如果处理器之前没有使用中断堆栈（PSW.IS &#x3D; 0），则堆栈指针 A[10] 被设置为 中断堆栈指针（ISP）。同时，堆栈指针位被设置，表示使用中断堆栈：PSW.IS &#x3D; 1。</li>
+<li>I&#x2F;O 模式被设置为监督模式，即所有权限均被启用：PSW.IO &#x3D; 10<sub>B</sub>。</li>
+<li>当前保护寄存器组（PRS）被设置为 0：PSW.PRS &#x3D; 000<sub>B</sub>。</li>
+<li>调用深度计数器（CDC）被清除，并且调用深度限制设为 64：PSW.CDC &#x3D; 0000000<sub>B</sub>。</li>
+<li>调用深度计数器启用：PSW.CDE &#x3D; 1。</li>
+<li>PSW 安全位被设置为 SYSCON 寄存器定义的值：PSW.S &#x3D; SYSCON.TS。</li>
+<li>对全局寄存器 A[0]、A[1]、A[8]、A[9] 的写入权限被禁用：PSW.GW &#x3D; 0。</li>
+<li>中断系统被全局禁用：ICR.IE &#x3D; 0。旧的 ICR.IE 和 ICR.CCPN 被分别保存到 PCXI.PIE 和 PCXI.PCPN。<strong>ICR.CCPN 不变</strong>。</li>
+<li>陷阱向量表被访问，以获取对应陷阱处理程序的第一条指令。</li>
+</ul>
+<p>尽管陷阱不会改变 ICR.CCPN，但它们的处理程序仍然在禁用中断的情况下开始执行，因此可以执行关键的初始操作，直到显式重新启用中断。</p>
+<p><strong>对于不可恢复的 FCU 陷阱，其初始状态有所不同</strong>：上层上下文无法保存。仅保证以下状态：</p>
+<ul>
+<li>陷阱识别编号（TIN） 被加载到 D[15]。</li>
+<li>如果处理器之前没有使用中断堆栈（PSW.IS &#x3D; 0），则堆栈指针 A[10] 被设置为 中断堆栈指针（ISP）。</li>
+<li>I&#x2F;O 模式 被设置为 监督模式（所有权限均启用）：PSW.IO &#x3D; 10<sub>B</sub>。</li>
+<li>当前保护寄存器组 被设置为 0：PSW.PRS &#x3D; 000B。</li>
+<li>PSW 安全位 被设置为 SYSCON 寄存器定义的值：PSW.S &#x3D; SYSCON.TS。</li>
+<li>中断系统被全局禁用：ICR.IE &#x3D; 0，ICR.CCPN 保持不变。</li>
+<li>陷阱向量表 被访问，以获取 FCU 陷阱处理程序的第一条指令。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/" title="tricore architecture - Trap System">http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap System/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/06/02/tricore-Tasks%20and%20Functions/" rel="prev" title="tricore architecture - Tasks and Functions">
+                  <i class="fa fa-chevron-left"></i> tricore architecture - Tasks and Functions
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/" rel="next" title="ARM Cortex-m Fault Exceptions 文档学习">
+                  ARM Cortex-m Fault Exceptions 文档学习 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">541k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">11:16</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

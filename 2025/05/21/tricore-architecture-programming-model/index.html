@@ -27,7 +27,7 @@
 <meta property="og:description" content="Programming Model">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-05-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-05-26T16:04:29.433Z">
+<meta property="article:modified_time" content="2025-06-08T14:23:12.170Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
@@ -134,13 +134,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-count">95</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -595,9 +595,7 @@ Programming Model
 <li>直接访问程序存储器中的数据 代价较高，因此不支持 PC 相对寻址。</li>
 </ul>
 <p>当需要 PC 相对寻址数据 时：将附近代码标签的地址存入地址寄存器（Address Register）。使用基地址 + 偏移（Base + Offset）模式 访问数据。一旦基地址寄存器被加载，它可以用于访问 附近的其他 PC 相对数据项。</p>
-<p>代码地址可以通过多种方式加载到地址寄存器。</p>
-<p>在静态链接（Statically Linked）的情况下，代码标签的绝对地址已知，可以使用 LEA（Load Effective Address）指令 加载。</p>
-<p>如果代码是 动态加载 的，或者 由位置无关的代码片段（Position-Independent Code）组成，而没有重定位链接器（Relocating Linker） 的支持：使用 JL（Jump and Link）指令 加载代码地址：JL 指令执行跳转并链接到下一条指令，将 该指令的地址存入返回地址（RA）寄存器 A[11]。（在执行 JL 之前，需要 将当前函数的返回地址保存，以确保正确的返回路径。）</p>
+<p>代码地址可以通过多种方式加载到地址寄存器。<br>在静态链接（Statically Linked）的情况下，代码标签的绝对地址已知，可以使用 LEA（Load Effective Address）指令 加载。<br>如果代码是 动态加载 的，或者 由位置无关的代码片段（Position-Independent Code）组成，而没有重定位链接器（Relocating Linker） 的支持：使用 JL（Jump and Link）指令 加载代码地址：JL 指令执行跳转并链接到下一条指令，将 该指令的地址存入返回地址（RA）寄存器 A[11]。（在执行 JL 之前，需要 将当前函数的返回地址保存，以确保正确的返回路径。）</p>
 
     </div>
 
@@ -668,14 +666,14 @@ Programming Model
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">517k</span>
+    <span title="站点总字数">541k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:47</span>
+    <span title="站点阅读时长">11:16</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

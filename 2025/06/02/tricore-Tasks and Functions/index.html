@@ -27,7 +27,7 @@
 <meta property="og:description" content="Tasks and Functions">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-06-01T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-06-04T14:17:25.804Z">
+<meta property="article:modified_time" content="2025-06-08T14:27:46.201Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 
@@ -134,13 +134,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-count">95</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -379,7 +379,7 @@ Tasks and Functions
 </li>
 <li><p>PCX（Previous Context Pointer）: 指向先前上下文区域（CSA）的指针。</p>
 </li>
-<li><p>LCX（Free CSA List Limit Pointer）: 空闲 CSA 列表的限制指针。用于识别即将发生的 空闲 CSA 列表耗尽问题。当执行 上下文保存操作（Context Save Operation） 时，如果 FCX 的值与 LCX 相匹配，则系统会识别出 “空闲上下文耗尽” 状态。此状态会触发 FCD（Free Context Depletion）陷阱，该陷阱会在执行导致上下文保存的操作后 立即触发。因此，FCD 陷阱的返回地址（Return Address）将会是：陷阱、 中断 或 被调用例程的第一条指令，或者 SVLCX 或 BISR 指令后面的指令（这样，在FCD trap处理中，通过合适的扩容，可以正常返回，并继续正常执行）。</p>
+<li><p>LCX（Free CSA List Limit Pointer）: 空闲 CSA 列表的限制指针。用于识别即将发生的 空闲 CSA 列表耗尽问题。当执行 上下文保存操作（Context Save Operation） 时，如果 FCX 的值与 LCX 相匹配，则系统会识别出 “空闲上下文耗尽” 状态。此状态会触发 FCD（Free Context Depletion）陷阱，该陷阱会在执行导致上下文保存的操作后 立即触发。因此，<strong>FCD 陷阱的返回地址（Return Address）将会是：陷阱、 中断 或 被调用例程的第一条指令，或者 SVLCX 或 BISR 指令后面的指令</strong>（这样，在FCD trap处理中，通过合适的扩容，可以正常返回，并继续正常执行）。</p>
 </li>
 </ul>
 <p>每个指针包含两个字段：</p>
@@ -426,11 +426,14 @@ Tasks and Functions
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/05/27/tricore-architecture-General%20Purpose%20and%20System%20Registers/" rel="prev" title="tricore architecture - General Purpose and System Registers">
-                  <i class="fa fa-chevron-left"></i> tricore architecture - General Purpose and System Registers
+                <a href="/2025/06/02/tricore-architecture-Interrupt%20System/" rel="prev" title="tricore architecture - Interrupt System">
+                  <i class="fa fa-chevron-left"></i> tricore architecture - Interrupt System
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2025/06/10/tricore-architecture-Trap%20System/" rel="next" title="tricore architecture - Trap System">
+                  tricore architecture - Trap System <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -463,14 +466,14 @@ Tasks and Functions
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">517k</span>
+    <span title="站点总字数">541k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">10:47</span>
+    <span title="站点阅读时长">11:16</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

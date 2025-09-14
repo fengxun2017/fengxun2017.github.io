@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Interrupt System">
+<meta property="og:type" content="article">
+<meta property="og:title" content="tricore architecture - Interrupt System">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/06/02/tricore-architecture-Interrupt%20System/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="Interrupt System">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/06/02/tricore-architecture-Interrupt%20System/Interrupt-Vector-Table-Address-Calculation.jpg">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/06/02/tricore-architecture-Interrupt%20System/Interrupt-Vector-Table.jpg">
+<meta property="article:published_time" content="2025-06-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-06-06T15:48:46.247Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2025/06/02/tricore-architecture-Interrupt%20System/Interrupt-Vector-Table-Address-Calculation.jpg">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/06/02/tricore-architecture-Interrupt%20System/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/06/02/tricore-architecture-Interrupt%20System/","path":"2025/06/02/tricore-architecture-Interrupt System/","title":"tricore architecture - Interrupt System"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>tricore architecture - Interrupt System | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-General-Operation"><span class="nav-number">1.</span> <span class="nav-text">1 General Operation</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-ICU-%E4%B8%AD%E6%96%AD%E6%8E%A7%E5%88%B6%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88ICR%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 ICU 中断控制寄存器（ICR）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-CPU-%E5%A4%84%E7%90%86%E4%B8%AD%E6%96%AD%E8%AF%B7%E6%B1%82"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 CPU 处理中断请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E8%BF%9B%E5%85%A5%E4%B8%AD%E6%96%AD%E6%9C%8D%E5%8A%A1%E4%BE%8B%E7%A8%8B%EF%BC%88ISR%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 进入中断服务例程（ISR）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E9%80%80%E5%87%BA%E4%B8%AD%E6%96%AD%E6%9C%8D%E5%8A%A1%E7%A8%8B%E5%BA%8F"><span class="nav-number">2.</span> <span class="nav-text">2 退出中断服务程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E4%B8%AD%E6%96%AD%E5%90%91%E9%87%8F%E8%A1%A8"><span class="nav-number">3.</span> <span class="nav-text">3 中断向量表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-TriCore-%E4%B8%AD%E6%96%AD%E7%B3%BB%E7%BB%9F%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">4 TriCore 中断系统的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E8%B7%A8%E5%90%91%E9%87%8F%E6%9D%A1%E7%9B%AE%E6%89%A9%E5%B1%95%E4%B8%AD%E6%96%AD%E6%9C%8D%E5%8A%A1%E7%A8%8B%E5%BA%8F%EF%BC%88ISR%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 跨向量条目扩展中断服务程序（ISR）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E4%B8%AD%E6%96%AD%E4%BC%98%E5%85%88%E7%BA%A7%E7%BB%84"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 中断优先级组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E5%B0%86-ISR-%E5%88%92%E5%88%86%E4%B8%BA%E4%B8%8D%E5%90%8C%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 将 ISR 划分为不同优先级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E4%B8%BA%E5%90%8C%E4%B8%80%E4%B8%AD%E6%96%AD%E6%BA%90%E5%88%86%E9%85%8D%E4%B8%8D%E5%90%8C%E7%9A%84%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 为同一中断源分配不同的优先级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-%E4%B8%AD%E6%96%AD%E6%8E%A7%E5%88%B6%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">4.5.</span> <span class="nav-text">4.5 中断控制寄存器</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/06/02/tricore-architecture-Interrupt%20System/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="tricore architecture - Interrupt System | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          tricore architecture - Interrupt System
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-06-02 00:00:00" itemprop="dateCreated datePublished" datetime="2025-06-02T00:00:00+08:00">2025-06-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Tricore/" itemprop="url" rel="index"><span itemprop="name">Tricore</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>4.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>6 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+Interrupt System
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p>在 TriCore™ 处理器系统中，多个来源（如外设或外部中断）可以向 中断服务处理单元（如 CPU 或 DMA 通道）发送 中断请求。本章介绍 CPU 的中断处理能力，包括 中断优先级机制 以及 中断向量表的访问。</p>
+<h2 id="1-General-Operation"><a href="#1-General-Operation" class="headerlink" title="1 General Operation"></a>1 General Operation</h2><p>每个 中断源 都被分配一个 唯一的中断优先级号，称为 服务请求优先级号（SRPN）。当某个 中断源 发送中断请求时，中断控制单元（ICU） 会使用 SRPN 来决定优先级，并选择最高优先级的请求。</p>
+<p>获胜的中断请求 会将其 SRPN 作为“挂起的中断优先级号”（PIPN）发送给 CPU，同时触发中断。CPU 通过比较 PIPN 和 当前 CPU 优先级号（CCPN），决定是否接受该中断：如果 CPU 接受中断，它会发送 中断确认（Interrupt Acknowledge） 并返回被接受的 中断优先级号。ICU 随后会清除该中断源。</p>
+<h3 id="1-1-ICU-中断控制寄存器（ICR）"><a href="#1-1-ICU-中断控制寄存器（ICR）" class="headerlink" title="1.1 ICU 中断控制寄存器（ICR）"></a>1.1 ICU 中断控制寄存器（ICR）</h3><p>ICU 的中断控制寄存器（ICR） 包含：</p>
+<ul>
+<li>当前 CPU 优先级号（CCPN）。</li>
+<li>全局中断使能&#x2F;禁用位（IE）。</li>
+<li>当前挂起的中断优先级号（PIPN）。</li>
+</ul>
+<h3 id="1-2-CPU-处理中断请求"><a href="#1-2-CPU-处理中断请求" class="headerlink" title="1.2 CPU 处理中断请求"></a>1.2 CPU 处理中断请求</h3><p>当 CPU 收到 中断请求 时，它会执行以下检查：</p>
+<ul>
+<li>检查全局中断使能位（ICR.IE）：如果 ICR.IE &#x3D;&#x3D; 0，则所有中断 都被禁用。</li>
+<li>比较当前 CPU 优先级（ICR.CCPN）与 PIPN：只有当 PIPN &gt; CCPN 且 ICR.IE &#x3D;&#x3D; 1 时，CPU 才能被中断。</li>
+</ul>
+<p>CPU 可能因以下 情况 无法立即处理中断：</p>
+<ul>
+<li>全局中断被禁用 (ICR.IE &#x3D;&#x3D; 0)。</li>
+<li>当前 CPU 优先级（CCPN）高于或等于挂起的中断优先级号（PIPN）。</li>
+<li>CPU 正在进入中断或陷阱服务程序。</li>
+<li>CPU 正在执行不可被中断的陷阱服务。</li>
+<li>CPU 正在执行多周期指令（如复杂的数学计算）。</li>
+<li>CPU 正在执行修改 ICR 的指令。</li>
+</ul>
+<p>CPU 仅在这些条件不再成立时，才会响应新的中断请求。</p>
+<h3 id="1-3-进入中断服务例程（ISR）"><a href="#1-3-进入中断服务例程（ISR）" class="headerlink" title="1.3 进入中断服务例程（ISR）"></a>1.3 进入中断服务例程（ISR）</h3><p>当 所有阻碍条件被清除后，CPU 进入 中断服务例程（ISR），并执行以下操作：</p>
+<ul>
+<li>保存当前任务的上层上下文（包括关键寄存器状态）。</li>
+<li>更新返回地址（A[11]），将当前程序计数器（PC）存入其中。</li>
+<li>切换到中断栈：如果 CPU 之前未使用中断栈 (PSW.IS &#x3D;&#x3D; 0)，则 A[10]（栈指针）被设置为中断栈指针（ISP）。PSW.IS 置为 1，表示当前使用中断栈。</li>
+<li>进入“监督模式”（Supervisor Mode），开启所有权限：PSW.IO &#x3D; 10<sub>B</sub>。</li>
+<li>保护寄存器集合设置为 0：PSW.PRS &#x3D; 000<sub>B</sub>。</li>
+<li>清除调用深度计数器（Call Depth Counter, CDC） 并设定调用深度限制：PSW.CDC &#x3D; 0000000<sub>B</sub>（最大 64 级）。</li>
+<li>启用调用深度计数器（Call Depth Counter）：PSW.CDE &#x3D; 1</li>
+<li>设置 PSW 安全位：PSW.S &#x3D; SYSCON.IS，该位根据 SYSCON 寄存器中定义的值设置，确保进入中断时符合安全机制。</li>
+<li>禁用对全局寄存器的写入权限：PSW.GW &#x3D; 0，限制对 A[0], A[1], A[8], A[9] 这四个全局寄存器的写访问。任何中断或陷阱处理程序进入时，默认情况下都无法修改这些寄存器，以保证系统稳定性。</li>
+<li>禁用全局中断系统：ICR.IE &#x3D; 0，防止在处理中断时发生新的中断请求。旧的 ICR.IE 值被 保存到 PCXI.PIE，以备恢复。</li>
+<li>更新 CPU 优先级：ICR.CCPN（当前 CPU 优先级号）存入 PCXI.PCPN（先前 CPU 优先级号）。ICR.PIPN（挂起的中断优先级号）存入 ICR.CCPN，以确保 CPU 在执行 ISR 期间运行于正确的优先级。</li>
+<li>访问中断向量表，加载 ISR 入口：CPU 计算 ISR 的入口地址，然后跳转执行。</li>
+</ul>
+<p>进入 ISR 时，CPU 默认 禁用中断系统 并设置当前优先级。用户可以手动启用中断系统（ICR.IE &#x3D; 1）。</p>
+<p>可以通过 ENABLE 指令来设置ICR.IE &#x3D; 1，恢复中断处理能力。以及 BISR 指令（Begin Interrupt Service Routine）启用中断系统（会同时更新 ICR.CCPN，并保存被中断任务的下层上下文）。<br>此外，也允许通过 MTCR指令（Move To Core Register）修改 ICR.IE 或 ICR.CCPN。</p>
+<p>ENABLE、BISR 和 DISABLE（禁用中断）指令的执行方式，使得 CPU 在指令完全执行完毕之前不会接受中断请求。这种方式避免了流水线副作用，因此无需在这些指令后执行 ISYNC（同步指令流）。<br><strong>但 MTCR 是一个例外，必须在其后执行 ISYNC 指令</strong>。</p>
+<h2 id="2-退出中断服务程序"><a href="#2-退出中断服务程序" class="headerlink" title="2 退出中断服务程序"></a>2 退出中断服务程序</h2><p>当 ISR 通过 RFE（从异常返回）指令退出时，硬件会自动恢复上层上下文。上层上下文包括 PCXI 寄存器，该寄存器保存先前的 CPU 优先级编号（PCPN）和先前的全局中断使能位（PIE）。这些位的值被使用如下：</p>
+<p>PCXI.PCPN 被写入 ICR.CCPN，以将 CPU 优先级编号恢复到中断前的值。<br>PCXI.PIE 被写入 ICR.IE，以恢复该位的状态。 随后，被中断的程序继续执行。</p>
+<h2 id="3-中断向量表"><a href="#3-中断向量表" class="headerlink" title="3 中断向量表"></a>3 中断向量表</h2><p>中断向量表用于将中断服务程序（ISR）与特定优先级的中断关联。<br>CPU 发生中断时，会根据中断优先级计算出该 ISR 入口，在中断向量表中的位置，并将其加载到程序计数器（PC）中。<br>随后，CPU 开始执行 ISR 的指令。由于 ISR 代码的大小不同，中断向量表可能只存储 ISR 的初始部分，例如一个跳转指令，以引导 CPU 到完整的 ISR 代码位置。</p>
+<p>中断向量表基地址寄存器（BIV） 存储 中断向量表 的基地址。<br>中断向量在表中按优先级递增排列。BIV 寄存器可以使用 MTCR 指令在系统初始化阶段修改（BIV 受 ENDINIT 保护），在启用中断之前完成修改。借助这种设计，可以使用多个 中断向量表 并通过更改 BIV 寄存器的内容来在它们之间切换。</p>
+<p>当发生中断时，CPU 根据优先级 和 BIV 寄存器中内容，来计算对应的中断服务程序（ISR） 入口点。<br>中断向量表 的向量间隔配置有两种，向量间隔可以是 32 字节 或 8 字节，具体间隔由 BIV 寄存器 的 VSS（向量大小选择） 位决定。</p>
+<p>要生成指向 中断入口 的指针，PIPN 需左移 5 位（当 VSS&#x3D;0） 或 3 位（当 VSS&#x3D;1），然后与 BIV 寄存器的地址 进行 OR 操作 来生成 ISR 入口地址。ISR 的执行从该地址开始。<br>通过将BIV中参与 OR运算 的位全部置为1，可实现所有 ISR 都进入同一个中断入口，这种方式有利于软件同一管理 ISR。<br>如下所示：<br><img src="/2025/06/02/tricore-architecture-Interrupt%20System/Interrupt-Vector-Table-Address-Calculation.jpg"></p>
+<p>如果 中断处理程序 很短，它可能可以完全存储在对应的向量位置处（VSS&#x3D;0时，每个向量占 32 字节）。此外，一个中断处理程序也可以跨多个向量条目（需要被占用的向量表位置，没有被其它中断使用）。<br>更通用的处理方式是，向量表中会包含一些 初始指令，随后再跳转到 完整处理程序 的位置。</p>
+<p><img src="/2025/06/02/tricore-architecture-Interrupt%20System/Interrupt-Vector-Table.jpg"></p>
+<center> 图 1 ：interrupt vector table </center>
+
+<p>BIV 寄存器允许 中断向量表 被定位在可用代码存储器的任何位置。上电后的默认值取决于具体实现。在 系统初始化阶段，在启用中断之前，可以使用 MTCR 指令写入 BIV 寄存器。此外，也可以使用多个 中断向量表，并且可以通过简单地修改 BIV 寄存器的内容在它们之间切换。</p>
+<h2 id="4-TriCore-中断系统的使用"><a href="#4-TriCore-中断系统的使用" class="headerlink" title="4 TriCore 中断系统的使用"></a>4 TriCore 中断系统的使用</h2><p>TriCore 架构的灵活中断系统可用于解决常规和特殊的应用需求。</p>
+<h3 id="4-1-跨向量条目扩展中断服务程序（ISR）"><a href="#4-1-跨向量条目扩展中断服务程序（ISR）" class="headerlink" title="4.1 跨向量条目扩展中断服务程序（ISR）"></a>4.1 跨向量条目扩展中断服务程序（ISR）</h3><p><strong>由于向量条目与中断源无关</strong>，ISR 可以跨多个向量条目位置进行扩展，避免跳转操作。当 ISR 扩展时，占用的向量条目对应的优先级号不得分配给同一服务提供者的其他服务请求节点（SRN），如前文 <strong>图一</strong> 所示。</p>
+<h3 id="4-2-中断优先级组"><a href="#4-2-中断优先级组" class="headerlink" title="4.2 中断优先级组"></a>4.2 中断优先级组</h3><p>中断优先级组定义了一组无法互相打断的中断服务程序。这种分组机制可以通过 TriCore 的中断系统架构轻松实现。<br>CPU 在处理中断时会禁用整个中断系统，并将当前 CPU 优先级（CCPN）设置为正在处理的中断的优先级，阻止所有低优先级的中断请求，直到中断系统重新启用或 ISR 通过 RFE 指令终止。 若在 ISR 中重新启用中断系统，但不改变 CCPN，则所有优先级低于或等于 CCPN 的中断仍无法执行。但具有更高优先级的中断可打断当前 ISR。 </p>
+<p>在一些应用场景中，多个重要的中断请求需要被分组，以确保同一组中的成员不会相互打断。可通过让 ISR 在启用中断系统前，将 CCPN 设为该组中最高的优先级编号，来实现此功能。 例如，编号 11 和 12 形成一组，而 14 到 17 形成另一组。每次处理 11 或 12 时，ISR 会将 CCPN 设为 12，每次处理 14 到 17 时，则设为 17，确保组内的中断不会相互打断。 此外，编号 13 可单独形成一组，或者将 CCPN 设为最大值 255，使所有中断被归入同一组，完全禁止中断嵌套。</p>
+<h3 id="4-3-将-ISR-划分为不同优先级"><a href="#4-3-将-ISR-划分为不同优先级" class="headerlink" title="4.3 将 ISR 划分为不同优先级"></a>4.3 将 ISR 划分为不同优先级</h3><p>中断服务程序（ISR）可以很容易地分为具有不同优先级的部分。<br>例如，当某个中断的响应时间至关重要时，它可以被设置为极高的优先级，以确保关键任务立即执行，而后续的非关键任务可以在较低优先级运行。<br>因此，该服务程序被分为两部分：一部分执行关键任务，另一部分执行次要任务。 首先，中断节点的优先级被设置为较高优先级，使得当中断发生时，关键任务能够立刻执行。随后，该中断的优先级被降低，并且通过软件再次设置中断请求位（触发低优先级中断），高优先级服务程序结束后，返回到被中断的程序时。此时，如果 CPU 的优先级低于软件触发的 低优先级中断，挂起的低优先级中断会被处理。在此服务程序的新地址处，执行该中断的剩余低优先级任务。 </p>
+<p>在某些情况下，中断请求的优先级可能较低，因为对事件的响应时间并不紧急，但一旦开始服务，它不应被其他中断打断。为了防止中断过程被打断，TriCore 架构允许在 ISR 内提升服务请求的优先级，并允许完全禁用中断。</p>
+<h3 id="4-4-为同一中断源分配不同的优先级"><a href="#4-4-为同一中断源分配不同的优先级" class="headerlink" title="4.4 为同一中断源分配不同的优先级"></a>4.4 为同一中断源分配不同的优先级</h3><p>在某些应用场景下，中断请求的优先级相较于其他请求并不是固定的，而是根据系统的当前状态动态调整。这可以通过在不同时间分配不同的 服务请求优先级编号（SRPN） 来实现，通常 ISR 也会依据其当前优先级执行不同的代码。 在传统的中断系统中，ISR 需要检查当前中断请求的优先级，并跳转到相应的代码段，这种方式会导致响应时间延迟。而在 TriCore 系统中，不同优先级的中断请求会自动有不同的向量条目，因此 ISR 无需额外检查和跳转，从而减少了中断延迟。 </p>
+<p>注意： 在创建 中断向量表 时，需要考虑为同一中断分配不同优先级的情况。</p>
+<h3 id="4-5-中断控制寄存器"><a href="#4-5-中断控制寄存器" class="headerlink" title="4.5 中断控制寄存器"></a>4.5 中断控制寄存器</h3><p>两个 CSFR（核心特殊功能寄存器）支持中断处理：</p>
+<ul>
+<li><p>ICR：存储当前 CPU 优先级编号（CCPN），中断系统启用&#x2F;禁用位（IE），挂起中断优先级编号（PIPN），以及用于中断仲裁的特定实现控制项。</p>
+</li>
+<li><p>BIV：存储 中断向量表 的基地址。</p>
+</li>
+</ul>
+<p>ICR 中断控制寄存器，包含如下字段信息：</p>
+<ul>
+<li>PIPN [23:16]:待处理中断优先级编号。一个只读位字段，由 ICU（Interrupt<br>Control Unit）在每次中断仲裁过程结束时更新。表示待处理服务的优先级编号。当没有待处理请求时，以及每个新的中断仲裁过程的开始，PIPN 设置为 0。</li>
+<li>IE [15]：全局中断使能控制位。一个中断服务请求能被传送到 CPU， 需要对应的SRN 中的服务请求启用位（SRE）使能， 以及 这里的全局中断使能控制位被使能。<br>ICR.IE 在进入和退出 ISR 会自动更新。当进入中断 ISR 时 IE 位被清0，在 ISR 执行 RFE 时恢复为被中断前的值。ICR.IE 也可以通过<br>执行 ENABLE、DISABLE、MTCR 和 BISR 指令。<br>0 ： 中断系统已全局禁用。<br>1 ： 中断系统已全局启用。</li>
+<li>CCPN [7:0]：当前CPU优先级。该值会在进入&#x2F;退出 ISR 时由硬件自动更新，或执行 BISR 指令时更新。也可以使用 MTCR 指令修改该值（注意使用ISYNC）。</li>
+</ul>
+<p>BIV 中断向量表基地址寄存器，包含如下字段信息：</p>
+<ul>
+<li>BIV [31:1]：存储中断向量表基地址，该地址需要偶数对齐。</li>
+<li>VSS [0]: 中断向量表中每个条目的大小。<ul>
+<li>0：32个字节</li>
+<li>1：8个字节</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/06/02/tricore-architecture-Interrupt%20System/" title="tricore architecture - Interrupt System">http://fengxun2017.github.io/2025/06/02/tricore-architecture-Interrupt System/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/05/27/tricore-architecture-General%20Purpose%20and%20System%20Registers/" rel="prev" title="tricore architecture - General Purpose and System Registers">
+                  <i class="fa fa-chevron-left"></i> tricore architecture - General Purpose and System Registers
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/06/02/tricore-Tasks%20and%20Functions/" rel="next" title="tricore architecture - Tasks and Functions">
+                  tricore architecture - Tasks and Functions <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">541k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">11:16</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
