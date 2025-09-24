@@ -35,11 +35,12 @@
 <meta property="og:image" content="http://fengxun2017.github.io/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/handler_output.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/Fault_Reports_dialog.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/Faults_Reports_dialog.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/Exception_stack_frame.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/display_call_stack.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/Registers_Window.png">
 <meta property="og:image" content="http://fengxun2017.github.io/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/Execution_context_stored_on_the_stack.png">
 <meta property="article:published_time" content="2025-09-13T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-09-14T12:43:45.078Z">
+<meta property="article:modified_time" content="2025-09-14T13:17:53.233Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/exception-table.png">
@@ -147,7 +148,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-count">96</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -232,7 +233,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/ARM/" itemprop="url" rel="index"><span itemprop="name">ARM</span></a>
+          <a href="/categories/ARM-CORTEX-M/" itemprop="url" rel="index"><span itemprop="name">ARM-CORTEX-M</span></a>
         </span>
     </span>
 
@@ -600,7 +601,8 @@ ARM Cortex-m Fault Exceptions 文档学习
 <h4 id="8-1-从“外设”菜单访问故障报告对话框"><a href="#8-1-从“外设”菜单访问故障报告对话框" class="headerlink" title="8.1 从“外设”菜单访问故障报告对话框"></a>8.1 从“外设”菜单访问故障报告对话框</h4><p>ARM Cortex-M 故障寄存器会准确指示发生了哪种异常。µVision 在 “外设 (Peripherals)” –&gt; “内核外设 (Core Peripherals)” 菜单下的 “故障报告 (Fault Reports)” 对话框中提供了所有故障寄存器的当前值。<br><img src="/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/Fault_Reports_dialog.png"></p>
 <p>该故障报告对话框提供了已发生异常的详细信息。在此案例中（软件包示例项目中的 TESTCASE INVSTATE），是一次尝试切换到无效状态（ARM 状态） 的操作导致了用法故障 (UsageFault)；并且由于用法故障处理程序未启用，该故障被升级 (escalated) 为了硬故障 (HardFault)。<br><img src="/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/Faults_Reports_dialog.png"></p>
 <p>此故障报告对话框是分析故障异常的快捷途径。如果您的调试器不支持此类对话框，则可以通过内存窗口 (memory window) 来查看这些寄存器的值。</p>
-<h4 id="8-2-确定异常发生的位置"><a href="#8-2-确定异常发生的位置" class="headerlink" title="8.2 确定异常发生的位置"></a>8.2 确定异常发生的位置</h4><p>在示例项目中，使能 DIVBYZERO (除零) 用法故障，然后运行应用程序直至其最终进入 HardFault。</p>
+<h4 id="8-2-确定异常发生的位置"><a href="#8-2-确定异常发生的位置" class="headerlink" title="8.2 确定异常发生的位置"></a>8.2 确定异常发生的位置</h4><p>异常发生时，硬件自动压栈，异常栈帧结构如下：<br><img src="/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/Exception_stack_frame.png"></p>
+<p>在示例项目中，使能 DIVBYZERO (除零) 用法故障，然后运行应用程序直至其最终进入 HardFault。</p>
 <p>在 “调用堆栈 + 局部变量 (Call Stack + Locals)”窗口中，右键单击 HardFault_Handler，然后选择 “查看调用者代码 (Show Caller Code)”，以高亮显示异常发生时的执行上下文：<br><img src="/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/display_call_stack.png"></p>
 <p>根据异常类型的不同，调试器会高亮显示导致异常的指令，或者导致故障的指令的下一条指令。这取决于导致异常的指令是否实际上已经执行完成。<br>在 main.c 中，以下行被高亮显示：<br>i &#x3D;i&#x2F;j; &#x2F;&#x2F; i and j are 0 initialized -&gt; Div&#x2F;0</p>
 <p>发生异常时，会保存寄存器 R0-R3, R12, PC 和 LR 的状态，以及 MSP 或 PSP 的值（具体取决于异常发生时正在使用的堆栈）。当前的链接寄存器 LR 包含正在处理的异常的 EXC_RETURN 值，该值指示了哪个堆栈保存着来自应用程序上下文的寄存器值。如果 EXC_RETURN 的位 2 为 0，则表示使用的是主堆栈（MSP 被保存），否则使用的是进程堆栈（PSP 被保存）。寄存器 (Registers) 窗口提供了所需的信息：<br><img src="/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/Registers_Window.png"></p>
@@ -648,6 +650,9 @@ ARM Cortex-m Fault Exceptions 文档学习
                 </a>
             </div>
             <div class="post-nav-item">
+                <a href="/2025/09/24/TCPIP-lwip-ipinput/" rel="next" title="lwip ip层处理逻辑梳理">
+                  lwip ip层处理逻辑梳理 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
     </footer>
@@ -680,14 +685,14 @@ ARM Cortex-m Fault Exceptions 文档学习
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">541k</span>
+    <span title="站点总字数">552k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">11:16</span>
+    <span title="站点阅读时长">11:30</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

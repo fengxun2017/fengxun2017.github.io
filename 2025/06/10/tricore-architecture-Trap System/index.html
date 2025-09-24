@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/Trap%20Vector%20Table%20Entry%20Address%20Calculation.jpg">
 <meta property="article:published_time" content="2025-06-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-06-11T15:25:44.217Z">
+<meta property="article:modified_time" content="2025-09-24T00:28:38.077Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/Trap%20Vector%20Table%20Entry%20Address%20Calculation.jpg">
@@ -123,7 +123,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%99%B7%E9%98%B1%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">1 陷阱类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%90%8C%E6%AD%A5%E9%99%B7%E9%98%B1%EF%BC%88Synchronous-Traps%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 同步陷阱（Synchronous Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%BC%82%E6%AD%A5%E9%99%B7%E9%98%B1%EF%BC%88Asynchronous-Traps%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 异步陷阱（Asynchronous Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E7%A1%AC%E4%BB%B6%E9%99%B7%E9%98%B1%EF%BC%88Hardware-Traps%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 硬件陷阱（Hardware Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E8%BD%AF%E4%BB%B6%E9%99%B7%E9%98%B1%EF%BC%88Software-Traps%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 软件陷阱（Software Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-%E4%B8%8D%E5%8F%AF%E6%81%A2%E5%A4%8D%E7%9A%84%E9%99%B7%E9%98%B1%EF%BC%88Unrecoverable-Traps%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 不可恢复的陷阱（Unrecoverable Traps）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%99%B7%E9%98%B1%E5%A4%84%E7%90%86%EF%BC%88Trap-Handling%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">2 陷阱处理（Trap Handling）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E6%A0%BC%E5%BC%8F%EF%BC%88Trap-Vector-Format%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 陷阱向量格式（Trap Vector Format）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E8%AE%BF%E9%97%AE%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%88Accessing-the-Trap-Vector-Table%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 访问陷阱向量表（Accessing the Trap Vector Table）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E8%BF%94%E5%9B%9E%E5%9C%B0%E5%9D%80%EF%BC%88Return-Address-RA%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 返回地址（Return Address, RA）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%88Trap-Vector-Table%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 陷阱向量表（Trap Vector Table）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E9%99%B7%E9%98%B1%E5%8F%91%E7%94%9F%E6%97%B6%E7%9A%84%E5%88%9D%E5%A7%8B%E7%8A%B6%E6%80%81%EF%BC%88Initial-State-upon-a-Trap%EF%BC%89"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 陷阱发生时的初始状态（Initial State upon a Trap）</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%99%B7%E9%98%B1%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">1 陷阱类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%90%8C%E6%AD%A5%E9%99%B7%E9%98%B1%EF%BC%88Synchronous-Traps%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 同步陷阱（Synchronous Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%BC%82%E6%AD%A5%E9%99%B7%E9%98%B1%EF%BC%88Asynchronous-Traps%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 异步陷阱（Asynchronous Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E7%A1%AC%E4%BB%B6%E9%99%B7%E9%98%B1%EF%BC%88Hardware-Traps%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 硬件陷阱（Hardware Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E8%BD%AF%E4%BB%B6%E9%99%B7%E9%98%B1%EF%BC%88Software-Traps%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 软件陷阱（Software Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-%E4%B8%8D%E5%8F%AF%E6%81%A2%E5%A4%8D%E7%9A%84%E9%99%B7%E9%98%B1%EF%BC%88Unrecoverable-Traps%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 不可恢复的陷阱（Unrecoverable Traps）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%99%B7%E9%98%B1%E5%A4%84%E7%90%86%EF%BC%88Trap-Handling%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">2 陷阱处理（Trap Handling）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E6%A0%BC%E5%BC%8F%EF%BC%88Trap-Vector-Format%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 陷阱向量格式（Trap Vector Format）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E8%AE%BF%E9%97%AE%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%88Accessing-the-Trap-Vector-Table%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 访问陷阱向量表（Accessing the Trap Vector Table）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E8%BF%94%E5%9B%9E%E5%9C%B0%E5%9D%80%EF%BC%88Return-Address-RA%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 返回地址（Return Address, RA）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%88Trap-Vector-Table%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 陷阱向量表（Trap Vector Table）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E9%99%B7%E9%98%B1%E5%8F%91%E7%94%9F%E6%97%B6%E7%9A%84%E5%88%9D%E5%A7%8B%E7%8A%B6%E6%80%81%EF%BC%88Initial-State-upon-a-Trap%EF%BC%89"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 陷阱发生时的初始状态（Initial State upon a Trap）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%99%B7%E9%98%B1%E6%8F%8F%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">3 陷阱描述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-MMU%E9%99%B7%E9%98%B1%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-0%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 MMU陷阱（陷阱类别 0）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%86%85%E9%83%A8%E4%BF%9D%E6%8A%A4%E9%99%B7%E9%98%B1%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-1%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 内部保护陷阱（陷阱类别 1）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E6%8C%87%E4%BB%A4%E9%94%99%E8%AF%AF%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-2%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 指令错误（陷阱类别 2）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-3%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 上下文管理（陷阱类别 3）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E7%B3%BB%E7%BB%9F%E6%80%BB%E7%BA%BF%E5%92%8C%E5%A4%96%E8%AE%BE%E9%94%99%E8%AF%AF%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-4%EF%BC%89"><span class="nav-number">3.5.</span> <span class="nav-text">4 系统总线和外设错误（陷阱类别 4）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E6%96%AD%E8%A8%80%E9%99%B7%E9%98%B1%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-5%EF%BC%89"><span class="nav-number">3.6.</span> <span class="nav-text">5 断言陷阱（陷阱类别 5）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-6%EF%BC%89"><span class="nav-number">3.7.</span> <span class="nav-text">6 系统调用（陷阱类别 6）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E4%B8%8D%E5%8F%AF%E5%B1%8F%E8%94%BD%E4%B8%AD%E6%96%AD%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-7%EF%BC%89"><span class="nav-number">3.8.</span> <span class="nav-text">7 不可屏蔽中断（陷阱类别 7）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E9%99%B7%E9%98%B1"><span class="nav-number">3.9.</span> <span class="nav-text">调试陷阱</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%BC%82%E5%B8%B8%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">4.</span> <span class="nav-text">4 异常优先级</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -136,7 +136,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">95</span>
+          <span class="site-state-item-count">96</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -232,14 +232,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>5.1k</span>
+      <span>12k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>6 分钟</span>
+      <span>15 分钟</span>
     </span>
 </div>
 
@@ -380,6 +380,69 @@ Trap System
 <li>中断系统被全局禁用：ICR.IE &#x3D; 0，ICR.CCPN 保持不变。</li>
 <li>陷阱向量表 被访问，以获取 FCU 陷阱处理程序的第一条指令。</li>
 </ul>
+<h3 id="3-陷阱描述"><a href="#3-陷阱描述" class="headerlink" title="3 陷阱描述"></a>3 陷阱描述</h3><p>以下小节描述了陷阱类别和具体陷阱。</p>
+<h4 id="3-1-MMU陷阱（陷阱类别-0）"><a href="#3-1-MMU陷阱（陷阱类别-0）" class="headerlink" title="3.1 MMU陷阱（陷阱类别 0）"></a>3.1 MMU陷阱（陷阱类别 0）</h4><p>对于那些包含内存管理单元（MMU）的实现，陷阱类别0预留给MMU陷阱。此类中有两种陷阱：VAF和VAP。</p>
+<p>VAF - 虚拟地址填充（TIN 0）<br>当MMU已启用，且指令引用的虚拟地址在MMU转译后备缓冲区（TLB）中没有页表项（page entry）时，会产生VAF陷阱。</p>
+<p>VAP - 虚拟地址保护（TIN 1）<br>VAP陷阱在（MMU启用时）由以下情况产生：内存访问在进行页表项（PTE）转译时，该访问不被PTE保护设置所允许；或者，由User-0模式尝试访问一个不具有特权外设属性的高地址段（upper segment）。</p>
+<h4 id="3-2-内部保护陷阱（陷阱类别-1）"><a href="#3-2-内部保护陷阱（陷阱类别-1）" class="headerlink" title="3.2 内部保护陷阱（陷阱类别 1）"></a>3.2 内部保护陷阱（陷阱类别 1）</h4><p>陷阱类别1用于与内部保护系统相关的陷阱。此类中的内存保护陷阱（MPR、MPW和MPX）针对基于范围（range-based）的保护系统，并且独立于陷阱类别0中基于页（page-based）的VAP保护陷阱。</p>
+<p>所有内存保护陷阱（MPR、MPW、MPX、MPP和MPN）都基于经过直接转换的虚拟地址。</p>
+<p>定义了以下内部保护陷阱：</p>
+<p>PRIV - 特权违规（TIN 1）<br>在某种用户模式（User-0或User-1模式）下执行的程序，尝试执行该模式不允许的指令。<br>本手册第二卷的指令集章节提供了仅限于监管模式（Supervisor mode）或User-1模式执行的指令表。</p>
+<p>MPR - 内存保护读违规（TIN 2）<br>当内存保护系统已启用，且一次加载（load）、LDMST、SWAP或ST.T指令的有效地址不在任何启用了读取权限的地址范围内时，会产生MPR陷阱。在上下文保存&#x2F;恢复操作期间发生访问违规时，不会生成此陷阱。</p>
+<p>MPW - 内存保护写违规（TIN 3）<br>当内存保护系统已启用，且一次存储（store）、LDMST、SWAP或ST.T指令的有效地址不在任何启用了写入权限的地址范围内时，会产生MPW陷阱。</p>
+<p>MPX - 内存保护执行违规（TIN 4）<br>当内存保护系统已启用，且程序计数器（PC）不在任何启用了执行权限的地址范围内时，会产生MPX陷阱。</p>
+<p>MPP - 内存保护外设访问违规（TIN 5）<br>在User-0模式下执行的程序，尝试对配置为外设段（peripheral segment）的地址段进行加载或存储访问。参见第3页的“物理内存属性（PMA）”。</p>
+<p>MPN - 内存保护空地址访问违规（TIN 6）<br>当任何程序尝试对有效地址零（address zero）进行加载&#x2F;存储操作时，都会产生MPN陷阱。</p>
+<p>GRWP - 全局寄存器写保护违规（TIN 7）<br>当程序没有相应权限时，却尝试修改某个全局地址寄存器（A[0], A[1], A[8] 或 A[9]）</p>
+<h4 id="3-3-指令错误（陷阱类别-2）"><a href="#3-3-指令错误（陷阱类别-2）" class="headerlink" title="3.3 指令错误（陷阱类别 2）"></a>3.3 指令错误（陷阱类别 2）</h4><p>陷阱类别2用于指示各种类型的指令错误。指令错误包括指令操作码（opcode）中的错误、指令操作数编码中的错误，或者对于内存访问而言的操作数地址中的错误。</p>
+<p>IOPC - 非法操作码（TIN 1）<br>遇到了无效的指令操作码。无效操作码是指与当前实现（implementation）所知的任何指令都不对应的操作码。</p>
+<p>UOPC - 未实现的操作码（TIN 2）<br>遇到了未实现的操作码。未实现的操作码对应于已知的、但在给定的硬件实现中未提供的指令。该指令可能会通过陷阱处理程序中的软件模拟来实现。<br>UOPC条件的示例如下：<br>• 如果不存在MMU，却执行了MMU指令。<br>• 如果不存在FPU（浮点单元），却执行了FPU指令。<br>• 如果不存在外部协处理器，却执行了外部协处理器指令。</p>
+<p>OPD - 无效操作数（TIN 3）<br>对于需要偶数-奇数寄存器对作为操作数的指令，如果操作数指定符（specifier）是奇数寄存器，则可能引发OPD陷阱。对于其他操作数无效的情况，也可能引发OPD陷阱。<br>从架构上讲，并不要求实现（Implementations）必须引发此陷阱，它们可能会以实现自定义（implementation defined）的方式处理无效操作数。</p>
+<p>ALN - 数据地址对齐（TIN 4）<br>当数据存储器操作的地址不符合要求的对齐规则时，会引发ALN陷阱。有关这些规则的更多信息，请参见第4页的“对齐要求”。当循环缓冲区（circular buffer）的大小、长度或索引不正确时，也会引发ALN陷阱。</p>
+<p>MEM - 无效内存地址（TIN 5）<br>当能够确定某个访问的地址违反了架构约束（architectural constraint）或实现约束（implementation constraint）时，会引发MEM陷阱。<br>已定义的MEM陷阱子类包括：不同段（different segment）、段跨越（segment crossing）、CSFR访问（CSFR access）、CSA限制（CSA restriction）和便签存储器范围（scratch range）错误。<br>一个实现必须定义它将引发哪些针对实现约束的MEM陷阱，或者如果不引发MEM陷阱则将采取何种替代行为。它还必须记录它将引发的任何其他实现特定的MEM陷阱。</p>
+<p>会引发MEM陷阱的架构约束有：<br>• 一种寻址模式将偏移量添加到基地址，导致产生的有效地址与基地址处于不同的段中（不同段错误）。<br>• 使用某个地址访问一个数据元素，导致该数据对象跨越了一个段的末尾和另一个段的开头（段跨越错误）。</p>
+<p>可能引发MEM陷阱的实现约束有：<br>• 使用内存地址访问核心特殊功能寄存器（CSFR），而不是使用MTCR&#x2F;MFCR指令（CSFR访问错误）。<br>• 使用内存地址进行上下文保存区（CSA）访问，但该实现无法将CSA放置于该地址（CSA限制错误）。<br>• 尝试使用一个位于已实现的 Scratch memory 区域之外的内存地址来访问 Scratch memory。</p>
+<h4 id="3-4-上下文管理（陷阱类别-3）"><a href="#3-4-上下文管理（陷阱类别-3）" class="headerlink" title="3.4 上下文管理（陷阱类别 3）"></a>3.4 上下文管理（陷阱类别 3）</h4><p>陷阱类别3用于由上下文管理子系统在执行（或尝试执行）与函数调用、中断、陷阱和返回相关的上下文保存（context save）和恢复（restore）操作过程中检测到的异常条件。</p>
+<p>FCD - 空闲上下文列表耗尽（TIN 1）：<br>FCD陷阱在一次上下文保存操作之后产生，当该操作导致空闲上下文列表（free context list）变为“接近空”（almost empty）状态时触发。“接近空” condition的判定条件是：用于保存操作的CSA（上下文保存区）恰好是上下文列表限制寄存器（LCX）所指向的那一个。负责上下文保存的操作会正常完成，随后才接受（taken）FCD陷阱。<br>如果负责上下文保存的操作是硬件中断或陷阱入口序列，那么FCD陷阱处理程序将在原始中断或陷阱处理程序的第一条指令执行之前被进入。<strong>FCD陷阱的返回地址将指向中断或陷阱处理程序的第一条指令</strong>。<br>FCD陷阱处理程序通常被期望采取某种措施来纠正上下文列表耗尽问题。该措施的性质取决于操作系统（OS），但通常的选择是：为CSA存储分配额外的内存；或者终止一个或多个任务，并将其调用链（call chains）上的CSA返还给空闲列表。第三种可能性是不立即终止任何任务，而是将一个或多个非活动任务的调用链复制到无法直接用于CSA存储的非缓存外部或次级内存中，并将被复制走的CSA释放到空闲列表。在这种情况下，操作系统任务调度器需要能识别出非活动任务的调用链并不驻留在CSA存储区中，并在调度该任务之前将其恢复。<br>FCD陷阱本身会使用LCX寄存器指定的CSA之外的一个额外CSA，因此LCX绝不能指向空闲上下文列表上的实际最后一个条目。此外，有可能在FCD陷阱已被接受之后，报告一个异步陷阱条件（例如外部总线错误），这会中断FCD陷阱处理程序并使用又一个CSA。因此，为避免上下文列表下溢（underflow）的可能性，空闲上下文列表必须至少包含比LCX寄存器所指向的条目多两个的CSA。如果FCD陷阱处理程序进行任何调用，则需要额外的CSA储备。<br>为了让异步陷阱的处理程序能够识别出它们何时中断了FCD陷阱处理程序，每当生成FCD陷阱时，SYSCON（系统配置）寄存器中的FCDSF标志会被设置。任何可能在处理FCD陷阱期间被接受的异步陷阱的处理程序都应测试FCDSF位。如果发现该位被设置，异步陷阱处理程序必须避免进行任何调用，而应以某种方式将自己排队，以便让操作系统识别到该陷阱的发生。然后它应立即返回，返回到被中断的FCD陷阱处理程序。参见第13页的“系统控制寄存器（SYSCON）”。</p>
+<p>CDO - 调用深度溢出（TIN 2）：<br>程序尝试在调用深度计数器（Call Depth counter）启用且调用深度计数值（PSW.CDC.COUNT）已达到最大值的情况下执行CALL指令。调用深度计数通过使操作系统能够检测执行任务中的“失控递归”（runaway recursion），来防范上下文列表耗尽。</p>
+<p>CDU - 调用深度下溢（TIN 3）：<br>程序尝试在调用深度计数器启用且调用深度计数值（PSW.CDC.COUNT）为零的情况下执行RET（返回）指令。调用深度下溢并不一定反映当前执行任务中的软件错误。操作系统可以通过故意使用一个范围较窄的调用深度计数器，并在每次调用深度溢出或下溢陷阱时对当前任务的一个独立软件计数器进行递增或递减，来实现更细粒度的调用深度计数。只有当CDU陷阱发生时软件计数器已经为零，才表明存在程序错误。</p>
+<p>FCU - 空闲上下文列表下溢（TIN 4）：<br>当尝试进行上下文保存操作但发现空闲上下文列表为空（即FCX寄存器内容为空null）时，会接受FCU陷阱。如果在上下文保存或恢复操作期间遇到任何错误，也会接受FCU陷阱。上下文操作无法完成。取而代之的是强制跳转到FCU陷阱处理程序，并用FCU的TIN值更新D15寄存器。当发生FCU条件时，任何挂起（pending）的异步异常可能会丢失。<br><strong>由于未能完成上下文保存或恢复，架构状态（architectural state）会丢失，因此FCU陷阱的发生是一种不可恢复的系统错误</strong>。FCU陷阱处理程序最终应启动系统复位（system reset）。</p>
+<p>CSU - 调用栈下溢（TIN 5）：<br>当尝试进行上下文恢复操作且PCX寄存器内容为空时引发。此陷阱表明在软件管理任务（SMTs）的任务设置或上下文切换中存在系统软件错误（内核或操作系统）。用户任务中的任何软件错误或错误组合都无法产生此条件，除非该任务被授予了对上下文保存区的写入权限，而这本身就可视为一种系统软件错误。</p>
+<p>CTYP - 上下文类型错误（TIN 6）<br>当尝试进行上下文恢复操作，但PCXI.UL位指示的上下文类型与尝试执行的恢复操作类型不匹配时引发；即，当PCXI.UL &#x3D;&#x3D; 1时尝试恢复下层上下文（restore lower context），或当PCXI.UL &#x3D;&#x3D; 0时尝试恢复上层上下文（restore upper context）。与CSU陷阱一样，这表明上下文列表管理中存在系统软件错误。</p>
+<p>NEST - 嵌套错误（TIN 7）：<br>程序尝试在调用深度计数器启用且调用深度计数值（PSW.CDC.COUNT）非零的情况下执行RFE（从异常返回）指令。从中断或陷阱处理程序的返回通常应该发生在中断或陷阱处理程序自身内部，或发生在处理程序已分支到的代码中，而不是发生在由处理程序调用的代码中。如果不是这种情况，则残余调用链（residual call chain）上会存在一个或多个已保存的上下文，这些上下文必须在合法发出RFE指令之前被弹出（popped）并返回到空闲列表。</p>
+<h4 id="4-系统总线和外设错误（陷阱类别-4）"><a href="#4-系统总线和外设错误（陷阱类别-4）" class="headerlink" title="4 系统总线和外设错误（陷阱类别 4）"></a>4 系统总线和外设错误（陷阱类别 4）</h4><p>PSE - 程序取指同步错误（TIN 1）<br>在以下情况下会引发PSE陷阱：</p>
+<ul>
+<li>由于指令取指而发生总线错误。</li>
+<li>指令取指的目标段（segment）不具备代码取指（code fetch）属性。参见架构手册“物理内存属性（PMA）部分”。</li>
+</ul>
+<p>DSE - 数据访问同步错误（TIN 2）<br>在以下情况下会引发DSE陷阱：</p>
+<ul>
+<li>由于数据加载（load）操作而发生总线错误时。</li>
+<li>对于来自DSPR 的数据加载或存储操作，且访问地址超出了存储器范围末端时。</li>
+<li>在数据缓存行填充的数据加载阶段发生错误时。<br>注意： 对于DSE，存在与实现相关的寄存器，可通过查询这些寄存器来更精确地确定错误来源。</li>
+</ul>
+<p>DAE - 数据访问异步错误（TIN 3）<br>当存储器系统报告一个无法立即与当前正在执行的指令关联的错误时，会引发DAE陷阱。通常这指的是来自外设或外部存储器通过系统总线返回的错误。<br>在以下情况下会引发此DAE陷阱：</p>
+<ul>
+<li>由于数据存储（store）操作而发生总线错误时。</li>
+<li>由缓存管理指令引起错误时。</li>
+<li>由缓存行写回引起错误时。<br>注意：对于DAE，存在与实现相关的寄存器，可通过查询这些寄存器来更精确地确定错误来源。有关更多详细信息，请参阅特定Tricore实现的用户手册。</li>
+</ul>
+<p>CAE - 协处理器异步错误（TIN 4）<br>此CAE异步陷阱由协处理器产生，用于报告错误。<br>可能导致CAE陷阱的典型错误示例包括：未实现的协处理器指令和算术错误（例如，在浮点单元中出现的错误）。<br>CAE在给定系统中的所有协处理器之间共享。因此，陷阱处理程序必须检查所有协处理器以确定陷阱的原因。</p>
+<p>PIE - 程序存储器完整性错误（TIN 5）<br>当在指令取指中检测到不可纠正的存储器完整性错误时，会引发PIE陷阱。该陷阱与出错的指令同步。如果取指组（fetch group）中的任何元素包含不可恢复的错误，就会引发PIE陷阱。硬件无需将错误定位到特定的指令。<br>实现可能会提供额外的寄存器，可通过查询这些寄存器来更精确地确定错误来源。有关更多详细信息，请参阅特定Tricore实现的用户手册。</p>
+<p>DIE - 数据存储器完整性错误（TIN 6）<br>当在数据访问中检测到不可纠正的存储器完整性错误时，会引发DIE陷阱。实现可以选择将DIE陷阱实现为异步陷阱或同步陷阱。<br>如果加载或存储操作访问的任何元素包含不可纠正的错误，就会引发DIE陷阱。硬件无需将错误定位到该操作的访问宽度。在上下文操作期间引发的DIE陷阱可能导致数据丢失。<br>实现可能会提供额外的寄存器，可通过查询这些寄存器来更精确地确定错误来源。有关更多详细信息，请参阅特定Tricore实现的用户手册。</p>
+<p>TAE - 时序异步错误（TIN 7）<br>当有活动的定时器递减到零时，时序保护系统会引发TAE异步陷阱。这可用于在时间关键型应用中防止任务超时（overtun）。</p>
+<h4 id="5-断言陷阱（陷阱类别-5）"><a href="#5-断言陷阱（陷阱类别-5）" class="headerlink" title="5 断言陷阱（陷阱类别 5）"></a>5 断言陷阱（陷阱类别 5）</h4><p>OVF - 算术溢出（TIN 1）<br>由TRAPV指令引发，条件是PSW中的溢出位被置位（PSW.V &#x3D;&#x3D; 1）。</p>
+<p>SOVF - 粘滞算术溢出（TIN 2）<br>由TRAPSV指令引发，条件是PSW中的粘滞溢出位被置位（PSW.SV &#x3D;&#x3D; 1）。</p>
+<h4 id="6-系统调用（陷阱类别-6）"><a href="#6-系统调用（陷阱类别-6）" class="headerlink" title="6 系统调用（陷阱类别 6）"></a>6 系统调用（陷阱类别 6）</h4><p>SYS - 系统调用（TIN &#x3D; SYSCALL指令中的8位无符号立即常数）<br>SYS陷阱在SYSCALL指令执行后立即引发，以启动一个系统调用。当陷阱被接受时加载到D[15]中的TIN值并非固定，而是由SYSCALL指令中的一个8位无符号立即常数指定。返回地址指向紧跟在SYSCALL指令之后的那条指令。</p>
+<h4 id="7-不可屏蔽中断（陷阱类别-7）"><a href="#7-不可屏蔽中断（陷阱类别-7）" class="headerlink" title="7 不可屏蔽中断（陷阱类别 7）"></a>7 不可屏蔽中断（陷阱类别 7）</h4><p>NMI - 不可屏蔽中断（TIN 0）<br>引发不可屏蔽中断的原因取决于具体实现。通常，会有一个外部引脚可用于触发NMI，但它也可能由看门狗定时器中断或即将发生的电源故障等情况引发。有关更多详细信息，请参阅特定TriCore实现的用户手册。</p>
+<h4 id="调试陷阱"><a href="#调试陷阱" class="headerlink" title="调试陷阱"></a>调试陷阱</h4><p>BBM - 先断后通 &#x2F; BAM - 先通后断<br>有关调试陷阱的信息，请参阅内核调试控制器章节。</p>
+<h3 id="4-异常优先级"><a href="#4-异常优先级" class="headerlink" title="4 异常优先级"></a>4 异常优先级</h3><p>根据软件架构模型，异步陷阱、同步陷阱和中断之间的优先级顺序如下：</p>
+<p>1：异步陷阱（优先级最高）。<br>2：同步陷阱。<br>3：中断（优先级最低）。<br>还必须考虑以下陷阱规则：</p>
+<ul>
+<li>在引发陷阱的指令序列中，指令越“旧”（即越早进入流水线），其陷阱的优先级越高。所有优先级较低的潜在陷阱均被忽略（void）。</li>
+<li>尝试在空闲上下文列表为空（FCX &#x3D; 0）的情况下保存上下文，将导致FCU（空闲上下文列表下溢）陷阱。此陷阱的优先级高于所有其他异常。</li>
+<li>当同一条指令在流水线的任何阶段引发多个同步陷阱时，其优先级遵循手册中提供的优先级顺序表。</li>
+</ul>
 
     </div>
 
@@ -450,14 +513,14 @@ Trap System
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">541k</span>
+    <span title="站点总字数">552k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">11:16</span>
+    <span title="站点阅读时长">11:30</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
