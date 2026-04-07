@@ -232,14 +232,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>5.5k</span>
+      <span>5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>7 分钟</span>
+      <span>6 分钟</span>
     </span>
 </div>
 
@@ -258,7 +258,41 @@ lwip ip层处理逻辑梳理（IPV4）
 
 <hr>
 <p>ip4_input 核心处理流程如下图所示：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">flowchart TD</span><br><span class="line">A[&quot;ip4_input(pbuf p, netif inp)&quot;] --&gt; B[&quot;初始检查&lt;br&gt;版本号、长度、校验和&quot;];</span><br><span class="line">B --&gt; C&#123;&quot;目的地址是&lt;br&gt;本机地址?&quot;&#125;;</span><br><span class="line">C -- Yes --&gt; D[标记netif为本机];</span><br><span class="line">C -- No --&gt; E&#123;&quot;启用IP_FORWARD&lt;br&gt;且是单播包?&quot;&#125;;</span><br><span class="line">E -- Yes --&gt; F[&quot;ip4_forward()&lt;br&gt;转发包&quot;];</span><br><span class="line">E -- No --&gt; G[丢弃包];</span><br><span class="line"></span><br><span class="line">subgraph C[目的地址判断逻辑]</span><br><span class="line">    C1[&quot;多播地址?&quot;] -- Yes --&gt; C2[&quot;IGMP Snooping或&lt;br&gt;接口已启动?&quot;];</span><br><span class="line">    C1 -- No --&gt; C3[&quot;单播地址?&quot;] -- Yes --&gt; C4[&quot;ip4_input_accept(inp)&lt;br&gt;检查接口IP匹配?&quot;];</span><br><span class="line">    C4 -- No --&gt; C5[&quot;遍历所有netif&lt;br&gt;寻找匹配接口&quot;];</span><br><span class="line">    C2 -- Yes --&gt; D;</span><br><span class="line">    C2 -- No --&gt; Z[丢弃包];</span><br><span class="line">    C4 -- Yes --&gt; D;</span><br><span class="line">    C5 -- Found --&gt; D;</span><br><span class="line">    C5 -- Not Found --&gt; E;</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">D --&gt; H&#123;&quot;包有分片标志?&quot;&#125;;</span><br><span class="line">H -- Yes --&gt; I[&quot;ip4_reass()&lt;br&gt;尝试重组&quot;];</span><br><span class="line">I -- 重组未完成 --&gt; Z[&quot;释放pbuf, return&quot;];</span><br><span class="line">I -- 重组成功 --&gt; J;</span><br><span class="line">H -- No --&gt; J[&quot;检查是否有IP选项(如果宏打开了禁止IP选项)&quot;];</span><br><span class="line"></span><br><span class="line">J --&gt; K[&quot;剥离IP头部&lt;br&gt;pbuf_remove_header()&quot;];</span><br><span class="line">K --&gt; L[&quot;根据IP头协议字段&lt;br&gt;分发给上层协议&quot;];</span><br><span class="line">L --&gt; M[&quot;UDP?&quot;] --&gt; N[&quot;udp_input()&quot;];</span><br><span class="line">L --&gt; O[&quot;TCP?&quot;] --&gt; P[&quot;tcp_input()&quot;];</span><br><span class="line">L --&gt; Q[&quot;ICMP?&quot;] --&gt; R[&quot;icmp_input()&quot;];</span><br><span class="line">L --&gt; S[&quot;其他协议&quot;] --&gt; T[&quot;发送ICMP不可达或丢弃&quot;];</span><br><span class="line"></span><br><span class="line">N &amp; P &amp; R --&gt; U[&quot;清理全局变量&quot;];</span><br><span class="line">U --&gt; V[&quot;return ERR_OK&quot;];</span><br><span class="line">Z --&gt; V;</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">flowchart TD
+A["ip4_input(pbuf p, netif inp)"] --> B["初始检查<br>版本号、长度、校验和"];
+B --> C{"目的地址是<br>本机地址?"};
+C -- Yes --> D[标记netif为本机];
+C -- No --> E{"启用IP_FORWARD<br>且是单播包?"};
+E -- Yes --> F["ip4_forward()<br>转发包"];
+E -- No --> G[丢弃包];
+
+subgraph C[目的地址判断逻辑]
+    C1["多播地址?"] -- Yes --> C2["IGMP Snooping或<br>接口已启动?"];
+    C1 -- No --> C3["单播地址?"] -- Yes --> C4["ip4_input_accept(inp)<br>检查接口IP匹配?"];
+    C4 -- No --> C5["遍历所有netif<br>寻找匹配接口"];
+    C2 -- Yes --> D;
+    C2 -- No --> Z[丢弃包];
+    C4 -- Yes --> D;
+    C5 -- Found --> D;
+    C5 -- Not Found --> E;
+end
+
+D --> H{"包有分片标志?"};
+H -- Yes --> I["ip4_reass()<br>尝试重组"];
+I -- 重组未完成 --> Z["释放pbuf, return"];
+I -- 重组成功 --> J;
+H -- No --> J["检查是否有IP选项(如果宏打开了禁止IP选项)"];
+
+J --> K["剥离IP头部<br>pbuf_remove_header()"];
+K --> L["根据IP头协议字段<br>分发给上层协议"];
+L --> M["UDP?"] --> N["udp_input()"];
+L --> O["TCP?"] --> P["tcp_input()"];
+L --> Q["ICMP?"] --> R["icmp_input()"];
+L --> S["其他协议"] --> T["发送ICMP不可达或丢弃"];
+
+N & P & R --> U["清理全局变量"];
+U --> V["return ERR_OK"];
+Z --> V;</pre>
 
 
 <p>IPV4帧头结构：<br><img src="/2025/09/24/TCPIP-lwip-ipinput/ipv4-header.png"></p>
@@ -405,13 +439,13 @@ lwip ip层处理逻辑梳理（IPV4）
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/09/24/TCPIP-lwip-tcpinput/" rel="prev" title="lwip tcp层处理逻辑梳理">
-                  <i class="fa fa-chevron-left"></i> lwip tcp层处理逻辑梳理
+                <a href="/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/" rel="prev" title="ARM Cortex-m Fault Exceptions 文档学习">
+                  <i class="fa fa-chevron-left"></i> ARM Cortex-m Fault Exceptions 文档学习
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/10/23/Armv8-A%20memory%20systems/" rel="next" title="Armv8-A memory systems 笔记">
-                  Armv8-A memory systems 笔记 <i class="fa fa-chevron-right"></i>
+                <a href="/2025/09/24/TCPIP-lwip-tcpinput/" rel="next" title="lwip tcp层处理逻辑梳理">
+                  lwip tcp层处理逻辑梳理 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -445,14 +479,14 @@ lwip ip层处理逻辑梳理（IPV4）
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">676k</span>
+    <span title="站点总字数">674k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">14:06</span>
+    <span title="站点阅读时长">14:02</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
@@ -468,6 +502,8 @@ lwip ip层处理逻辑梳理（IPV4）
   
 
 
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
 
 
 

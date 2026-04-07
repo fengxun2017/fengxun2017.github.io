@@ -232,7 +232,7 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>9.6k</span>
+      <span>9.5k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
@@ -258,7 +258,7 @@ lwip tcp层处理逻辑梳理
 
 <hr>
 <p>tcp_input 核心处理流程如下图所示：</p>
-<p>、、&#96;&#96;&#96;mermaid<br>graph TD<br>    A[tcp_input入口] –&gt; B{基本校验}<br>    B –&gt; C{报文长度检查}<br>    C –&gt; D{广播&#x2F;多播检查}<br>    D –&gt; E{校验和验证}<br>    E –&gt; F{头部长度检查}<br>    F –&gt; G[调整pbuf指针]<br>    G –&gt; H[字节序转换]<br>    H –&gt; I[PCB查找]</p>
+<p>、、<pre class="mermaid">graph TD<br>    A[tcp_input入口] --> B{基本校验}<br>    B --> C{报文长度检查}<br>    C --> D{广播/多播检查}<br>    D --> E{校验和验证}<br>    E --> F{头部长度检查}<br>    F --> G[调整pbuf指针]<br>    G --> H[字节序转换]<br>    H --> I[PCB查找]</pre></p>
 <pre><code>I --&gt; J&#123;活跃PCB匹配?&#125;
 J --&gt;|是| K[移动到活跃PCB列表前端]
 J --&gt;|否| L&#123;TIME-WAIT PCB匹配?&#125;
@@ -281,7 +281,7 @@ P --&gt; W
 T --&gt; W
 U --&gt; W
 </code></pre>
-<p>、、&#96;&#96;&#96;</p>
+<p>、、</p>
 <p>TCP帧头结构：<br><img src="/2025/09/24/TCPIP-lwip-tcpinput/tcp_header.png"></p>
 <center>图片源自wikipedia</center>
 
@@ -441,13 +441,13 @@ U --&gt; W
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/" rel="prev" title="ARM Cortex-m Fault Exceptions 文档学习">
-                  <i class="fa fa-chevron-left"></i> ARM Cortex-m Fault Exceptions 文档学习
+                <a href="/2025/09/24/TCPIP-lwip-ipinput/" rel="prev" title="lwip ip层处理逻辑梳理">
+                  <i class="fa fa-chevron-left"></i> lwip ip层处理逻辑梳理
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2025/09/24/TCPIP-lwip-ipinput/" rel="next" title="lwip ip层处理逻辑梳理">
-                  lwip ip层处理逻辑梳理 <i class="fa fa-chevron-right"></i>
+                <a href="/2025/10/23/Armv8-A%20memory%20systems/" rel="next" title="Armv8-A memory systems 笔记">
+                  Armv8-A memory systems 笔记 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -481,14 +481,14 @@ U --&gt; W
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">676k</span>
+    <span title="站点总字数">674k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">14:06</span>
+    <span title="站点阅读时长">14:02</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
@@ -504,6 +504,8 @@ U --&gt; W
   
 
 
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
 
 
 

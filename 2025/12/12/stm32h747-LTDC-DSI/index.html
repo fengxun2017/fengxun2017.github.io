@@ -254,7 +254,7 @@
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>28 分钟</span>
+      <span>27 分钟</span>
     </span>
 </div>
 
@@ -942,13 +942,119 @@
 <h3 id="STM32H747-控制-TFT-LCD-显示图像-（通过-LTDC-DSI）"><a href="#STM32H747-控制-TFT-LCD-显示图像-（通过-LTDC-DSI）" class="headerlink" title="STM32H747 控制 TFT-LCD 显示图像 （通过 LTDC + DSI）"></a>STM32H747 控制 TFT-LCD 显示图像 （通过 LTDC + DSI）</h3><p>ST示例：STM32Cube_FW_H7_V1.12.0\Projects\STM32H747I-DISCO\Examples\DCMI\DCMI_CaptureMode</p>
 <p>STM32H747-DISCO 使用MB1166显示模组，默认使用 LTDC + DSI 控制 TFT-LCD 显示图像。</p>
 <p>LTDC 和 DSI 时钟源：<br><img src="/2025/12/12/stm32h747-LTDC-DSI/ltdc-dsi-clock.png"></p>
-<h4 id="整体时序图"><a href="#整体时序图" class="headerlink" title="整体时序图"></a>整体时序图</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Main as main()</span><br><span class="line">    participant Camera as OV5640摄像头</span><br><span class="line">    participant DCMI as DCMI+DMA</span><br><span class="line">    participant CAM_BUF as CAMERA_FRAME_BUFFER&lt;br/&gt;(0xD0177000)</span><br><span class="line">    participant DMA2D as DMA2D</span><br><span class="line">    participant LCD_BUF as LCD_FRAME_BUFFER&lt;br/&gt;(0xD0000000)</span><br><span class="line">    participant LTDC as LTDC</span><br><span class="line">    participant DSI as DSI Host</span><br><span class="line">    participant LCD as LCD面板</span><br><span class="line"></span><br><span class="line">    Note over Main: 系统初始化</span><br><span class="line">    Main-&gt;&gt;Camera: BSP_CAMERA_Init()</span><br><span class="line">    Main-&gt;&gt;Camera: BSP_CAMERA_Start()</span><br><span class="line">    Note over Camera: 启动连续采集</span><br><span class="line"></span><br><span class="line">    rect rgb(200,200,255)</span><br><span class="line">        Note over Camera,DCMI: 阶段1: 摄像头采集</span><br><span class="line">        Camera-&gt;&gt;DCMI: 采集图像</span><br><span class="line">        DCMI-&gt;&gt;CAM_BUF: 写入RGB565数据</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    rect rgb(200,255,200)</span><br><span class="line">        Note over DCMI,LCD_BUF: 阶段2: DMA2D转换</span><br><span class="line">        DCMI--&gt;&gt;Main: 帧中断 BSP_CAMERA_FrameEventCallback()</span><br><span class="line">        Main-&gt;&gt;DMA2D: DMA2D_ConvertFrameToARGB8888()</span><br><span class="line">        DMA2D-&gt;&gt;DMA2D: RGB565→ARGB8888转换</span><br><span class="line">        DMA2D-&gt;&gt;LCD_BUF: 复制到LCD帧缓冲</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    rect rgb(255,200,200)</span><br><span class="line">        Note over DMA2D,DSI: 阶段3: 显示刷新</span><br><span class="line">        DMA2D--&gt;&gt;Main: DMA2D中断</span><br><span class="line">        Main-&gt;&gt;DSI: Display_StartRefresh() + 开启TE等待</span><br><span class="line">        DSI--&gt;&gt;DSI: TE信号产生(消隐期)</span><br><span class="line">        DSI--&gt;&gt;Main: TE回调 HAL_DSI_TearingEffectCallback()</span><br><span class="line">        Main-&gt;&gt;DSI: HAL_DSI_Refresh()</span><br><span class="line">        DSI-&gt;&gt;LTDC: 读取帧缓冲(左半屏)</span><br><span class="line">        LTDC-&gt;&gt;DSI: 像素数据</span><br><span class="line">        DSI-&gt;&gt;LCD: 传输显示</span><br><span class="line">        DSI--&gt;&gt;Main: 刷新完成回调</span><br><span class="line">        Main-&gt;&gt;DSI: 切换到右半屏</span><br><span class="line">        DSI-&gt;&gt;LTDC: 读取帧缓冲(右半屏)</span><br><span class="line">        LTDC-&gt;&gt;DSI: 像素数据</span><br><span class="line">        DSI-&gt;&gt;LCD: 传输显示</span><br><span class="line">        DSI--&gt;&gt;Main: 刷新完成回调</span><br><span class="line">        Main-&gt;&gt;Camera: BSP_CAMERA_Resume() 恢复采集</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    Note over Main: 循环往复</span><br></pre></td></tr></table></figure>
+<h4 id="整体时序图"><a href="#整体时序图" class="headerlink" title="整体时序图"></a>整体时序图</h4><pre class="mermaid">sequenceDiagram
+    participant Main as main()
+    participant Camera as OV5640摄像头
+    participant DCMI as DCMI+DMA
+    participant CAM_BUF as CAMERA_FRAME_BUFFER<br>(0xD0177000)
+    participant DMA2D as DMA2D
+    participant LCD_BUF as LCD_FRAME_BUFFER<br>(0xD0000000)
+    participant LTDC as LTDC
+    participant DSI as DSI Host
+    participant LCD as LCD面板
+
+    Note over Main: 系统初始化
+    Main->>Camera: BSP_CAMERA_Init()
+    Main->>Camera: BSP_CAMERA_Start()
+    Note over Camera: 启动连续采集
+
+    rect rgb(200,200,255)
+        Note over Camera,DCMI: 阶段1: 摄像头采集
+        Camera->>DCMI: 采集图像
+        DCMI->>CAM_BUF: 写入RGB565数据
+    end
+
+    rect rgb(200,255,200)
+        Note over DCMI,LCD_BUF: 阶段2: DMA2D转换
+        DCMI-->>Main: 帧中断 BSP_CAMERA_FrameEventCallback()
+        Main->>DMA2D: DMA2D_ConvertFrameToARGB8888()
+        DMA2D->>DMA2D: RGB565→ARGB8888转换
+        DMA2D->>LCD_BUF: 复制到LCD帧缓冲
+    end
+
+    rect rgb(255,200,200)
+        Note over DMA2D,DSI: 阶段3: 显示刷新
+        DMA2D-->>Main: DMA2D中断
+        Main->>DSI: Display_StartRefresh() + 开启TE等待
+        DSI-->>DSI: TE信号产生(消隐期)
+        DSI-->>Main: TE回调 HAL_DSI_TearingEffectCallback()
+        Main->>DSI: HAL_DSI_Refresh()
+        DSI->>LTDC: 读取帧缓冲(左半屏)
+        LTDC->>DSI: 像素数据
+        DSI->>LCD: 传输显示
+        DSI-->>Main: 刷新完成回调
+        Main->>DSI: 切换到右半屏
+        DSI->>LTDC: 读取帧缓冲(右半屏)
+        LTDC->>DSI: 像素数据
+        DSI->>LCD: 传输显示
+        DSI-->>Main: 刷新完成回调
+        Main->>Camera: BSP_CAMERA_Resume() 恢复采集
+    end
+
+    Note over Main: 循环往复</pre>
 
 
 
-<h4 id="DMA2D转换详细时序"><a href="#DMA2D转换详细时序" class="headerlink" title="DMA2D转换详细时序"></a>DMA2D转换详细时序</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Camera as 摄像头</span><br><span class="line">    participant CAM_BUF as CAMERA_FRAME_BUFFER&lt;br/&gt;(RGB565)</span><br><span class="line">    participant DMA2D as DMA2D</span><br><span class="line">    participant LCD_BUF as LCD_FRAME_BUFFER&lt;br/&gt;(ARGB8888)</span><br><span class="line">    participant Callback as 中断回调</span><br><span class="line"></span><br><span class="line">    Note over Camera,CAM_BUF: 摄像头采集阶段</span><br><span class="line">    Camera-&gt;&gt;CAM_BUF: 写入640×480&lt;br/&gt;RGB565数据</span><br><span class="line"></span><br><span class="line">    Note over CAM_BUF,DMA2D: DMA2D转换阶段</span><br><span class="line">    CAM_BUF-&gt;&gt;DMA2D: 读取源数据&lt;br/&gt;(RGB565)</span><br><span class="line">    DMA2D-&gt;&gt;DMA2D: 格式转换&lt;br/&gt;(RGB565→ARGB8888)</span><br><span class="line">    DMA2D-&gt;&gt;LCD_BUF: 写入目标数据&lt;br/&gt;(ARGB8888,居中)</span><br><span class="line"></span><br><span class="line">    Note over DMA2D,Callback: 传输完成</span><br><span class="line">    DMA2D--&gt;&gt;Callback: DMA2D中断</span><br><span class="line">    Callback-&gt;&gt;Callback: DMA2D_TransferCompleteCallback()</span><br></pre></td></tr></table></figure>
+<h4 id="DMA2D转换详细时序"><a href="#DMA2D转换详细时序" class="headerlink" title="DMA2D转换详细时序"></a>DMA2D转换详细时序</h4><pre class="mermaid">sequenceDiagram
+    participant Camera as 摄像头
+    participant CAM_BUF as CAMERA_FRAME_BUFFER<br>(RGB565)
+    participant DMA2D as DMA2D
+    participant LCD_BUF as LCD_FRAME_BUFFER<br>(ARGB8888)
+    participant Callback as 中断回调
 
-<h4 id="分屏刷新详细时序"><a href="#分屏刷新详细时序" class="headerlink" title="分屏刷新详细时序"></a>分屏刷新详细时序</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant TE as TE信号</span><br><span class="line">    participant DSI_CB as DSI回调</span><br><span class="line">    participant LTDC as LTDC</span><br><span class="line">    participant DSI as DSI Host</span><br><span class="line">    participant LCD as LCD面板</span><br><span class="line">    participant Camera as 摄像头</span><br><span class="line"></span><br><span class="line">    Note over TE,DSI_CB: 第一次刷新(左半屏)</span><br><span class="line"></span><br><span class="line">    TE-&gt;&gt;DSI_CB: HAL_DSI_TearingEffectCallback()</span><br><span class="line">    DSI_CB-&gt;&gt;DSI_CB: 屏蔽TE</span><br><span class="line">    DSI_CB-&gt;&gt;DSI: 触发刷新(HAL_DSI_Refresh())</span><br><span class="line"></span><br><span class="line">    DSI-&gt;&gt;LTDC: 读取左半屏数据&lt;br/&gt;(CFBAR=0xD0000000)</span><br><span class="line">    LTDC--&gt;&gt;DSI: 像素数据</span><br><span class="line">    DSI-&gt;&gt;LCD: 传输左半屏&lt;br/&gt;(CASET=0-399)</span><br><span class="line">    DSI--&gt;&gt;DSI_CB: 刷新完成回调</span><br><span class="line"></span><br><span class="line">    rect rgb(200,255,200)</span><br><span class="line">        Note over DSI_CB,DSI: 切换到右半屏</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 禁用DSI Wrapper</span><br><span class="line">        DSI_CB-&gt;&gt;LTDC: CFBAR=0xD0000640&lt;br/&gt;(右半屏地址)</span><br><span class="line">        DSI_CB-&gt;&gt;LTDC: 重新加载配置</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 使能DSI Wrapper</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 发送CASET命令&lt;br/&gt;(400-799)</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 触发刷新</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    Note over DSI,DSI_CB: 第二次刷新(右半屏)</span><br><span class="line">    DSI-&gt;&gt;LTDC: 读取右半屏数据</span><br><span class="line">    LTDC--&gt;&gt;DSI: 像素数据</span><br><span class="line">    DSI-&gt;&gt;LCD: 传输右半屏</span><br><span class="line">    DSI--&gt;&gt;DSI_CB: 刷新完成回调</span><br><span class="line"></span><br><span class="line">    rect rgb(255,200,200)</span><br><span class="line">        Note over DSI_CB,Camera: 恢复摄像头</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 切换回左半屏地址</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 发送CASET命令&lt;br/&gt;(0-399)</span><br><span class="line">        DSI_CB-&gt;&gt;Camera: BSP_CAMERA_Resume()</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+    Note over Camera,CAM_BUF: 摄像头采集阶段
+    Camera->>CAM_BUF: 写入640×480<br>RGB565数据
+
+    Note over CAM_BUF,DMA2D: DMA2D转换阶段
+    CAM_BUF->>DMA2D: 读取源数据<br>(RGB565)
+    DMA2D->>DMA2D: 格式转换<br>(RGB565→ARGB8888)
+    DMA2D->>LCD_BUF: 写入目标数据<br>(ARGB8888,居中)
+
+    Note over DMA2D,Callback: 传输完成
+    DMA2D-->>Callback: DMA2D中断
+    Callback->>Callback: DMA2D_TransferCompleteCallback()</pre>
+
+<h4 id="分屏刷新详细时序"><a href="#分屏刷新详细时序" class="headerlink" title="分屏刷新详细时序"></a>分屏刷新详细时序</h4><pre class="mermaid">sequenceDiagram
+    participant TE as TE信号
+    participant DSI_CB as DSI回调
+    participant LTDC as LTDC
+    participant DSI as DSI Host
+    participant LCD as LCD面板
+    participant Camera as 摄像头
+
+    Note over TE,DSI_CB: 第一次刷新(左半屏)
+
+    TE->>DSI_CB: HAL_DSI_TearingEffectCallback()
+    DSI_CB->>DSI_CB: 屏蔽TE
+    DSI_CB->>DSI: 触发刷新(HAL_DSI_Refresh())
+
+    DSI->>LTDC: 读取左半屏数据<br>(CFBAR=0xD0000000)
+    LTDC-->>DSI: 像素数据
+    DSI->>LCD: 传输左半屏<br>(CASET=0-399)
+    DSI-->>DSI_CB: 刷新完成回调
+
+    rect rgb(200,255,200)
+        Note over DSI_CB,DSI: 切换到右半屏
+        DSI_CB->>DSI: 禁用DSI Wrapper
+        DSI_CB->>LTDC: CFBAR=0xD0000640<br>(右半屏地址)
+        DSI_CB->>LTDC: 重新加载配置
+        DSI_CB->>DSI: 使能DSI Wrapper
+        DSI_CB->>DSI: 发送CASET命令<br>(400-799)
+        DSI_CB->>DSI: 触发刷新
+    end
+
+    Note over DSI,DSI_CB: 第二次刷新(右半屏)
+    DSI->>LTDC: 读取右半屏数据
+    LTDC-->>DSI: 像素数据
+    DSI->>LCD: 传输右半屏
+    DSI-->>DSI_CB: 刷新完成回调
+
+    rect rgb(255,200,200)
+        Note over DSI_CB,Camera: 恢复摄像头
+        DSI_CB->>DSI: 切换回左半屏地址
+        DSI_CB->>DSI: 发送CASET命令<br>(0-399)
+        DSI_CB->>Camera: BSP_CAMERA_Resume()
+    end</pre>
 
 
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>[1] STM32H7xx Reference Manual, RM0399</p>
@@ -1022,14 +1128,14 @@
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">676k</span>
+    <span title="站点总字数">674k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">14:06</span>
+    <span title="站点阅读时长">14:02</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
@@ -1045,6 +1151,8 @@
   
 
 
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
 
 
 
