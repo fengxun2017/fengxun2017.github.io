@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="stm32h747  DMA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stm32h747 DMA">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/12/01/stm32h747-DMA/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="stm32h747  DMA">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/01/stm32h747-DMA/DMA-diagram.png">
+<meta property="article:published_time" content="2025-11-30T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-14T13:58:11.635Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2025/12/01/stm32h747-DMA/DMA-diagram.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/12/01/stm32h747-DMA/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/12/01/stm32h747-DMA/","path":"2025/12/01/stm32h747-DMA/","title":"stm32h747 DMA"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>stm32h747 DMA | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-DMA-%E4%B8%BB%E8%A6%81%E7%89%B9%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">1 DMA 主要特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-DMA-functional-description"><span class="nav-number">2.</span> <span class="nav-text">2 DMA functional description</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-DMA-%E4%BA%8B%E5%8A%A1-Transactions"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 DMA 事务 (Transactions)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E6%BA%90%E3%80%81%E7%9B%AE%E7%9A%84%E4%B8%8E%E4%BC%A0%E8%BE%93%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 源、目的与传输模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 数据传输</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E5%9C%B0%E5%9D%80%E9%80%92%E5%A2%9E-Pointer-Incrementation"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 地址递增 (Pointer Incrementation)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E5%BE%AA%E7%8E%AF%E6%A8%A1%E5%BC%8F-Circular-Mode"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 循环模式 (Circular Mode)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-%E5%8F%8C%E7%BC%93%E5%86%B2%E6%A8%A1%E5%BC%8F-Double-Buffer-Mode"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 双缓冲模式 (Double Buffer Mode)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-%E5%8F%AF%E7%BC%96%E7%A8%8B%E6%95%B0%E6%8D%AE%E5%AE%BD%E5%BA%A6%E3%80%81%E6%89%93%E5%8C%85-x2F-%E8%A7%A3%E5%8C%85%E3%80%81%E5%A4%A7%E5%B0%8F%E7%AB%AF"><span class="nav-number">2.7.</span> <span class="nav-text">2.7 可编程数据宽度、打包&#x2F;解包、大小端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-8-%E5%8D%95%E6%AC%A1%E4%BC%A0%E8%BE%93%E4%B8%8E%E7%AA%81%E5%8F%91%E4%BC%A0%E8%BE%93-Single-vs-Burst-Transfers"><span class="nav-number">2.8.</span> <span class="nav-text">2.8 单次传输与突发传输 (Single vs Burst Transfers)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-DMA-FIFO-%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">3 DMA FIFO 机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-FIFO-%E7%BB%93%E6%9E%84"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 FIFO 结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-FIFO-%E9%98%88%E5%80%BC%E4%B8%8E%E7%AA%81%E5%8F%91%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 FIFO 阈值与突发配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-FIFO-%E5%88%B7%E6%96%B0-Flush"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 FIFO 刷新 (Flush)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E7%9B%B4%E9%80%9A%E6%A8%A1%E5%BC%8F-Direct-Mode"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 直通模式 (Direct Mode)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-DMA-%E4%BC%A0%E8%BE%93%E5%AE%8C%E6%88%90-Transfer-Completion"><span class="nav-number">4.</span> <span class="nav-text">4 DMA 传输完成 (Transfer Completion)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-DMA-%E4%BC%A0%E8%BE%93%E6%8C%82%E8%B5%B7-Suspension"><span class="nav-number">5.</span> <span class="nav-text">5 DMA 传输挂起 (Suspension)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%B5%81%E6%8E%A7%E6%9C%BA%E5%88%B6-Flow-Controller"><span class="nav-number">6.</span> <span class="nav-text">6 流控机制 (Flow Controller)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-DMA-Stream-%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A4"><span class="nav-number">7.</span> <span class="nav-text">7 DMA Stream 配置步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">8.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/12/01/stm32h747-DMA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="stm32h747 DMA | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          stm32h747 DMA
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-12-01 00:00:00" itemprop="dateCreated datePublished" datetime="2025-12-01T00:00:00+08:00">2025-12-01</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>6.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+stm32h747  DMA
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p>DMA 提供高速、无 CPU 干预的数据搬运能力。<br>双 AHB 总线架构 + FIFO 优化，两个控制器（DMA1、DMA2）各有 8 个 stream。 每个 stream 通过 DMAMUX 灵活选择请求源，仲裁器负责优先级调度。</p>
+<h3 id="1-DMA-主要特性"><a href="#1-DMA-主要特性" class="headerlink" title="1 DMA 主要特性"></a>1 DMA 主要特性</h3><p>架构：</p>
+<ul>
+<li><strong>双 AHB 主总线架构</strong>：一条专用于内存访问，一条专用于外设访问。由于需要实现内存间数据传输，因此AHB 外设端口还需具备访问内存的权限。</li>
+<li><strong>AHB 从接口</strong>：仅支持 32 位访问。</li>
+</ul>
+<p>通道与请求：</p>
+<ul>
+<li>每个 DMA 控制器有 <strong>8 个 stream</strong>。</li>
+<li>每个 stream 最多支持 <strong>115 个请求源</strong>（通过 DMAMUX1 配置），可服务 <strong>107 个外设</strong>。</li>
+</ul>
+<p>FIFO 与传输模式：</p>
+<ul>
+<li>每个 stream 有一个 <strong>4-word 深度的 32 位 FIFO</strong>。</li>
+<li><strong>FIFO 模式</strong>：可选择阈值 (1&#x2F;4, 1&#x2F;2, 3&#x2F;4)。  </li>
+<li><strong>直接模式</strong>：每个请求立即触发一次传输；在 memory-to-peripheral 模式下，DMA 会预加载一个数据到内部 FIFO，保证外设请求到来时立即传输。</li>
+</ul>
+<p>通道配置：</p>
+<ul>
+<li><strong>普通通道</strong>：支持外设→内存、内存→外设、内存→内存传输。  </li>
+<li><strong>双缓冲通道</strong>：支持内存侧双缓冲，提高连续数据流处理能力（使用两个内存指针，DMA 在一个缓冲区工作时，应用程序可操作另一个缓冲区。）。</li>
+</ul>
+<p>优先级：</p>
+<ul>
+<li><strong>软件可编程优先级</strong>：四级（非常高、高、中、低）。  </li>
+<li><strong>硬件仲裁</strong>：当优先级相同，按请求号排序（如请求0优先于请求1）。</li>
+</ul>
+<p>触发方式：</p>
+<ul>
+<li>每个 stream 支持 <strong>软件触发</strong>（用于内存到内存传输）。  </li>
+<li>请求源由 DMAMUX1 软件配置。</li>
+</ul>
+<p>流控模式：</p>
+<ul>
+<li><strong>DMA流控</strong>：软件在 NDTR 中设定传输数量 (1~65535)。  </li>
+<li><strong>外设流控</strong>：数据量未知，由外设在最后一次传输时发出结束信号（需要外设支持发送结束信号）。</li>
+</ul>
+<p>数据宽度与打包：</p>
+<ul>
+<li>源和目的数据宽度可独立设置（byte&#x2F;half-word&#x2F;word）。  </li>
+<li>当宽度不一致时，DMA 自动打包&#x2F;解包以优化带宽（仅 FIFO 模式支持）。</li>
+</ul>
+<p>地址模式：</p>
+<ul>
+<li>源和目的地址可选择 <strong>递增或固定</strong>。</li>
+</ul>
+<p>Burst 传输：</p>
+<ul>
+<li>支持 <strong>4、8、16 beat</strong> 的 burst传输。  </li>
+<li>burst 大小可软件配置，通常等于外设 FIFO 的一半。</li>
+</ul>
+<p>缓冲与事件：</p>
+<ul>
+<li>每个 stream 支持 <strong>循环缓冲</strong>。  </li>
+<li>提供 <strong>5 个事件标志</strong>：半传输完成、传输完成、传输错误、FIFO 错误、直接模式错误。  </li>
+<li>这些标志通过逻辑 OR 合并成一个中断请求。</li>
+</ul>
+<h3 id="2-DMA-functional-description"><a href="#2-DMA-functional-description" class="headerlink" title="2 DMA functional description"></a>2 DMA functional description</h3><p><img src="/2025/12/01/stm32h747-DMA/DMA-diagram.png"></p>
+<ul>
+<li>dma_hclk：Digital input, DMA AHB clock</li>
+<li>dma_it[0:7]：Digital outputs, DMA stream [0:7] global interrupts</li>
+<li>dma_tcif[0:7]：Digital outputs, MDMA triggers</li>
+<li>dma_str[0:7]：Digital input, DMA stream [0:7] requests</li>
+</ul>
+<h4 id="2-1-DMA-事务-Transactions"><a href="#2-1-DMA-事务-Transactions" class="headerlink" title="2.1 DMA 事务 (Transactions)"></a>2.1 DMA 事务 (Transactions)</h4><p>事务定义：一个 DMA 事务由一系列数据传输组成。</p>
+<p>数据项数量与宽度：可由软件配置（8&#x2F;16&#x2F;32 位）。</p>
+<p>每次传输包含三步：</p>
+<ul>
+<li>从外设数据寄存器或内存地址加载数据（通过 DMA_SxPAR 或 DMA_SxM0AR）。</li>
+<li>将数据存储到目标外设寄存器或内存地址。</li>
+<li>DMA_SxNDTR 递减，表示剩余传输数减少。</li>
+</ul>
+<p>握手过程：</p>
+<ul>
+<li>外设发出请求信号 → DMA 根据优先级仲裁 → DMA 发出 Acknowledge → 外设释放请求 → DMA 释放 Acknowledge。</li>
+<li>外设可继续发起下一次请求。</li>
+</ul>
+<h4 id="2-2-源、目的与传输模式"><a href="#2-2-源、目的与传输模式" class="headerlink" title="2.2 源、目的与传输模式"></a>2.2 源、目的与传输模式</h4><p>源和目的地址可覆盖整个 4GB 地址空间 (0x0000_0000 ~ 0xFFFF_FFFF)。</p>
+<p>方向配置：通过 DMA_SxCR.DIR[1:0] 位：</p>
+<ul>
+<li>00 外设→内存：源&#x3D;PAR，目的&#x3D;M0AR。</li>
+<li>01 内存→外设：源&#x3D;M0AR，目的&#x3D;PAR。</li>
+<li>10 内存→内存：源&#x3D;PAR，目的&#x3D;M0AR。</li>
+<li>11 保留。</li>
+</ul>
+<p>地址对齐要求：</p>
+<ul>
+<li>半字传输 → 地址必须半字对齐。</li>
+<li>字传输 → 地址必须字对齐。</li>
+</ul>
+<h4 id="2-3-数据传输"><a href="#2-3-数据传输" class="headerlink" title="2.3 数据传输"></a>2.3 数据传输</h4><p>外设→内存模式：</p>
+<ul>
+<li>EN&#x3D;1 后，每次外设请求触发， DMA 将数据搬入 FIFO。</li>
+<li>FIFO 达到阈值后，批量写入内存。</li>
+<li>停止条件：NDTR&#x3D;0、外设结束信号、或软件清除 EN。</li>
+<li>直接模式 (DMDIS&#x3D;0)：不使用阈值，每次请求立即搬运数据到内存。</li>
+<li>仲裁：DMA 只有在赢得仲裁后才能访问总线。</li>
+</ul>
+<p>内存→外设模式：</p>
+<ul>
+<li>EN&#x3D;1 后，DMA 立即填满 FIFO。</li>
+<li>外设请求到来时，FIFO 数据被写入外设。</li>
+<li>当 FIFO 低于阈值时，DMA 再次填充。</li>
+<li>停止条件同上。</li>
+<li>直接模式：DMA 预加载一个数据到内部 FIFO，外设请求时立即传输，再加载下一个。</li>
+</ul>
+<p>内存→内存模式：</p>
+<ul>
+<li>不依赖外设请求，EN&#x3D;1 后立即开始传输。</li>
+<li>FIFO 达到阈值后批量写入目的地址。</li>
+<li>停止条件：NDTR&#x3D;0 或 EN&#x3D;0。</li>
+<li>限制：此模式下不能使用循环模式和直接模式。</li>
+</ul>
+<h4 id="2-4-地址递增-Pointer-Incrementation"><a href="#2-4-地址递增-Pointer-Incrementation" class="headerlink" title="2.4 地址递增 (Pointer Incrementation)"></a>2.4 地址递增 (Pointer Incrementation)</h4><p>PINC&#x2F;MINC 控制源&#x2F;目的地址是否递增。</p>
+<ul>
+<li>禁用递增：适合访问固定寄存器。</li>
+<li>启用递增：地址按数据宽度递增（byte&#x3D;+1，half-word&#x3D;+2，word&#x3D;+4）。</li>
+</ul>
+<p>PINCOS 位：控制外设地址递增方式：</p>
+<ul>
+<li>默认：按数据宽度递增。</li>
+<li>PINCOS&#x3D;1：强制按 32 位递增（+4），无论 PSIZE 设置。</li>
+<li>注意：只影响外设端，不影响内存端。</li>
+</ul>
+<h4 id="2-5-循环模式-Circular-Mode"><a href="#2-5-循环模式-Circular-Mode" class="headerlink" title="2.5 循环模式 (Circular Mode)"></a>2.5 循环模式 (Circular Mode)</h4><p>作用：用于处理循环缓冲区和连续数据流（如 ADC 扫描模式）。</p>
+<p>启用方式：设置 DMA_SxCR.CIRC&#x3D;1。</p>
+<p>行为：<strong>当传输完成后，NDTR 会自动重新加载为初始值</strong>，DMA 请求继续被服务，实现无限循环搬运。</p>
+<p><strong>注意</strong>，当内存端配置为突发模式时：</p>
+<ul>
+<li>必须满足公式：DMA_SxNDTR &#x3D; Multiple of ((Mburst beat) × (Msize)&#x2F;(Psize))</li>
+<li>Mburst beat &#x3D; 4, 8, 16 (由 MBURST 配置)</li>
+<li>Msize&#x2F;Psize &#x3D; 1, 2, 4, 1&#x2F;2, 1&#x2F;4</li>
+</ul>
+<p>举例：MBURST&#x3D;8，MSIZE&#x3D;byte，PSIZE&#x3D;half-word → NDTR 必须是 4 的倍数。</p>
+<p>如果不满足公式，DMA 行为和数据完整性无法保证。<br><strong>同时 NDTR 也必须是 外设突发大小 × 外设数据宽度 的倍数</strong>。</p>
+<h4 id="2-6-双缓冲模式-Double-Buffer-Mode"><a href="#2-6-双缓冲模式-Double-Buffer-Mode" class="headerlink" title="2.6 双缓冲模式 (Double Buffer Mode)"></a>2.6 双缓冲模式 (Double Buffer Mode)</h4><p>启用方式：设置 DMA_SxCR.DBM&#x3D;1。</p>
+<p>行为：</p>
+<ul>
+<li>有两个内存指针 (M0AR 和 M1AR)。</li>
+<li>每次事务结束后，DMA 自动切换到另一个缓冲区。</li>
+<li>软件可以在一个缓冲区处理数据，同时 DMA 在另一个缓冲区继续搬运。</li>
+<li>自动启用循环模式（DMA_SxCR中的CIRC位无关紧要）。</li>
+</ul>
+<p>方向支持：</p>
+<ul>
+<li>外设→内存：源&#x3D;PAR，目的&#x3D;M0AR&#x2F;M1AR。</li>
+<li>内存→外设：源&#x3D;M0AR&#x2F;M1AR，目的&#x3D;PAR。</li>
+<li>内存→内存：不允许（因为双缓冲强制循环，而内存到内存不支持循环）。</li>
+</ul>
+<p>动态更新地址的规则：</p>
+<ul>
+<li>当 CT&#x3D;0 (in DMA_SxCR) → 可以写 M1AR。</li>
+<li>当 CT&#x3D;1 → 可以写 M0AR。</li>
+<li>如果违反规则 → 设置 TEIF 错误并自动关闭 DMA。</li>
+<li><strong>建议在 TCIF&#x3D;1（传输完成标志置位） 时更新地址，因为此时 DMA 已经切换到另一缓冲区</strong>。</li>
+</ul>
+<h4 id="2-7-可编程数据宽度、打包-x2F-解包、大小端"><a href="#2-7-可编程数据宽度、打包-x2F-解包、大小端" class="headerlink" title="2.7 可编程数据宽度、打包&#x2F;解包、大小端"></a>2.7 可编程数据宽度、打包&#x2F;解包、大小端</h4><p>NDTR：必须在使能前配置好（除非外设流控）。<br>PSIZE&#x2F;MSIZE：可分别设置源和目的数据宽度（8&#x2F;16&#x2F;32 位）。<br>PSIZE≠MSIZE 时：</p>
+<ul>
+<li><strong>NDTR 的单位由 PSIZE 决定</strong>。</li>
+<li>DMA 自动进行打包&#x2F;解包，但只支持 小端序。</li>
+</ul>
+<p>若在数据完全打包&#x2F;解包前中断该操作，此打包&#x2F;解包流程可能导致数据损坏风险。为确保数据一致性，可配置数据流生成突发传输：此时，属于同一突发的传输组不可分割（不会被高优先级传输打断）。</p>
+<p>Direct Mode (DMDIS&#x3D;0)：不支持打包&#x2F;解包，必须保证 PSIZE&#x3D;MSIZE。</p>
+<p>约束：<strong>为了避免最后一次传输不完整，NDTR 必须满足以下条件</strong>：</p>
+<ul>
+<li>PSIZE&#x3D;8bit，MSIZE&#x3D;16bit → NDTR 必须是 2 的倍数。</li>
+<li>PSIZE&#x3D;8bit，MSIZE&#x3D;32bit → NDTR 必须是 4 的倍数。</li>
+<li>PSIZE&#x3D;16bit，MSIZE&#x3D;32bit → NDTR 必须是 2 的倍数。</li>
+</ul>
+<h4 id="2-8-单次传输与突发传输-Single-vs-Burst-Transfers"><a href="#2-8-单次传输与突发传输-Single-vs-Burst-Transfers" class="headerlink" title="2.8 单次传输与突发传输 (Single vs Burst Transfers)"></a>2.8 单次传输与突发传输 (Single vs Burst Transfers)</h4><p>单次传输：每个 DMA 请求搬运一个数据项（byte&#x2F;half-word&#x2F;word）。</p>
+<p>突发传输：每个 DMA 请求搬运一组数据（4、8 或 16 beat）。</p>
+<p>配置：</p>
+<ul>
+<li>外设端突发大小由 PBURST + PSIZE 决定。 </li>
+<li>内存端突发大小由 MBURST + MSIZE 决定。</li>
+<li>备注：burst size 以psize or msize为单位</li>
+</ul>
+<p>特性：</p>
+<ul>
+<li>突发传输是不可分割的，保证数据一致性。</li>
+<li>仲裁器在突发期间不会打断 DMA。</li>
+</ul>
+<p>Direct Mode：只能做单次传输。<br>地址对齐要求：突发传输必须对齐到数据宽度边界。<br>AHB 协议约束：突发传输不能跨越 1KB 边界，否则会产生 AHB 错误（DMA 寄存器不会报告）。</p>
+<h3 id="3-DMA-FIFO-机制"><a href="#3-DMA-FIFO-机制" class="headerlink" title="3 DMA FIFO 机制"></a>3 DMA FIFO 机制</h3><h4 id="3-1-FIFO-结构"><a href="#3-1-FIFO-结构" class="headerlink" title="3.1 FIFO 结构"></a>3.1 FIFO 结构</h4><ul>
+<li>每个 DMA stream 都有一个独立的 <strong>4-word 深度 FIFO</strong>。</li>
+<li>FIFO 用来暂存源数据，再传输到目的地。</li>
+<li>阈值 (Threshold) 可配置为 1&#x2F;4、1&#x2F;2、3&#x2F;4 或满。</li>
+<li>要启用阈值功能，必须关闭直通模式 (DMDIS&#x3D;1)。</li>
+</ul>
+<h4 id="3-2-FIFO-阈值与突发配置"><a href="#3-2-FIFO-阈值与突发配置" class="headerlink" title="3.2 FIFO 阈值与突发配置"></a>3.2 FIFO 阈值与突发配置</h4><ul>
+<li>约束：FIFO 阈值必须与内存突发传输数据量整数匹配，否则会报错 (FEIF)。限制条件：突发大小(MBURST) × 数据宽度(MSIZE) ≤ FIFO 阈值大小。</li>
+</ul>
+<p>不完整突发情况：</p>
+<ul>
+<li>如果 NDTR 不是突发大小 × 数据宽度的倍数 → 最后剩余数据会用单次传输完成。</li>
+<li>如果 FIFO 剩余数据不是突发大小 × 数据宽度的倍数 → 也会退化为单次传输。</li>
+</ul>
+<p>特别规则：</p>
+<ul>
+<li>若（PBURST × PSIZE）&#x3D;FIFO_SIZE（4个字），则当 PSIZE &#x3D;1、2或4且 PBURST &#x3D;4、8或16时，禁止使用FIFO_Threshold&#x3D;3&#x2F;4。该规则确保每次都有足够的FIFO空间可用，以响应外围设备的请求。</li>
+</ul>
+<h4 id="3-3-FIFO-刷新-Flush"><a href="#3-3-FIFO-刷新-Flush" class="headerlink" title="3.3 FIFO 刷新 (Flush)"></a>3.3 FIFO 刷新 (Flush)</h4><p>当 stream 被禁用 (EN&#x3D;0) 时，FIFO 中可能还有残留数据。<br>DMA 会继续把这些数据搬运到目的地，直到 FIFO 清空。<br>完成后置位 TCIF 标志。</p>
+<p>注意事项：</p>
+<ul>
+<li>如果 FIFO 剩余数据 &lt; 内存数据宽度 (例如 FIFO 只有 2 字节，而 MSIZE&#x3D;word)，DMA 仍按 MSIZE 写入 → 可能导致内存写入无效数据。</li>
+<li>软件可通过 NDTR 判断哪些内存区域是有效数据。</li>
+<li>如果 FIFO 剩余数据 &lt; 突发大小 → DMA 会用单次传输完成刷新。</li>
+</ul>
+<h4 id="3-4-直通模式-Direct-Mode"><a href="#3-4-直通模式-Direct-Mode" class="headerlink" title="3.4 直通模式 (Direct Mode)"></a>3.4 直通模式 (Direct Mode)</h4><p>默认情况下 FIFO 工作在直通模式 (DMDIS&#x3D;0)。<br>在直通模式下，阈值功能不可用。</p>
+<p>行为：</p>
+<ul>
+<li>每次 DMA 请求立即触发一次传输。</li>
+<li>在内存→外设模式下，DMA 会预加载一个数据到内部 FIFO，保证外设请求到来时立即传输。</li>
+</ul>
+<p>限制：</p>
+<ul>
+<li>源和目的数据宽度必须相同 (由 PSIZE 定义)。</li>
+<li>不支持突发传输。</li>
+<li>不允许用于内存→内存传输。</li>
+</ul>
+<p><strong>建议：为了避免 FIFO 饱和，直通模式下应给该 stream 配置较高优先级。</strong></p>
+<h3 id="4-DMA-传输完成-Transfer-Completion"><a href="#4-DMA-传输完成-Transfer-Completion" class="headerlink" title="4 DMA 传输完成 (Transfer Completion)"></a>4 DMA 传输完成 (Transfer Completion)</h3><p>DMA 的传输完成事件会置位 TCIFx 标志。不同模式下触发条件不同：</p>
+<p>DMA 流控模式 (PFCTRL&#x3D;0)</p>
+<ul>
+<li>内存→外设：当 NDTR&#x3D;0 时传输完成。</li>
+<li>外设→内存 &#x2F; 内存→内存：如果在传输过程中软件清除了 EN 位禁用 stream，DMA 会把 FIFO 中剩余数据搬完到内存后才算完成。</li>
+</ul>
+<p>外设流控模式 (PFCTRL&#x3D;1)</p>
+<ul>
+<li><p>外设→内存：</p>
+<ul>
+<li>外设发出最后一次请求，DMA 把 FIFO 中剩余数据搬完到内存 → 完成。</li>
+<li>软件禁用 stream 时，DMA 也会把 FIFO 中剩余数据搬完到内存 → 完成。</li>
+</ul>
+</li>
+<li><p>内存→外设：完成条件仅依赖外设的最后一次请求，不涉及 FIFO。</p>
+</li>
+</ul>
+<p>非循环模式下</p>
+<ul>
+<li>当 NDTR&#x3D;0 → DMA 自动停止 (EN 位被硬件清零)。</li>
+<li>后续不再响应请求，除非软件重新配置并重新使能。</li>
+</ul>
+<h3 id="5-DMA-传输挂起-Suspension"><a href="#5-DMA-传输挂起-Suspension" class="headerlink" title="5 DMA 传输挂起 (Suspension)"></a>5 DMA 传输挂起 (Suspension)</h3><p>DMA 可以在传输过程中被挂起，分两种情况：</p>
+<p>永久停止</p>
+<ul>
+<li>软件清除 EN 位 → stream 停止。</li>
+<li>DMA 会先完成正在进行的传输，然后置位 TCIF。</li>
+<li>NDTR 保留剩余数据项数，软件可用来计算已传输的数据量。</li>
+</ul>
+<p>暂停后恢复</p>
+<ul>
+<li>软件清除 EN 位 → stream 暂停。</li>
+<li>软件读取 NDTR，得知已传输数量。</li>
+<li>软件更新地址寄存器 (PAR&#x2F;MAR) 和 NDTR 为剩余数量。</li>
+<li>重新设置 EN 位 → DMA 从暂停点继续传输。</li>
+</ul>
+<h3 id="6-流控机制-Flow-Controller"><a href="#6-流控机制-Flow-Controller" class="headerlink" title="6 流控机制 (Flow Controller)"></a>6 流控机制 (Flow Controller)</h3><p>决定传输数据量的实体称为 流控器，由 PFCTRL 位配置：</p>
+<p>DMA 控制器作为流控器 (PFCTRL&#x3D;0)</p>
+<ul>
+<li>软件在 NDTR 中设定传输数量。</li>
+<li>DMA 按照设定执行，直到 NDTR&#x3D;0。</li>
+</ul>
+<p>外设作为流控器 (PFCTRL&#x3D;1)</p>
+<ul>
+<li>外设通过硬件信号告诉 DMA 什么时候是最后一次传输。</li>
+<li>NDTR 在使能时被硬件强制为 0xFFFF。</li>
+<li>数据量未知，由外设决定结束。</li>
+</ul>
+<p>三种结束情况：</p>
+<ul>
+<li><p>提前停止：软件清除 EN 位 → DMA 停止并 flush FIFO。</p>
+<ul>
+<li>已传输数量 &#x3D; 0xFFFF – NDTR。</li>
+</ul>
+</li>
+<li><p>正常结束：外设发出最后一次请求 → DMA 完成并置位 TCIF。</p>
+<ul>
+<li>已传输数量同上公式。</li>
+</ul>
+</li>
+<li><p>NDTR&#x3D;0：DMA 强制结束，即使外设未发出结束信号。</p>
+<ul>
+<li>最多支持 65535 项数据。</li>
+</ul>
+</li>
+</ul>
+<p>⚠️ 限制：</p>
+<ul>
+<li>在 内存→内存模式 下，DMA 始终是流控器 (PFCTRL&#x3D;0)。</li>
+<li>在 外设流控模式 下，禁止使用循环模式。</li>
+</ul>
+<h3 id="7-DMA-Stream-配置步骤"><a href="#7-DMA-Stream-配置步骤" class="headerlink" title="7 DMA Stream 配置步骤"></a>7 DMA Stream 配置步骤</h3><p>要配置一个 DMA stream（编号为 x），必须按照以下顺序进行：</p>
+<p>1 禁用当前 stream</p>
+<ul>
+<li>如果 stream 已经启用，先清除 DMA_SxCR.EN 位。</li>
+<li>然后读取 EN 位确认 stream 已经真正停止。</li>
+<li>注意：写 EN&#x3D;0 并不会立即生效，硬件会等到当前传输完成后才清零。</li>
+<li>当 EN&#x3D;0 时，stream 才能安全重新配置。</li>
+<li>同时必须清除上一次传输遗留的状态标志位 (DMA_LISR &#x2F; DMA_HISR)。</li>
+</ul>
+<p>2 设置外设地址</p>
+<ul>
+<li>在 DMA_SxPAR 中写入外设端口寄存器地址。</li>
+<li>DMA 会从这个地址读&#x2F;写数据。</li>
+</ul>
+<p>3 设置内存地址</p>
+<ul>
+<li>在 DMA_SxM0AR 中写入内存地址。</li>
+<li>如果是双缓冲模式，还需要设置 DMA_SxM1AR。</li>
+</ul>
+<p>4 配置传输数据量</p>
+<ul>
+<li>在 DMA_SxNDTR 中写入要传输的数据项数量。</li>
+<li>每次外设事件或突发传输都会使该值递减。</li>
+</ul>
+<p>5 配置 DMAMUX</p>
+<ul>
+<li>使用 DMAMUX1 将外设的 DMA 请求路由到对应的 DMA channel。</li>
+</ul>
+<p>6 选择流控器</p>
+<ul>
+<li>如果外设支持作为流控器，则设置 DMA_SxCR.PFCTRL&#x3D;1。</li>
+<li>否则由 DMA 控制传输数量。</li>
+</ul>
+<p>7 配置优先级</p>
+<ul>
+<li>使用 DMA_SxCR.PL[1:0] 设置 stream 的优先级。</li>
+</ul>
+<p>8 配置 FIFO</p>
+<ul>
+<li>决定是否启用 FIFO，以及阈值大小。</li>
+</ul>
+<p>9 配置传输模式，包括：</p>
+<ul>
+<li>数据方向 (内存↔外设&#x2F;内存)</li>
+<li>地址是否递增 (MINC&#x2F;PINC)</li>
+<li>单次或突发传输</li>
+<li>外设&#x2F;内存数据宽度</li>
+<li>是否启用循环模式</li>
+<li>是否启用双缓冲模式</li>
+<li>中断配置（半传输、完成、错误）</li>
+</ul>
+<p>10 启用 stream</p>
+<ul>
+<li>设置 DMA_SxCR.EN&#x3D;1。</li>
+<li>一旦启用，DMA 就会响应外设的请求。</li>
+</ul>
+<p>中断与标志</p>
+<ul>
+<li>半传输 (HTIF)：当一半数据传输完成时置位，如果启用了 HTIE 中断则触发。</li>
+<li>传输完成 (TCIF)：当全部数据传输完成时置位，如果启用了 TCIE 中断则触发。</li>
+</ul>
+<p>⚠️ 警告<br>如果要关闭一个外设，必须 先关闭与之连接的 DMA stream，并等待 EN&#x3D;0。只有在 DMA stream 完全停止后，才能安全关闭外设。<br>否则可能导致数据丢失或 DMA 异常。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>[1] STM32H7xx Reference Manual, RM0399</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/12/01/stm32h747-DMA/" title="stm32h747 DMA">http://fengxun2017.github.io/2025/12/01/stm32h747-DMA/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/11/24/stm32h747-overview/" rel="prev" title="stm32h747-overview">
+                  <i class="fa fa-chevron-left"></i> stm32h747-overview
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/12/02/stm32h747-DCMI-OV5640/" rel="next" title="stm32h747-DCMI-OV5640">
+                  stm32h747-DCMI-OV5640 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">676k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">14:06</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

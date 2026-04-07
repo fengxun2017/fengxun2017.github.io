@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="lwip tcp层处理逻辑梳理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lwip tcp层处理逻辑梳理">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/09/24/TCPIP-lwip-tcpinput/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="lwip tcp层处理逻辑梳理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/09/24/TCPIP-lwip-tcpinput/tcp_header.png">
+<meta property="article:published_time" content="2025-09-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-10-17T01:01:48.625Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2025/09/24/TCPIP-lwip-tcpinput/tcp_header.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/09/24/TCPIP-lwip-tcpinput/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/09/24/TCPIP-lwip-tcpinput/","path":"2025/09/24/TCPIP-lwip-tcpinput/","title":"lwip tcp层处理逻辑梳理"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>lwip tcp层处理逻辑梳理 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B51%EF%BC%9A%E5%9F%BA%E7%A1%80%E9%AA%8C%E8%AF%81%E5%92%8C%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">阶段1：基础验证和预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%88%9D%E5%A7%8B%E6%A3%80%E6%9F%A5"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 初始检查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E6%8A%A5%E6%96%87%E9%95%BF%E5%BA%A6%E6%A3%80%E6%9F%A5"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 报文长度检查</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E5%B9%BF%E6%92%AD-x2F-%E5%A4%9A%E6%92%AD%E8%BF%87%E6%BB%A4"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 广播&#x2F;多播过滤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E6%A0%A1%E9%AA%8C%E5%92%8C%E9%AA%8C%E8%AF%81"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 校验和验证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-%E5%A4%B4%E9%83%A8%E9%95%BF%E5%BA%A6%E9%AA%8C%E8%AF%81"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 头部长度验证</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B52%EF%BC%9A%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">阶段2：数据预处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E8%B0%83%E6%95%B4pbuf%E6%8C%87%E9%92%88%EF%BC%8C%E6%8C%87%E5%90%91TCP%E8%B4%9F%E8%BD%BD%E6%95%B0%E6%8D%AE"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 调整pbuf指针，指向TCP负载数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E5%AD%97%E8%8A%82%E5%BA%8F%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 字节序转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-TCP%E9%95%BF%E5%BA%A6%E8%AE%A1%E7%AE%97"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 TCP长度计算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B53%EF%BC%9APCB%E6%9F%A5%E6%89%BE%E5%92%8C%E5%88%86%E5%8F%91%EF%BC%88%E8%A7%A3%E5%A4%8D%E7%94%A8%EF%BC%89"><span class="nav-number">3.</span> <span class="nav-text">阶段3：PCB查找和分发（解复用）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E6%B4%BB%E8%B7%83PCB%E6%9F%A5%E6%89%BE"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 活跃PCB查找</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-TIME-WAIT-%E7%8A%B6%E6%80%81%E5%A4%84%E7%90%86"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 TIME-WAIT 状态处理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E7%9B%91%E5%90%ACPCB%E6%9F%A5%E6%89%BE"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 监听PCB查找</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E7%9B%91%E5%90%ACPCB%E7%BC%93%E5%AD%98%E4%BC%98%E5%8C%96"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 监听PCB缓存优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-%E6%96%B0%E8%BF%9E%E6%8E%A5%E5%A4%84%E7%90%86"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 新连接处理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%98%B6%E6%AE%B54%EF%BC%9ATCP%E7%8A%B6%E6%80%81%E6%9C%BA%E5%A4%84%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">阶段4：TCP状态机处理</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/09/24/TCPIP-lwip-tcpinput/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="lwip tcp层处理逻辑梳理 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          lwip tcp层处理逻辑梳理
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-09-24 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-24T00:00:00+08:00">2025-09-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/TCP-IP/" itemprop="url" rel="index"><span itemprop="name">TCP/IP</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>9.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+lwip tcp层处理逻辑梳理
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p>tcp_input 核心处理流程如下图所示：</p>
+<p>、、&#96;&#96;&#96;mermaid<br>graph TD<br>    A[tcp_input入口] –&gt; B{基本校验}<br>    B –&gt; C{报文长度检查}<br>    C –&gt; D{广播&#x2F;多播检查}<br>    D –&gt; E{校验和验证}<br>    E –&gt; F{头部长度检查}<br>    F –&gt; G[调整pbuf指针]<br>    G –&gt; H[字节序转换]<br>    H –&gt; I[PCB查找]</p>
+<pre><code>I --&gt; J&#123;活跃PCB匹配?&#125;
+J --&gt;|是| K[移动到活跃PCB列表前端]
+J --&gt;|否| L&#123;TIME-WAIT PCB匹配?&#125;
+L --&gt;|是| M[处理TIME-WAIT状态]
+L --&gt;|否| N&#123;监听PCB匹配?&#125;
+N --&gt;|是| O[处理监听状态]
+N --&gt;|否| P[发送RST复位]
+
+K --&gt; Q[处理TCP状态机]
+Q --&gt; R&#123;处理结果&#125;
+R --&gt;|正常| S[数据传递给应用层]
+R --&gt;|重置| T[连接错误处理]
+R --&gt;|中止| U[PCB清理]
+
+S --&gt; V[发送响应输出]
+V --&gt; W[结束]
+M --&gt; W
+O --&gt; W
+P --&gt; W
+T --&gt; W
+U --&gt; W
+</code></pre>
+<p>、、&#96;&#96;&#96;</p>
+<p>TCP帧头结构：<br><img src="/2025/09/24/TCPIP-lwip-tcpinput/tcp_header.png"></p>
+<center>图片源自wikipedia</center>
+
+<ul>
+<li><p>源端口（Source Port）：16 位 标识发送方的端口号。</p>
+</li>
+<li><p>目标端口（Destination Port）：16 位 标识接收方的端口号。</p>
+</li>
+<li><p>序列号（Sequence Number）：32 位 具有双重作用：</p>
+<ul>
+<li>如果 SYN 标志位为 1，则该字段表示初始序列号。实际首个数据字节的序列号，以及对应 ACK 中的确认号，都是该值加 1。（SYN 标志位为1，表示连接建立阶段的初始握手包，并不代表数据的起始字节）</li>
+<li>如果 SYN 标志位为 0，则该字段表示当前会话中该段首个数据字节的累计序列号。</li>
+</ul>
+</li>
+<li><p>确认号（Acknowledgment Number）：32 位 如果 ACK 标志位为 1，则该字段表示发送方期望接收的下一个序列号，意味着已成功接收此前所有字节（如有）。首次由双方发送的 ACK 报文仅确认对方的初始序列号，不包含数据。</p>
+</li>
+<li><p>数据偏移（Data Offset）：4 位 <strong>指定 TCP 报文头的长度</strong>，以 32 位字为单位。最小为 5 个字（即 20 字节），最大为 15 个字（即 60 字节），允许最多 40 字节的选项字段。<strong>该字段也表示从 TCP 段起始位置到实际数据的偏移量</strong>。</p>
+</li>
+<li><p>保留字段（Reserved）：4 位 保留供未来使用，应设置为 0。发送方不应设置这些位，接收方在没有进一步规范的情况下应忽略这些位。 </p>
+</li>
+<li><p>CWR：拥塞窗口减少标志，表示发送方已接收到带 ECE 标志的 TCP 段，并已响应拥塞控制机制。</p>
+</li>
+<li><p>ECE：ECN-Echo，意思是“显式拥塞通知（Explicit Congestion Notification）回显”。一种在 IP 层和 TCP 层之间协同工作的拥塞控制机制，允许网络设备在检测到拥塞时，不丢弃数据包，而是在 IP 报文头中设置特定的标志（ECN&#x3D;11），通知通信双方当前网络已出现拥塞。这比传统的“丢包表示拥塞”方式更温和，也更高效。这个标志的作用取决于 SYN 标志位的状态：<br>SYN &#x3D; 1（连接建立阶段）：ECE 表示“我支持 ECN 功能”，用于协商是否启用 ECN。<br>SYN &#x3D; 0（正常传输阶段）：ECE 表示“我收到了一个拥塞通知”，用于反馈网络拥塞情况。<br>一旦连接建立，进入数据传输阶段：如果某个中间路由器检测到拥塞，它会在 IP 报文头中设置 ECN&#x3D;11。接收方收到这个包后，会在 TCP 报文中设置 ECE&#x3D;1，告诉发送方：“我收到了拥塞通知”。发送方收到这个 ECE&#x3D;1 的包后，会在下一个包中设置 CWR&#x3D;1，表示“我已知晓并采取了拥塞控制措施”。</p>
+</li>
+<li><p>URG（Urgent）标志位：表示 “紧急指针字段有效”。如果 URG&#x3D;1，说明当前 TCP 报文中包含紧急数据，接收方应该优先处理。</p>
+</li>
+<li><p>Urgent Pointer（紧急指针）：表示从当前 序列号开始，紧急数据的 结束位置（偏移量）。它不是指针指向某个字节，而是一个 偏移值，告诉接收方：“从当前序列号开始，往后 N 个字节是紧急数据”。<br>linux中使用MSG_OOB 来发送紧急数据：<br>send(sockfd, &amp;urgent, 1, MSG_OOB);  &#x2F;&#x2F; 发送一个字节的紧急数据<br>recv(sockfd, &amp;urgent, 1, MSG_OOB);  &#x2F;&#x2F; 接收紧急数据</p>
+</li>
+<li><p>ACK：表示确认号字段有效。客户端发送的所有数据包（除初始 SYN 包）都应设置此标志。</p>
+</li>
+<li><p>PSH：推送功能，要求立即将缓冲数据传递给接收应用程序。linux中，PSH 的设置是由内核 TCP 栈自动决定的，用户空间无法直接控制它。一般发送小块数据时，内核协议栈可能会设置 PSH。</p>
+</li>
+<li><p>RST：重置连接。典型触发场景：</p>
+<ul>
+<li>连接被拒绝或端口未监听：客户端尝试连接一个未监听的端口，服务器会返回一个带 RST 的 TCP 报文。</li>
+<li>一方突然关闭套接字（如 close() 后仍收数据）：如果接收方已关闭连接，而发送方仍发送数据，内核会回应一个 RST。</li>
+<li>程序崩溃或异常退出：应用程序未正常关闭连接，内核会发送 RST 来清理状态。</li>
+</ul>
+</li>
+<li><p>SYN：同步序列号。每端发送的首个数据包应设置此标志。部分字段的含义依赖于此标志的状态。</p>
+</li>
+<li><p>FIN：表示发送方的最后一个数据包。</p>
+</li>
+<li><p>窗口大小（Window）：16 位 表示接收窗口的大小，告诉对方本端的TCP接收缓冲区还能容纳多少字节的数据。</p>
+</li>
+<li><p>校验和（Checksum）：16 位 用于对 TCP 报文头、数据负载以及 IP 伪头部进行错误检测。伪头部包括源 IP、目标 IP、协议号（TCP 为 6）以及 TCP 报文头和数据的总长度。</p>
+</li>
+<li><p>选项字段（Options）：可变长度，0–320 位（以 32 位为单位） 长度由数据偏移字段决定。TCP 报文头使用填充（全为 0）确保报文头结束与数据起始对齐到 32 位边界。 每个选项最多包含三个字段：</p>
+<ul>
+<li>Option-Kind（1 字节）：选项类型，必填。</li>
+<li>Option-Length（1 字节）：选项总长度（包括类型和长度字段）。</li>
+<li>Option-Data（可变）：选项相关数据。 示例：<br>ption-Kind &#x3D; 1 表示“无操作”选项，仅用于填充，无后续字段。<br>Option-Kind &#x3D; 0 表示选项结束，也仅占 1 字节。<br>Option-Kind &#x3D; 2 表示最大报文段长度（MSS）选项，后跟 Option-Length（通常为 4）和 MSS 值（2 字节）。例如 MSS 值为 0x05B4 的选项编码为：0x02 0x04 0x05B4。 某些选项仅在 SYN 标志位设置时发送。</li>
+</ul>
+</li>
+<li><p>数据（Data）：可变长度 TCP 报文的实际负载部分。</p>
+</li>
+</ul>
+<h3 id="阶段1：基础验证和预处理"><a href="#阶段1：基础验证和预处理" class="headerlink" title="阶段1：基础验证和预处理"></a>阶段1：基础验证和预处理</h3><h4 id="1-1-初始检查"><a href="#1-1-初始检查" class="headerlink" title="1.1 初始检查"></a>1.1 初始检查</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 核心代码段 */</span></span><br><span class="line">LWIP_ASSERT_CORE_LOCKED();</span><br><span class="line">LWIP_ASSERT(<span class="string">&quot;tcp_input: invalid pbuf&quot;</span>, p != <span class="literal">NULL</span>);</span><br><span class="line">TCP_STATS_INC(tcp.recv);</span><br><span class="line">MIB2_STATS_INC(mib2.tcpinsegs);</span><br></pre></td></tr></table></figure>
+<p>目的：确保线程安全和参数有效性，在多线程环境中保证TCP处理的一致性，统计接收数据</p>
+<h4 id="1-2-报文长度检查"><a href="#1-2-报文长度检查" class="headerlink" title="1.2 报文长度检查"></a>1.2 报文长度检查</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (p-&gt;len &lt; TCP_HLEN) &#123;</span><br><span class="line">    TCP_STATS_INC(tcp.lenerr);</span><br><span class="line">    <span class="keyword">goto</span> dropped;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>目的：确保 TCP 固定头部完整地位于第一个 pbuf 中，以便高效、安全地进行协议解析。</p>
+<h4 id="1-3-广播-x2F-多播过滤"><a href="#1-3-广播-x2F-多播过滤" class="headerlink" title="1.3 广播&#x2F;多播过滤"></a>1.3 广播&#x2F;多播过滤</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (ip_addr_isbroadcast(ip_current_dest_addr(), ip_current_netif()) ||</span><br><span class="line">    ip_addr_ismulticast(ip_current_dest_addr())) &#123;</span><br><span class="line">    TCP_STATS_INC(tcp.proterr);</span><br><span class="line">    <span class="keyword">goto</span> dropped;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>目的：过滤非法TCP报文，TCP是面向连接的协议，不支持广播和多播通信</p>
+<h4 id="1-4-校验和验证"><a href="#1-4-校验和验证" class="headerlink" title="1.4 校验和验证"></a>1.4 校验和验证</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">u16_t</span> chksum = ip_chksum_pseudo(p, IP_PROTO_TCP, p-&gt;tot_len,</span><br><span class="line">                                ip_current_src_addr(), ip_current_dest_addr());</span><br><span class="line"><span class="keyword">if</span> (chksum != <span class="number">0</span>) &#123;</span><br><span class="line">    TCP_STATS_INC(tcp.chkerr);</span><br><span class="line">    <span class="keyword">goto</span> dropped;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>目的：检测数据传输错误，通过伪头部+TCP数据的校验和确保数据完整性</p>
+<h4 id="1-5-头部长度验证"><a href="#1-5-头部长度验证" class="headerlink" title="1.5 头部长度验证"></a>1.5 头部长度验证</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hdrlen_bytes = TCPH_HDRLEN_BYTES(tcphdr);</span><br><span class="line"><span class="keyword">if</span> ((hdrlen_bytes &lt; TCP_HLEN) || (hdrlen_bytes &gt; p-&gt;tot_len)) &#123;</span><br><span class="line">    TCP_STATS_INC(tcp.lenerr);</span><br><span class="line">    <span class="keyword">goto</span> dropped;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>目的：验证头部长度字段的合理性，头部长度必须在20字节（无选项）到60字节之间</p>
+<h3 id="阶段2：数据预处理"><a href="#阶段2：数据预处理" class="headerlink" title="阶段2：数据预处理"></a>阶段2：数据预处理</h3><h4 id="2-1-调整pbuf指针，指向TCP负载数据"><a href="#2-1-调整pbuf指针，指向TCP负载数据" class="headerlink" title="2.1 调整pbuf指针，指向TCP负载数据"></a>2.1 调整pbuf指针，指向TCP负载数据</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 计算TCP选项的总长度 */</span></span><br><span class="line">tcphdr_optlen = (<span class="type">u16_t</span>)(hdrlen_bytes - TCP_HLEN);</span><br><span class="line">tcphdr_opt2 = <span class="literal">NULL</span>;</span><br><span class="line"><span class="comment">/* 处理TCP选项的两种情形 */</span></span><br><span class="line"><span class="keyword">if</span> (p-&gt;len &gt;= hdrlen_bytes) &#123;</span><br><span class="line">    <span class="comment">/* 选项都在第一个pbuf中 */</span></span><br><span class="line">    tcphdr_opt1len = tcphdr_optlen;</span><br><span class="line">    pbuf_remove_header(p, hdrlen_bytes);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">/* 复杂情况 - 选项跨越多个pbuf */</span></span><br><span class="line">    <span class="type">u16_t</span> opt2len;</span><br><span class="line">    <span class="comment">/* 确保存在第二个pbuf来处理跨边界的选项 */</span></span><br><span class="line">    LWIP_ASSERT(<span class="string">&quot;p-&gt;next != NULL&quot;</span>, p-&gt;next != <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 跳过20字节的TCP固定头部 */</span></span><br><span class="line">    pbuf_remove_header(p, TCP_HLEN);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 计算选项分段长度，确定选项在两个pbuf中的分布情况 */</span></span><br><span class="line">    tcphdr_opt1len = p-&gt;len; <span class="comment">/* 第一个pbuf中剩余的选项长度 */</span></span><br><span class="line">    opt2len = (<span class="type">u16_t</span>)(tcphdr_optlen - tcphdr_opt1len); <span class="comment">/* 第二个pbuf中的选项长度 */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 清空第一个pbuf，使其长度为0 */</span></span><br><span class="line">    pbuf_remove_header(p, tcphdr_opt1len);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 确保第二个pbuf有足够空间容纳剩余的选项，方便后续高效解析 */</span></span><br><span class="line">    <span class="keyword">if</span> (opt2len &gt; p-&gt;next-&gt;len) &#123;</span><br><span class="line">      <span class="comment">/* drop short packets */</span></span><br><span class="line">      LWIP_DEBUGF(TCP_INPUT_DEBUG, (<span class="string">&quot;tcp_input: options overflow second pbuf (%&quot;</span>U16_F<span class="string">&quot; bytes)\n&quot;</span>, p-&gt;next-&gt;len));</span><br><span class="line">      TCP_STATS_INC(tcp.lenerr);</span><br><span class="line">      <span class="keyword">goto</span> dropped;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 保存指向第二个pbuf中选项数据的指针，后续的TCP选项处理需要访问这些选项数据 */</span></span><br><span class="line">    tcphdr_opt2 = (<span class="type">u8_t</span> *)p-&gt;next-&gt;payload;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 调整第二个pbuf，跳过选项部分，指向TCP数据 */</span></span><br><span class="line">    pbuf_remove_header(p-&gt;next, opt2len);</span><br><span class="line">    p-&gt;tot_len = (<span class="type">u16_t</span>)(p-&gt;tot_len - opt2len);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 验证第一个pbuf长度应该为0（已完全跳过）,链式结构的长度一致性检查 */</span></span><br><span class="line">    LWIP_ASSERT(<span class="string">&quot;p-&gt;len == 0&quot;</span>, p-&gt;len == <span class="number">0</span>);</span><br><span class="line">    LWIP_ASSERT(<span class="string">&quot;p-&gt;tot_len == p-&gt;next-&gt;tot_len&quot;</span>, p-&gt;tot_len == p-&gt;next-&gt;tot_len);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>目的：分离TCP头部和数据部分，选项跨跨多个pbuf的处理结果：</p>
+<p>处理前链式结构：<br>[pbuf0]: | TCP固定头部 | 选项部分1 |<br>[pbuf1]: | 选项部分2 | TCP数据 | …<br>[pbuf2]: | 更多TCP数据 | …</p>
+<p>处理后链式结构：<br>[pbuf0]: (长度为0，payload指向结束位置)<br>[pbuf1]: | TCP数据 | …<br>[pbuf2]: | 更多TCP数据 | …</p>
+<h4 id="2-2-字节序转换"><a href="#2-2-字节序转换" class="headerlink" title="2.2 字节序转换"></a>2.2 字节序转换</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">tcphdr-&gt;src = lwip_ntohs(tcphdr-&gt;src);</span><br><span class="line">tcphdr-&gt;dest = lwip_ntohs(tcphdr-&gt;dest);</span><br><span class="line">seqno = tcphdr-&gt;seqno = lwip_ntohl(tcphdr-&gt;seqno);</span><br><span class="line">ackno = tcphdr-&gt;ackno = lwip_ntohl(tcphdr-&gt;ackno);</span><br><span class="line">tcphdr-&gt;wnd = lwip_ntohs(tcphdr-&gt;wnd);</span><br></pre></td></tr></table></figure>
+<p>目的：网络传输使用大端序，主机处理需要转换为本地字节序</p>
+<h4 id="2-3-TCP长度计算"><a href="#2-3-TCP长度计算" class="headerlink" title="2.3 TCP长度计算"></a>2.3 TCP长度计算</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">flags = TCPH_FLAGS(tcphdr);</span><br><span class="line">tcplen = p-&gt;tot_len;</span><br><span class="line"><span class="keyword">if</span> (flags &amp; (TCP_FIN | TCP_SYN)) &#123;</span><br><span class="line">    tcplen++;  <span class="comment">/* SYN和FIN各占用一个序列号 */</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 整数溢出检测，防止异常情况 */</span></span><br><span class="line">    <span class="keyword">if</span> (tcplen &lt; p-&gt;tot_len) &#123;</span><br><span class="line">      <span class="comment">/* u16_t overflow, cannot handle this */</span></span><br><span class="line">      LWIP_DEBUGF(TCP_INPUT_DEBUG, (<span class="string">&quot;tcp_input: length u16_t overflow, cannot handle this\n&quot;</span>));</span><br><span class="line">      TCP_STATS_INC(tcp.lenerr);</span><br><span class="line">      <span class="keyword">goto</span> dropped;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>目的：在TCP协议中，<strong>每个字节的数据都占用一个序列号，因此不带数据的ack包是不会实际消耗seq num的</strong>，但SYN和FIN标志虽然不携带实际数据，却各占用一个序列号位置。因此SYN和FIN的情况下，tcplen需要加1，后续需要根据tcplen和当前接收这包的seq num来计算ack。</p>
+<h3 id="阶段3：PCB查找和分发（解复用）"><a href="#阶段3：PCB查找和分发（解复用）" class="headerlink" title="阶段3：PCB查找和分发（解复用）"></a>阶段3：PCB查找和分发（解复用）</h3><p>LWIP采用三级瀑布式查找策略，按优先级从高到低：</p>
+<ul>
+<li>活跃连接PCB (tcp_active_pcbs) - 已建立的连接</li>
+<li>TIME-WAIT状态PCB (tcp_tw_pcbs) - 刚关闭的连接</li>
+<li>监听PCB (tcp_listen_pcbs) - 等待新连接的监听socket</li>
+</ul>
+<h4 id="3-1-活跃PCB查找"><a href="#3-1-活跃PCB查找" class="headerlink" title="3.1 活跃PCB查找"></a>3.1 活跃PCB查找</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (pcb = tcp_active_pcbs; pcb != <span class="literal">NULL</span>; pcb = pcb-&gt;next) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* 处理绑定到特定网络接口的PCB，如果PCB绑定了接口但当前报文不是从该接口进入，则跳过。多网卡环境下的接口隔离 */</span></span><br><span class="line">    <span class="keyword">if</span> ((pcb-&gt;netif_idx != NETIF_NO_INDEX) &amp;&amp;</span><br><span class="line">        (pcb-&gt;netif_idx != netif_get_index(ip_data.current_input_netif))) &#123;</span><br><span class="line">      prev = pcb;</span><br><span class="line">      <span class="keyword">continue</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* TCP四元组精确匹配 */</span></span><br><span class="line">    <span class="keyword">if</span> (pcb-&gt;remote_port == tcphdr-&gt;src &amp;&amp;</span><br><span class="line">        pcb-&gt;local_port == tcphdr-&gt;dest &amp;&amp;</span><br><span class="line">        ip_addr_eq(&amp;pcb-&gt;remote_ip, ip_current_src_addr()) &amp;&amp;</span><br><span class="line">        ip_addr_eq(&amp;pcb-&gt;local_ip, ip_current_dest_addr())) &#123;</span><br><span class="line">    </span><br><span class="line">      LWIP_ASSERT(<span class="string">&quot;tcp_input: pcb-&gt;next != pcb (before cache)&quot;</span>, pcb-&gt;next != pcb);</span><br><span class="line"></span><br><span class="line">      <span class="comment">/* 缓存优化机制，将最近使用的PCB移动到链表头部，以便后续查找更快*/</span></span><br><span class="line">      <span class="keyword">if</span> (prev != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        prev-&gt;next = pcb-&gt;next;</span><br><span class="line">        pcb-&gt;next = tcp_active_pcbs;</span><br><span class="line">        tcp_active_pcbs = pcb;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        TCP_STATS_INC(tcp.cachehit);</span><br><span class="line">      &#125;</span><br><span class="line">      LWIP_ASSERT(<span class="string">&quot;tcp_input: pcb-&gt;next != pcb (after cache)&quot;</span>, pcb-&gt;next != pcb);</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    prev = pcb;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>目的：查找已建立的TCP连接，基于四元组（源IP、源端口、目标IP、目标端口）精确匹配。采用”最近使用”策略，将找到的PCB移到列表前端</p>
+<h4 id="3-2-TIME-WAIT-状态处理"><a href="#3-2-TIME-WAIT-状态处理" class="headerlink" title="3.2 TIME-WAIT 状态处理"></a>3.2 TIME-WAIT 状态处理</h4><p>没有从活动链接中找到匹配的 PCB，则从 TIME-WAIT 链表中查找。<br>TIME-WAIT状态目的：</p>
+<ul>
+<li>防止旧连接的延迟报文干扰新连接</li>
+<li>确保TCP可靠地关闭连接</li>
+<li>等待所有可能的延迟报文消失（2MSL时间）</li>
+</ul>
+<p>先执行与活跃PCB查找过程中一样的前置逻辑：接口绑定检查和TCP四元组匹配检查，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (pcb = tcp_tw_pcbs; pcb != <span class="literal">NULL</span>; pcb = pcb-&gt;next) &#123;</span><br><span class="line">    <span class="keyword">if</span> (匹配四元组) &#123;</span><br><span class="line">        tcp_timewait_input(pcb);</span><br><span class="line">        pbuf_free(p);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>找到了匹配的 PCB，则处理连接关闭后的延迟报文</p>
+<h4 id="3-3-监听PCB查找"><a href="#3-3-监听PCB查找" class="headerlink" title="3.3 监听PCB查找"></a>3.3 监听PCB查找</h4><p>没有从活跃pcb链表，以及time-wait pcb链表中找到，则从处于监听状态的pcb链表继续遍历查找</p>
+<p>端口需要精确匹配<br>IP地址匹配策略：</p>
+<ul>
+<li>精确IP版本匹配，PCB的本地IP与报文目标IP完全一致： ip_addr_eq(&amp;lpcb-&gt;local_ip, ip_current_dest_addr())</li>
+<li>通配IP匹配，PCB绑定到特定IP版本的通配地址（如IPv4的0.0.0.0）</li>
+</ul>
+<p>SO_REUSE启用时：</p>
+<ul>
+<li>优先选择精确IP地址匹配的PCB</li>
+<li>只有在没有精确匹配时，才使用通配符匹配的PCB</li>
+</ul>
+<p>SO_REUSE禁用时：</p>
+<ul>
+<li>使用第一个匹配的PCB（精确或通配符）</li>
+</ul>
+<h4 id="3-4-监听PCB缓存优化"><a href="#3-4-监听PCB缓存优化" class="headerlink" title="3.4 监听PCB缓存优化"></a>3.4 监听PCB缓存优化</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (prev != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    ((<span class="keyword">struct</span> tcp_pcb_listen *)prev)-&gt;next = lpcb-&gt;next;</span><br><span class="line">    lpcb-&gt;next = tcp_listen_pcbs.listen_pcbs;</span><br><span class="line">    tcp_listen_pcbs.listen_pcbs = lpcb;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    TCP_STATS_INC(tcp.cachehit);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将匹配的监听PCB移动到链表头部，方便后续使用能快速查找到</p>
+<h4 id="3-5-新连接处理"><a href="#3-5-新连接处理" class="headerlink" title="3.5 新连接处理"></a>3.5 新连接处理</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tcp_listen_input(lpcb);</span><br><span class="line">pbuf_free(p);</span><br><span class="line"><span class="keyword">return</span>;</span><br></pre></td></tr></table></figure>
+<p>调用tcp_listen_input()处理连接建立请求</p>
+<h3 id="阶段4：TCP状态机处理"><a href="#阶段4：TCP状态机处理" class="headerlink" title="阶段4：TCP状态机处理"></a>阶段4：TCP状态机处理</h3><p>PS:走到这里，说明是匹配到了处于连接状态的 PCB。如果匹配到了 timewait或listen状态的PCB，在前面就return了。</p>
+<p>4.1 数据段准备</p>
+<p>&#96;&#96;&#96;c<br>inseg.next &#x3D; NULL;<br>inseg.len &#x3D; p-&gt;tot_len;<br>inseg.p &#x3D; p;<br>inseg.tcphdr &#x3D; tcphdr;<br>tcp_input_pcb &#x3D; pcb;<br>err &#x3D; tcp_process(pcb);<br>目的：封装TCP段信息供状态机处理</p>
+<p>原理：tcp_process()函数实现TCP有限状态机逻辑</p>
+<p>4.2 拒绝数据处理<br>c<br>if (pcb-&gt;refused_data !&#x3D; NULL) {<br>    if (tcp_process_refused_data(pcb) &#x3D;&#x3D; ERR_ABRT) {<br>        goto aborted;<br>    }<br>}<br>目的：处理之前应用层无法接收的数据</p>
+<p>原理：当应用层缓冲区满时，临时存储数据等待后续处理</p>
+<p>阶段5：应用层数据传递<br>5.1 确认数据处理<br>c<br>if (recv_acked &gt; 0) {<br>    TCP_EVENT_SENT(pcb, (u16_t)acked16, err);<br>    &#x2F;* 通知应用层数据已确认 *&#x2F;<br>}<br>目的：通知应用层发送数据已被对端确认</p>
+<p>原理：实现TCP的可靠传输确认机制</p>
+<p>5.2 接收数据传递<br>c<br>if (recv_data !&#x3D; NULL) {<br>    TCP_EVENT_RECV(pcb, recv_data, ERR_OK, err);<br>    if (err !&#x3D; ERR_OK) {<br>        pcb-&gt;refused_data &#x3D; recv_data; &#x2F;* 应用层无法接收，暂存数据 *&#x2F;<br>    }<br>}<br>目的：将接收到的数据传递给应用层</p>
+<p>原理：通过回调函数将数据上传给应用层</p>
+<p>5.3 FIN信号处理<br>c<br>if (recv_flags &amp; TF_GOT_FIN) {<br>    if (pcb-&gt;refused_data !&#x3D; NULL) {<br>        pcb-&gt;refused_data-&gt;flags |&#x3D; PBUF_FLAG_TCP_FIN;<br>    } else {<br>        TCP_EVENT_CLOSED(pcb, err); &#x2F;* 通知应用层连接关闭 *&#x2F;<br>    }<br>}<br>目的：处理连接关闭请求</p>
+<p>原理：FIN标志表示对端已完成数据发送</p>
+<p>阶段6：输出和清理<br>6.1 TCP输出处理<br>c<br>tcp_output(pcb); &#x2F;* 尝试发送待发送的数据 *&#x2F;<br>目的：触发可能的TCP段发送</p>
+<p>原理：处理接收数据后可能需要发送ACK或数据</p>
+<p>6.2 错误处理路径<br>c<br>aborted:<br>    tcp_input_pcb &#x3D; NULL;<br>    recv_data &#x3D; NULL;<br>    if (inseg.p !&#x3D; NULL) {<br>        pbuf_free(inseg.p);<br>    }<br>目的：清理异常情况下的资源</p>
+<p>原理：在回调函数中止连接时确保资源正确释放</p>
+<p>6.3 无匹配PCB处理<br>c<br>if (!(TCPH_FLAGS(tcphdr) &amp; TCP_RST)) {<br>    tcp_rst_netif(ip_data.current_input_netif, ackno, seqno + tcplen,<br>                  ip_current_dest_addr(), ip_current_src_addr(),<br>                  tcphdr-&gt;dest, tcphdr-&gt;src);<br>}<br>目的：对无法处理的报文发送RST复位</p>
+<p>原理：通知对端该连接不存在或无法处理</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/09/24/TCPIP-lwip-tcpinput/" title="lwip tcp层处理逻辑梳理">http://fengxun2017.github.io/2025/09/24/TCPIP-lwip-tcpinput/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/" rel="prev" title="ARM Cortex-m Fault Exceptions 文档学习">
+                  <i class="fa fa-chevron-left"></i> ARM Cortex-m Fault Exceptions 文档学习
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/09/24/TCPIP-lwip-ipinput/" rel="next" title="lwip ip层处理逻辑梳理">
+                  lwip ip层处理逻辑梳理 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">676k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">14:06</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

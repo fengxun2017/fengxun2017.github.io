@@ -1,5 +1,5 @@
-http://fengxun2017.github.io/2025/09/24/TCPIP-lwip-ipinput/
-http://fengxun2017.github.io/2025/09/14/Arm%20cortex-m%20Fault%20Exceptions/
-http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/
-http://fengxun2017.github.io/2025/06/02/tricore-Tasks%20and%20Functions/
-http://fengxun2017.github.io/2025/06/02/tricore-architecture-Interrupt%20System/
+http://fengxun2017.github.io/2026/04/07/stm32h747-bottle-detector/
+http://fengxun2017.github.io/2026/03/09/stm32h747-DMA2D/
+http://fengxun2017.github.io/2026/02/25/cc-context-management-claude-developer-platform/
+http://fengxun2017.github.io/2026/02/10/cc-effective-context-engineering-for-ai-agents/
+http://fengxun2017.github.io/2026/02/05/cc-learning-github-integration/

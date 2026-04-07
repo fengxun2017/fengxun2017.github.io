@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="stm32h747-overview">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stm32h747-overview">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/11/24/stm32h747-overview/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="stm32h747-overview">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/11/24/stm32h747-overview/overview.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/11/24/stm32h747-overview/flash.png">
+<meta property="article:published_time" content="2025-11-23T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-14T13:58:47.791Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2025/11/24/stm32h747-overview/overview.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/11/24/stm32h747-overview/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/11/24/stm32h747-overview/","path":"2025/11/24/stm32h747-overview/","title":"stm32h747-overview"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>stm32h747-overview | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-CPU%E8%B5%84%E6%BA%90%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1 CPU资源：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%89%87%E4%B8%8A-SRAM-%E8%B5%84%E6%BA%90%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">2 片上 SRAM 资源：</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-864K-%E7%B3%BB%E7%BB%9F-SRAM-%E5%88%86%E5%B8%83%E5%9C%A8%E4%B8%89%E4%B8%AA%E7%94%B5%E6%BA%90%E5%9F%9F%E7%9A%84%E4%BA%94%E4%B8%AA%E5%9D%97%E4%B8%AD%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 864K 系统 SRAM 分布在三个电源域的五个块中：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-TCM-SRAM%EF%BC%88%E4%BB%85-M7%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 TCM SRAM（仅 M7）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-backup-SRAM"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 backup SRAM</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%89%87%E4%B8%8A-FLASH-%E8%B5%84%E6%BA%90%EF%BC%9A"><span class="nav-number">3.</span> <span class="nav-text">3 片上 FLASH 资源：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Boot-configuration"><span class="nav-number">4.</span> <span class="nav-text">4 Boot configuration</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E5%8F%8C%E6%A0%B8%E5%90%AF%E5%8A%A8%E9%A1%BA%E5%BA%8F-Boot-Order"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 双核启动顺序 (Boot Order)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-Boot-%E5%9C%B0%E5%9D%80%E9%80%89%E6%8B%A9-Boot-Modes"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 Boot 地址选择 (Boot Modes)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/11/24/stm32h747-overview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="stm32h747-overview | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          stm32h747-overview
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-11-24 00:00:00" itemprop="dateCreated datePublished" datetime="2025-11-24T00:00:00+08:00">2025-11-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.4k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+stm32h747-overview
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p><img src="/2025/11/24/stm32h747-overview/overview.png"></p>
+<h3 id="1-CPU资源："><a href="#1-CPU资源：" class="headerlink" title="1 CPU资源："></a>1 CPU资源：</h3><p>包含一个Cortex‑M7：最高 480 MHz<br>包含一个Cortex‑M4：最高 240 MHz</p>
+<h3 id="2-片上-SRAM-资源："><a href="#2-片上-SRAM-资源：" class="headerlink" title="2 片上 SRAM 资源："></a>2 片上 SRAM 资源：</h3><ul>
+<li>系统 SRAM：864 KB</li>
+<li>数据 TCM RAM：128 KB</li>
+<li>指令 TCM RAM：64 KB</li>
+<li>backup SRAM：4 KB</li>
+</ul>
+<h4 id="2-1-864K-系统-SRAM-分布在三个电源域的五个块中："><a href="#2-1-864K-系统-SRAM-分布在三个电源域的五个块中：" class="headerlink" title="2.1 864K 系统 SRAM 分布在三个电源域的五个块中："></a>2.1 864K 系统 SRAM 分布在三个电源域的五个块中：</h4><p>D1 域：AXI SRAM</p>
+<ul>
+<li>地址：0x2400 0000，512K</li>
+<li>通过 D1 域 AXI 总线矩阵访问，所有系统主设备都可访问（除了 BDMA）。</li>
+<li>用途：存放应用数据，或图形对象（如帧缓冲）。</li>
+</ul>
+<p>D2 域：AHB SRAM</p>
+<ul>
+<li>SRAM1：地址 0x3000 0000，128K。所有主设备可访问（除了 BDMA）。可作为 D2 域中外设输入&#x2F;输出数据的 DMA 缓冲区，或 Cortex‑M4 的代码存放区（当 D1 域掉电时仍可运行）。</li>
+<li>SRAM2：地址 0x3002 0000，128K。所有主设备可访问（除了 BDMA）。可 D2 域中外设输入&#x2F;输出数据的 DMA 缓冲区，或 M4 应用的读写段。</li>
+<li>SRAM3：地址 0x3004 0000。32K。所有主设备可访问（除了 BDMA）。可以用作缓冲区来存储以太网和USB的外围输入&#x2F;输出数据，或者用作两个核心之间的共享内存。</li>
+</ul>
+<p>D3 域：AHB SRAM</p>
+<ul>
+<li>SRAM4：地址 0x3800 0000，64K。大多数主设备可访问。可用作<br>BDMA缓冲区用于在D3域中存储外围输入&#x2F;输出数据。或在 D1&#x2F;D2 域进入待机模式时保留代码&#x2F;数据，或作为双核共享内存。</li>
+</ul>
+<p>别名映射：为了保持 Cortex‑M4 的 Harvard 架构（MCU 在地址空间里为同一块 SRAM 提供了 指令别名映射，让 M4 内核的指令总线和数据总线可以同时访问这块内存。），D2 域的 SRAM1&#x2F;2&#x2F;3 还映射到低地址空间：</p>
+<ul>
+<li>SRAM1 → 0x1000 0000</li>
+<li>SRAM2 → 0x1002 0000</li>
+<li>SRAM3 → 0x1004 0000</li>
+</ul>
+<p>访问特性<br>AHB SRAM：支持字节、半字 (16 bit)、字 (32 bit) 访问。<br>AXI SRAM：支持字节、半字、字、双字 (64 bit) 访问。<br>这些存储器可在系统最高频率下无等待周期访问。</p>
+<p>AHB 主设备可与 Ethernet MAC&#x2F;USB OTG HS 并发访问不同的 SRAM 区域（例如 MAC 用 SRAM2，CPU 用 SRAM1）。</p>
+<h4 id="2-2-TCM-SRAM（仅-M7）"><a href="#2-2-TCM-SRAM（仅-M7）" class="headerlink" title="2.2 TCM SRAM（仅 M7）"></a>2.2 TCM SRAM（仅 M7）</h4><p>DTCM RAM：</p>
+<ul>
+<li>地址 0x2000 0000，128K。仅 M7 和 MDMA 可访问。</li>
+<li>用途：关键实时数据（堆栈、堆）。</li>
+</ul>
+<p>ITCM RAM：</p>
+<ul>
+<li>地址 0x0000 0000，64K。仅 M7 和 MDMA 可访问。</li>
+<li>用途：关键实时代码（中断处理程序），保证确定性执行。</li>
+</ul>
+<h4 id="2-3-backup-SRAM"><a href="#2-3-backup-SRAM" class="headerlink" title="2.3 backup SRAM"></a>2.3 backup SRAM</h4><p>地址：0x3880 0000，4KB，大多数主设备可访问。<br>在 VBAT 供电下保持数据，在低功耗模式（Standby&#x2F;VBAT）下仍能保留</p>
+<h3 id="3-片上-FLASH-资源："><a href="#3-片上-FLASH-资源：" class="headerlink" title="3 片上 FLASH 资源："></a>3 片上 FLASH 资源：</h3><p>两个独立的 1MB Flash Bank。</p>
+<ul>
+<li>bank1：0x08000000 - 0x080FFFFF</li>
+<li>bank2：0x08100000 - 0x081FFFFF</li>
+</ul>
+<p>总线接口：</p>
+<ul>
+<li>提供两个 64bit AXI 从接口，用于代码和数据访问。</li>
+<li>提供一个 32bit AHB 从接口，用于访问配置寄存器。</li>
+<li>每个 Bank 在任意时刻只能执行一个读或写操作（不可并发读写同一个 Bank）。</li>
+</ul>
+<p>应用程序可以通过两个 AXI 接口同时发起读写请求。<br><img src="/2025/11/24/stm32h747-overview/flash.png"></p>
+<p>主要特性:</p>
+<ul>
+<li><p>读取支持多种数据宽度：支持 64bit、32bit、16bit 和 8bit 的读取操作。</p>
+</li>
+<li><p>写入粒度：每次写入为 256bit（32 字节）。</p>
+</li>
+<li><p>擦除方式：</p>
+<ul>
+<li>支持 128KB 扇区擦除。</li>
+<li>支持整 Bank 擦除。</li>
+<li>支持双 Bank 同时擦除（mass erase）。</li>
+</ul>
+</li>
+<li><p>双 Bank 架构优势：</p>
+<ul>
+<li>支持并行操作：两个 Bank 可同时进行读&#x2F;写&#x2F;擦除。</li>
+<li>支持 Bank 地址映射交换（Bank Swapping）：可动态切换两个 Bank 的地址映射和相关寄存器。(使用同样的链接脚本设置编译程序，镜像能放到不同的物理地址上)</li>
+</ul>
+</li>
+<li><p>ECC（错误校正码）：</p>
+<ul>
+<li>每个 256bit Flash 字使用 10bit ECC。</li>
+<li>支持 1 位错误自动纠正，2 位错误检测。</li>
+</ul>
+</li>
+<li><p>CRC 模块：内建硬件 CRC 校验模块。</p>
+</li>
+<li><p>用户可配置的非易失性选项字节。</p>
+</li>
+<li><p>增强型安全保护机制（通过选项字节启用）：</p>
+<ul>
+<li>读保护 RDP：防止非法读取 Flash 内容，保护敏感代码。</li>
+<li>写保护 WRPS：按 Bank 的 128KB 扇区进行写保护。</li>
+<li>PCROP（专有代码保护区）：每个 Bank 可配置一个执行专用区（不可读）。</li>
+</ul>
+</li>
+<li><p>命令队列机制：内建读写命令队列，提高 Flash 操作效率。</p>
+</li>
+</ul>
+<h3 id="4-Boot-configuration"><a href="#4-Boot-configuration" class="headerlink" title="4 Boot configuration"></a>4 Boot configuration</h3><h4 id="4-1-双核启动顺序-Boot-Order"><a href="#4-1-双核启动顺序-Boot-Order" class="headerlink" title="4.1 双核启动顺序 (Boot Order)"></a>4.1 双核启动顺序 (Boot Order)</h4><p>芯片有两个核心：Cortex‑M7 和 Cortex‑M4。</p>
+<p>启动顺序由 选项字节 (Option Bytes) 中的 BCM7 &#x2F; BCM4 位决定：</p>
+<table>
+<thead>
+<tr>
+<th>BCM7</th>
+<th>BCM4</th>
+<th>启动情况</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+<td>M7 启动，M4 时钟关闭</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>M4 启动，M7 时钟关闭</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>M7 启动，M4 时钟关闭</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>M7 和 M4 同时启动</td>
+</tr>
+</tbody></table>
+<h4 id="4-2-Boot-地址选择-Boot-Modes"><a href="#4-2-Boot-地址选择-Boot-Modes" class="headerlink" title="4.2 Boot 地址选择 (Boot Modes)"></a>4.2 Boot 地址选择 (Boot Modes)</h4><p>每个核心都有两个可选的 Boot 区域，通过 BOOT 引脚和 选项字节来决定：</p>
+<p>Boot &#x3D; 0:</p>
+<ul>
+<li>Cortex‑M7：BCM7_ADD0[15:0] 为启动地址MSB，默认启动地址为 bank1  0x0800_0000</li>
+<li>cortex‑M4：BCM4_ADD0[15:0] 为启动地址MSB，默认启动地址为 bank2  0x0810_0000</li>
+</ul>
+<p>Boot &#x3D; 1:</p>
+<ul>
+<li>Cortex‑M7：BCM7_ADD1[15:0] 为启动地址MSB，默认启动地址为ITCM 0x000 0000</li>
+<li>cortex‑M4：BCM4_ADD1[15:0] 为启动地址MSB，默认启动地址为 SRAM1 0x1000 0000</li>
+</ul>
+<p>M7 默认从主 Flash Bank1 启动。<br>M4 默认从主 Flash Bank2 启动。<br>也可以通过选项字节修改 Boot 地址，甚至让它们从 RAM 启动。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>[1] STM32H7xx Reference Manual, RM0399</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/11/24/stm32h747-overview/" title="stm32h747-overview">http://fengxun2017.github.io/2025/11/24/stm32h747-overview/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/11/16/stm32h747-clock/" rel="prev" title="stm32h747-clock">
+                  <i class="fa fa-chevron-left"></i> stm32h747-clock
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/12/01/stm32h747-DMA/" rel="next" title="stm32h747 DMA">
+                  stm32h747 DMA <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">676k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">14:06</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="stm32h747  DMA2D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stm32h747 DMA2D">
+<meta property="og:url" content="http://fengxun2017.github.io/2026/03/09/stm32h747-DMA2D/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="stm32h747  DMA2D">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2026/03/09/stm32h747-DMA2D/DMA2D.png">
+<meta property="article:published_time" content="2026-03-08T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-14T13:58:17.577Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2026/03/09/stm32h747-DMA2D/DMA2D.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2026/03/09/stm32h747-DMA2D/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2026/03/09/stm32h747-DMA2D/","path":"2026/03/09/stm32h747-DMA2D/","title":"stm32h747 DMA2D"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>stm32h747 DMA2D | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-DMA2D%E6%9E%84%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">1 DMA2D构成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-foreground-and-background-FIFOs"><span class="nav-number">2.</span> <span class="nav-text">2 foreground and background FIFOs</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-foreground-and-background-PFC"><span class="nav-number">3.</span> <span class="nav-text">3 foreground and background PFC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-foreground-and-background-CLUT-interface"><span class="nav-number">4.</span> <span class="nav-text">4 foreground and background CLUT interface</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-blender"><span class="nav-number">5.</span> <span class="nav-text">5 blender</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-DMA2D-output-PFC"><span class="nav-number">6.</span> <span class="nav-text">6 DMA2D output PFC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-DMA2D-output-FIFO"><span class="nav-number">7.</span> <span class="nav-text">7 DMA2D output FIFO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-DMA2D-output-FIFO-byte-reordering"><span class="nav-number">8.</span> <span class="nav-text">8 DMA2D output FIFO byte reordering</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-AXI-Master-Port-Timer"><span class="nav-number">9.</span> <span class="nav-text">9 AXI Master Port Timer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-DMA2D-transactions"><span class="nav-number">10.</span> <span class="nav-text">10 DMA2D transactions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-DMA2D-configuration"><span class="nav-number">11.</span> <span class="nav-text">11 DMA2D configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#YCbCr-%E6%94%AF%E6%8C%81"><span class="nav-number">12.</span> <span class="nav-text">YCbCr 支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DMA2D-transfer-control-start-suspend-abort-and-completion"><span class="nav-number">13.</span> <span class="nav-text">DMA2D transfer control (start, suspend, abort, and completion)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Watermark"><span class="nav-number">14.</span> <span class="nav-text">Watermark</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Error-management"><span class="nav-number">15.</span> <span class="nav-text">Error management</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AXI-Dead-Time"><span class="nav-number">16.</span> <span class="nav-text">AXI Dead Time</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DMA2D-%E4%B8%AD%E6%96%AD%E4%BA%8B%E4%BB%B6"><span class="nav-number">17.</span> <span class="nav-text">DMA2D 中断事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">18.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2026/03/09/stm32h747-DMA2D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="stm32h747 DMA2D | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          stm32h747 DMA2D
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-03-09 00:00:00" itemprop="dateCreated datePublished" datetime="2026-03-09T00:00:00+08:00">2026-03-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>5.5k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+stm32h747  DMA2D
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p>DMA2D 是专用的 图像处理 DMA，用于加速显示和图像操作。能在内存和显示缓冲之间进行高效的数据搬运和格式转换。</p>
+<p>主要特性：</p>
+<ul>
+<li>区域填充：用固定颜色填充图像的一部分或全部。</li>
+<li>图像拷贝：从源图像复制到目标图像，可带偏移。</li>
+<li>格式转换：拷贝时支持像素格式转换（如 RGB565 → ARGB8888）。</li>
+<li>图像混合：支持两路源图像混合（alpha blending），并输出到目标。</li>
+<li>支持多种颜色格式：从 4‑bit 到 32‑bit，直接或索引色，支持 CLUT。</li>
+<li>JPEG输出支持：能处理JPEG 解码器输出的基于块的 YCbCr 格式数据。</li>
+</ul>
+<p>硬件特性：</p>
+<ul>
+<li>总线架构：单 AXI 主机 （DMA2D访问内存），AHB 从机接口（CPU访问DMA2D寄存器）。</li>
+<li>可编程参数：工作区大小、源&#x2F;目的偏移、地址、颜色格式。</li>
+<li>CLUT 支持：内部存储器，自动或 CPU 加载，大小可编程。</li>
+<li>带宽控制：内部定时器可调节 AXI 总线占用。</li>
+<li>中断机制：支持完成中断、错误中断、水位线中断（处理到目标图像的某一行时，会触发一个中断信号。用于图像生成过程中提前介入，比如在某一行之后开始刷新显示器）。</li>
+<li>操作模式：寄存器到内存、内存到内存、带格式转换、带混合、固定前景&#x2F;背景色等</li>
+</ul>
+<h3 id="1-DMA2D构成"><a href="#1-DMA2D构成" class="headerlink" title="1 DMA2D构成"></a>1 DMA2D构成</h3><p><img src="/2026/03/09/stm32h747-DMA2D/DMA2D.png"></p>
+<ul>
+<li>dma2d_aclk：Input，64-bit AXI bus clock</li>
+<li>dma2d_gbl_it：Output，DMA2D global interrupt</li>
+<li>dma2d_clut_trg：Output， CLUT transfer complete (to MDMA)</li>
+<li>dma2d_tc_trg：Output， Transfer complete (to MDMA)</li>
+<li>dma2d_tw_trg：Output， Transfer watermark (to MDMA)</li>
+</ul>
+<p>DMA2D控制器通过 DMA2D_CR 配置。用户应用程序可执行：</p>
+<ul>
+<li>选择工作模式。</li>
+<li>启用&#x2F;禁用DMA2D中断。</li>
+<li>启动&#x2F;暂停&#x2F;终止正在进行的数据传输。</li>
+</ul>
+<h3 id="2-foreground-and-background-FIFOs"><a href="#2-foreground-and-background-FIFOs" class="headerlink" title="2 foreground and background FIFOs"></a>2 foreground and background FIFOs</h3><p>前景 FIFO (FG FIFO) 和 背景 FIFO (BG FIFO) 用来从内存中取输入图像数据，供 DMA2D 进行拷贝或处理。FIFO 会根据各自的 像素格式转换器 (PFC) 定义的颜色格式来抓取像素。</p>
+<p>配置相关寄存器</p>
+<ul>
+<li>DMA2D_FGMAR：前景图像内存地址寄存器</li>
+<li>DMA2D_FGOR：前景图像偏移寄存器</li>
+<li>DMA2D_BGMAR：背景图像内存地址寄存器</li>
+<li>DMA2D_BGOR：背景图像偏移寄存器</li>
+<li>DMA2D_NLR：行数寄存器（定义行数和每行像素数）</li>
+</ul>
+<p>在最简单的寄存器到内存模式下，不用 FIFO。<br>在普通内存拷贝模式下，只用前景 FIFO。<br>在带格式转换的拷贝模式下，仍然只用前景 FIFO。<br>背景 FIFO 主要在 混合 (blending) 模式下才会启用。</p>
+<h3 id="3-foreground-and-background-PFC"><a href="#3-foreground-and-background-PFC" class="headerlink" title="3 foreground and background PFC"></a>3 foreground and background PFC</h3><p>前景 PFC (FG PFC) 和 背景 PFC (BG PFC) 会把输入像素格式统一转换成 32 位&#x2F;像素 (ARGB8888)。在转换过程中，它们还能处理 Alpha 通道（透明度），包括保持、替换或调制。这样 DMA2D 在做混合或拷贝时，所有输入数据都被标准化为 32 位，方便后续运算。</p>
+<p>输入格式支持：</p>
+<ul>
+<li>通过寄存器 DMA2D_FGPFCCR 和 DMA2D_BGPFCCR 的 CM[3:0] 字段选择输入格式</li>
+</ul>
+<p>Alpha 通道处理：</p>
+<ul>
+<li>如果原始格式有 Alpha → 保留或按配置修改。配置方式由 AM[1:0] 决定：<ul>
+<li>00 保持原值</li>
+<li>01 替换为寄存器里的固定值</li>
+<li>10 原值 × 固定值 ÷ 255（调制）</li>
+<li>11 保留（未使用）</li>
+</ul>
+</li>
+<li>如果原始格式没有 Alpha → 自动补为 0xFF (完全不透明)。</li>
+<li>AI 位：反转 Alpha 值。AI 位的反转是在 AM 操作之后生效。它是一个最终修饰步骤。</li>
+</ul>
+<p>颜色通道处理：支持 R&#x2F;B 交换，索引色需 CLUT。</p>
+<p>内存排列：不同格式有不同的字节&#x2F;位顺序，PFC 会正确解析。</p>
+<h3 id="4-foreground-and-background-CLUT-interface"><a href="#4-foreground-and-background-CLUT-interface" class="headerlink" title="4 foreground and background CLUT interface"></a>4 foreground and background CLUT interface</h3><p>CLUT (Color Look‑Up Table) 用于 索引色模式 (L8、AL44、AL88、L4) 的像素格式转换。<br>输入像素只提供一个索引值 (L)，PFC 通过 CLUT 查表得到对应的 RGB&#x2F;ARGB 值。每个 PFC（前景&#x2F;背景）都有独立的 CLUT 存储区。<br>支持 24 位 RGB888 或 32 位 ARGB8888 格式。</p>
+<p>CLUT 的访问方式有：</p>
+<ul>
+<li>PFC 读取 CLUT：在像素格式转换时，PFC 自动从 CLUT 取对应的颜色。</li>
+<li>CPU 访问 CLUT：手动加载时，CPU 通过 AHB 从机接口， 可以直接读写 CLUT 内存。</li>
+<li>自动加载 CLUT：自动加载 CLUT 时，DMA2D 会作为 AXI 总线主机，自己去系统内存取 CLUT 数据并写入内部 CLUT RAM。</li>
+</ul>
+<p>CLUT 就是 DMA2D 的“颜色字典”，索引色像素通过它翻译成真正的 RGB&#x2F;ARGB 值。</p>
+<h3 id="5-blender"><a href="#5-blender" class="headerlink" title="5 blender"></a>5 blender</h3><p>Blender 用来把 前景像素 (FG) 和 背景像素 (BG) 按照透明度 (Alpha) 进行混合，生成一个新的输出像素。<br>它是 DMA2D 在 混合模式下自动启用的硬件单元，不需要额外的配置寄存器。是否启用 Blender 取决于 DMA2D_CR.MODE[2:0] 的工作模式选择。</p>
+<p>Alpha 混合:</p>
+<ul>
+<li>定义：𝛼<sub>𝑀𝑢𝑙𝑡</sub> &#x3D; 𝛼<sub>𝐹𝐺</sub> * 𝛼<sub>𝐵𝐺</sub>&#x2F;255</li>
+<li>输出 Alpha: 𝛼<sub>𝑂𝑢𝑡</sub> &#x3D; 𝛼<sub>𝐹𝐺</sub> + 𝛼<sub>𝐵𝐺</sub> - 𝛼<sub>𝑀𝑢𝑙𝑡</sub></li>
+<li>这保证了前景和背景的透明度综合后得到一个合理的输出透明度。</li>
+</ul>
+<p>颜色混合:</p>
+<ul>
+<li>对每个通道 (R&#x2F;G&#x2F;B)：:C<sub>𝑂𝑢𝑡</sub> &#x3D; (C<sub>𝐹𝐺</sub>*𝛼<sub>𝐹𝐺</sub> + C<sub>𝐵𝐺</sub>*𝛼<sub>𝐵𝐺</sub> - C<sub>BG</sub>*𝛼<sub>𝑀𝑢𝑙𝑡</sub>) &#x2F; 𝛼<sub>𝑂𝑢𝑡</sub>      ; with C &#x3D; R or G or B</li>
+<li>公式体现了：前景颜色按前景 Alpha 加权，背景颜色按背景 Alpha 加权，但背景部分会减去与前景重叠的透明度贡献。</li>
+</ul>
+<h3 id="6-DMA2D-output-PFC"><a href="#6-DMA2D-output-PFC" class="headerlink" title="6 DMA2D output PFC"></a>6 DMA2D output PFC</h3><p>Output PFC（Pixel Format Converter）是 DMA2D 的一个子模块，它负责将内部处理结果（默认是 32 位 ARGB8888 格式）转换为你指定的输出格式，比如 RGB565、ARGB1555 等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line">[FGMAR] → Foreground PFC ─┐</span><br><span class="line">                          │</span><br><span class="line">                          ├─→ 混合器 → Output PFC → [OMAR]</span><br><span class="line">                          │</span><br><span class="line">[BGMAR] → Background PFC ─┘</span><br></pre></td></tr></table></figure>
+
+<p>可选增强功能（通过 DMA2D_OPFCCR 控制）</p>
+<ul>
+<li>AI（Alpha Inversion）位：设置后，输出的 Alpha 值会被反转（Alpha &#x3D; 255 - 原值）。适用于需要反向透明度的场景，比如遮罩或高亮。</li>
+<li>RBS（Red-Blue Swap）位：设置后，输出图像中的 R 和 B 通道会交换。适用于某些 LCD 或图像格式使用 BGR 排列的情况。</li>
+<li>这两个功能不仅影响最终输出格式，也会影响在 DMA2D_OCOLR 中设置的颜色值解释方式。</li>
+</ul>
+<p>DMA2D_OCOLR 是什么？<br>这是 DMA2D 输出颜色寄存器，用于设置填充颜色或背景色（Register-to-Memory, R2M 模式）：当你要用某个纯色去填充一块内存区域时，颜色就来自 OCOLR。它的解释方式也会受到 CM[2:0]、AI 和 RBS 的影响。例如：</p>
+<ul>
+<li>如果你设置为 RGB565 格式，DMA2D_OCOLR 中的值会被解释为 R:5 G:6 B:5。</li>
+<li>如果你启用了 RBS，那么 R 和 B 的位置会互换。</li>
+</ul>
+<h3 id="7-DMA2D-output-FIFO"><a href="#7-DMA2D-output-FIFO" class="headerlink" title="7 DMA2D output FIFO"></a>7 DMA2D output FIFO</h3><p>输出 FIFO 是 DMA2D 的最后一级缓冲，它会按照 Output PFC 定义的格式，把像素排好队，写入目标内存。</p>
+<p>目标区域由以下寄存器定义：</p>
+<ul>
+<li>DMA2D_OMAR → 输出内存起始地址</li>
+<li>DMA2D_OOR → 每行的偏移（line offset）</li>
+<li>DMA2D_NLR → 行数和每行像素数</li>
+</ul>
+<p>如果是 R2M（寄存器到内存）模式，FIFO 就不断写入 DMA2D_OCOLR 中定义的固定颜色，填满目标矩形。</p>
+<h3 id="8-DMA2D-output-FIFO-byte-reordering"><a href="#8-DMA2D-output-FIFO-byte-reordering" class="headerlink" title="8 DMA2D output FIFO byte reordering"></a>8 DMA2D output FIFO byte reordering</h3><p>有些显示接口（比如 FSMC 并口驱动 LCD）要求像素数据在内存中有特定的字节顺序。DMA2D 提供了两个开关：</p>
+<ul>
+<li>RBS：交换红色和蓝色分量（RGB ↔ BGR）</li>
+<li>SB：按半字节对调（两个字节交换位置）注意：启用 SB 时，必须保证：<ul>
+<li>每行像素数（PL）为偶数</li>
+<li>输出地址（OMAR）为偶数</li>
+<li>行偏移（OOR&#x2F;LOM）计算出的字节数也为偶数，否则会报配置错误。</li>
+</ul>
+</li>
+</ul>
+<p>不同位深度的要求：</p>
+<ul>
+<li>16-bit (RGB565)：天然支持，不需要字节重排。</li>
+<li>18&#x2F;24-bit (RGB888)：必须同时启用 RBS 和 SB，才能满足 LCD 的字节顺序要求。</li>
+</ul>
+<h3 id="9-AXI-Master-Port-Timer"><a href="#9-AXI-Master-Port-Timer" class="headerlink" title="9 AXI Master Port Timer"></a>9 AXI Master Port Timer</h3><p>DMA2D 通过 AXI 总线访问内存。为了避免占用过多带宽，它内置了一个 8-bit 定时器。</p>
+<p>这个定时器可以在两次访问之间插入“死时间”，限制 DMA2D 的带宽占用。</p>
+<p>配置寄存器：DMA2D_AMPTCR。</p>
+<h3 id="10-DMA2D-transactions"><a href="#10-DMA2D-transactions" class="headerlink" title="10 DMA2D transactions"></a>10 DMA2D transactions</h3><p>一次 DMA2D 操作由多个步骤组成：</p>
+<p>从前景地址（FGMAR）取数据 → Foreground PFC 转换</p>
+<p>从背景地址（BGMAR）取数据 → Background PFC 转换</p>
+<p>混合（Blending）：根据 Alpha 通道合成前景和背景</p>
+<p>输出 PFC 转换 → 输出 FIFO → 写入目标地址（OMAR）</p>
+<h3 id="11-DMA2D-configuration"><a href="#11-DMA2D-configuration" class="headerlink" title="11 DMA2D configuration"></a>11 DMA2D configuration</h3><p>DMA2D 的工作模式（由 DMA2D_CR.MODE[2:0] 决定）：</p>
+<ul>
+<li>R2M（寄存器到内存）：用 OCOLR 的固定颜色填充矩形区域。只写，不读。</li>
+<li>M2M（内存到内存）：直接拷贝，不做格式转换。</li>
+<li>M2M + PFC：拷贝时做像素格式转换（支持 CLUT）。</li>
+<li>M2M + PFC + Blending：前景和背景图像合成。</li>
+<li>M2M + PFC + Blending + 固定 FG 色：背景来自内存，前景是固定颜色。</li>
+<li>M2M + PFC + Blending + 固定 BG 色：前景来自内存，背景是固定颜色。</li>
+</ul>
+<p>可以看到，DMA2D 的模式是逐步叠加的：从最简单的填充，到拷贝，再到格式转换，再到混合，最后支持固定色参与混合。</p>
+<p>CLUT（Color Look-Up Table）：</p>
+<ul>
+<li>当源图像是 索引色模式（Indirect color），需要 CLUT 把索引值映射到实际颜色。</li>
+<li>CLUT 可以自动加载（FGCMAR 指定地址，FGPFCCR 配置大小和格式，START 启动），也可以由 CPU 手动写入。</li>
+<li>CLUT 加载时不能同时进行 DMA2D 传输。</li>
+<li>CLUT 格式支持 24 位或 32 位。</li>
+</ul>
+<p>Alpha 通道处理：</p>
+<ul>
+<li>如果源图像没有 Alpha，默认加上 0xFF（完全不透明）。</li>
+<li>AM[1:0] 控制 Alpha 的处理方式：<ul>
+<li>保持不变</li>
+<li>替换为寄存器里的固定值</li>
+<li>原值 × 固定值 &#x2F; 255（相当于缩放透明度）</li>
+</ul>
+</li>
+</ul>
+<p>输出 PFC：</p>
+<ul>
+<li>所有处理结果最终都会变成 32 位 ARGB8888，然后由 Output PFC 转换成目标格式（RGB565、ARGB1555 等）。</li>
+<li>输出格式不能是索引色（Indirect），因为 DMA2D 不支持输出 CLUT。</li>
+</ul>
+<p>配置错误检测：<br>DMA2D 会在启动传输时检查配置是否合理，如果不对，会触发 配置错误中断（CEIF）。常见错误包括：</p>
+<ul>
+<li>CLUT 地址和格式不对齐。</li>
+<li>源&#x2F;目的地址和像素格式不匹配。</li>
+<li>行像素数（PL）为奇数，但格式要求偶数对齐（如 ARGB4444）。</li>
+<li>偏移量（LO）为奇数，但要求偶数对齐。</li>
+<li>输出地址和格式不匹配。</li>
+<li>启用了字节交换（SB&#x3D;1），但像素数或地址不是偶数。</li>
+<li>行数或像素数为零。</li>
+<li>模式位无效。</li>
+<li>YCbCr 模式下像素数与偏移不满足 8&#x2F;16 对齐要求。</li>
+</ul>
+<p>这些检查保证 DMA2D 不会在错误配置下运行，避免写错内存或产生无效数据。</p>
+<h3 id="YCbCr-支持"><a href="#YCbCr-支持" class="headerlink" title="YCbCr 支持"></a>YCbCr 支持</h3><p>用途：前景平面可以直接处理 JPEG 解码器输出的 YCbCr 数据（8×8 MCU 块）。<br>数据组织：遵循 JFIF 标准，每个分量（Y、Cb、Cr）都是 8 位，按 8×8 块排列。<br>配置：通过 CSS 位（在 FGPFCCR）可以选择采样率。<br>加载过程：先加载两个色度块（Cb、Cr）到 CLUT，再加载亮度块（Y）。</p>
+<h3 id="DMA2D-transfer-control-start-suspend-abort-and-completion"><a href="#DMA2D-transfer-control-start-suspend-abort-and-completion" class="headerlink" title="DMA2D transfer control (start, suspend, abort, and completion)"></a>DMA2D transfer control (start, suspend, abort, and completion)</h3><p>启动：设置 START 位，传输完成后自动清零，并置位 TCIF。<br>暂停：设置 SUSP 位，可随时暂停，清除后继续。<br>中止：设置 ABORT 位立即终止，TCIF 不会置位。<br>CLUT 加载：也有独立的 START 位，可以单独暂停&#x2F;中止。</p>
+<h3 id="Watermark"><a href="#Watermark" class="headerlink" title="Watermark"></a>Watermark</h3><p>功能：在某一行的最后一个像素写入完成时触发中断。<br>配置：DMA2D_LWR 设置行号，触发时置位 TWIF。<br>用途：常用于逐行刷新显示缓冲区。</p>
+<h3 id="Error-management"><a href="#Error-management" class="headerlink" title="Error management"></a>Error management</h3><p>AXI 错误：总线访问错误 → TEIF。<br>CLUT 访问冲突：当CLUT正在加载或DMA2D传输进行时，CPU尝试访问该CLUT → CAEIF。<br>两者都有对应的中断使能位（TEIE、CAEIE）。</p>
+<h3 id="AXI-Dead-Time"><a href="#AXI-Dead-Time" class="headerlink" title="AXI Dead Time"></a>AXI Dead Time</h3><p>目的：限制 DMA2D 占用 AXI 总线带宽。<br>配置：DMA2D_AMTCR.EN 启用，DT[7:0] 设置死时间（两个访问之间的最少周期数）。<br>动态更新：运行中修改会在下一次访问生效。</p>
+<h3 id="DMA2D-中断事件"><a href="#DMA2D-中断事件" class="headerlink" title="DMA2D 中断事件"></a>DMA2D 中断事件</h3><p>可触发的中断包括：</p>
+<ul>
+<li>配置错误（CEIF）</li>
+<li>CLUT 加载完成（CTCIF）</li>
+<li>CLUT 访问错误（CAEIF）</li>
+<li>水位（watermark）触发（TWIF）</li>
+<li>传输完成（TCIF）</li>
+<li>传输错误（TEIF）</li>
+</ul>
+<p>每个事件都有独立的使能位，方便灵活选择。</p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>[1] STM32H7xx Reference Manual, RM0399</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2026/03/09/stm32h747-DMA2D/" title="stm32h747 DMA2D">http://fengxun2017.github.io/2026/03/09/stm32h747-DMA2D/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/02/25/cc-context-management-claude-developer-platform/" rel="prev" title="Managing context on the Claude Developer Platform">
+                  <i class="fa fa-chevron-left"></i> Managing context on the Claude Developer Platform
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/04/07/stm32h747-bottle-detector/" rel="next" title="基于 STM32H747 和 Zephyr RTOS 的嵌入式 AI 可乐瓶检测系统">
+                  基于 STM32H747 和 Zephyr RTOS 的嵌入式 AI 可乐瓶检测系统 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">676k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">14:06</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

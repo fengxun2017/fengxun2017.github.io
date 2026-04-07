@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/Trap%20Vector%20Table%20Entry%20Address%20Calculation.jpg">
 <meta property="article:published_time" content="2025-06-09T16:00:00.000Z">
-<meta property="article:modified_time" content="2025-09-24T00:28:38.077Z">
+<meta property="article:modified_time" content="2025-09-26T00:42:23.539Z">
 <meta property="article:author" content="feng xun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://fengxun2017.github.io/2025/06/10/tricore-architecture-Trap%20System/Trap%20Vector%20Table%20Entry%20Address%20Calculation.jpg">
@@ -123,7 +123,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%99%B7%E9%98%B1%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">1 陷阱类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%90%8C%E6%AD%A5%E9%99%B7%E9%98%B1%EF%BC%88Synchronous-Traps%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 同步陷阱（Synchronous Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%BC%82%E6%AD%A5%E9%99%B7%E9%98%B1%EF%BC%88Asynchronous-Traps%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 异步陷阱（Asynchronous Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E7%A1%AC%E4%BB%B6%E9%99%B7%E9%98%B1%EF%BC%88Hardware-Traps%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 硬件陷阱（Hardware Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E8%BD%AF%E4%BB%B6%E9%99%B7%E9%98%B1%EF%BC%88Software-Traps%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 软件陷阱（Software Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-%E4%B8%8D%E5%8F%AF%E6%81%A2%E5%A4%8D%E7%9A%84%E9%99%B7%E9%98%B1%EF%BC%88Unrecoverable-Traps%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 不可恢复的陷阱（Unrecoverable Traps）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%99%B7%E9%98%B1%E5%A4%84%E7%90%86%EF%BC%88Trap-Handling%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">2 陷阱处理（Trap Handling）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E6%A0%BC%E5%BC%8F%EF%BC%88Trap-Vector-Format%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 陷阱向量格式（Trap Vector Format）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E8%AE%BF%E9%97%AE%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%88Accessing-the-Trap-Vector-Table%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 访问陷阱向量表（Accessing the Trap Vector Table）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E8%BF%94%E5%9B%9E%E5%9C%B0%E5%9D%80%EF%BC%88Return-Address-RA%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 返回地址（Return Address, RA）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%88Trap-Vector-Table%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 陷阱向量表（Trap Vector Table）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E9%99%B7%E9%98%B1%E5%8F%91%E7%94%9F%E6%97%B6%E7%9A%84%E5%88%9D%E5%A7%8B%E7%8A%B6%E6%80%81%EF%BC%88Initial-State-upon-a-Trap%EF%BC%89"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 陷阱发生时的初始状态（Initial State upon a Trap）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%99%B7%E9%98%B1%E6%8F%8F%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">3 陷阱描述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-MMU%E9%99%B7%E9%98%B1%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-0%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 MMU陷阱（陷阱类别 0）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%86%85%E9%83%A8%E4%BF%9D%E6%8A%A4%E9%99%B7%E9%98%B1%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-1%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 内部保护陷阱（陷阱类别 1）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E6%8C%87%E4%BB%A4%E9%94%99%E8%AF%AF%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-2%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 指令错误（陷阱类别 2）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-3%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 上下文管理（陷阱类别 3）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E7%B3%BB%E7%BB%9F%E6%80%BB%E7%BA%BF%E5%92%8C%E5%A4%96%E8%AE%BE%E9%94%99%E8%AF%AF%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-4%EF%BC%89"><span class="nav-number">3.5.</span> <span class="nav-text">4 系统总线和外设错误（陷阱类别 4）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E6%96%AD%E8%A8%80%E9%99%B7%E9%98%B1%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-5%EF%BC%89"><span class="nav-number">3.6.</span> <span class="nav-text">5 断言陷阱（陷阱类别 5）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-6%EF%BC%89"><span class="nav-number">3.7.</span> <span class="nav-text">6 系统调用（陷阱类别 6）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E4%B8%8D%E5%8F%AF%E5%B1%8F%E8%94%BD%E4%B8%AD%E6%96%AD%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-7%EF%BC%89"><span class="nav-number">3.8.</span> <span class="nav-text">7 不可屏蔽中断（陷阱类别 7）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E9%99%B7%E9%98%B1"><span class="nav-number">3.9.</span> <span class="nav-text">调试陷阱</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%BC%82%E5%B8%B8%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">4.</span> <span class="nav-text">4 异常优先级</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%99%B7%E9%98%B1%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">1 陷阱类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%90%8C%E6%AD%A5%E9%99%B7%E9%98%B1%EF%BC%88Synchronous-Traps%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 同步陷阱（Synchronous Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%BC%82%E6%AD%A5%E9%99%B7%E9%98%B1%EF%BC%88Asynchronous-Traps%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 异步陷阱（Asynchronous Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E7%A1%AC%E4%BB%B6%E9%99%B7%E9%98%B1%EF%BC%88Hardware-Traps%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 硬件陷阱（Hardware Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E8%BD%AF%E4%BB%B6%E9%99%B7%E9%98%B1%EF%BC%88Software-Traps%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 软件陷阱（Software Traps）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-%E4%B8%8D%E5%8F%AF%E6%81%A2%E5%A4%8D%E7%9A%84%E9%99%B7%E9%98%B1%EF%BC%88Unrecoverable-Traps%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 不可恢复的陷阱（Unrecoverable Traps）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E9%99%B7%E9%98%B1%E5%A4%84%E7%90%86%EF%BC%88Trap-Handling%EF%BC%89"><span class="nav-number">2.</span> <span class="nav-text">2 陷阱处理（Trap Handling）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E6%A0%BC%E5%BC%8F%EF%BC%88Trap-Vector-Format%EF%BC%89"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 陷阱向量格式（Trap Vector Format）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E8%AE%BF%E9%97%AE%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%88Accessing-the-Trap-Vector-Table%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 访问陷阱向量表（Accessing the Trap Vector Table）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E8%BF%94%E5%9B%9E%E5%9C%B0%E5%9D%80%EF%BC%88Return-Address-RA%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 返回地址（Return Address, RA）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%88Trap-Vector-Table%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 陷阱向量表（Trap Vector Table）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E9%99%B7%E9%98%B1%E5%8F%91%E7%94%9F%E6%97%B6%E7%9A%84%E5%88%9D%E5%A7%8B%E7%8A%B6%E6%80%81%EF%BC%88Initial-State-upon-a-Trap%EF%BC%89"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 陷阱发生时的初始状态（Initial State upon a Trap）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%99%B7%E9%98%B1%E6%8F%8F%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">3 陷阱描述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-MMU%E9%99%B7%E9%98%B1%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-0%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 MMU陷阱（陷阱类别 0）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%86%85%E9%83%A8%E4%BF%9D%E6%8A%A4%E9%99%B7%E9%98%B1%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-1%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 内部保护陷阱（陷阱类别 1）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E6%8C%87%E4%BB%A4%E9%94%99%E8%AF%AF%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-2%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 指令错误（陷阱类别 2）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-3%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 上下文管理（陷阱类别 3）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E7%B3%BB%E7%BB%9F%E6%80%BB%E7%BA%BF%E5%92%8C%E5%A4%96%E8%AE%BE%E9%94%99%E8%AF%AF%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-4%EF%BC%89"><span class="nav-number">3.5.</span> <span class="nav-text">4 系统总线和外设错误（陷阱类别 4）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E6%96%AD%E8%A8%80%E9%99%B7%E9%98%B1%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-5%EF%BC%89"><span class="nav-number">3.6.</span> <span class="nav-text">5 断言陷阱（陷阱类别 5）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-6%EF%BC%89"><span class="nav-number">3.7.</span> <span class="nav-text">6 系统调用（陷阱类别 6）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-%E4%B8%8D%E5%8F%AF%E5%B1%8F%E8%94%BD%E4%B8%AD%E6%96%AD%EF%BC%88%E9%99%B7%E9%98%B1%E7%B1%BB%E5%88%AB-7%EF%BC%89"><span class="nav-number">3.8.</span> <span class="nav-text">7 不可屏蔽中断（陷阱类别 7）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%83%E8%AF%95%E9%99%B7%E9%98%B1"><span class="nav-number">3.9.</span> <span class="nav-text">调试陷阱</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%BC%82%E5%B8%B8%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-number">4.</span> <span class="nav-text">4 异常优先级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E9%99%B7%E9%98%B1%E6%8E%A7%E5%88%B6%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">5.</span> <span class="nav-text">5 陷阱控制寄存器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-Base-Trap-Vector-Table-Pointer-%E5%9F%BA%E9%99%B7%E9%98%B1%E5%90%91%E9%87%8F%E8%A1%A8%E6%8C%87%E9%92%88"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 Base Trap Vector Table Pointer 基陷阱向量表指针</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-Program-Synchronous-Error-Trap-Register-PSTR"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 Program Synchronous Error Trap Register (PSTR)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-CPUx-%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5%E9%99%B7%E9%98%B1%E5%AF%84%E5%AD%98%E5%99%A8-DSTR"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 CPUx 数据同步陷阱寄存器 (DSTR)</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -136,13 +136,13 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-count">117</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-count">18</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
@@ -232,14 +232,14 @@
         <i class="far fa-file-word"></i>
       </span>
       <span class="post-meta-item-text">本文字数：</span>
-      <span>12k</span>
+      <span>14k</span>
     </span>
     <span class="post-meta-item" title="阅读时长">
       <span class="post-meta-item-icon">
         <i class="far fa-clock"></i>
       </span>
       <span class="post-meta-item-text">阅读时长 &asymp;</span>
-      <span>15 分钟</span>
+      <span>18 分钟</span>
     </span>
 </div>
 
@@ -443,6 +443,204 @@ Trap System
 <li>尝试在空闲上下文列表为空（FCX &#x3D; 0）的情况下保存上下文，将导致FCU（空闲上下文列表下溢）陷阱。此陷阱的优先级高于所有其他异常。</li>
 <li>当同一条指令在流水线的任何阶段引发多个同步陷阱时，其优先级遵循手册中提供的优先级顺序表。</li>
 </ul>
+<h3 id="5-陷阱控制寄存器"><a href="#5-陷阱控制寄存器" class="headerlink" title="5 陷阱控制寄存器"></a>5 陷阱控制寄存器</h3><h4 id="5-1-Base-Trap-Vector-Table-Pointer-基陷阱向量表指针"><a href="#5-1-Base-Trap-Vector-Table-Pointer-基陷阱向量表指针" class="headerlink" title="5.1 Base Trap Vector Table Pointer 基陷阱向量表指针"></a>5.1 Base Trap Vector Table Pointer 基陷阱向量表指针</h4><p>BTV寄存器包含陷阱向量表的基地址。当发生陷阱时，通过将该陷阱的陷阱类别数值左移5位，然后与BTV寄存器的内容进行或（OR）运算，来生成陷阱向量表的入口地址。对陷阱类别的左移操作导致向量表中各个条目之间相隔8个字（32字节）。</p>
+<p>由于存在8个不同的陷阱类别（Trap Classes 0 至 7）。因此，BTV的内容应至少设置在256字节边界上（8个陷阱类别 * 8字间距）。</p>
+<h4 id="5-2-Program-Synchronous-Error-Trap-Register-PSTR"><a href="#5-2-Program-Synchronous-Error-Trap-Register-PSTR" class="headerlink" title="5.2 Program Synchronous Error Trap Register (PSTR)"></a>5.2 Program Synchronous Error Trap Register (PSTR)</h4><p>PSTR 寄存器中提供有关程序同步错误类型的详细信息。<br>字段描述:</p>
+<table>
+<thead>
+<tr>
+<th>字段名称</th>
+<th>缩写</th>
+<th>位域</th>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>取指范围错误</strong></td>
+<td><strong>FRE</strong></td>
+<td>0</td>
+<td>rwh</td>
+<td>当对 Program Scratch-Pad SRAM 的访问超出了该SRAM的范围时，就会发生取指范围错误。</td>
+</tr>
+<tr>
+<td><strong>保留</strong></td>
+<td><strong>RES</strong></td>
+<td>1, 3-11, 13, 15-31</td>
+<td>r</td>
+<td>保留位。</td>
+</tr>
+<tr>
+<td><strong>取指总线错误</strong></td>
+<td><strong>FBE</strong></td>
+<td>2</td>
+<td>rwh</td>
+<td>每当SRI标记由于从外部内存获取而导致的错误时，就会设置一个获取总线错误。无论是直接从总线取指还是缓存行填充引起的错误，都会设置此位。</td>
+</tr>
+<tr>
+<td><strong>取指外设错误</strong></td>
+<td><strong>FPE</strong></td>
+<td>12</td>
+<td>rwh</td>
+<td>当尝试向<strong>外设地址空间（peripheral space）</strong> 进行取指操作时，将设置此错误。</td>
+</tr>
+<tr>
+<td><strong>取指MSIST错误</strong></td>
+<td><strong>FME</strong></td>
+<td>14</td>
+<td>rwh</td>
+<td>在<strong>SIST模式</strong>下，从<strong>PTAG</strong>取指将导致发生一个PSE（程序取指同步）陷阱。</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>r</strong>: 只读</li>
+<li><strong>rwh</strong>: 可读写，且可由硬件置位</li>
+</ul>
+<p>PS:</p>
+<p>SIST（Software-Initiated Self-Test，软件启动自检）模式是一种特殊的硬件操作状态，其目的是允许软件安全地测试和验证内存保护硬件（特别是MPU）本身的功能是否正确（在安全关键系统中，不能简单地相信MPU永远正常工作。必须有一种机制来定期验证MPU是否还能正确地区分“允许访问”和“禁止访问”的内存区域。）。这是一种内置的自我诊断机制，对于满足功能安全标准（如ISO 26262）的系统至关重要。<br>工作原理</p>
+<ul>
+<li>进入方式：通常通过设置某个系统控制寄存器（例如SISTCSR.SISTEN）来使能SIST模式。</li>
+<li>操作变化：当SIST模式使能后，CPU对内存的访问行为会发生关键改变：<ul>
+<li>关键点：在SIST模式下，指令取指（Fetch）和数据访问（Load&#x2F;Store）的地址检查不再使用MPU中常规的地址范围描述符。</li>
+<li>替代机制：取而代之的是，CPU会使用一组专用的、用于自检的地址标签，这就是 PTAG。</li>
+</ul>
+</li>
+</ul>
+<p>PTAG 是 Protection TAG（保护标签）的缩写。<br>核心概念：PTAG是与特定内存地址或地址范围关联的附加标签信息，用于在SIST模式下定义内存访问的保护属性。<br>一个PTAG通常包含该对应内存地址区域的访问权限信息，例如：</p>
+<ul>
+<li>是否可执行（Execute Permission）</li>
+<li>是否可读（Read Permission）</li>
+<li>是否可写（Write Permission）</li>
+<li>可能还包括其他安全属性，如特权等级要求等。</li>
+</ul>
+<p>在SIST模式下：</p>
+<ul>
+<li>当CPU在SIST模式下执行一条指令进行取指时，它会根据当前要读取的指令地址，去查找对应的PTAG。</li>
+<li>然后，CPU会根据PTAG中定义的权限来决定这次访问是否合法。</li>
+<li>如果PTAG标明“此地址不可执行”，但CPU试图从这里取指，那么MPU就会触发一个PSE（程序取指同步错误）陷阱。</li>
+</ul>
+<p>应用：</p>
+<ul>
+<li>软件使能SIST模式，开始对MPU进行自检。</li>
+<li>CPU尝试从某个地址取指。</li>
+<li>在SIST模式下，CPU不去检查常规的MPU范围规则，而是去查询该地址对应的PTAG。</li>
+<li>软件可以事先将PTAG配置为“该地址不可执行”，以此来模拟一种内存保护违规。</li>
+<li>如果MPU功能正常，它应该检测到这次“违规”取指，并立即触发一个PSE陷阱。</li>
+<li>同时，MPU会在PSTR寄存器的FME位置位，告诉软件：“我成功检测到了在SIST模式下由PTAG配置引发的取指错误”。</li>
+<li>陷阱处理程序可以检查PSTR寄存器，看到FME位被置位，从而确认MPU的这项保护功能是正常的。</li>
+<li>因此，SIST模式和PTAG是相辅相成的机制，共同构成了Tricore架构中用于验证内存保护系统完整性的高级安全功能，对于构建高可靠性系统至关重要。</li>
+</ul>
+<h4 id="5-3-CPUx-数据同步陷阱寄存器-DSTR"><a href="#5-3-CPUx-数据同步陷阱寄存器-DSTR" class="headerlink" title="5.3 CPUx 数据同步陷阱寄存器 (DSTR)"></a>5.3 CPUx 数据同步陷阱寄存器 (DSTR)</h4><p>DSTR寄存器包含数据存储器系统的同步陷阱信息。该寄存器会更新陷阱源信息，以帮助定位故障。<br>每当检测到有效的陷阱且该寄存器中尚无任何位被置位时，寄存器内容会被更新。通过写入操作（与数据值无关）可清除该寄存器。</p>
+<p><strong>字段详细描述</strong></p>
+<table>
+<thead>
+<tr>
+<th align="left">字段名称</th>
+<th align="left">缩写</th>
+<th align="left">位域</th>
+<th align="left">类型</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>便签存储器范围错误</strong></td>
+<td align="left"><strong>SRE</strong></td>
+<td align="left">0</td>
+<td align="left">rwh</td>
+<td align="left">当对DSPR  的访问超出了该SRAM的范围时，会发生便签范围错误。</td>
+</tr>
+<tr>
+<td align="left"><strong>全局地址错误</strong></td>
+<td align="left"><strong>GAE</strong></td>
+<td align="left">1</td>
+<td align="left">rwh</td>
+<td align="left">对local code scratch address 中，<strong>低1MB范围之外</strong>的地址进行加载或存储操作。</td>
+</tr>
+<tr>
+<td align="left"><strong>加载总线错误</strong></td>
+<td align="left"><strong>LBE</strong></td>
+<td align="left">2</td>
+<td align="left">rwh</td>
+<td align="left">当<strong>SRI（系统资源接口）</strong> 因从外部存储器加载数据而报告错误时，此位将被设置。</td>
+</tr>
+<tr>
+<td align="left"><strong>本地DLMU范围错误</strong></td>
+<td align="left"><strong>DRE</strong></td>
+<td align="left">3</td>
+<td align="left">rwh</td>
+<td align="left">当对本地<strong>DLMU（数据本地存储器单元）</strong> 区域的访问超出了物理上已实现的存储器范围时，会发生DLMU范围错误。</td>
+</tr>
+<tr>
+<td align="left"><strong>保留</strong></td>
+<td align="left"><strong>RES</strong></td>
+<td align="left">4-5, 7-13, 21-23, 25-31</td>
+<td align="left">r</td>
+<td align="left">保留位。</td>
+</tr>
+<tr>
+<td align="left"><strong>缓存行填充错误</strong></td>
+<td align="left"><strong>CRE</strong></td>
+<td align="left">6</td>
+<td align="left">rwh</td>
+<td align="left">当<strong>SRI（系统资源接口）</strong> 因从外部存储器进行<strong>缓存行填充（cache refill）</strong> 而报告错误时，此位将被设置。</td>
+</tr>
+<tr>
+<td align="left"><strong>DTAG MSIST错误</strong></td>
+<td align="left"><strong>DTME</strong></td>
+<td align="left">14</td>
+<td align="left">rwh</td>
+<td align="left">在<strong>SIST模式</strong>下，访问映射到<strong>DTAG（数据保护标签）</strong> 范围但超出物理已实现存储器的地址。</td>
+</tr>
+<tr>
+<td align="left"><strong>加载覆盖错误</strong></td>
+<td align="left"><strong>LOE</strong></td>
+<td align="left">15</td>
+<td align="left">rwh</td>
+<td align="left">加载操作访问了<strong>无效的覆盖地址（overlay address）</strong>。</td>
+</tr>
+<tr>
+<td align="left"><strong>段差异错误</strong></td>
+<td align="left"><strong>SDE</strong></td>
+<td align="left">16</td>
+<td align="left">rwh</td>
+<td align="left">加载或存储访问的<strong>基地址</strong>与<strong>访问地址</strong>处于不同的地址段。</td>
+</tr>
+<tr>
+<td align="left"><strong>段跨越错误</strong></td>
+<td align="left"><strong>SCE</strong></td>
+<td align="left">17</td>
+<td align="left">rwh</td>
+<td align="left">加载或存储访问<strong>跨越了地址段的边界</strong>。</td>
+</tr>
+<tr>
+<td align="left"><strong>CSFR访问错误</strong></td>
+<td align="left"><strong>CAC</strong></td>
+<td align="left">18</td>
+<td align="left">rwh</td>
+<td align="left">使用加载或存储指令访问本地<strong>CSFR（核心特殊功能寄存器）</strong> 地址空间。</td>
+</tr>
+<tr>
+<td align="left"><strong>内存保护错误</strong></td>
+<td align="left"><strong>MPE</strong></td>
+<td align="left">19</td>
+<td align="left">rwh</td>
+<td align="left">数据访问<strong>违反了内存保护规则</strong>。</td>
+</tr>
+<tr>
+<td align="left"><strong>上下文位置错误</strong></td>
+<td align="left"><strong>CLE</strong></td>
+<td align="left">20</td>
+<td align="left">rwh</td>
+<td align="left">对<strong>无效位置</strong>进行了<strong>上下文操作</strong>（保存或恢复）。</td>
+</tr>
+<tr>
+<td align="left"><strong>对齐错误</strong></td>
+<td align="left"><strong>ALN</strong></td>
+<td align="left">24</td>
+<td align="left">rwh</td>
+<td align="left">数据访问导致了<strong>对齐错误</strong>。</td>
+</tr>
+</tbody></table>
 
     </div>
 
@@ -501,7 +699,7 @@ Trap System
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -513,14 +711,14 @@ Trap System
       <i class="fa fa-chart-line"></i>
     </span>
       <span>站点总字数：</span>
-    <span title="站点总字数">552k</span>
+    <span title="站点总字数">676k</span>
   </span>
   <span class="post-meta-item">
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span>站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">11:30</span>
+    <span title="站点阅读时长">14:06</span>
   </span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动

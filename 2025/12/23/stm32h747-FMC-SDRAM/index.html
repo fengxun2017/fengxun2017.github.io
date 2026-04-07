@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="stm32h747 使用FMC 控制、访问 IS42S32800J SDRAM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stm32h747 FMC-SDRAM">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="stm32h747 使用FMC 控制、访问 IS42S32800J SDRAM">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/cas.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/sdram-block.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/bank-active.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/read-command.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/fmc-block.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/burst-write-waveforms.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/burst-read-waveforms.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/read-with-rburst.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/sdram-timing.png">
+<meta property="article:published_time" content="2025-12-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-14T13:58:30.053Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/cas.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/","path":"2025/12/23/stm32h747-FMC-SDRAM/","title":"stm32h747 FMC-SDRAM"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>stm32h747 FMC-SDRAM | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-IS42S32800J-6BLI-SDRAM"><span class="nav-number">1.</span> <span class="nav-text">1 IS42S32800J-6BLI SDRAM</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-OVERVIEW"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 OVERVIEW</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-stm32h747-FMC"><span class="nav-number">2.</span> <span class="nav-text">2 stm32h747 FMC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-FMC-main-features"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 FMC main features</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E6%94%AF%E6%8C%81%E7%9A%84%E5%AD%98%E5%82%A8%E5%99%A8%E4%B8%8E%E4%BA%8B%E5%8A%A1%E8%A7%84%E5%88%99"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 支持的存储器与事务规则</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E5%A4%96%E9%83%A8%E8%AE%BE%E5%A4%87%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4%E5%88%92%E5%88%86"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 外部设备地址空间划分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-SDRAM-controller"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 SDRAM controller</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-1-SDRAM-%E6%8E%A7%E5%88%B6%E5%99%A8%E5%86%99%E5%91%A8%E6%9C%9F%EF%BC%9A"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1 SDRAM 控制器写周期：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-2-SDRAM-%E6%8E%A7%E5%88%B6%E5%99%A8%E8%AF%BB%E5%91%A8%E6%9C%9F"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2 SDRAM 控制器读周期:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-3-%E8%A1%8C%E8%BE%B9%E7%95%8C%E7%AE%A1%E7%90%86-Row-boundary-management"><span class="nav-number">2.4.3.</span> <span class="nav-text">2.4.3 行边界管理 (Row boundary management)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-4-Bank-%E8%BE%B9%E7%95%8C%E7%AE%A1%E7%90%86-Bank-boundary-management"><span class="nav-number">2.4.4.</span> <span class="nav-text">2.4.4 Bank 边界管理 (Bank boundary management)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-5-%E5%88%B7%E6%96%B0%E5%91%A8%E6%9C%9F-Refresh-cycle"><span class="nav-number">2.4.5.</span> <span class="nav-text">2.4.5 刷新周期 (Refresh cycle)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-6%E4%BD%8E%E5%8A%9F%E8%80%97%E6%A8%A1%E5%BC%8F-Low-power-modes"><span class="nav-number">2.4.6.</span> <span class="nav-text">2.4.6低功耗模式 (Low-power modes)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-stm32h747-%E4%BD%BF%E7%94%A8-FMC-%E8%AE%BF%E9%97%AE-SDRAM"><span class="nav-number">3.</span> <span class="nav-text">3 stm32h747 使用 FMC 访问 SDRAM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="stm32h747 FMC-SDRAM | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          stm32h747 FMC-SDRAM
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-12-23 00:00:00" itemprop="dateCreated datePublished" datetime="2025-12-23T00:00:00+08:00">2025-12-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>13k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>17 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+stm32h747 使用FMC 控制、访问 IS42S32800J SDRAM
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h3 id="1-IS42S32800J-6BLI-SDRAM"><a href="#1-IS42S32800J-6BLI-SDRAM" class="headerlink" title="1 IS42S32800J-6BLI SDRAM"></a>1 IS42S32800J-6BLI SDRAM</h3><p>板载256Mbit SDRAM ，IS42S32800J 系列，该系列支持不同速度等级（-6、-7、-75E），对应支持的最大工作频率为 166, 143, 133 MHz。</p>
+<p>当前使用的是 IS42S32800J-6BLI 型号，最大频率支持到 166MHz。<br>特性 (FEATURES)：</p>
+<ul>
+<li><p>全同步：所有信号都参考时钟上升沿</p>
+</li>
+<li><p>内部多 Bank：通过隐藏行访问&#x2F;预充电提高效率</p>
+</li>
+<li><p>可编程突发长度：1、2、4、8 或整页</p>
+</li>
+<li><p>突发序列：顺序或交错</p>
+</li>
+<li><p>刷新机制：自动刷新 (CBR)、自刷新 (Self Refresh)</p>
+<ul>
+<li>自动刷新：MCU&#x2F;控制器必须周期性发 REFRESH 命令，SDRAM 内部自动完成行选择和刷新。</li>
+<li>自刷新：MCU&#x2F;控制器只需让 SDRAM 进入 Self Refresh 状态（通过 CKE 拉低）。SDRAM 内部会自己周期性刷新所有行，不再需要外部 REFRESH 命令。</li>
+</ul>
+</li>
+<li><p>刷新周期：4096 次刷新 &#x2F; 16ms (A2)，或 64ms (A1&#x2F;工业级&#x2F;商业级)</p>
+<ul>
+<li>A1&#x2F;工业&#x2F;商业等级: 在 64ms 内完成 4096 次刷新。</li>
+<li>A2 等级: 在 16ms内完成 4096 次刷新（更严格）。高温或更严苛环境下漏电更大，数据保持时间变短，需要更频繁刷新</li>
+<li>刷新命令会让 SDRAM 在 tRFC (Refresh Cycle Time) 内进入忙状态，不能读写。假设：每次刷新需要 tRFC &#x3D; 70ns（典型值），总刷新次数 &#x3D; 4096 次 &#x2F; 16ms。<br>刷新总时间：4096 * 70ns &#x3D; 286.7us<br>占比：286.7us &#x2F; 16ms ≈ 1.8%<br>即大约 1–2% 的时间 SDRAM 在刷新，不能读写。<br><strong>SRAM 永远可访问，DRAM 必须定期暂停刷新。</strong></li>
+</ul>
+</li>
+<li><p>随机列地址：每个时钟周期可随机访问列地址</p>
+</li>
+<li><p>CAS 延迟：<strong>可编程为 2 或 3 个时钟周期</strong></p>
+<ul>
+<li>Column Address Strobe Latency ：指的是：当控制器发出 READ 命令并给出列地址后，SDRAM 需要等待多少个时钟周期才能把数据有效输出到总线上。<br><img src="/2025/12/23/stm32h747-FMC-SDRAM/cas.png"></li>
+</ul>
+</li>
+<li><p>突发读写：支持突发读&#x2F;写，突发读&#x2F;单写</p>
+</li>
+<li><p>突发终止：通过 Burst Stop 或 Precharge 命令</p>
+</li>
+</ul>
+<h4 id="1-1-OVERVIEW"><a href="#1-1-OVERVIEW" class="headerlink" title="1.1 OVERVIEW"></a>1.1 OVERVIEW</h4><p>容量：256Mb &#x3D; 2M × 32 位 × 4 Bank<br>架构：流水线架构，所有输入&#x2F;输出都同步到时钟上升沿<br>每个 Bank：67,108,864 bit，组织为 4096 行 × 512 列 × 32 bit</p>
+<p><img src="/2025/12/23/stm32h747-FMC-SDRAM/sdram-block.png"></p>
+<p><strong>关键时序参数</strong> (KEY TIMING PARAMETERS)，仅考虑当前使用的型号IS42S32800J-6BLI （对应速率等级 -6）：</p>
+<ul>
+<li><p>Clk Cycle Time（时钟周期）：SDRAM 在当前速度等级（-6）、某个 CAS Latency 设置下，要求的 最小时钟周期。这是芯片内部完成一次操作所需的最短绝对时间。</p>
+<ul>
+<li>CAS&#x3D;3 → 6ns (对应工作频率 166 MHz)</li>
+<li>CAS&#x3D;2 → 10ns (对应工作100 MHz，cas变小了，则需要降低频率以满足总时延要求)</li>
+</ul>
+</li>
+<li><p>Clk Frequency（时钟频率）：表示 SDRAM 在当前速度等级（-6）和对应 CAS 延迟下的 最大工作频率（f<sub>max</sub> &#x3D; 1&#x2F;t<sub>clk cycle timer</sub>）。</p>
+<ul>
+<li>CAS Latency &#x3D; 3： t<sub>clk cycle timer</sub> &#x3D; 6ns -&gt; f<sub>max</sub> &#x3D; 166 MHz</li>
+<li>CAS Latency &#x3D; 2： t<sub>clk cycle timer</sub> &#x3D; 10ns -&gt; f<sub>max</sub> &#x3D; 100 MHz</li>
+<li>CAS Latency 越小，要求时钟周期越长（频率越低），否则数据准备不及。</li>
+</ul>
+</li>
+<li><p>Access Time from Clock（访问延迟）：这是一个模拟电气参数，表示数据在时钟边沿之后多久稳定在总线上。它是一个“绝对时间”的约束。在当前速率等级（-6）下：</p>
+<ul>
+<li>CAS Latency &#x3D; 3时，为5.4 ns</li>
+<li>CAS Latency &#x3D; 2：6.5 ns</li>
+</ul>
+</li>
+</ul>
+<p>备注：CAS Latency × Clk Cycle Time：这是一个逻辑延迟，表示 SDRAM 在多少个时钟拍子后才把数据推出，它是一个“周期数”的约束。而Access Time from Clock表示数据在拍子点之后多久有效。<br>举例：以 -6 等级 SDRAM 为例：</p>
+<p>CL&#x3D;2，tCK&#x3D;10 ns：逻辑上要等 2 个周期 → 20 ns。在第 2 个周期的上升沿，数据已经准备好，只需再等 tAC&#x3D;6.5 ns 就能读到稳定数据。<br>CL&#x3D;3，tCK&#x3D;6 ns：逻辑上要等 3 个周期 → 18 ns。在第 3 个周期的上升沿，数据推出，只需再等 tAC&#x3D;5.4 ns 就能读到稳定数据。</p>
+<p><strong>地址 (ADDRESS TABLE)&#x2F;引脚配置</strong>：</p>
+<ul>
+<li>总容量：8M × 32 bit</li>
+<li>配置：2M × 32 × 4 Bank</li>
+<li>刷新计数：4096 行</li>
+<li>地址线：A0–A11 (行地址)，A0–A8 (列地址)，A10 用于自动预充电</li>
+<li>Bank 地址：BA0, BA1 → 选择 Bank</li>
+<li>数据线：DQ0–DQ31 → 32 位数据总线</li>
+<li>时钟：CLK → 主时钟输入</li>
+<li>时钟使能：CKE → 控制时钟是否有效（低电平进入省电&#x2F;自刷新模式）</li>
+<li>片选：CS → 低电平使能命令输入</li>
+<li>命令控制：RAS (行选通)、CAS (列选通)、WE (写使能)</li>
+<li>数据掩码：DQM0–DQM3 → 控制 4 个字节的输入&#x2F;输出屏蔽<ul>
+<li>DQM&#x3D;HIGH → 对应的 DQ 输出为高阻（数据无效）。</li>
+<li>DQM&#x3D;LOW → DQ 输出有效数据。</li>
+</ul>
+</li>
+</ul>
+<p>普通地址线的作用</p>
+<ul>
+<li>BA0&#x2F;BA1：选择 Bank。</li>
+<li>A0–A11：在 ACTIVE 命令时作为行地址。<br><img src="/2025/12/23/stm32h747-FMC-SDRAM/bank-active.png"></li>
+<li>A0–A8：在 READ&#x2F;WRITE 命令时作为列地址。<br><img src="/2025/12/23/stm32h747-FMC-SDRAM/read-command.png"></li>
+</ul>
+<p>A10 的特殊功能：<br>A10 除了作为普通地址位，还在某些命令下有 特殊含义：</p>
+<ul>
+<li>READ&#x2F;WRITE 命令时<ul>
+<li>如果 A10&#x3D;1 → 启用 自动预充电 (Auto Precharge)。SDRAM 在突发读&#x2F;写结束后，会自动关闭当前行（执行预充电），不需要控制器再发 PRECHARGE 命令。</li>
+<li>如果 A10&#x3D;0 → 行保持打开，控制器可以继续访问同一行。</li>
+</ul>
+</li>
+<li>PRECHARGE 命令时<ul>
+<li>如果 A10&#x3D;1 → 表示预充电 所有 Bank。</li>
+<li>如果 A10&#x3D;0 → 只预充电由 BA0&#x2F;BA1 指定的 Bank。</li>
+</ul>
+</li>
+</ul>
+<p>备注：<br>SDRAM 内部存储结构是 Bank → Row → Column。<br>当要访问某个数据时，必须先 激活（ACTIVE）一行，把这一行的数据加载到行缓冲区中，然后才能访问列中的数据。<br>当一行被激活后，它会一直保持“打开”状态，行缓冲区里存着这一行的数据。<br>如果要访问同一个 Bank 的另一行，必须先把当前行关闭，否则无法切换。关闭行的动作就是预充电 (Precharge)：把行缓冲区恢复到空闲状态，准备好接受新的行激活。</p>
+<h3 id="2-stm32h747-FMC"><a href="#2-stm32h747-FMC" class="headerlink" title="2 stm32h747 FMC"></a>2 stm32h747 FMC</h3><p>STM32H747 的 FMC（灵活存储控制器） 是一个统一的外部存储接口模块，内部包含三个子控制器：</p>
+<ul>
+<li>NOR&#x2F;PSRAM 控制器</li>
+<li>NAND 控制器</li>
+<li>SDRAM 控制器，通过 JEDEC SDRAM 标准协议和外部 SDRAM 进行交互。</li>
+</ul>
+<p><img src="/2025/12/23/stm32h747-FMC-SDRAM/fmc-block.png"></p>
+<ul>
+<li>AHB 接口：用于 CPU 配置 FMC 寄存器，时钟是 fmc_hclk。</li>
+<li>AXI 接口：用于 CPU&#x2F;DMA 访问外部存储器，时钟是 fmc_ker_ck</li>
+</ul>
+<h4 id="2-1-FMC-main-features"><a href="#2-1-FMC-main-features" class="headerlink" title="2.1 FMC main features"></a>2.1 FMC main features</h4><p>FMC的主要作用：</p>
+<ul>
+<li>把 AXI 总线事务（MCU 内部总线协议）翻译成外部存储器的访问协议。</li>
+<li>满足外部存储器的访问时序要求。</li>
+</ul>
+<p>所有外部存储器共享 FMC 的地址、数据和控制信号，每个存储器通过独立的 片选信号 (Chip Select) 区分。一次只能访问一个外部设备。</p>
+<p>主要特性：</p>
+<ul>
+<li><p>支持的外部存储器类型：</p>
+<ul>
+<li>SRAM</li>
+<li>NOR Flash、OneNAND flash</li>
+<li>PSRAM（最多 4 个 Bank）</li>
+<li>NAND Flash：STM32H747 的 FMC 控制器在访问 NAND 闪存时，内置硬件 ECC 引擎，可以对一次最多 8KB 的数据块进行错误检测和纠正，从而保证数据可靠性。</li>
+<li>DRAM &#x2F; Mobile LPSDR SDRAM</li>
+</ul>
+</li>
+<li><p>突发模式 (Burst Mode)：支持高速连续访问（适用于 NOR、PSRAM、SDRAM）。</p>
+</li>
+<li><p>可编程时钟输出：支持异步和同步存储器访问。</p>
+</li>
+<li><p>数据总线宽度：8&#x2F;16&#x2F;32 位可选。</p>
+</li>
+<li><p>独立片选控制：每个存储器 Bank 独立片选。</p>
+</li>
+<li><p>独立配置：每个存储器 Bank 可单独配置。</p>
+</li>
+<li><p>写控制信号：支持写使能和字节选择（适用于 PSRAM、SRAM、SDRAM）。</p>
+</li>
+<li><p>外部异步等待控制：支持外部 WAIT 信号。</p>
+</li>
+<li><p>FIFO 机制</p>
+<ul>
+<li>写 FIFO（深度 16 × 32 位，所有控制器共享）：<br>写数据 FIFO：存储要写入的数据。<br>写地址 FIFO：存储地址（最多 28 Bit）和数据大小（最多 2 bit）。在突发模式下，只存储起始地址；如果跨页边界（PSRAM&#x2F;SDRAM），突发会拆分成两个 FIFO 条目。</li>
+<li>读 FIFO（仅 SDRAM 控制器，深度 6 × 64 位）：可缓存读取数据。带地址标签（14 位），用于缓存命中判断。</li>
+</ul>
+</li>
+</ul>
+<p>配置与寄存器：<br>启动时，用户必须配置 FMC 的引脚。未使用的 FMC 引脚可以复用为其他功能。<br>外部设备类型和特性在启动时通过 FMC 寄存器配置，一般在复位或上电后才改变。<br>如果 FMC 已经启用，要修改配置参数，必须按以下顺序：</p>
+<ul>
+<li>禁用 FMC（防止访问过程中修改寄存器）。</li>
+<li>更新所需配置。</li>
+<li>重新启用 FMC。</li>
+</ul>
+<p>SDRAM 特殊情况：如果需要在初始化后修改 SDCLK 时钟比率或刷新速率，必须遵循以下步骤：（<strong>这是为了保证 SDRAM 在修改时序参数时不会丢失数据。</strong>）</p>
+<ul>
+<li>让 SDRAM 进入 自刷新模式 (Self-refresh)。</li>
+<li>禁用 FMC（清除 FMC_BCR1 寄存器中的 FMCEN 位）。</li>
+<li>更新参数。</li>
+<li>重新启用 FMC。</li>
+<li>发送 Clock Configuration Enable 命令，退出自刷新模式。</li>
+</ul>
+<h4 id="2-2-支持的存储器与事务规则"><a href="#2-2-支持的存储器与事务规则" class="headerlink" title="2.2 支持的存储器与事务规则"></a>2.2 支持的存储器与事务规则</h4><p>通用事务规则:</p>
+<ul>
+<li>AXI 事务数据宽度：可以是 8、16、32 或 64 位。</li>
+<li>外部设备数据宽度：固定（例如 32 位）。</li>
+<li>最佳性能：当 AXI 事务大小与外部设备数据宽度匹配且地址对齐时，性能最高。</li>
+</ul>
+<p>当 AXI 数据宽度 ≠ 外设数据宽度时的处理:</p>
+<ul>
+<li><p>AXI 数据宽度 &gt; 外设数据宽度</p>
+<ul>
+<li>FMC 会把一次 AXI 事务拆分成多个连续访问，匹配外设的数据宽度。</li>
+<li>例如：AXI 64 位访问 → SDRAM 32 位宽 → FMC 拆成 2 次 32 位访问。</li>
+</ul>
+</li>
+<li><p>AXI 数据宽度 &lt; 外设数据宽度，且设备支持字节选择 (SRAM&#x2F;PSRAM&#x2F;SDRAM)</p>
+<ul>
+<li>写事务：FMC 使用字节选通信号（Byte Lane Signals）来只写入目标字节。</li>
+<li>读事务：FMC 返回整个设备数据宽度的数据，系统丢弃无用字节。</li>
+</ul>
+</li>
+<li><p>AXI 数据宽度 &lt; 外设数据宽度，且设备不支持字节选择 (NOR&#x2F;NAND Flash)</p>
+<ul>
+<li>写事务：FMC 会写入一些无关字节，可能导致外设数据损坏。</li>
+<li>读事务：FMC 返回整个设备数据宽度的数据，系统丢弃无用字节。</li>
+</ul>
+</li>
+</ul>
+<p>地址对齐注意事项:</p>
+<ul>
+<li>读事务：不支持非对齐地址（例如半字访问起始于奇数地址）。</li>
+<li>写事务：是否支持取决于外设是否支持字节选择：<ul>
+<li>如果设备不支持字节选择（NOR&#x2F;NAND），则不支持窄写或非对齐写事务，否则会写入无关字节导致数据损坏。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-3-外部设备地址空间划分"><a href="#2-3-外部设备地址空间划分" class="headerlink" title="2.3 外部设备地址空间划分"></a>2.3 外部设备地址空间划分</h4><p>从 FMC 的角度看，外部存储器被划分为 固定大小的 Bank，每个 Bank 256MB。</p>
+<ul>
+<li><p>Bank 1：用于 NOR Flash 或 PSRAM（最多 4 个设备），分成 4 个子 Bank，每个子 Bank有独立的片选信号：</p>
+<ul>
+<li>Bank1-NOR&#x2F;PSRAM1</li>
+<li>Bank1-NOR&#x2F;PSRAM2</li>
+<li>Bank1-NOR&#x2F;PSRAM3</li>
+<li>Bank1-NOR&#x2F;PSRAM4</li>
+</ul>
+</li>
+<li><p>Bank 2：用于 SDRAM（可以是 SDRAM Bank1 或 Bank2，取决于 BMAP 位配置）。</p>
+</li>
+<li><p>Bank 3：用于 NAND Flash。注意：MPU 的内存属性必须配置为 Device 类型。</p>
+</li>
+<li><p>Bank 5 和 Bank 6：用于 SDRAM，每个 Bank 对应一个 SDRAM 设备。</p>
+</li>
+</ul>
+<p>每个 Bank 的存储器类型由用户通过配置寄存器设定。</p>
+<p>Bank 映射修改 (BMAP 位):FMC_BCR1 寄存器中的 BMAP[1:0] 位可以修改 Bank 的地址映射。这样可以实现：</p>
+<ul>
+<li>NOR&#x2F;PSRAM 与 SDRAM Bank 交换地址空间。</li>
+<li>SDRAM Bank2 重映射到不同的地址区间。</li>
+</ul>
+<p>通过 BMAP，可以灵活调整 SDRAM&#x2F;NOR 的地址空间布局。</p>
+<p>FMC 支持两个 SDRAM Bank：</p>
+<ul>
+<li>SDRAM Bank1 → 配置寄存器 FMC_SDCR1，时序寄存器 FMC_SDTR1</li>
+<li>SDRAM Bank2 → 配置寄存器 FMC_SDCR2，时序寄存器 FMC_SDTR2</li>
+</ul>
+<p>SDRAM 地址映射：SDRAM 的地址由 FMC 的 ADDR[27:0] 信号映射到外部存储器的 Bank&#x2F;Row&#x2F;Column，具体取决于数据总线宽度：</p>
+<table>
+<thead>
+<tr>
+<th>数据总线宽度</th>
+<th>内部 Bank 地址</th>
+<th>行地址</th>
+<th>列地址</th>
+<th>最大容量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>8-bit</td>
+<td>ADDR[25:24]</td>
+<td>ADDR[23:11]</td>
+<td>ADDR[10:0]</td>
+<td>64MB (4 × 8K × 2K)</td>
+</tr>
+<tr>
+<td>16-bit</td>
+<td>ADDR[26:25]</td>
+<td>ADDR[24:12]</td>
+<td>ADDR[11:1]</td>
+<td>128MB (4 × 8K × 2K × 2)</td>
+</tr>
+<tr>
+<td>32-bit</td>
+<td>ADDR[27:26]</td>
+<td>ADDR[25:13]</td>
+<td>ADDR[12:2]</td>
+<td>256MB (4 × 8K × 2K × 4)</td>
+</tr>
+</tbody></table>
+<p>FMC 将 ADDR[27:0] 翻译成 SDRAM 地址时，取决于 SDRAM 控制器配置：不同配置决定了 SDRAM 的最大容量和寻址方式。</p>
+<ul>
+<li>数据宽度：8&#x2F;16&#x2F;32 位</li>
+<li>行地址位数：11&#x2F;12&#x2F;13 位</li>
+<li>列地址位数：8&#x2F;9&#x2F;10&#x2F;11 位</li>
+<li>内部 Bank 数量：2 或 4</li>
+</ul>
+<h4 id="2-4-SDRAM-controller"><a href="#2-4-SDRAM-controller" class="headerlink" title="2.4 SDRAM controller"></a>2.4 SDRAM controller</h4><p>SDRAM 控制器主要特性：</p>
+<ul>
+<li>两个独立配置的 SDRAM Bank：可以同时挂接两片 SDRAM，每片独立配置。</li>
+<li>数据总线宽度：支持 8 位、16 位、32 位。</li>
+<li>寻址能力：<ul>
+<li>行地址 13 位</li>
+<li>列地址 11 位</li>
+<li>内部 4 个 Bank</li>
+</ul>
+</li>
+<li>最大容量：<ul>
+<li>32bit 总线 → 256MB (4 × 16M × 32bit)</li>
+<li>16bit 总线 → 128MB (4 × 16M × 16bit)</li>
+<li>8bit 总线 → 64MB (4 × 16M × 8bit)</li>
+</ul>
+</li>
+<li>访问粒度：支持字（32bit）、半字（16bit）、字节（8bit）访问。</li>
+<li>SDRAM 时钟：由 FMC 内核时钟分频得到，可选 fmc_ker_ck&#x2F;2 或 fmc_ker_ck&#x2F;3。</li>
+<li>自动边界管理：自动处理行&#x2F;Bank 边界跨越。</li>
+<li>自动刷新：支持自动刷新，刷新率可编程。</li>
+<li>自刷新模式：低功耗保持数据。</li>
+<li>掉电模式：进一步降低功耗。</li>
+<li>上电初始化：由软件完成 SDRAM 初始化序列。</li>
+<li>CAS 延迟：支持 1、2、3。</li>
+<li>可缓存读 FIFO：深度为 6  × 32bit，带 14 位地址标签，用于提升读性能。</li>
+</ul>
+<p>SDRAM 外部接口信号：<br>在启动时，用户必须配置 FMC 的 SDRAM I&#x2F;O 引脚。未使用的引脚可复用为其他功能。</p>
+<table>
+<thead>
+<tr>
+<th>SDRAM 信号</th>
+<th>I&#x2F;O 类型</th>
+<th>描述</th>
+<th>对应 FMC 引脚</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SDCLK</td>
+<td>O</td>
+<td>SDRAM 时钟</td>
+<td>-</td>
+</tr>
+<tr>
+<td>SDCKE[1:0]</td>
+<td>O</td>
+<td>时钟使能：SDCKE0 → Bank1，SDCKE1 → Bank2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>SDNE[1:0]</td>
+<td>O</td>
+<td>片选信号：SDNE0 → Bank1，SDNE1 → Bank2</td>
+<td>-</td>
+</tr>
+<tr>
+<td>A[12:0]</td>
+<td>O</td>
+<td>地址线</td>
+<td>FMC_A[12:0]</td>
+</tr>
+<tr>
+<td>D[31:0]</td>
+<td>I&#x2F;O</td>
+<td>双向数据总线</td>
+<td>FMC_D[31:0]</td>
+</tr>
+<tr>
+<td>BA[1:0]</td>
+<td>O</td>
+<td>Bank 地址选择</td>
+<td>FMC_A[15:14]</td>
+</tr>
+<tr>
+<td>NRAS</td>
+<td>O</td>
+<td>行选通信号 (Row Address Strobe)</td>
+<td>-</td>
+</tr>
+<tr>
+<td>NCAS</td>
+<td>O</td>
+<td>列选通信号 (Column Address Strobe)</td>
+<td>-</td>
+</tr>
+<tr>
+<td>SDNWE</td>
+<td>O</td>
+<td>写使能 (Write Enable)</td>
+<td>-</td>
+</tr>
+<tr>
+<td>NBL[3:0]</td>
+<td>O</td>
+<td>字节屏蔽信号 (DQM)，用于写访问时屏蔽部分字节</td>
+<td>FMC_NBL[3:0]</td>
+</tr>
+</tbody></table>
+<p>PS:“对应 FMC 引脚 &#x3D; -” 表示这是专用控制信号，不属于地址&#x2F;数据总线，需要查 GPIO Alternate Function 表来找到具体管脚。</p>
+<p><strong>DRAM 初始化流程</strong>:<br>当 FMC 外挂 SDRAM 时，必须由软件执行初始化序列。若同时使用两个 Bank，需要在 FMC_SDCMR 寄存器中设置 CTB1&#x2F;CTB2 位，让初始化命令同时发往 Bank1 和 Bank2。初始化步骤：</p>
+<ul>
+<li><p>配置存储器特性</p>
+<ul>
+<li>在 FMC_SDCRx 寄存器中设置 SDRAM 特性。</li>
+<li>SDRAM 时钟频率、RBURST（读突发）、RPIPE（读管道延迟）必须在 FMC_SDCR1 中配置。</li>
+</ul>
+</li>
+<li><p>配置时序参数</p>
+<ul>
+<li>在 FMC_SDTRx 寄存器中设置 SDRAM 时序。</li>
+<li>TRP（预充电时间）、TRC（行周期时间）必须在 FMC_SDTR1 中配置。</li>
+</ul>
+</li>
+<li><p>启动时钟：设置 MODE&#x3D;001，并配置 CTB1&#x2F;CTB2 → FMC 开始向 SDRAM 提供时钟（SDCKE 拉高）。</p>
+</li>
+<li><p>等待延时：等待 SDRAM 上电稳定延时，典型值约 100 μs（具体参考 SDRAM datasheet）。</p>
+</li>
+<li><p>预充电所有 Bank：设置 MODE&#x3D;010，并配置 CTB1&#x2F;CTB2 → 发出 Precharge All 命令。</p>
+</li>
+<li><p>自动刷新：设置 MODE&#x3D;011，并配置 CTB1&#x2F;CTB2，同时设置 NRFS（自动刷新次数），通常需要设置发出 8 次自动刷新命令（具体参考 SDRAM datasheet）。</p>
+</li>
+<li><p>加载模式寄存器：配置 MRD 字段，设置 MODE&#x3D;100，并配置 CTB1&#x2F;CTB2 → 发出 Load Mode Register 命令。</p>
+<ul>
+<li>在此步骤中：设置突发长度 BL&#x3D;1选择合适的 CAS 延迟（1&#x2F;2&#x2F;3）</li>
+<li>如果两片 SDRAM 的模式寄存器不同，需要分别对 Bank1 和 Bank2 执行一次。</li>
+</ul>
+</li>
+<li><p>配置刷新率</p>
+<ul>
+<li>在 FMC_SDRTR 寄存器中设置刷新率（即刷新周期）。</li>
+<li>必须根据 SDRAM 芯片的要求配置，例如 4096 次刷新&#x2F;64ms。</li>
+</ul>
+</li>
+</ul>
+<p>完成以上步骤后，SDRAM 就可以正常接受读写命令。</p>
+<p><strong>注意事项</strong>：</p>
+<ul>
+<li>如果系统在 SDRAM 访问过程中发生 复位，SDRAM 可能仍在驱动数据总线。必须重新执行初始化序列，才能安全使用。</li>
+<li>如果连接了两片 SDRAM：当通过 Command Mode Register 同时对两片 SDRAM 发出命令（如 Load Mode Register），使用的时序参数（TMRD、TRAS）来自 Bank1 的 FMC_SDTR1 寄存器。</li>
+</ul>
+<h5 id="2-4-1-SDRAM-控制器写周期："><a href="#2-4-1-SDRAM-控制器写周期：" class="headerlink" title="2.4.1 SDRAM 控制器写周期："></a>2.4.1 SDRAM 控制器写周期：</h5><p>SDRAM 控制器可以接受 单次写请求 和 突发写请求，并将它们转换为单个存储器访问。在这两种情况下，控制器都会跟踪每个 Bank 当前处于激活状态的行，以便能够在不同 Bank 之间连续执行写操作（即 多 Bank ping-pong 访问）。<br>在执行任何写操作之前，必须通过清除 FMC_SDCRx 寄存器中的 WP 位来关闭 SDRAM Bank 的写保护。</p>
+<p>SDRAM 控制器在执行写操作时总是会检查下一次访问：如果下一次访问在同一行，或者在另一个已经激活的行，则直接执行写操作；如果下一次访问目标是另一个未激活的行，则控制器会先发出 预充电命令 (Precharge)，再激活新的行，然后执行写操作。<br><img src="/2025/12/23/stm32h747-FMC-SDRAM/burst-write-waveforms.png"></p>
+<h5 id="2-4-2-SDRAM-控制器读周期"><a href="#2-4-2-SDRAM-控制器读周期" class="headerlink" title="2.4.2 SDRAM 控制器读周期:"></a>2.4.2 SDRAM 控制器读周期:</h5><p>基本行为:</p>
+<ul>
+<li>SDRAM 控制器可以接受 单次读请求 和 突发读请求，并将它们转换为单个存储器访问。</li>
+<li>控制器会跟踪每个 Bank 当前激活的行，以便在不同 Bank 间连续执行读操作（即 多 Bank ping-pong 访问）。</li>
+</ul>
+<p><img src="/2025/12/23/stm32h747-FMC-SDRAM/burst-read-waveforms.png"><br>可缓存读 FIFO:</p>
+<ul>
+<li>FMC SDRAM 控制器内置一个 可缓存读 FIFO（6 × 32bit）。</li>
+<li>作用：在 CAS 延迟周期（最多 3 个时钟周期）和 RPIPE 延迟期间提前存储数据。</li>
+<li>FIFO 的填充公式：存储数据数 &#x3D; CAS Latency + 1 + (RPIPE&#x2F;2)</li>
+<li>必须在 FMC_SDCR1 中设置 RBURST 位，才能启用提前读。</li>
+</ul>
+<p>举例：</p>
+<ul>
+<li>CAS&#x3D;3，RPIPE&#x3D;2 × fmc_ker_ck → FIFO 中存储 5 个数据（4 个在 CAS 延迟期间，1 个在 RPIPE 延迟期间）。</li>
+<li>CAS&#x3D;3，RPIPE&#x3D;1 × fmc_ker_ck → FIFO 中存储 4 个数据（全部在 CAS 延迟期间）。</li>
+</ul>
+<p>FIFO 地址标签:FIFO 每行有一个 14 位地址标签，用于标识内容：</p>
+<ul>
+<li>11 位 → 列地址</li>
+<li>2 位 → 内部 Bank + 激活行 （2 位实际上就是 Bank ID，SDRAM 芯片内部每个 Bank 在任意时刻只能有 一条 Row（行）处于激活状态，因此不需要在 FIFO 标签里维护行信息。如果要访问同一个 Bank 的另一行，必须先 PRECHARGE（预充电）关闭当前行，再 ACTIVATE 新行。Precharge 命令期间，FIFO 会被清空）</li>
+<li>1 位 → SDRAM 设备选择</li>
+</ul>
+<p>这样可以区分 FIFO 中的数据属于哪个 Bank、哪一行、哪一列。</p>
+<p>行边界情况：</p>
+<ul>
+<li>如果在突发读过程中提前到达行尾，行尾之前的数据会存入FIFO，行尾之后的数据必须等新的行被激活后再读，不能提前缓存。</li>
+<li>单次读访问则总是正确存入 FIFO。</li>
+</ul>
+<p>读请求处理逻辑：每次读请求时，控制器会检查</p>
+<ul>
+<li>地址匹配 FIFO 标签 → 直接从 FIFO 读数据，并清除对应标签</li>
+<li>地址不匹配 → 发出新的读命令，更新 FIFO。如果 FIFO 已满，旧数据会丢弃。</li>
+</ul>
+<p><img src="/2025/12/23/stm32h747-FMC-SDRAM/read-with-rburst.png"><br><strong>在写访问或 Precharge 命令期间，FIFO 会被清空，准备接收新数据</strong>。</p>
+<p>预取机制：在第一次读请求后，如果当前访问未到达行边界，控制器会在 CAS 延迟和 RPIPE 延迟期间提前读取后续数据。条件：</p>
+<ul>
+<li>必须设置 RBURST&#x3D;1。</li>
+<li>地址管理取决于 AXI 总线的下一个请求：<ul>
+<li>顺序请求 (Burst) → 控制器递增地址，继续提前读。</li>
+<li>非顺序请求：如果目标在同一行或另一个已激活的行 → 控制器直接发新地址，主设备等待 CAS 延迟。如果目标在未激活的行 → 控制器先发 Precharge，再激活新行，然后执行读。</li>
+</ul>
+</li>
+</ul>
+<p>如果 RBURST&#x3D;0，FIFO 不启用，所有读都直接等待 CAS 延迟。<br><strong>FMC SDRAM 控制器通过读 FIFO 和 RBURST 预取机制，把 CAS 延迟隐藏起来，提高突发读性能</strong>。</p>
+<h5 id="2-4-3-行边界管理-Row-boundary-management"><a href="#2-4-3-行边界管理-Row-boundary-management" class="headerlink" title="2.4.3 行边界管理 (Row boundary management)"></a>2.4.3 行边界管理 (Row boundary management)</h5><p>当读&#x2F;写访问跨越 行边界时，如果下一个访问是顺序的，并且当前访问正好到达行尾，SDRAM 控制器会自动执行：</p>
+<ul>
+<li>预充电 (Precharge) 当前激活的行</li>
+<li>激活 (Activate) 新的行</li>
+<li>发起新的读&#x2F;写命令</li>
+</ul>
+<p>这种自动行切换在所有列地址和数据总线宽度配置下都支持。</p>
+<p>控制器会自动插入必要的等待周期：</p>
+<ul>
+<li>Precharge → Activate 之间插入 TRP 延迟（行预充电时间）</li>
+<li>Activate → Read 之间插入 TRCD 延迟（行到列延迟）</li>
+<li>TRP 和 TRCD 参数由 FMC_SDTRx 寄存器配置。</li>
+</ul>
+<p>控制器在跨行访问时自动完成行关闭和新行激活，并保证满足 SDRAM 时序要求。</p>
+<h5 id="2-4-4-Bank-边界管理-Bank-boundary-management"><a href="#2-4-4-Bank-边界管理-Bank-boundary-management" class="headerlink" title="2.4.4 Bank 边界管理 (Bank boundary management)"></a>2.4.4 Bank 边界管理 (Bank boundary management)</h5><p>当访问跨越 Bank 边界时，控制器会激活下一个 Bank 的第一行并发起新的读&#x2F;写命令。</p>
+<p>两种情况：</p>
+<ul>
+<li>当前 Bank 不是最后一个 → 新 Bank 的第一行必须先预充电，然后激活，再执行读&#x2F;写。自动行切换在所有配置下都支持。</li>
+<li>当前 Bank 是最后一个 → 自动行切换只在特定配置下支持：<ul>
+<li>行地址 13 位</li>
+<li>列地址 11 位</li>
+<li>内部 4 Bank</li>
+<li>总线宽度 32 位</li>
+<li>否则地址范围越界，产生 AXI 错误。</li>
+<li>在满足上述条件时，控制器会继续访问第二片 SDRAM（假设已初始化）：<ul>
+<li>如果第一行未激活 → 先预充电，再激活，再读&#x2F;写。</li>
+<li>如果第一行已激活 → 直接读&#x2F;写。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>跨 Bank 时，控制器自动切换到下一个 Bank 的第一行；在最后一个 Bank 时，只有在特定配置下才能继续访问第二片 SDRAM，否则报错。</p>
+<h5 id="2-4-5-刷新周期-Refresh-cycle"><a href="#2-4-5-刷新周期-Refresh-cycle" class="headerlink" title="2.4.5 刷新周期 (Refresh cycle)"></a>2.4.5 刷新周期 (Refresh cycle)</h5><p>SDRAM 数据需要周期性刷新。控制器会自动发出 Auto-refresh 命令。</p>
+<p>刷新周期由 FMC_SDRTR 寄存器中的 COUNT 值决定（即多少个时钟周期触发一次刷新）。当计数器归零时，产生刷新请求。</p>
+<p>刷新优先级：</p>
+<ul>
+<li>如果正在访问内存，刷新请求会延迟。</li>
+<li>如果访问和刷新同时发生，刷新优先。</li>
+<li>如果访问在刷新期间到来 → 请求会缓存，刷新完成后再执行。</li>
+</ul>
+<p>如果新的刷新请求到来时上一个还没完成 → 设置 RE (Refresh Error) 位，并触发中断（如果 REIE&#x3D;1）。</p>
+<p>如果 SDRAM 行未关闭（仍有激活行），控制器会先发 PALL (Precharge All) 命令，再执行刷新。</p>
+<p>如果通过 FMC_SDCMR 手动发出 Auto-refresh 命令 (MODE&#x3D;011)，必须先发 PALL 命令 (MODE&#x3D;010)。</p>
+<p>刷新由控制器自动管理，优先级高于普通访问，必要时会先关闭所有行。</p>
+<h5 id="2-4-6低功耗模式-Low-power-modes"><a href="#2-4-6低功耗模式-Low-power-modes" class="headerlink" title="2.4.6低功耗模式 (Low-power modes)"></a>2.4.6低功耗模式 (Low-power modes)</h5><p>控制器支持两种低功耗模式：自刷新模式和掉电模式</p>
+<p><strong>自刷新模式 (Self-refresh mode)</strong>:</p>
+<p>由 SDRAM 芯片自身执行刷新，不需要外部时钟。<br>进入方式：设置 MODE&#x3D;101，并配置 CTB1&#x2F;CTB2。在 TRAS 延迟后，SDRAM 时钟停止，内部刷新计数器也停止。进入前，控制器会自动发 PALL（Precharge All） 命令。</p>
+<p>如果写 FIFO 未空 → 必须先写完再进入 Self-refresh。<br>在 Self-refresh 模式下，除了 SDCKE 保持低电平，其他输入都无效。</p>
+<p>SDRAM 必须至少保持 Self-refresh 一个 TRAS 时间，可以无限延长。BUSY 标志在 TRAS 延迟期间保持高电平。</p>
+<p>退出方式：设置 MODE&#x3D;000 (Normal)，并配置 CTB1&#x2F;CTB2 → 控制器发出退出命令，设备回到正常模式。</p>
+<p>Self-refresh 是由 SDRAM 芯片自己完成刷新，适合长时间低功耗。</p>
+<p><strong>掉电模式 (Power-down mode)</strong><br>由 SDRAM 控制器负责刷新。<br>进入方式：设置 MODE&#x3D;110，并配置 CTB1&#x2F;CTB2。</p>
+<p>如果写 FIFO 未空 → 必须先写完再进入。<br>在掉电模式下，除了 SDCKE 保持低电平，其他输入&#x2F;输出缓冲关闭。</p>
+<p>SDRAM 芯片不能自己刷新，必须由控制器定期退出掉电模式执行刷新：</p>
+<ul>
+<li>退出掉电模式，SDCKE 拉高</li>
+<li>如果有激活行 → 发 PALL 命令</li>
+<li>发 Auto-refresh 命令</li>
+<li>SDCKE 拉低，重新进入掉电模式</li>
+</ul>
+<p>退出方式：设置 MODE&#x3D;000 (Normal)，并配置 CTB1&#x2F;CTB2。</p>
+<p>Power-down 模式的意义：提供一种 快速进入&#x2F;退出的低功耗状态，由控制器负责刷新，适合短时间低功耗，但不能长时间保持。<br>Self-refresh 模式：功耗最低，但进入&#x2F;退出开销大，适合长时间休眠。</p>
+<h3 id="3-stm32h747-使用-FMC-访问-SDRAM"><a href="#3-stm32h747-使用-FMC-访问-SDRAM" class="headerlink" title="3 stm32h747 使用 FMC 访问 SDRAM"></a>3 stm32h747 使用 FMC 访问 SDRAM</h3><p>1：使能 FMC 模块时钟，相关引脚功能配置为 FMC 模式。</p>
+<p>2：设置FMC_SDCR寄存器，配置：sdram的时钟频率、行地址位数、列地址位数、数据宽度、CAS延迟时间、内部bank数量。配置参数如下：针对当前使用的 IS42S32800J-6BLI</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">hSdram-&gt;Init.SDBank             = FMC_SDRAM_BANK2;  // 使用FMC中的 bank2 来访问外挂的sdram</span><br><span class="line">hSdram-&gt;Init.ColumnBitsNumber   = FMC_SDRAM_COLUMN_BITS_NUM_9; // sdram的列地址位数为9</span><br><span class="line">hSdram-&gt;Init.RowBitsNumber      = FMC_SDRAM_ROW_BITS_NUM_12; // sdram的行地址位数为12</span><br><span class="line">hSdram-&gt;Init.MemoryDataWidth    = FMC_SDRAM_MEM_BUS_WIDTH_32; // sdram的数据宽度为32位</span><br><span class="line">hSdram-&gt;Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4; // sdram的内部bank数量为4</span><br><span class="line">hSdram-&gt;Init.CASLatency         = FMC_SDRAM_CAS_LATENCY_3; // sdram的CAS延迟时间为3</span><br><span class="line">hSdram-&gt;Init.WriteProtection    = FMC_SDRAM_WRITE_PROTECTION_DISABLE;</span><br><span class="line">hSdram-&gt;Init.SDClockPeriod      = FMC_SDRAM_CLOCK_PERIOD_2; // 当前下SDRAM时钟的频率100MHz</span><br><span class="line">hSdram-&gt;Init.ReadBurst          = FMC_SDRAM_RBURST_ENABLE; // 允许读突发，用于FMC控制器预读外部sdram中的数据，放在FMC内部fifo中。</span><br><span class="line">hsdram-&gt;Init.ReadPipeDelay      = FMC_SDRAM_RPIPE_DELAY_0; // 读管道延迟为0，实际读延迟为 CAS + 该延迟。</span><br></pre></td></tr></table></figure>
+
+<p>3：设置FMC_SDTR寄存器，配置相关时序参数。</p>
+<p>当前使用的 IS42S32800J-6BLI，速率等级为 -6 ，要求的时序参数如下图：<br><img src="/2025/12/23/stm32h747-FMC-SDRAM/sdram-timing.png"></p>
+<p>当前配置 IS42S32800J-6BLI 使用100MHz时钟，时序参数配置如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sdram_timing.LoadToActiveDelay    = 2; // TMRD</span><br><span class="line">sdram_timing.ExitSelfRefreshDelay = 7; // TXSR</span><br><span class="line">sdram_timing.SelfRefreshTime      = 4; // TRAS</span><br><span class="line">sdram_timing.RowCycleDelay        = 7; // TRC</span><br><span class="line">sdram_timing.WriteRecoveryTime    = 2; // TWR</span><br><span class="line">sdram_timing.RPDelay              = 2; // TRP</span><br><span class="line">sdram_timing.RCDDelay             = 2; // TRCD</span><br></pre></td></tr></table></figure>
+
+
+<p>4: 初始化外部SDRAM，规范流程见 IS42S32800J-6BLI 芯片手册描述：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">上电，保持 CKE=High，DQM=High，时钟稳定。</span><br><span class="line">等待 ≥100 µs</span><br><span class="line">发 PRECHARGE ALL 命令。</span><br><span class="line">发至少两次 AUTO REFRESH 命令。</span><br><span class="line">发 LOAD MODE REGISTER 命令，配置突发长度、CAS 延迟等。</span><br></pre></td></tr></table></figure>
+
+<p>具体到stm32h747中的代码实现：</p>
+<ul>
+<li>通过 FMC_SDCMR（SDRAM Command mode register）寄存器设置 Clock Configuration Enable 命令，让FMC能输出驱动SDRAM的时钟。</li>
+<li>执行一个超过100us的延迟</li>
+<li>通过 FMC_SDCMR 寄存器设置发送 PRECHARGE ALL 命令。</li>
+<li>通过 FMC_SDCMR 寄存器设置发送 大于 2 次的 AUTO REFRESH 命令</li>
+<li>通过 FMC_SDCMR 寄存器设置发送 LOAD MODE REGISTER 命令，并配置 CAS 延迟、突发长度、写突发、操作模式等参数。</li>
+<li>设置刷新率，确保 SDRAM 在运行过程中能周期性刷新，避免数据丢失。通过寄存器FMC_SDRTR 中的 COUNT （以内存时钟周期数为单位）来配置刷新率。以IS42S32800J-6BLI 为例：<br>4096 次刷新 &#x2F; 64ms ——&gt; 每15.625us 需要刷新一行。<br>当前配置的SDRAM 时钟为100MHz，即内存时钟周期为10ns，<br>因此 COUNT &#x3D; 15.625us &#x2F; 10ns &#x3D; 1562.5，手册要求再减去 20（以确保安全裕度）。</li>
+</ul>
+<p>备注信息：<br>IS42S32800J-6BLI 手册中的部分描述：<br>Operating Mode：The normal operating mode is selected by setting M7 and M8  to zero; the other combinations of values for M7 and M8 are  reserved for future use and&#x2F;or test modes. The programmed  burst length applies to both READ and WRITE bursts. Test modes and reserved states should not be used because unknown operation or incompatibility with future versions may result.</p>
+<p>突发写 (Burst Write)：适合 DMA、大块数据写入。</p>
+<ul>
+<li>行为：一次写命令触发一个完整的突发周期（长度由 Mode Register 的 Burst Length 决定，比如 4、8 或整页）。</li>
+<li>时序：控制器只发一次写命令，SDRAM 芯片自动在后续时钟周期里接收连续的数据字。地址自动递增（顺序或交错）。</li>
+<li>效率：总线利用率高：一次命令传输多个字。</li>
+<li>缺点：如果应用只写少量字节，必须用 DQM 掩码屏蔽掉不需要的部分，浪费时钟周期。</li>
+</ul>
+<p>独立写命令 (Single Write, M9&#x3D;1)：适合 CPU 程序里频繁的小数据写入（比如更新某个变量）。</p>
+<ul>
+<li>行为：每次写命令只写一个字（x32 SDRAM → 4 字节），不触发突发。</li>
+<li>时序：控制器需要为每个字单独发写命令。SDRAM 芯片每次只接收一个字，地址不会自动递增。</li>
+<li>效率：总线利用率低，每个字都要重新发命令。</li>
+<li>缺点：连续写大块数据时效率差，因为命令开销大。</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>[1] STM32H7xx Reference Manual, RM0399</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/" title="stm32h747 FMC-SDRAM">http://fengxun2017.github.io/2025/12/23/stm32h747-FMC-SDRAM/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/12/21/stm32h747-DMAMUX/" rel="prev" title="stm32h747 DMAMUX">
+                  <i class="fa fa-chevron-left"></i> stm32h747 DMAMUX
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/01/30/cc-learning-what-is-code-assistant/" rel="next" title="What is a coding assistant?">
+                  What is a coding assistant? <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">676k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">14:06</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

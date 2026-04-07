@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="使用 stm32H747 中的 LTDC 和 DSI 模块，控制 LCD 屏。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stm32h747-LTDC-DSI">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="使用 stm32H747 中的 LTDC 和 DSI 模块，控制 LCD 屏。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/LTDC-block-diagram.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/ltdc-sync-timing.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/frame-timing.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/layer-window.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/blending-layer.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/support-pixel-clock.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/dsi-block.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/dsi-host-arch.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/16bpp-apb-orgainization.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/LPSIZE.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/VLPSIZE.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/LPSIZE-VLPSIZE-Location.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/color-bar.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/ber-pattern.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/dsi-pll.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/ltdc-dsi-clock.png">
+<meta property="article:published_time" content="2025-12-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-14T14:55:37.473Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/LTDC-block-diagram.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/","path":"2025/12/12/stm32h747-LTDC-DSI/","title":"stm32h747-LTDC-DSI"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>stm32h747-LTDC-DSI | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E6%98%BE%E7%A4%BA%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.</span> <span class="nav-text">常见显示接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#STM32H747-LTDC-LCD-TFT-display-controller"><span class="nav-number">2.</span> <span class="nav-text">STM32H747 LTDC (LCD-TFT display controller)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LCD-%E5%90%8C%E6%AD%A5%E6%97%B6%E5%BA%8F"><span class="nav-number">2.1.</span> <span class="nav-text">LCD 同步时序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Dithering%EF%BC%88%E6%8A%96%E5%8A%A8%EF%BC%89"><span class="nav-number">2.2.</span> <span class="nav-text">Dithering（抖动）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reload-Shadow-Registers%EF%BC%88%E5%BD%B1%E5%AD%90%E5%AF%84%E5%AD%98%E5%99%A8%E9%87%8D%E8%BD%BD%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">Reload Shadow Registers（影子寄存器重载）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%BE%E5%B1%82-Layer-%E7%AE%A1%E7%90%86"><span class="nav-number">2.4.</span> <span class="nav-text">图层 (Layer) 管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LTDC-%E5%AF%B9%E5%AD%98%E5%82%A8%E5%B8%A6%E5%AE%BD%E7%9A%84%E8%A6%81%E6%B1%82"><span class="nav-number">2.5.</span> <span class="nav-text">LTDC 对存储带宽的要求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#LTDC-%E8%AE%BE%E7%BD%AE%E6%B5%81%E7%A8%8B"><span class="nav-number">2.6.</span> <span class="nav-text">LTDC 设置流程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#STM32H747-DSI-Host"><span class="nav-number">3.</span> <span class="nav-text">STM32H747 DSI Host</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0%EF%BC%9ALTDC-%E6%8E%A5%E5%8F%A3%E5%9C%A8%E8%A7%86%E9%A2%91%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">3.1.</span> <span class="nav-text">功能描述：LTDC 接口在视频模式下的作用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E4%BC%A0%E8%BE%93%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.1.1.</span> <span class="nav-text">视频传输模式</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0%EF%BC%9A%E9%80%82%E7%94%A8%E4%BA%8E-LTDC-%E6%8E%A5%E5%8F%A3%E7%9A%84%E9%80%82%E9%85%8D%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="nav-number">3.2.</span> <span class="nav-text">功能描述：适用于 LTDC 接口的适配命令模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E6%A8%A1%E5%BC%8F-%E5%92%8C-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%E5%8C%BA%E5%88%AB%EF%BC%9A"><span class="nav-number">3.3.</span> <span class="nav-text">视频模式 和 命令模式区别：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0%EF%BC%9AAPB-%E4%BB%8E%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.4.</span> <span class="nav-text">功能描述：APB 从接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0%EF%BC%9ADSI-Host-%E7%9A%84%E8%B6%85%E6%97%B6%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">3.5.</span> <span class="nav-text">功能描述：DSI Host 的超时计数器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BA%89%E7%94%A8%E9%94%99%E8%AF%AF%E6%A3%80%E6%B5%8B%E8%B6%85%E6%97%B6%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">3.5.1.</span> <span class="nav-text">争用错误检测超时计数器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%96%E8%AE%BE%E5%93%8D%E5%BA%94%E8%B6%85%E6%97%B6%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">3.5.2.</span> <span class="nav-text">外设响应超时计数器</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0%EF%BC%9A%E5%91%BD%E4%BB%A4%E4%BC%A0%E8%BE%93"><span class="nav-number">3.6.</span> <span class="nav-text">功能描述：命令传输</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BD%8E%E5%8A%9F%E8%80%97%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E5%91%BD%E4%BB%A4%E4%BC%A0%E8%BE%93"><span class="nav-number">3.6.1.</span> <span class="nav-text">低功耗模式下的命令传输</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0%EF%BC%9A%E8%99%9A%E6%8B%9F%E9%80%9A%E9%81%93"><span class="nav-number">3.7.</span> <span class="nav-text">功能描述：虚拟通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0%EF%BC%9A%E8%A7%86%E9%A2%91%E6%A8%A1%E5%BC%8F%E5%9B%BE%E6%A1%88%E5%8F%91%E7%94%9F%E5%99%A8"><span class="nav-number">3.8.</span> <span class="nav-text">功能描述：视频模式图案发生器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0%EF%BC%9AD-PHY-%E7%AE%A1%E7%90%86"><span class="nav-number">3.9.</span> <span class="nav-text">功能描述：D-PHY 管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E6%8F%8F%E8%BF%B0%EF%BC%9A%E4%B8%AD%E6%96%AD%E4%B8%8E%E9%94%99%E8%AF%AF"><span class="nav-number">3.10.</span> <span class="nav-text">功能描述：中断与错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Programing-procedure"><span class="nav-number">3.11.</span> <span class="nav-text">Programing procedure</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LCD-%E9%A9%B1%E5%8A%A8-IC-%E2%80%94%E2%80%94-NT35510"><span class="nav-number">4.</span> <span class="nav-text">LCD 驱动 IC —— NT35510</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#STM32H747-%E6%8E%A7%E5%88%B6-TFT-LCD-%E6%98%BE%E7%A4%BA%E5%9B%BE%E5%83%8F-%EF%BC%88%E9%80%9A%E8%BF%87-LTDC-DSI%EF%BC%89"><span class="nav-number">5.</span> <span class="nav-text">STM32H747 控制 TFT-LCD 显示图像 （通过 LTDC + DSI）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E6%97%B6%E5%BA%8F%E5%9B%BE"><span class="nav-number">5.1.</span> <span class="nav-text">整体时序图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DMA2D%E8%BD%AC%E6%8D%A2%E8%AF%A6%E7%BB%86%E6%97%B6%E5%BA%8F"><span class="nav-number">5.2.</span> <span class="nav-text">DMA2D转换详细时序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%B1%8F%E5%88%B7%E6%96%B0%E8%AF%A6%E7%BB%86%E6%97%B6%E5%BA%8F"><span class="nav-number">5.3.</span> <span class="nav-text">分屏刷新详细时序</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="stm32h747-LTDC-DSI | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          stm32h747-LTDC-DSI
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-12-12 00:00:00" itemprop="dateCreated datePublished" datetime="2025-12-12T00:00:00+08:00">2025-12-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>22k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>28 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+使用 stm32H747 中的 LTDC 和 DSI 模块，控制 LCD 屏。
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h3 id="常见显示接口"><a href="#常见显示接口" class="headerlink" title="常见显示接口"></a>常见显示接口</h3><p>MIPI-DBI（Display Bus Interface）：</p>
+<ul>
+<li>MIPI联盟发布的第一个显示标准</li>
+<li>支持串行（SPI）,并行（于Motorola 6800总线，Intel 8080总线）</li>
+<li>串行接口信号：CS, SCK, MOSI, MISO, DC（Data&#x2F;Command），线数少，速率较低，适合小尺寸SPI屏。</li>
+<li>并行接口信号：D[0..7] &#x2F; D[0..15] &#x2F; D[0..23]，CSX（片选），RS&#x2F;DCX（数据&#x2F;命令选择），WRX（写使能），RDX（读使能）等。数据总线宽，传输速率高，常用于中分辨率屏</li>
+</ul>
+<p>MIPI-DPI（Display Pixel Interface）：</p>
+<ul>
+<li>RGB 并行接口</li>
+<li>信号：R&#x2F;G&#x2F;B 数据线 (16&#x2F;18&#x2F;24 位) + HSYNC + VSYNC + DE + PCLK</li>
+<li>特点：引脚较多，但时序简单。适合中分辨率 TFT LCD (480×272, 800×480, 1024×600 等)。</li>
+<li>示例屏幕：7英寸 TFT LCD 800×480，RGB 并行接口</li>
+</ul>
+<p>MIPI‑DSI（Display Serial Interface）：</p>
+<ul>
+<li>串行差分接口</li>
+<li>信号：1–4 对数据差分线 + 1 对时钟差分线，RESET, BL_EN（背光）</li>
+<li>特点：高速串行接口，适合高分辨率屏 (1080p、2K)。引脚少，但需要专用 DSI 屏。</li>
+<li>示例屏幕：手机用 5英寸 AMOLED 1080p，MIPI‑DSI 接口；平板用 8英寸 IPS LCD 1200×1920，MIPI‑DSI 接口</li>
+</ul>
+<h3 id="STM32H747-LTDC-LCD-TFT-display-controller"><a href="#STM32H747-LTDC-LCD-TFT-display-controller" class="headerlink" title="STM32H747 LTDC (LCD-TFT display controller)"></a>STM32H747 LTDC (LCD-TFT display controller)</h3><p>LTDC 是 STM32 系列中的 硬件显示控制器模块，它负责把 MCU 内存中的图像数据转换成并行 RGB 信号，以及HSYNC、VSYNC、像素时钟等信号。</p>
+<p>主要特性：</p>
+<ul>
+<li>24‑bit RGB 并行输出（RGB888，每个颜色 8 位）。</li>
+<li>双图层，支持两个显示层叠加。每层有独立的 FIFO 缓冲 (64×64‑bit)，保证数据流畅</li>
+<li>颜色查找表 (CLUT)：每层可定义最多 256 种颜色（每色 24 位）。</li>
+<li>HSYNC&#x2F;VSYNC&#x2F;DE(data enable)极性可编程，以适配不同 LCD 面板的行&#x2F;列时序。可编程背景色。</li>
+<li>支持多种输入像素格式，灵活适配不同图像源：ARGB8888、RGB888、RGB565、L8（亮度或查表颜色）、AL44（4 位 Alpha + 4 位亮度）等。</li>
+</ul>
+<p><img src="/2025/12/12/stm32h747-LTDC-DSI/LTDC-block-diagram.png"></p>
+<h4 id="LCD-同步时序"><a href="#LCD-同步时序" class="headerlink" title="LCD 同步时序"></a>LCD 同步时序</h4><p>对于 RGB 并行接口输出，LTDC 输出的有效区域由下图中的时序信号决定：<br><img src="/2025/12/12/stm32h747-LTDC-DSI/ltdc-sync-timing.png"></p>
+<p>图中的这些参数本质上就是 LCD 面板的时序配置，对应于标准的显示扫描结构：</p>
+<ul>
+<li>HSYNC&#x2F;VSYNC：同步脉冲，用来告诉面板一行&#x2F;一帧的开始。</li>
+<li>Back Porch (HBP&#x2F;VBP)：同步脉冲之后的空白区，给面板留缓冲时间。</li>
+<li>Active Area：真正显示像素的区域。</li>
+<li>Front Porch (HFP&#x2F;VFP)：显示区之后的空白区，保证时序完整。</li>
+<li>Total Width&#x2F;Height：一行&#x2F;一帧的总周期长度 &#x3D; 同步脉冲 + 后沿 + 有效区 + 前沿。</li>
+</ul>
+<p><img src="/2025/12/12/stm32h747-LTDC-DSI/frame-timing.png"></p>
+<p>通过LTDC_GCR寄存器可将水平&#x2F;垂直同步信号、数据使能信号及像素时钟输出信号的极性设置为高电平有效或低电平有效。该极性设置需要和控制的LCD 面板进行匹配。</p>
+<h4 id="Dithering（抖动）"><a href="#Dithering（抖动）" class="headerlink" title="Dithering（抖动）"></a>Dithering（抖动）</h4><p>背景：LTDC 内部处理的是 24 位颜色数据 (RGB888)，但有些 LCD 面板只能显示 18 位颜色 (RGB666)。直接截断会导致颜色层次不够平滑，出现明显的色阶。</p>
+<p>解决方法：LTDC 提供 伪随机抖动 (Dithering) 技术，用 LFSR（线性反馈移位寄存器） 生成随机阈值，对像素的低位进行比较和修正：</p>
+<ul>
+<li>每个颜色通道（R&#x2F;G&#x2F;B）有 8 位。</li>
+<li>面板只能显示 6 位时，低 2 位（LSB）会被丢弃。</li>
+<li>LTDC 用随机阈值比较 LSB：<ul>
+<li>如果 LSB ≥ 阈值，就把 MSB 部分加 1（相当于四舍五入）。</li>
+<li>如果 LSB &lt; 阈值，就保持原 MSB 部分的值。</li>
+</ul>
+</li>
+</ul>
+<p>这样不同帧的像素会有轻微随机差异，视觉上更平滑。</p>
+<h4 id="Reload-Shadow-Registers（影子寄存器重载）"><a href="#Reload-Shadow-Registers（影子寄存器重载）" class="headerlink" title="Reload Shadow Registers（影子寄存器重载）"></a>Reload Shadow Registers（影子寄存器重载）</h4><p>背景问题：LTDC 有很多配置寄存器（各图层的窗口大小、颜色格式等）。如果直接修改这些寄存器，可能会在显示过程中产生“撕裂”或不一致。</p>
+<p>解决方法：LTDC 使用 影子寄存器 (Shadow Registers) 机制：</p>
+<p>影子寄存器：</p>
+<ul>
+<li>写入时，先写到影子寄存器。</li>
+<li>真正生效时，需要触发 Reload，把影子寄存器的值复制到活动寄存器。</li>
+</ul>
+<p>两种 Reload 方式：通过寄存器 LTDC_SRCR 控制</p>
+<ul>
+<li>立即重载：写完所有新值后，立刻触发 Reload。</li>
+<li>垂直消隐期重载：在下一帧的垂直消隐期自动更新，避免显示撕裂。</li>
+</ul>
+<p>读取影子寄存器时，返回的是当前活动值。只有 Reload 完成后，才能读到新值。可以配置 Reload 完成中断（LTDC_IER），方便 MCU 知道更新已生效。</p>
+<p>所有 Layer1&#x2F;Layer2 的寄存器都是影子寄存器，除了 CLUT 写寄存器 (LTDC_LxCLUTWR)。</p>
+<h4 id="图层-Layer-管理"><a href="#图层-Layer-管理" class="headerlink" title="图层 (Layer) 管理"></a>图层 (Layer) 管理</h4><p>LTDC 最多支持 两个图层，可以分别启用、禁用和独立配置。<br>每个图层需要配置：</p>
+<ul>
+<li>帧缓冲起始地址，通过 LTDC_LxCFBAR 寄存器配置，图层启用时，LTDC 会从这个地址开始读取图像数据。</li>
+<li>行长度 (line length)：一行的字节数，通过 LTDC_LxCFBLR 设置。</li>
+<li>行数 (number of lines)：帧缓冲的总行数，通过 LTDC_LxCFBLNR 设置。</li>
+<li>作用：告诉 LTDC 在帧缓冲中什么时候停止预取数据。<br>如果设置的字节数 少于实际需要 → 会触发 FIFO underrun 中断（如果启用）<br>如果设置的字节数 多于实际需要 → 多余的数据会被丢弃，不会显示。</li>
+</ul>
+<p>图层的显示顺序是 自下而上：Layer1 在底层，Layer2 在上层。</p>
+<p>窗口 (Windowing)：</p>
+<ul>
+<li>每个图层都可以设置 位置和大小，但必须位于整个显示的有效区域内。</li>
+<li>窗口位置和大小通过 左上角坐标和右下角坐标来定义。<br>LTDC_LxWHPCR：设置水平起始&#x2F;结束像素位置。<br>LTDC_LxWVPCR：设置垂直起始&#x2F;结束行位置。<br>这样可以显示整幅图像，也可以只显示图像的一部分（裁剪窗口）。<br><img src="/2025/12/12/stm32h747-LTDC-DSI/layer-window.png"></li>
+</ul>
+<p>像素输入格式 (Pixel Input Format)：</p>
+<ul>
+<li>每个图层的帧缓冲数据格式可以单独配置。</li>
+<li>支持 8 种输入像素格式，通过 LTDC_LxPFCR 寄存器选择。</li>
+<li>LTDC 会把输入数据转换为内部统一的 ARGB8888 格式：</li>
+<li>如果某个通道少于 8 位，会通过 位复制扩展到 8 位。例如：RGB565 的红色通道只有 5 位 → 扩展成 8 位：43210-&gt;43210432（把高位置值重复填充低位置）。</li>
+</ul>
+<p>颜色查找表 (CLUT, Color Look-Up Table)：</p>
+<ul>
+<li>每个图层都有一个自己的颜色查找表，CLUT 是一种 索引颜色机制，只在使用 L8、AL44、AL88 格式时有用。</li>
+<li>工作方式：帧缓冲里存储的不是直接的 RGB 值，而是一个 索引值。LTDC 根据索引去查 CLUT 表，得到对应的 RGB 值。</li>
+<li>CLUT 表需要提前加载，每个索引对应一个 RGB 颜色。<br>通过寄存器 LTDC_LxCLUTWR，写入 CLUT 表项，每个颜色有一个地址 (CLUTADD)，对应表中的位置。</li>
+</ul>
+<p>CLUT 可以节省显存，用较小的索引代替完整的 RGB 值，适合调色板类应用。</p>
+<p>Layer blending（图层混合）：</p>
+<ul>
+<li>混合功能始终启用。</li>
+<li>两个图层可以根据 LTDC_LxBFCR 寄存器中的混合因子进行叠加。</li>
+<li>混合顺序固定：Layer1 与背景色混合。Layer2 再与 Layer1+背景的结果混合。</li>
+<li>背景颜色设置：通过LTDC_BCCR寄存器可编程为恒定背景颜色（RGB888），该颜色用于与底层图像进行混合显示。</li>
+</ul>
+<p><img src="/2025/12/12/stm32h747-LTDC-DSI/blending-layer.png"></p>
+<p>Default color（默认颜色）:每个图层可以通过 LTDC_LxDCCR 寄存器设置一个 默认颜色 (ARGB)，用于：图层窗口之外的区域。或图层被禁用时。<br>注意：<strong>即使图层禁用，混合仍然会进行。如果不想显示默认颜色，需要把该图层的混合因子保持在复位值。</strong></p>
+<p>Color keying（颜色键控）：<br>可以设置一个 颜色键 (RGB)，代表透明像素。启用后，LTDC 会在 像素格式转换到 ARGB8888 之后，比较当前像素与颜色键：</p>
+<ul>
+<li>如果匹配 → 该像素的所有通道 (ARGB) 置为 0，即透明。</li>
+<li>配置寄存器：LTDC_LxCKCR。</li>
+<li>使用场景：在图像中指定某种颜色作为透明背景。</li>
+</ul>
+<h4 id="LTDC-对存储带宽的要求"><a href="#LTDC-对存储带宽的要求" class="headerlink" title="LTDC 对存储带宽的要求"></a>LTDC 对存储带宽的要求</h4><p>LTDC所需带宽主要取决于三个因素：</p>
+<ul>
+<li>所用LTDC层数</li>
+<li>LTDC层色深（每个像素的位数）</li>
+<li>像素时钟：长度 * 宽度 * 帧率</li>
+</ul>
+<p>像素时钟越大，则 LTDC 读取数据的所需带宽就越高。<br>通常，位于内部RAM中的小尺寸帧缓冲区不需要高带宽。因为小尺寸帧缓冲区意味着低像素时钟，因此LTDC所需带宽较低。</p>
+<p>更大尺寸的图形应用，会使用外部 SDRAM 存储器作为帧缓冲器。通常外部 SDRAM 存储器通常由多个主设备共享，即外部SDRAM 的存储带宽，一般由 LTDC 和多个主设备共享。而多个主设备在同一外部存储器上并行访问，会导致更多延迟并影响存储器吞吐量。</p>
+<p>下图是 STM32H747 上，在给定 SDRAM 的带宽下，LTDC 允许的最大像素时钟参考：<br><img src="/2025/12/12/stm32h747-LTDC-DSI/support-pixel-clock.png"><br>例如，图中在 110MHz 工作频率下，32 位 SDRAM 理论峰值带宽为 110MHz*32&#x2F;8 &#x3D; 440MB&#x2F;s。一般大批量顺序续数据读取，带宽一般可以接近峰值（80–90%），而大量随机访问（sdram内部频繁换行），带宽一般可以下降到40–60%。<br>LTDC 从图像缓冲区读取数据，属于大批量顺序访问，因此这里在使用 1层，bpp&#x3D;32的条件下，LTDC允许最大设置到93MHz (存储带宽需求：93 * 32&#x2F;8 &#x3D; 372MB&#x2F;s)</p>
+<h4 id="LTDC-设置流程"><a href="#LTDC-设置流程" class="headerlink" title="LTDC 设置流程"></a>LTDC 设置流程</h4><p>使能LTDC时钟<br>配置像素时钟<br>配置同步时序<br>配置同步信号极性<br>配置背景颜色<br>配置中断（如需要）<br>配置层参数，使能层<br>配置抖动&#x2F;颜色键（如需要）<br>加载阴影寄存器<br>使能LTDC控制器         </p>
+<h3 id="STM32H747-DSI-Host"><a href="#STM32H747-DSI-Host" class="headerlink" title="STM32H747 DSI Host"></a>STM32H747 DSI Host</h3><p>MIPI DSI（Display Serial Interface） 是由 MIPI 联盟定义的一组显示通信协议之一。<br>DSI Host 控制器 是一个数字核心，负责实现 MIPI DSI 规范中的所有协议功能。它提供了系统与 MIPI D-PHY (支持DDR模式，上、下边沿都传输数据)之间的接口，使主机能够与符合 DSI 标准的显示器通信。</p>
+<p>DSI Host 包含专用的视频接口（内部连接到 LTDC），以及一个通用的 APB 接口，用于向显示器传输信息。</p>
+<ul>
+<li>LTDC 接口：负责像素流传输（视频模式），也能在定制模式下支持命令模式的大数据传输。</li>
+<li>APB 接口：负责命令和寄存器级别的控制信息传输，可以与 LTDC 并行。</li>
+<li>图案发生器：提供内置测试图案和链路测试功能，方便调试。</li>
+</ul>
+<p>总的来说，DSI Host 就是一个桥梁：</p>
+<ul>
+<li>LTDC → DSI Host → D-PHY → 显示屏（传输图像数据）</li>
+<li>APB → DSI Host → D-PHY → 显示屏（传输命令&#x2F;控制信息）</li>
+</ul>
+<p><img src="/2025/12/12/stm32h747-LTDC-DSI/dsi-block.png"></p>
+<p>DSI Host 系统架构组成部分如下图所示：</p>
+<p><img src="/2025/12/12/stm32h747-LTDC-DSI/dsi-host-arch.png"></p>
+<p>各部分功能概括：</p>
+<ul>
+<li><p>DSI Wrapper：负责 LTDC 与 DSI Host 内核之间的接口适配。功能包括：</p>
+<ul>
+<li>颜色模式转换。</li>
+<li>信号极性调整。</li>
+<li>撕裂效应 (TE) 管理：在命令模式下自动更新帧缓冲。</li>
+<li>控制 DSI 电源调节器、DSI PLL 以及 MIPI D-PHY 的特定功能。</li>
+</ul>
+</li>
+<li><p>LTDC 接口捕获来自 LTDC 的数据和控制信号。将这些信号送入两个 FIFO（一个用于视频控制信号，一个用于像素数据）然后根据模式生成：</p>
+<ul>
+<li>视频包 (Video Packets) → 视频模式下使用。</li>
+<li>memory_write_start &#x2F; memory_write_continue DCS 命令 → 命令模式下使用。</li>
+</ul>
+</li>
+<li><p>寄存器库 (Register Bank)：通过 AMBA-APB 从接口访问，用于配置和控制 DSI Host 寄存器。提供 可编程中断发生器，用于通知系统特定事件。</p>
+</li>
+<li><p>PHY 接口控制：用于管理 MIPI D-PHY 接口，功能包括：</p>
+<ul>
+<li>确认当前操作模式。</li>
+<li>启用低功耗传输&#x2F;接收或高速传输。</li>
+<li>在高速传输时，将数据分配到可用的 D-PHY 数据通道。</li>
+</ul>
+</li>
+<li><p>数据包处理器 (Packet Handler)：负责调度链路内部的活动。根据当前接口和视频传输模式（突发模式 &#x2F; 非突发模式 + 同步脉冲&#x2F;事件）执行功能。构建长包或短包，并生成对应的 ECC 和 CRC 校验码。其他功能包括：</p>
+<ul>
+<li>接收数据包。</li>
+<li>数据校验、错误通知</li>
+<li>根据虚拟通道 ID，将接收到的数据路由到对应端口。</li>
+</ul>
+</li>
+<li><p>APB-to-Generic 模块，用于将 APB 操作桥接到保存通用命令的 FIFO，包括：</p>
+<ul>
+<li>命令 FIFO。</li>
+<li>写入负载 FIFO。</li>
+<li>读取负载 FIFO。</li>
+</ul>
+</li>
+<li><p>错误管理 (Error Management)</p>
+<ul>
+<li>负责通知和监控 DSI 链路上的错误情况。</li>
+<li>控制定时器，用于判断是否发生超时。</li>
+<li>在错误情况下执行内部软复位，并触发中断通知。</li>
+</ul>
+</li>
+</ul>
+<h4 id="功能描述：LTDC-接口在视频模式下的作用"><a href="#功能描述：LTDC-接口在视频模式下的作用" class="headerlink" title="功能描述：LTDC 接口在视频模式下的作用"></a>功能描述：LTDC 接口在视频模式下的作用</h4><p>LTDC 接口捕获数据和控制信号，并将它们送入 FIFO，再通过 DSI 链路传输。</p>
+<p>接口上存在两类数据流：</p>
+<ul>
+<li>视频控制信号（VSYNC、HSYNC 等）。</li>
+<li>像素数据。</li>
+</ul>
+<p>像素数据在 LTDC 总线上如何分布，取决于接口的颜色编码方式（如 16 位、18 位、24 位 RGB）。</p>
+<p>LTDC 接口的配置选项</p>
+<ul>
+<li>极性控制 (Polarity Control)</li>
+<li>所有控制信号的极性可编程，以适配不同的 LTDC 配置。</li>
+<li>复位后的启动条件：在核心复位后，DSI Host 会等待 第一次 VSYNC 有效跳变，才开始采样信号（包括像素数据）。这样可以避免在一帧中途开始传输图像数据。</li>
+<li>为避免 FIFO 下溢或上溢，系统假设 LTDC 始终按配置的像素数提供数据。</li>
+<li>使用“每包像素数”参数来区分不同视频包的内存空间，保证调度有序。</li>
+</ul>
+<p>为了进行 SHTDN（关机） 和 COLM（列命令） 的采样与传输，LTDC 必须处于 视频流激活状态。如果 LTDC 没有生成视频信号（如 VSYNC、HSYNC），这些信号就不会通过 DSI 链路传输。因此，为了正确传输命令，必须等待 第一次 VSYNC 有效脉冲。<br>在关闭显示时，LTDC 必须保持激活至少 一个帧周期，以确保命令在关闭视频生成前被正确传输。<br>SHTDN 和 COLM 的值可在 DSI Wrapper 控制寄存器 (DSI_WCR) 中配置。</p>
+<p>像素数据接收规则</p>
+<ul>
+<li>对所有数据类型，每个时钟周期接收 一个完整像素。</li>
+<li>负载中的像素数必须是某个值的倍数</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>倍数</th>
+<th>数据类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>16 位、18 位 loosely packed、24 位</td>
+</tr>
+<tr>
+<td>2</td>
+<td>loosely packed 像素流</td>
+</tr>
+<tr>
+<td>4</td>
+<td>18 位非 loosely packed</td>
+</tr>
+</tbody></table>
+<p>影子寄存器机制：允许在视频传输过程中动态更新 LTDC 配置，不影响当前帧。</p>
+<h5 id="视频传输模式"><a href="#视频传输模式" class="headerlink" title="视频传输模式"></a>视频传输模式</h5><p>DSI 有几种视频传输模式：</p>
+<ul>
+<li>突发模式 (Burst mode)</li>
+<li>非突发模式 (Non-burst mode)<ul>
+<li>非突发模式 + 同步脉冲 (Sync pulse, 固定长度的同步脉冲)</li>
+<li>非突发模式 + 同步事件 (Sync event，边沿信号)</li>
+</ul>
+</li>
+</ul>
+<p>突发模式 (Burst mode)：整个活动像素行会先缓存在 FIFO 中，然后一次性打包成一个数据包传输，没有中断。</p>
+<ul>
+<li>要求：DPI 像素 FIFO 必须能存储完整的一行像素数据。</li>
+<li>优点：当像素带宽需求与 DSI 链路带宽差距较大时，可以快速传输整行数据，然后链路进入低功耗模式。</li>
+<li>适用场景：显示器支持整行像素一次性接收，且 DSI 输出带宽明显高于 LTDC 输入带宽。</li>
+</ul>
+<p>非突发模式 (Non-burst mode)：视频行被分割成多个 DSI 包传输，以匹配像素带宽与 DSI 链路带宽。</p>
+<ul>
+<li>不需要 LTDC FIFO 存储整行像素，只需存储一个视频包的内容。</li>
+<li>优点：内存需求更小（不必存储整行像素）。适合显示器缓冲能力有限的场景。</li>
+<li>可选：在分割的像素块之间插入 空包 (Null packets)，用于带宽匹配。</li>
+</ul>
+<p>选择模式的指南:<br>突发模式更节能，因为链路能更频繁进入低功耗状态。<br>使用突发模式的条件：</p>
+<ul>
+<li>DSI Host 必须有足够的像素内存存储整行像素。</li>
+<li>显示器必须支持整行像素一次性接收。</li>
+<li>DSI 输出带宽必须高于 LTDC 输入带宽，保证每行传输后能进入低功耗。</li>
+</ul>
+<p>如果条件不满足，突发模式可能导致像素丢失 → 显示异常。</p>
+<p>非突发模式更安全，适合：</p>
+<ul>
+<li>主机内存有限。</li>
+<li>显示器缓冲能力有限（不足一行）。</li>
+</ul>
+<p>DSI 非突发模式必须配置为使 DSI 输出像素速率与 LTDC 接口输入像素速率相匹配。该功能通过将像素行分割为若干像素块，并可选地与空数据包交错传输，以实现速率匹配：DSI 一行发送时间 ≈ LTDC 一行生成时间</p>
+<ul>
+<li>当启用空数据包时：lanebyteclkperiod * NUMC (VPSIZE * bytes_per_pixel + 12 + NPSIZE) &#x2F; number_of_lanes &#x3D; pixels_per_line * LTDC_Clock_period</li>
+<li>当空数据包被禁用时：lanebyteclkperiod * NUMC (VPSIZE * bytes_per_pixel + 6) &#x2F; number_of_lanes &#x3D; pixels_per_line * LTDC_Clock_period</li>
+<li>这里：<ul>
+<li>lanebyteclkperiod 就是 DSI 每传输 1 字节所需的时间，单位为秒。</li>
+<li>NUMC: 每条像素行被分割成的“视频包数量”（chunks per line）。例如一行 800 像素，若每包 200 像素，则 NUMC &#x3D; 4。</li>
+<li>VPSIZE: 每个视频包中包含的“像素数”（pixels per packet）</li>
+<li>bytes_per_pixel: 每像素的字节数。典型值：RGB565 为 2，RGB888（24-bit）为 3。</li>
+<li>NPSIZE: 空包（Null packet）的负载字节数。</li>
+<li>number_of_lanes: D-PHY 数据通道数量（1 或 2）</li>
+<li>pixels_per_line: 每行的有效像素数</li>
+<li>LTDC_Clock_period: LTDC 像素时钟周期（秒&#x2F;像素）</li>
+</ul>
+</li>
+</ul>
+<h4 id="功能描述：适用于-LTDC-接口的适配命令模式"><a href="#功能描述：适用于-LTDC-接口的适配命令模式" class="headerlink" title="功能描述：适用于 LTDC 接口的适配命令模式"></a>功能描述：适用于 LTDC 接口的适配命令模式</h4><p>适配命令模式允许系统通过 LTDC 输入像素流，并由 DSI Host 使用 命令模式传输 (DCS 包) 发送到显示器。主要通过 write_memory_start (WMS) 和 write_memory_continue (WMC) 命令传输大量像素数据，适合高分辨率显示器的局部或整屏刷新。支持 像素输入速率控制 和 撕裂效应 (Tearing Effect, TE) 报告机制。支持 16bpp、18bpp、24bpp RGB 格式。<br><strong>备注</strong>：DCS 是 MIPI 联盟为 DSI 和 DBI-2 标准使用的命令集规范。命令由主处理器发送到显示模块。在显示模块上，显示控制器接收并解释命令，然后采取相应的操作。命令大致分为四类：读取寄存器、写入寄存器、读取内存和写入内存。一个命令可以包含多个参数。</p>
+<p>以适配命令模式传输图像数据，配置步骤：</p>
+<ul>
+<li>进入命令模式：<ul>
+<li>设置 DSI Host 模式配置寄存器 (DSI_MCR) 的 CMDM 位 &#x3D; 1。</li>
+<li>设置 DSI Wrapper 配置寄存器 (DSI_WCFGR) 的 DSIM 位 &#x3D; 1。</li>
+</ul>
+</li>
+<li>定义刷新区域：使用 DCS 命令 set_column_address 和 set_page_address 定义刷新区域。</li>
+<li>定义颜色编码：在 DSI_LCOLCR 寄存器的 COLC 字段中设置像素颜色编码。</li>
+<li>定义虚拟通道 ID：在 DSI_LVCIDR 寄存器的 VCID 字段中设置虚拟通道 ID。</li>
+<li>启动传输：设置 DSI_WCR 寄存器的 LTDCEN 位 &#x3D; 1。</li>
+</ul>
+<p>命令模式下的像素流处理：</p>
+<ul>
+<li>LTDC 接口接收连续像素流，并自动控制流量。</li>
+<li>DSI_LCCR寄存器的 CMDSIZE 字段：定义每个命令包的像素数。</li>
+<li>工作机制：第一个包用 WMS，后续包用 WMC，直到最后一个像素。<ul>
+<li>每接收一个像素，计数器 +1。</li>
+<li>最后一个像素到来时，像素计数 &lt; CMDSIZE → 生成 WMS 命令，字节数 &#x3D; 当前像素数。</li>
+<li>如果像素计数 &gt; CMDSIZE → 生成 WMS 命令，字节数 &#x3D; CMDSIZE，计数器重置。</li>
+</ul>
+</li>
+</ul>
+<p>与 LTDC 的同步：</p>
+<ul>
+<li>DSI Wrapper负责同步：<ul>
+<li>控制 LTDC 的启动&#x2F;停止。</li>
+<li>控制 LTDC 与 DSI Host 的数据流。</li>
+</ul>
+</li>
+<li>刷新触发方式：<ul>
+<li>手动：设置 DSI_WCR 的 LTDCEN 位。</li>
+<li>自动：当 TEIF（ tearing effect） 事件发生且 AR（automatic refresh） 位使能时。</li>
+</ul>
+</li>
+<li>刷新完成后：<ul>
+<li>DSI Wrapper 停止 LTDC，清除 LTDCEN 位。LTDC 的停止与 VSync 边沿同步，具体由 VSPOL 位决定。</li>
+<li>设置 DSI_WSR 寄存器的 ERIF（ end of refresh interrupt flag）标志位。</li>
+<li>如果 DSI_WCFGR 的 ERIE 位使能 → 触发中断。</li>
+</ul>
+</li>
+</ul>
+<p>撕裂效应 (Tearing Effect, TE) 支持：</p>
+<ul>
+<li>作用：让主机知道显示器正在读取帧缓冲的进度，避免撕裂。</li>
+<li>两种实现方式：<ul>
+<li>GPIO 引脚方式：设置 DSI_WCFGR 的 TESRC 位 → TE 信号通过 GPIO 输入。<br>通过 TEPOL 位可配置输入信号极性。检测到设定边沿 → TEIF 标志位置位，如果TEIE 位使能了 → 触发中断。</li>
+<li>DSI 链路方式：设置 DSI_WCFGR 的TESRC 位复位 → TE 通过 DSI 链路管理。<br>主机发送 set_tear_on 命令后，执行 双向总线切换 (BTA)，显示器获得总线控制权。当 TE 事件发生时，显示器通过 D-PHY 触发事件通知主机。主机解码触发 → 设置 TEIF 标志位，如果 TEIE 位使能了 → 触发中断。<br><strong>注意</strong>：DSI Host 不会自动在 WMS&#x2F;WMC 后生成 TE 请求，必须显式发送 set_tear_on 命令。<br>需要配置以下寄存器来激活撕裂效果：<br>DSI_CMCR (Command Mode Configuration Register)：TEARE 位 → 启用 TE 功能。<br>DSI_PCR (Protocol Configuration Register)：BTAE 位 → 启用总线反转 (BTA)。</li>
+</ul>
+</li>
+</ul>
+<h4 id="视频模式-和-命令模式区别："><a href="#视频模式-和-命令模式区别：" class="headerlink" title="视频模式 和 命令模式区别："></a>视频模式 和 命令模式区别：</h4><p>每个 DSI 包都有一个 包头 (Packet Header)，其中包含Data Type (DT) 字段来区分数据是属于视频模式的数据路包，还是命令模式的命令包。</p>
+<p>视频模式 (Video Mode)下，像素数据作为 视频流包 (Video Packet) 传输：</p>
+<ul>
+<li>LTDC 持续产生像素流 → DSI Host 打包成视频包 → 通过 DSI 链路传输。</li>
+<li>特点：像素数据是 实时流式传输，和显示器的扫描时序保持同步。支持 突发模式 (Burst) 或 非突发模式 (Non-burst)，并可选择 Sync Pulse &#x2F; Sync Event。</li>
+<li>LTDC 的 VSYNC&#x2F;HSYNC 信号直接参与 DSI 包的生成。</li>
+<li>优点：适合持续刷新整屏，时序和显示器严格同步。带宽利用率高，延迟低。</li>
+<li>缺点：必须保证 DSI 链路带宽 ≥ LTDC 像素流带宽，否则会溢出&#x2F;丢帧。不适合只更新局部区域。</li>
+</ul>
+<p>命令模式 (Adapted Command Mode)下，像素数据作为命令模式数据包传输：</p>
+<ul>
+<li>LTDC 产生像素流 → DSI Host 将像素打包成 DCS 命令 (WMS&#x2F;WMC) → 写入显示器的帧缓冲。</li>
+<li>特点：像素数据不是实时流，而是通过 命令包写入显示器的内存。<br>支持 局部区域刷新（通过 set_column_address &#x2F; set_page_address 定义区域）。</li>
+<li>优点：可以只更新部分区域，节省带宽。适合高分辨率显示器，避免整屏刷新。支持 撕裂效应 (TE) 同步机制，保证更新时机安全。</li>
+<li>缺点：延迟比视频模式高，因为要经过命令解析。带宽利用率低于视频模式。</li>
+</ul>
+<h4 id="功能描述：APB-从接口"><a href="#功能描述：APB-从接口" class="headerlink" title="功能描述：APB 从接口"></a>功能描述：APB 从接口</h4><p>APB 从接口是 命令模式下的通用数据通道，支持 DCS 和 Generic 命令。<br>DSI Host支持通过 APB 寄存器访问来构建和发送命令模式的读写包。</p>
+<p>关键寄存器：</p>
+<ul>
+<li>DSI_GPDR (Generic Payload Data Register)<ul>
+<li>写入时：作为命令模式包的负载数据。</li>
+<li>读取时：返回读回操作的负载数据。</li>
+</ul>
+</li>
+<li>DSI_GHCR (Generic Header Configuration Register)<ul>
+<li>包含命令模式包的头部类型和头部数据。</li>
+<li>写入该寄存器会触发包的发送。</li>
+<li>对于长包，必须先把负载写入 GPDR，再写 GHCR。</li>
+</ul>
+</li>
+<li>DSI_GPSR (Generic Packet Status Register)<ul>
+<li>报告与 APB 接口相关的 FIFO 状态。</li>
+</ul>
+</li>
+</ul>
+<p>APB 总线传输条件：</p>
+<ul>
+<li><p>APB 协议定义每次读写操作需要 两个时钟周期。因此最大输入数据速率 &#x3D; APB 时钟频率的一半。</p>
+</li>
+<li><p>数据总线宽度：最大 32 位。这决定了 APB 时钟频率与最大比特率的关系。</p>
+</li>
+<li><p>使用 APB 时，DSI 链路速率公式：</p>
+<ul>
+<li>理论最大比特率 &#x3D; APB 时钟频率 (MHz) × 32 &#x2F; 2 Mbit&#x2F;s。<br>其中 32 &#x3D; APB 数据总线宽度。<br>除以 2 &#x3D; 每次写操作需要两个时钟周期。<br>带宽依赖于 APB 时钟频率：时钟越高，带宽越大。</li>
+</ul>
+</li>
+</ul>
+<p>要实现高带宽的命令模式传输：要求DSI Host 必须只在命令模式下工作，并且APB 接口必须是唯一的数据源，不与其他接口共享带宽。</p>
+<p>内存写命令 (Memory Write)通过 DCS 长包封装在 DSI 包中，写入步骤：</p>
+<ul>
+<li>先把负载写入 GPDR（像素或命令参数）。当负载是命令参数时，第一个字节放在 APB 数据总线的最低有效字节位置。</li>
+<li>再把包头写入 GHCR → 进入命令 FIFO。</li>
+<li>对于像素数据，必须遵循 DCS 规范附录 A 的 像素到字节转换规则。</li>
+</ul>
+<p>DCS 规范要求：包的第一个负载字节必须是 DCS 命令码（如 Write Memory Start）。</p>
+<p>下图为 16bpp 格式的像素数据在APB数据写入总线中的组织方式。<br><img src="/2025/12/12/stm32h747-LTDC-DSI/16bpp-apb-orgainization.png"></p>
+<h4 id="功能描述：DSI-Host-的超时计数器"><a href="#功能描述：DSI-Host-的超时计数器" class="headerlink" title="功能描述：DSI Host 的超时计数器"></a>功能描述：DSI Host 的超时计数器</h4><p>DSI Host 内部包含一组计数器，用来管理不同通信阶段的超时。<br>这些超时的持续时间，由六个超时计数器配置寄存器 DSI_TCCR0 ~ DSI_TCCR5 来设定。</p>
+<p>分为两类：</p>
+<ul>
+<li>争用错误检测超时计数器 (Contention error detection timeout counters)：防止高速传输或低功耗接收状态异常长时间占用，触发软复位和中断。</li>
+<li>外设响应超时计数器 (Peripheral response timeout counters)：链路进入空闲状态直到超时结束。</li>
+</ul>
+<h5 id="争用错误检测超时计数器"><a href="#争用错误检测超时计数器" class="headerlink" title="争用错误检测超时计数器"></a>争用错误检测超时计数器</h5><p>用于检测链路在 高速传输 或 低功耗接收 状态下是否出现异常长时间占用。每个计数器都有对应的寄存器字段和中断标志位。</p>
+<p>当计数器达到设定值时：对应的 状态标志位 (Flag) 置位；触发 内部软复位；如果启用了中断使能位，还会产生中断。</p>
+<p>高速传输超时检测：</p>
+<ul>
+<li>配置字段：HSTX_TOCNT (DSI_TCCR0 寄存器)。</li>
+<li>计数器测量高速模式持续时间。</li>
+<li>达到设定值 → TOHSTX 标志位置位 → 内部软复位。</li>
+<li>如果 TOHSTXIE 使能 → 触发中断。</li>
+</ul>
+<p>低功耗接收超时检测：</p>
+<ul>
+<li>配置字段：LPRX_TOCNT (DSI_TCCR1 寄存器)。</li>
+<li>计数器测量低功耗接收持续时间。</li>
+<li>达到设定值 → TOLPRX 标志位置位 → 内部软复位。</li>
+<li>如果 TOLPRXIE 使能 → 触发中断。</li>
+</ul>
+<p>软件收到中断后必须通过 DSI_PCTLR 寄存器的 DEN 位对 D-PHY 执行一次关闭&#x2F;开启操作来复位。</p>
+<h5 id="外设响应超时计数器"><a href="#外设响应超时计数器" class="headerlink" title="外设响应超时计数器"></a>外设响应超时计数器</h5><p>用于处理外设响应延迟的情况。<br>例如：显示面板正在刷新，暂时无法访问 RAM → 主机发出读请求后需要等待。设置超时确保主机等待足够长时间，避免过早发送新请求，防止 Host 在外设未准备好时继续发送，导致链路错误。</p>
+<p>工作机制：当事件触发超时计数器时，D-PHY 切换到 Stop 状态，链路保持在空闲状态直到超时结束。即使有其他事件准备好，也不会传输。<br>将某类事件的超时值设为 0 ，则表示禁用该类事件的超时。</p>
+<p>高速读写和低功耗读写分别有独立的超时配置。</p>
+<p>外设响应超时仅用于命令模式，视频模式下不使用外设响应超时，因为时序必须严格保持。</p>
+<h4 id="功能描述：命令传输"><a href="#功能描述：命令传输" class="headerlink" title="功能描述：命令传输"></a>功能描述：命令传输</h4><p>DSI Host 在视频模式下也能传输命令，既可以在高速 (HS) 模式，也可以在低功耗 (LP) 模式。命令通过 APB 通用接口插入，在视频模式的 消隐期 (blanking &#x2F; BLLP) 传输。</p>
+<p>如果命令太大，无法放入任何 BLLP 区域，则推迟到最后一行传输。</p>
+<p>这会违反视频模式的行时间 (line time)，并触发 edpihalt 信号，要求 DPI 视频时序保持不活动。（触发edpihalt 信号，DSI Host 通知 DPI接口（LTDC） 暂停视频时序，不要再继续送像素数据，避免错误刷新。）</p>
+<p>特殊控制命令：通过 DSI_WCR 控制寄存器的 COLM 和 SHTDN 位可触发以下命令。此外，如果 DSI_VMCR.LPCE 置位，则这些命令以低功耗模式发送。</p>
+<ul>
+<li>Color mode ON</li>
+<li>Color mode OFF</li>
+<li>Shut down peripheral</li>
+<li>Turn on peripheral</li>
+</ul>
+<p>低功耗模式下，DSI_LPMCR.LPSIZE 字段决定低功耗模式下可发送的最大包大小。必须 ≥ 4 字节（短包大小），否则命令无法发送。</p>
+<p>总线反转 (BTA)：如果 DSI_LPMCR.FBTAAE 置位 → 在帧最后一行后生成 BTA。在 BTA 完成前，LTDC 接口被暂停，等待外设返回 ACK。</p>
+<h5 id="低功耗模式下的命令传输"><a href="#低功耗模式下的命令传输" class="headerlink" title="低功耗模式下的命令传输"></a>低功耗模式下的命令传输</h5><p>DSI Host 可以在 视频模式高速传输期间插入低功耗命令。<br>使能条件：设置 DSI_VMCR.LPCE &#x3D; 1。</p>
+<p><strong>VSA 、 VBP 和 VFP 区LP模式下命令传输时间计算：</strong><br>DSI 主机低功耗模式配置寄存器（DSI_LPMCR）的最大数据包大小（LPSIZE）字段，用于指示在 VSA 、 VBP 和 VFP 区域中，通过线路传输命令的可用时间（以字节为单位）。</p>
+<p>LPSIZE 计算公式：<br>LPSIZE &#x3D; (t<sub>L</sub> - (t<sub>H1</sub> + t<sub>HS-&gt;LP</sub> + t<sub>LP-&gt;HS</sub> + t<sub>LPDT</sub> + 2 t<sub>ESCCLK</sub>)) &#x2F; (2 × 8 × t<sub>ESCCLK</sub>)</p>
+<p><img src="/2025/12/12/stm32h747-LTDC-DSI/LPSIZE.png"></p>
+<p>其中：</p>
+<ul>
+<li>t<sub>L</sub>：行时间</li>
+<li>t<sub>H1</sub>：HSA 脉冲时间（或 HSS 包时间）</li>
+<li>t<sub>HS-&gt;LP</sub>：进入低功耗模式时间</li>
+<li>t<sub>LP-&gt;HS</sub>：退出低功耗模式时间</li>
+<li>t<sub>LPDT</sub>：D-PHY 逃逸模式(Escape Mode)相关时间（**固定为 22 个 逃逸时钟周期(escape clock cycles)**）</li>
+<li>t<sub>ESCCLK</sub>：DSI_CCR寄存器 TXECKDIV 字段中设定的逃逸时钟周期</li>
+<li>除以 8 → 转换为字节；除以 2 → 因为每两个逃逸时钟周期传输一位数据。</li>
+<li>最大数据包大小（LPSIZE）字段可直接与待传输命令的大小进行比较，以判断是否有足够时间完成命令传输。<br>最大命令大小受限于 255 字节。</li>
+</ul>
+<p>备注信息：</p>
+<ul>
+<li>在 D-PHY 规范里，Escape Mode 是指从高速模式“逃逸”到低功耗模式，用来执行控制类操作。Escape clock 就是这个模式下的时钟。在 DSI Host 的寄存器里，通常通过 TXECKDIV 字段配置 escape clock 的分频。</li>
+<li>HS 模式：用高速差分信号传输像素流，时钟由 lane byte clock 驱动。</li>
+<li>LP 模式：用 escape clock 驱动，速率较低，用于命令、控制、BTA 等操作。。</li>
+</ul>
+<p>举例：<br>假设一帧的 行时间 (tL) &#x3D; 12.4 μs。逃逸时钟 (escape clock) &#x3D; 20 MHz → 周期 50 ns。lane bit rate &#x3D; 800 Mbit&#x2F;s → 每个 lane 的字节时钟周期 &#x3D; 10 ns。<br>在这种情况下，如果只考虑行时间和逃逸时钟速率：<br>12.4 μs * 20 MHz &#x2F; 2 &#x3D; 124 bit<br>即在一行时间内，理论上可以在 LP 模式下发送 124 bit。但是，还需要考虑 D-PHY 协议和物理层时序开销。</p>
+<ul>
+<li>lane byte clock 周期 &#x3D; 10 ns (对应 800 Mbit&#x2F;s)。</li>
+<li>t<sub>L</sub>：行时间 (12.4 μs)。</li>
+<li>t<sub>H1</sub>：假设 HSA 脉冲时间 (420 ns)。</li>
+<li>D-PHY 切换时间：<ul>
+<li>LP → HS &#x3D; 180 ns (LS2HS_TIME &#x3D; 18)。</li>
+<li>HS → LP &#x3D; 200 ns (HS2LP_TIME &#x3D; 20)。</li>
+</ul>
+</li>
+<li>t<sub>LPDT</sub>：D-PHY 逃逸模式相关时间 (22 × 50 ns &#x3D; 1100 ns)。</li>
+</ul>
+<p>带入计算可以得到：<br>LPSIZE &#x3D; (12.4 μs - (420 ns + 180 ns +200 ns + (22 × 50 ns + 2 × 50 ns))) &#x2F; (2 × 8 × 50 ns) &#x3D; 13 bytes.</p>
+<p><strong>HFP 区低功耗模式下命令传输时间的计算</strong>:</p>
+<p>VLPSIZE 字段（在寄存器 DSI_LPMCR 中）表示在 VACT 区域内，基于 逃逸时钟 (escape clock)，可用于传输低功耗命令的最大字节数。<br>计算 VLPSIZE 时，需要考虑视频模式类型（非突发带同步脉冲、非突发带同步事件、突发模式），因为不同模式下的时序安排不同。</p>
+<p>VLPSIZE 计算公式:<br>VLPSIZE &#x3D; (t<sub>L</sub> - (t<sub>HSA</sub> + t<sub>HBP</sub> + t<sub>HACT</sub> + t<sub>HS-&gt;LP</sub> + t<sub>LP-&gt;HS</sub> + tLPDT + 2 t<sub>ESCCLK</sub>)) &#x2F;(2 × 8 × t<sub>ESCCLK</sub>)<br><img src="/2025/12/12/stm32h747-LTDC-DSI/VLPSIZE.png"><br>其中：</p>
+<ul>
+<li>t<sub>L</sub>：行时间。</li>
+<li>t<sub>HSA</sub>：水平同步激活脉冲时间。</li>
+<li>t<sub>HBP</sub>：水平后肩时间。</li>
+<li>t<sub>HACT</sub>：视频有效显示时间。在突发模式下，视频数据压缩传输，计算公式为 t<sub>HACT</sub> &#x3D; VPSIZE * Bytes_per_Pixel &#x2F;Number_Lanes * t<sub>Lane_byte_clk</sub></li>
+<li>t<sub>HS-&gt;LP</sub>：高速切换到低功耗的时间。</li>
+<li>t<sub>LP-&gt;HS</sub>：低功耗切换到高速的时间。</li>
+<li>t<sub>LPDT</sub>：D-PHY 逃逸模式相关时间（固定为 22 个 ESC 时钟周期）。</li>
+<li>t<sub>ESCCLK</sub>：逃逸时钟周期。</li>
+<li>分母中的 2 × 8 × tESCCLK：<br>除以 8 → 转换为字节。<br>除以 2 → 因为 LP 模式下每两个 ESC 周期传输 1 bit。</li>
+</ul>
+<p><strong>LPSIZE</strong> 和 <strong>VLPSIZE</strong> 两个字段结合使用，可以快速判断命令是否能在某个消隐期或 VACT 区域传输：<br><img src="/2025/12/12/stm32h747-LTDC-DSI/LPSIZE-VLPSIZE-Location.png"></p>
+<p><strong>高速模式下的命令传输</strong><br>如果 DSI_VMCR 寄存器的 LPCE 位 &#x3D; 0，那么命令在视频模式下会以 高速模式 (HS) 传输。在这种情况下，DSI Host 自动决定命令在哪个区域传输，不需要软件额外编程或计算。</p>
+<p><strong>读命令传输</strong><br>MRD_TIME 字段 (DSI_DLTCR 寄存器) 用来配置执行一次读命令所需的最大时间（单位：lane byte clock 周期）。<br>计算公式：MRD_TIME &#x3D; 低功耗模式下传输读命令的时间 + 进入&#x2F;退出低功耗模式的时间 + 外设返回数据包的时间</p>
+<p>外设返回数据包的时间 (tread) 取决于：</p>
+<ul>
+<li>读取的字节数。</li>
+<li>外设的逃逸时钟频率（注意：不是 Host 的 ESC 时钟）。</li>
+</ul>
+<p>MRD_TIME 在 高速模式和低功耗模式 都会用来判断：在一个 BLLP 区域内是否有足够时间完成读命令。</p>
+<p>high-speed mode (LPCE &#x3D; 0)：<br>MRD_TIME &#x3D; (t<sub>HS-&gt;LP</sub> + t<sub>LP-&gt;HS</sub> + t<sub>read</sub> + 2 x t<sub>BTA</sub>) &#x2F; lanebyteclkperiod</p>
+<p>low-power mode (LPCE &#x3D; 1)：<br>MRD_TIME &#x3D; (t<sub>HS-&gt;LP</sub> + t<sub>LP-&gt;HS</sub> + t<sub>LPDT</sub> + t<sub>lprd</sub> + t<sub>read</sub> + 2 x t<sub>BTA</sub>) &#x2F; lanebyteclkperiod</p>
+<p>其中：</p>
+<ul>
+<li>t<sub>LPDT</sub>：D-PHY 逃逸模式相关时间（固定为 22 × ESC 周期）。</li>
+<li>t<sub>lprd</sub>：低功耗模式下读命令时间（固定为 64 × ESC 周期）。<br>t<sub>read</sub>：外设返回数据包时间。<br>t<sub>BTA</sub>：总线反转时间。</li>
+</ul>
+<p>使用注意:</p>
+<ul>
+<li>尽量减少读取字节数，保证读命令能在一行时间内完成。</li>
+<li>必须满足： MRD_TIME x lane_byte_clock_period &lt; LPSIZE x 16 x escape_clock_period（host侧）<br>否则读命令会被推迟到 最后一行。</li>
+<li>如果需要读取大量参数（&gt;16），可以在执行读命令时 临时增大 MRD_TIME，读完后再调回较小值。</li>
+<li>如果读命令在最后一行执行 → LTDC 接口会被挂起，直到读命令完成，视频传输必须暂停。</li>
+</ul>
+<p><strong>时钟通道的低功耗模式</strong><br>为了降低 D-PHY 的功耗，DSI Host 在不进行高速传输时，允许 时钟通道 (clock lane) 进入低功耗模式。<br>控制器会自动处理 时钟通道 HS ↔ LP 的切换，软件无需直接干预。<br>使能方法：配置 DSI_CLCR 寄存器中的 DPCC 和 ACR 位。</p>
+<p>配置要求：</p>
+<ul>
+<li>Host 需要知道时钟通道 HS ↔ LP 的切换时间：<ul>
+<li>HS2LP_TIME &#x3D; HS → LP 时间 &#x2F; HS 字节时钟周期。</li>
+<li>LP2HS_TIME &#x3D; LP → HS 时间 &#x2F; HS 字节时钟周期。</li>
+</ul>
+</li>
+<li>这些值来自 D-PHY 规范，需写入 DSI_CLTCR 寄存器。</li>
+</ul>
+<h4 id="功能描述：虚拟通道"><a href="#功能描述：虚拟通道" class="headerlink" title="功能描述：虚拟通道"></a>功能描述：虚拟通道</h4><p>DSI Host 支持虚拟通道 (VC)，每个接口可以选择不同的虚拟通道 ID。<br>使用多个虚拟通道时，可以同时驱动多个显示器，每个显示器对应不同的 VC ID。</p>
+<p>LTDC 与 APB 通用接口的配合：</p>
+<ul>
+<li>当 LTDC 接口配置了某个虚拟通道时，APB 通用接口仍然可以在视频流传输过程中发命令。</li>
+<li>这样就能在视频流进行时，插入命令包，针对不同虚拟通道，从而实现多显示器控制。</li>
+<li>在视频模式下，视频流优先级最高，所以通用接口的命令包只有在视频流有空隙时才会被插入。</li>
+<li>DSI Host 会自动识别这些空隙，把 APB 通用接口的包插入到视频流中。</li>
+</ul>
+<p>仅用通用接口控制多显示器：</p>
+<ul>
+<li>通用接口本身不绑定特定虚拟通道，可以通过不同 VC ID 来区分目标显示器。</li>
+<li>这样就能实现 时分复用，在同一物理链路上控制多个显示器。</li>
+</ul>
+<p>相关寄存器：</p>
+<ul>
+<li>DSI_LVCIDR.VCID：配置 LTDC 视频模式包的虚拟通道 ID。视频像素流（即 LTDC 输出的图像数据）会被打包成 DSI 视频包，这些包会带上 VCID。</li>
+<li>DSI_GHCR：配置通用接口命令包的头部（包含虚拟通道 ID）。</li>
+<li>DSI_GVCIDR：配置通用接口读响应的虚拟通道 ID。外设返回读命令的响应数据时，Host 会把响应存储并返回到指定的 VCID。</li>
+</ul>
+<h4 id="功能描述：视频模式图案发生器"><a href="#功能描述：视频模式图案发生器" class="headerlink" title="功能描述：视频模式图案发生器"></a>功能描述：视频模式图案发生器</h4><p>DSI Host 内置一个 图案发生器，可以在没有外部输入的情况下，生成测试图案：</p>
+<ul>
+<li>水平&#x2F;垂直彩条 (Color Bar)</li>
+<li>D-PHY BER 测试图案</li>
+</ul>
+<p>彩条图案模式：<br>包含 8 种颜色：白、黄、青、绿、品红、红、蓝、黑。<br>垂直彩条模式：一行像素宽度 ÷ 8 → 每条彩条宽度。余数部分由最后一条黑色填充。<br>水平彩条模式：帧总行数 ÷ 8 → 每条彩条高度。余数部分由最后一条黑色填充。<br><img src="/2025/12/12/stm32h747-LTDC-DSI/color-bar.png"></p>
+<p>BER 测试图案:<br>用于测试接收端 D-PHY 的误码率能力。包含一系列固定字节模式：</p>
+<ul>
+<li>0xAA（高频，反相）</li>
+<li>0x33（中频）</li>
+<li>0xF0（低频，反相）</li>
+<li>0x7F（孤立 0）</li>
+<li>0x55（高频）</li>
+<li>0xCC（中频，反相）</li>
+<li>0x0F（低频）</li>
+<li>0x80（孤立 1）<br>在 RGB888 且水平分辨率为 8 的倍数时，显示器上会出现标准测试图案。<br><img src="/2025/12/12/stm32h747-LTDC-DSI/ber-pattern.png"></li>
+</ul>
+<h4 id="功能描述：D-PHY-管理"><a href="#功能描述：D-PHY-管理" class="headerlink" title="功能描述：D-PHY 管理"></a>功能描述：D-PHY 管理</h4><p>STM32H7 内嵌的 MIPI® D-PHY 由 DSI Host 直接控制，通过 DSI Wrapper 配置。内部集成了专用 PLL 和 1.2 V 稳压器，为 DSI&#x2F;D-PHY 提供时钟和电源。</p>
+<p><strong>时序定义</strong>：</p>
+<ul>
+<li>时序定义：所有时序参数以纳秒为单位，需要配置 Unit Interval (UI)。</li>
+<li>DSI_WPCR0.UIX4 定义高速模式下的比特周期，以 0.25 ns 为单位。<br>例如：300 Mbps → UI &#x3D; 3.33 ns → UIX4 &#x3D; 13.33 → 写入 13 (0x0D)。</li>
+</ul>
+<p><strong>Slew-rate 和延迟调节</strong>：相关控制字段在寄存器 DSI_WPCR1 中，可调节高速&#x2F;低速模式下的 上升&#x2F;下降速率 和 传输延迟。<br>lew-rate ：</p>
+<ul>
+<li>指的是信号在引脚上从低电平到高电平（或反之）的电压变化速度，即 上升&#x2F;下降沿的斜率。</li>
+<li>调节意义：<ul>
+<li>如果上升&#x2F;下降太快 → 信号边沿陡峭，容易产生过冲、振铃和 EMI（电磁干扰）。</li>
+<li>如果上升&#x2F;下降太慢 → 信号边沿拖长，可能导致接收端采样错误，降低高速传输的可靠性。</li>
+</ul>
+</li>
+<li>作用：通过调节 Slew-rate，可以在 高速传输的完整性 和 电磁兼容性之间取得平衡。</li>
+</ul>
+<p>延迟调节：</p>
+<ul>
+<li>是指在高速传输时，数据线或时钟线的信号输出相对于内部时钟的延迟。</li>
+<li>调节意义：<ul>
+<li>不同 PCB 走线长度、寄生电容&#x2F;电感可能导致信号到达时间不一致。</li>
+<li>如果时钟和数据线之间存在偏移，接收端可能采样错误。</li>
+</ul>
+</li>
+<li>作用：通过延迟调节，可以对齐时钟与数据的相位，保证接收端在正确的时间点采样。</li>
+</ul>
+<p><strong>低功耗接收滤波器</strong>：<br>DSI_WPCR1.LPRXFT 可调节低功耗接收端的低通滤波器截止频率。用于接收端去除高频噪声，保证信号稳定。</p>
+<p><strong>特殊 Sdd 控制</strong>：<br>DSI_WPCR1.SDDC 可激活额外电流路径，以满足 MIPI D-PHY 规范中的 Sdd<sub>TX</sub> 参数。在 HS 模式下，D‑PHY 使用 小摆幅差分信号（约 200 mV）。<br>如果没有额外的直流电流路径，差分线可能会出现：</p>
+<ul>
+<li>浮动状态 → 共模电压不稳定。</li>
+<li>信号畸变 → 眼图闭合，误码率升高。</li>
+</ul>
+<p>Sdd<sub>TX</sub> 参数要求 TX 驱动器必须提供一个 额外的泄放电流通路，确保差分信号在 PCB 和接收端上保持稳定。</p>
+<p><strong>自定义 Lane 配置</strong>：可交换 Lane 引脚或反转高速信号</p>
+<ul>
+<li>时钟差分正负线交换：SWCL</li>
+<li>数据差分正负线交换：SWDL0、SWDL1</li>
+<li>高速信号反转，只影响 HS 模式下的差分极性：HSICL、HSIDL0、HSIDL1</li>
+</ul>
+<p>SWCL → 物理引脚交换，影响整个 Lane（HS + LP）。<br>HSICL → 高速信号反转，只影响 HS 模式下的差分极性。</p>
+<p><strong>自定义时序参数</strong><br>可调节部分 MIPI D-PHY 时序参数，这些参数在 DSI_WPCR2~4 中配置，只能在 DSI 停止时配置 (DSIEN&#x3D;0, EN&#x3D;0)。</p>
+<ul>
+<li><p>t<sub>CLK‑POST</sub>:在最后一个数据传输完成后，时钟 Lane 继续保持活动的时间。保证接收端完成最后一次采样，并安全退出 HS 模式。</p>
+</li>
+<li><p>t<sub>LPX</sub>：LP 模式下，数据或时钟 Lane 保持在 LP‑01 或 LP‑00 状态的最小持续时间。保证接收端能正确识别 LP 信号，避免误判。</p>
+</li>
+<li><p>t<sub>HS_EXIT</sub>：从 HS 模式退出到 LP 模式时，数据 Lane 必须保持在 LP‑11 状态的时间。给接收端状态机足够时间完成模式切换。</p>
+</li>
+<li><p>t<sub>HS‑ZERO</sub>：在 HS 模式下，数据 Lane 在发送第一个数据位前，必须保持 HS‑0 状态的时间。保证接收端锁定采样时钟，准备好接收数据。</p>
+</li>
+<li><p>t<sub>HS‑TRAIL</sub>：在 HS 模式下，最后一个数据位之后，数据 Lane 必须保持 HS‑1 状态的时间。保证最后一个比特被正确采样，并避免过早切换。</p>
+</li>
+<li><p>t<sub>HS‑PREPARE</sub>：在进入 HS 模式前，数据 Lane 必须保持准备状态 (LP‑01 → HS) 的时间。给接收端足够时间检测到即将进入 HS 模式。</p>
+</li>
+<li><p>t<sub>CLK‑ZERO</sub>：在 HS 模式下，时钟 Lane 必须保持 HS‑0 状态的时间。保证接收端锁定时钟，建立稳定的采样基准。</p>
+</li>
+<li><p>t<sub>CLK‑PREPARE</sub>：在进入 HS 模式前，时钟 Lane 必须保持准备状态的时间。让接收端检测到时钟即将进入 HS 模式，提前同步。</p>
+</li>
+</ul>
+<p><strong>HS ↔ LP 模式切换时长</strong><br>DSI 系统可在两次 HS 传输间隔足够长的消隐期间，切换至 LP 模式。<br>通过寄存器 DSI_CLTCR 和 DSI_DLTCR 配置 HS ↔ LP 模式切换的 最大持续时间。</p>
+<ul>
+<li>作用：在视频模式下，行&#x2F;帧的空白区间可以用来发送命令或做模式切换。Host 会认为：HS ↔ LP 切换最多需要寄存器里配置的时间，所以它会先从空白期里扣掉这段时间。如果剩余的空白期足够长，可以容纳一条命令（比如 DCS 命令），Host 就会安排在这个空白期里发送。</li>
+</ul>
+<p><strong>特殊 D-PHY 操作</strong><br>DSI 封装器包含若干控制位，用于强制D-PHY器件处于特定状态和&#x2F;或行为。</p>
+<ul>
+<li><p>强制 Lane 状态 (Forcing lane state)</p>
+<ul>
+<li>寄存器位：FTXSMDL (数据 Lane)、FTXSMCL (时钟 Lane)，位于 DSI_WPCR0。</li>
+<li>作用：强制数据&#x2F;时钟 Lane 进入 TX Stop 模式，即发送 LP‑11 停止状态。</li>
+<li>用途：在发生错误的 BTA (Bus Turn Around) 序列后，可以通过此功能强制回到 TX 模式。</li>
+</ul>
+</li>
+<li><p>强制低功耗接收器进入低功耗模式 (Forcing low‑power receiver in low‑power mode)</p>
+<ul>
+<li>寄存器位：FLPRXLPM，位于 DSI_WPCR1。</li>
+<li>作用：控制低功耗接收器 (LPRX) 的工作模式。</li>
+<li>置位：LPRX 始终在低功耗模式下工作。</li>
+<li>未置位：LPRX 仅在 ULPS (Ultra Low Power State) 下进入低功耗模式。</li>
+</ul>
+</li>
+<li><p>禁止数据 Lane 转向 (Disabling turn of data lane)</p>
+<ul>
+<li>寄存器位：TDDL，位于 DSI_WPCR0。</li>
+<li>作用：强制数据 Lane 保持在接收模式，即使另一端发出 BTA 请求。</li>
+<li>用途：避免数据 Lane 在 BTA 请求下切换方向，保持接收状态。</li>
+</ul>
+</li>
+</ul>
+<p><strong>特殊低功耗功能</strong><br>嵌入式D-PHY提供特定功能以优化能耗。</p>
+<ul>
+<li><p>Lane 下拉电阻 (Pull‑down on lanes)</p>
+<ul>
+<li>寄存器位：PDEN，位于 DSI_WPCR0。</li>
+<li>作用：在每条 Lane 上启用下拉电阻，防止 Lane 在未使用时处于浮空状态。</li>
+<li>意义：避免浮空导致的功耗增加或信号不稳定。</li>
+</ul>
+</li>
+<li><p>禁用数据 Lane 的争用检测 (Disabling contention detection on data lanes)</p>
+<ul>
+<li>寄存器位：CDOFFDL，位于 DSI_WPCR0。</li>
+<li>作用：关闭数据 Lane 的争用检测电路。</li>
+<li>意义：降低 D‑PHY 的整体功耗。</li>
+<li>应用场景：在 forward escape mode 下使用，可减少静态功耗。</li>
+</ul>
+</li>
+</ul>
+<p><strong>DSI PLL 控制</strong>：<br>FVCO &#x3D; (CLKIN &#x2F; IDF) * 2 * NDIV<br>PHI &#x3D; FVCO &#x2F; (2 * ODF)</p>
+<p>CLKIN：8 ~ 200 MHz，来自 HSE_CLK<br>PHI：62.5 MHz ~ 1 GHz<br>PLL 使能：DSI_WRPCR.PLLEN<br><img src="/2025/12/12/stm32h747-LTDC-DSI/dsi-pll.png"></p>
+<p>**稳压器控制(Regulator control)**：</p>
+<p>DSI 内置 1.2 V 稳压器，通过 DSI_WRPCR.REGEN 控制。<br>D-PHY 没有独立的电源控制位，启用&#x2F;关闭稳压器即控制 D-PHY 上电。<br>当 1.2 V 稳压器关闭时，D-PHY 的 3.3 V 部分也自动关闭。</p>
+<h4 id="功能描述：中断与错误"><a href="#功能描述：中断与错误" class="headerlink" title="功能描述：中断与错误"></a>功能描述：中断与错误</h4><p>中断可以由 DSI Host 或 DSI Wrapper 产生。<br>所有中断最终合并到 一个中断线，连接到系统的中断控制器。</p>
+<p><strong>DSI Wrapper Interrupts</strong>:</p>
+<ul>
+<li>Tearing effect event</li>
+<li>End of refresh</li>
+<li>PLL locked</li>
+<li>PLL unlocked</li>
+<li>Regulator ready</li>
+</ul>
+<p><strong>DSI Host Interrupts</strong>:<br>错误通过 DSI_ISR0 和 DSI_ISR1 寄存器报告。<br>当任一寄存器检测到错误时，DSI Host 的中断线拉高。<br>DSI_FIR0 和 DSI_FIR1 可强制触发中断，用于软件开发和测试。</p>
+<h4 id="Programing-procedure"><a href="#Programing-procedure" class="headerlink" title="Programing procedure"></a>Programing procedure</h4><p>配置 RCC - 使能 DSI 时钟<br>配置 GPIO（如需要 TE 信号）<br>配置 LTDC（参考 LTDC 文档）<br>打开 DSI 稳压器并等待就绪<br>配置 DSI PLL 并等待锁定<br>配置 D-PHY 参数<br>配置 DSI Host 时序<br>配置流控制和 DBI 接口<br>配置 DSI-LTDC 接口<br>配置为视频模式或命令模式<br>使能 D-PHY<br>使能 DSI Host<br>使能 DSI Wrapper<br>发送 DCS 命令配置显示器<br>使能 LTDC<br>启动 LTDC 流量通过 DSI Wrapper         </p>
+<h3 id="LCD-驱动-IC-——-NT35510"><a href="#LCD-驱动-IC-——-NT35510" class="headerlink" title="LCD 驱动 IC —— NT35510"></a>LCD 驱动 IC —— NT35510</h3><p>功能概述：</p>
+<ul>
+<li>单芯片 WVGA LCD 控制器&#x2F;驱动器，带显示 RAM。</li>
+<li>支持的分辨率：480×864 &#x2F; 854 &#x2F; 800 &#x2F; 720 &#x2F; 640。</li>
+<li>GRAM 容量：480 × 864 × 24 位 ≈ 9.95 Mbit，可以存储整帧图像。</li>
+<li>接口支持丰富：MIPI DSI、MDDI、RGB、SPI 等。</li>
+<li>支持局部刷新、Gamma 校正、深度待机。</li>
+</ul>
+<p>当前使用的 STM32H747-DISCO 开发板使用 MB1166 显示模组，MCU 和 显示模组使用 MIPI-DSI 接口。</p>
+<h3 id="STM32H747-控制-TFT-LCD-显示图像-（通过-LTDC-DSI）"><a href="#STM32H747-控制-TFT-LCD-显示图像-（通过-LTDC-DSI）" class="headerlink" title="STM32H747 控制 TFT-LCD 显示图像 （通过 LTDC + DSI）"></a>STM32H747 控制 TFT-LCD 显示图像 （通过 LTDC + DSI）</h3><p>ST示例：STM32Cube_FW_H7_V1.12.0\Projects\STM32H747I-DISCO\Examples\DCMI\DCMI_CaptureMode</p>
+<p>STM32H747-DISCO 使用MB1166显示模组，默认使用 LTDC + DSI 控制 TFT-LCD 显示图像。</p>
+<p>LTDC 和 DSI 时钟源：<br><img src="/2025/12/12/stm32h747-LTDC-DSI/ltdc-dsi-clock.png"></p>
+<h4 id="整体时序图"><a href="#整体时序图" class="headerlink" title="整体时序图"></a>整体时序图</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Main as main()</span><br><span class="line">    participant Camera as OV5640摄像头</span><br><span class="line">    participant DCMI as DCMI+DMA</span><br><span class="line">    participant CAM_BUF as CAMERA_FRAME_BUFFER&lt;br/&gt;(0xD0177000)</span><br><span class="line">    participant DMA2D as DMA2D</span><br><span class="line">    participant LCD_BUF as LCD_FRAME_BUFFER&lt;br/&gt;(0xD0000000)</span><br><span class="line">    participant LTDC as LTDC</span><br><span class="line">    participant DSI as DSI Host</span><br><span class="line">    participant LCD as LCD面板</span><br><span class="line"></span><br><span class="line">    Note over Main: 系统初始化</span><br><span class="line">    Main-&gt;&gt;Camera: BSP_CAMERA_Init()</span><br><span class="line">    Main-&gt;&gt;Camera: BSP_CAMERA_Start()</span><br><span class="line">    Note over Camera: 启动连续采集</span><br><span class="line"></span><br><span class="line">    rect rgb(200,200,255)</span><br><span class="line">        Note over Camera,DCMI: 阶段1: 摄像头采集</span><br><span class="line">        Camera-&gt;&gt;DCMI: 采集图像</span><br><span class="line">        DCMI-&gt;&gt;CAM_BUF: 写入RGB565数据</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    rect rgb(200,255,200)</span><br><span class="line">        Note over DCMI,LCD_BUF: 阶段2: DMA2D转换</span><br><span class="line">        DCMI--&gt;&gt;Main: 帧中断 BSP_CAMERA_FrameEventCallback()</span><br><span class="line">        Main-&gt;&gt;DMA2D: DMA2D_ConvertFrameToARGB8888()</span><br><span class="line">        DMA2D-&gt;&gt;DMA2D: RGB565→ARGB8888转换</span><br><span class="line">        DMA2D-&gt;&gt;LCD_BUF: 复制到LCD帧缓冲</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    rect rgb(255,200,200)</span><br><span class="line">        Note over DMA2D,DSI: 阶段3: 显示刷新</span><br><span class="line">        DMA2D--&gt;&gt;Main: DMA2D中断</span><br><span class="line">        Main-&gt;&gt;DSI: Display_StartRefresh() + 开启TE等待</span><br><span class="line">        DSI--&gt;&gt;DSI: TE信号产生(消隐期)</span><br><span class="line">        DSI--&gt;&gt;Main: TE回调 HAL_DSI_TearingEffectCallback()</span><br><span class="line">        Main-&gt;&gt;DSI: HAL_DSI_Refresh()</span><br><span class="line">        DSI-&gt;&gt;LTDC: 读取帧缓冲(左半屏)</span><br><span class="line">        LTDC-&gt;&gt;DSI: 像素数据</span><br><span class="line">        DSI-&gt;&gt;LCD: 传输显示</span><br><span class="line">        DSI--&gt;&gt;Main: 刷新完成回调</span><br><span class="line">        Main-&gt;&gt;DSI: 切换到右半屏</span><br><span class="line">        DSI-&gt;&gt;LTDC: 读取帧缓冲(右半屏)</span><br><span class="line">        LTDC-&gt;&gt;DSI: 像素数据</span><br><span class="line">        DSI-&gt;&gt;LCD: 传输显示</span><br><span class="line">        DSI--&gt;&gt;Main: 刷新完成回调</span><br><span class="line">        Main-&gt;&gt;Camera: BSP_CAMERA_Resume() 恢复采集</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    Note over Main: 循环往复</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="DMA2D转换详细时序"><a href="#DMA2D转换详细时序" class="headerlink" title="DMA2D转换详细时序"></a>DMA2D转换详细时序</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant Camera as 摄像头</span><br><span class="line">    participant CAM_BUF as CAMERA_FRAME_BUFFER&lt;br/&gt;(RGB565)</span><br><span class="line">    participant DMA2D as DMA2D</span><br><span class="line">    participant LCD_BUF as LCD_FRAME_BUFFER&lt;br/&gt;(ARGB8888)</span><br><span class="line">    participant Callback as 中断回调</span><br><span class="line"></span><br><span class="line">    Note over Camera,CAM_BUF: 摄像头采集阶段</span><br><span class="line">    Camera-&gt;&gt;CAM_BUF: 写入640×480&lt;br/&gt;RGB565数据</span><br><span class="line"></span><br><span class="line">    Note over CAM_BUF,DMA2D: DMA2D转换阶段</span><br><span class="line">    CAM_BUF-&gt;&gt;DMA2D: 读取源数据&lt;br/&gt;(RGB565)</span><br><span class="line">    DMA2D-&gt;&gt;DMA2D: 格式转换&lt;br/&gt;(RGB565→ARGB8888)</span><br><span class="line">    DMA2D-&gt;&gt;LCD_BUF: 写入目标数据&lt;br/&gt;(ARGB8888,居中)</span><br><span class="line"></span><br><span class="line">    Note over DMA2D,Callback: 传输完成</span><br><span class="line">    DMA2D--&gt;&gt;Callback: DMA2D中断</span><br><span class="line">    Callback-&gt;&gt;Callback: DMA2D_TransferCompleteCallback()</span><br></pre></td></tr></table></figure>
+
+<h4 id="分屏刷新详细时序"><a href="#分屏刷新详细时序" class="headerlink" title="分屏刷新详细时序"></a>分屏刷新详细时序</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant TE as TE信号</span><br><span class="line">    participant DSI_CB as DSI回调</span><br><span class="line">    participant LTDC as LTDC</span><br><span class="line">    participant DSI as DSI Host</span><br><span class="line">    participant LCD as LCD面板</span><br><span class="line">    participant Camera as 摄像头</span><br><span class="line"></span><br><span class="line">    Note over TE,DSI_CB: 第一次刷新(左半屏)</span><br><span class="line"></span><br><span class="line">    TE-&gt;&gt;DSI_CB: HAL_DSI_TearingEffectCallback()</span><br><span class="line">    DSI_CB-&gt;&gt;DSI_CB: 屏蔽TE</span><br><span class="line">    DSI_CB-&gt;&gt;DSI: 触发刷新(HAL_DSI_Refresh())</span><br><span class="line"></span><br><span class="line">    DSI-&gt;&gt;LTDC: 读取左半屏数据&lt;br/&gt;(CFBAR=0xD0000000)</span><br><span class="line">    LTDC--&gt;&gt;DSI: 像素数据</span><br><span class="line">    DSI-&gt;&gt;LCD: 传输左半屏&lt;br/&gt;(CASET=0-399)</span><br><span class="line">    DSI--&gt;&gt;DSI_CB: 刷新完成回调</span><br><span class="line"></span><br><span class="line">    rect rgb(200,255,200)</span><br><span class="line">        Note over DSI_CB,DSI: 切换到右半屏</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 禁用DSI Wrapper</span><br><span class="line">        DSI_CB-&gt;&gt;LTDC: CFBAR=0xD0000640&lt;br/&gt;(右半屏地址)</span><br><span class="line">        DSI_CB-&gt;&gt;LTDC: 重新加载配置</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 使能DSI Wrapper</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 发送CASET命令&lt;br/&gt;(400-799)</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 触发刷新</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    Note over DSI,DSI_CB: 第二次刷新(右半屏)</span><br><span class="line">    DSI-&gt;&gt;LTDC: 读取右半屏数据</span><br><span class="line">    LTDC--&gt;&gt;DSI: 像素数据</span><br><span class="line">    DSI-&gt;&gt;LCD: 传输右半屏</span><br><span class="line">    DSI--&gt;&gt;DSI_CB: 刷新完成回调</span><br><span class="line"></span><br><span class="line">    rect rgb(255,200,200)</span><br><span class="line">        Note over DSI_CB,Camera: 恢复摄像头</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 切换回左半屏地址</span><br><span class="line">        DSI_CB-&gt;&gt;DSI: 发送CASET命令&lt;br/&gt;(0-399)</span><br><span class="line">        DSI_CB-&gt;&gt;Camera: BSP_CAMERA_Resume()</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>[1] STM32H7xx Reference Manual, RM0399</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/" title="stm32h747-LTDC-DSI">http://fengxun2017.github.io/2025/12/12/stm32h747-LTDC-DSI/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/12/02/stm32h747-DCMI-OV5640/" rel="prev" title="stm32h747-DCMI-OV5640">
+                  <i class="fa fa-chevron-left"></i> stm32h747-DCMI-OV5640
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/12/21/stm32h747-DMAMUX/" rel="next" title="stm32h747 DMAMUX">
+                  stm32h747 DMAMUX <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">676k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">14:06</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

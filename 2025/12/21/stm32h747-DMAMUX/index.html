@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="stm32h747  DMAMUX">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stm32h747 DMAMUX">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/12/21/stm32h747-DMAMUX/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="stm32h747  DMAMUX">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/21/stm32h747-DMAMUX/DMAMUX.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/21/stm32h747-DMAMUX/dmamux-sync.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/21/stm32h747-DMAMUX/dmamux-event-gen.png">
+<meta property="article:published_time" content="2025-12-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-14T13:58:22.559Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2025/12/21/stm32h747-DMAMUX/DMAMUX.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/12/21/stm32h747-DMAMUX/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/12/21/stm32h747-DMAMUX/","path":"2025/12/21/stm32h747-DMAMUX/","title":"stm32h747 DMAMUX"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>stm32h747 DMAMUX | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%B8%BB%E8%A6%81%E7%89%B9%E6%80%A7"><span class="nav-number">1.</span> <span class="nav-text">1 主要特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-DMAMUX-%E6%98%A0%E5%B0%84%E5%85%B3%E7%B3%BB"><span class="nav-number">2.</span> <span class="nav-text">2 DMAMUX 映射关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-DMAMUX-Channels-%E6%A6%82%E8%A6%81"><span class="nav-number">3.</span> <span class="nav-text">3 DMAMUX Channels 概要</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-DMAMUX-%E8%AF%B7%E6%B1%82%E7%BA%BF%E5%A4%8D%E7%94%A8%E5%99%A8"><span class="nav-number">4.</span> <span class="nav-text">4 DMAMUX 请求线复用器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-DMAMUX-Request-Generator"><span class="nav-number">5.</span> <span class="nav-text">5 DMAMUX Request Generator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">6.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/12/21/stm32h747-DMAMUX/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="stm32h747 DMAMUX | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          stm32h747 DMAMUX
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-12-21 00:00:00" itemprop="dateCreated datePublished" datetime="2025-12-21T00:00:00+08:00">2025-12-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.9k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+stm32h747  DMAMUX
+</center>
+
+<span id="more"></span>
+
+<hr>
+<p>STM32 MCU 嵌入了<strong>直接存储器访问（DMA</strong>）控制器。DMA可以在外设请求或软件触发时执行面向块的数据传输。在传统STM32产品上，通道请求选择在DMA控制器内实现，控制器内带有面向给定通道的受限外设请求列表。软件应用程序不能自由地将任何外设请求映射到任何通道。</p>
+<p><strong>DMA请求复用器（DMAMUX</strong>）增强了STM32 DMA请求路由功能。DMAMUX增加了更多灵活性，可以提供完全动态的DMA外设请求映射。它可以实现外围设备与DMA控制器之间DMA请求线路的路由。</p>
+<h3 id="1-主要特性"><a href="#1-主要特性" class="headerlink" title="1 主要特性"></a>1 主要特性</h3><ul>
+<li>最多 16 路可编程 DMA 请求线输出 </li>
+<li>最多 8 路DMA请求生成器 </li>
+<li>最多 32 路DMA请求生成器触发输入</li>
+<li>最多 16 路同步输入</li>
+</ul>
+<p>每个 DMA 请求生成器通道支持： </p>
+<ul>
+<li>DMA 请求触发输入选择器 </li>
+<li>DMA 请求计数器</li>
+<li>触发输入事件溢出标志</li>
+</ul>
+<p>每个 DMA 请求线复用器通道输出支持： </p>
+<ul>
+<li>最多 107 路外设请求输入 </li>
+<li>1 路 DMA 请求输出</li>
+<li>同步输入选择器</li>
+<li>DMA 请求计数器</li>
+<li>同步输入事件溢出标志</li>
+<li>1 路事件输出（用于 DMA 请求链式触发）</li>
+</ul>
+<p>STM32H747 集成了两个 DMA 请求复用器实例： </p>
+<ul>
+<li><strong>DMAMUX1</strong>：用于 DMA1 和 DMA2（D2 域） </li>
+<li><strong>DMAMUX2</strong>：用于 BDMA（D3 域）</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>DMAMUX1</th>
+<th>DMAMUX2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Number of DMAMUX output request channels</td>
+<td>16</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Number of DMAMUX request generator channels</td>
+<td>8</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Number of DMAMUX request trigger inputs</td>
+<td>8</td>
+<td>32</td>
+</tr>
+<tr>
+<td>Number of DMAMUX synchronization inputs</td>
+<td>8</td>
+<td>16</td>
+</tr>
+<tr>
+<td>Number of DMAMUX peripheral request inputs</td>
+<td>107</td>
+<td>12</td>
+</tr>
+</tbody></table>
+<h3 id="2-DMAMUX-映射关系"><a href="#2-DMAMUX-映射关系" class="headerlink" title="2 DMAMUX 映射关系"></a>2 DMAMUX 映射关系</h3><p><strong>DMAMUX1 的资源映射是硬连线的</strong>。用于 D2 域的 DMA1 和 DMA2</p>
+<ul>
+<li>DMAMUX1 通道 0–7 连接到 DMA1 通道 0–7 </li>
+<li>DMAMUX1 通道 8–15 连接到 DMA2 通道 0–7</li>
+</ul>
+<p><strong>DMAMUX2 的资源映射也是硬连线的</strong>。用于 D3 域的 BDMA</p>
+<ul>
+<li>DMAMUX2 通道 0–7 连接到 BDMA 通道 0–7</li>
+</ul>
+<p><img src="/2025/12/21/stm32h747-DMAMUX/DMAMUX.png"></p>
+<ul>
+<li>dmamux_hclk： DMAMUX AHB clock</li>
+<li>dmamux_req_inx： DMAMUX DMA request line inputs from peripherals</li>
+<li>dmamux_trgx：DMAMUX DMA request triggers inputs (to request generator sub-block)</li>
+<li>dmamux_req_genx：DMAMUX request generator sub-block channels outputs</li>
+<li>dmamux_reqx：DMAMUX request multiplexer sub-block inputs (from peripheral requests and request generator channels)</li>
+<li>dmamux_syncx：DMAMUX synchronization inputs (to request multiplexer sub-block)</li>
+<li>dmamux_req_outx：DMAMUX requests outputs (to DMA controllers)</li>
+<li>dmamux_evtx：DMAMUX events outputs</li>
+<li>dmamux_ovr_it：DMAMUX overrun interrupts</li>
+</ul>
+<h3 id="3-DMAMUX-Channels-概要"><a href="#3-DMAMUX-Channels-概要" class="headerlink" title="3 DMAMUX Channels 概要"></a>3 DMAMUX Channels 概要</h3><p>DMAMUX Channel 定义：</p>
+<ul>
+<li>一个 DMAMUX channel &#x3D; 请求复用器通道。 </li>
+<li>可选择输入源：外设请求线或 DMAMUX 请求生成器。</li>
+<li>每个 DMAMUX channel <strong>专门连接到一个 DMA 控制器的 channel&#x2F;stream</strong>。</li>
+</ul>
+<p>配置流程 </p>
+<ol>
+<li>完全配置 DMA channel y（不使能 EN）。 </li>
+<li>完全配置对应的 DMAMUX channel x。 </li>
+<li>最后设置 DMA channel y 的 EN 位，启动传输。</li>
+</ol>
+<h3 id="4-DMAMUX-请求线复用器"><a href="#4-DMAMUX-请求线复用器" class="headerlink" title="4 DMAMUX 请求线复用器"></a>4 DMAMUX 请求线复用器</h3><p>负责路由 DMA 请求&#x2F;应答信号（DMA request lines）。<br>每个请求线并行连接到所有 DMAMUX channel。<br>请求来源：外设 or DMAMUX 请求生成器<br>请求源选择方式：在 <strong>DMAMUX_CxCR.DMAREQ_ID</strong> 中配置请求 ID。 </p>
+<ul>
+<li><code>DMAREQ_ID = 0</code> → 无请求线选中（空值）。 </li>
+<li>非 0 值 → 对应某个外设请求。</li>
+</ul>
+<p><strong>注意</strong>： 同一个非零 ID <strong>不能同时分配给多个 DMAMUX channel</strong>，除非保证对应 DMA channel 不会同时激活。 </p>
+<p><strong>同步模式</strong>：<br><img src="/2025/12/21/stm32h747-DMAMUX/dmamux-sync.png"></p>
+<ul>
+<li>每个 DMAMUX channel 可独立启用同步模式： <ul>
+<li>通过 <strong>DMAMUX_CxCR.SE</strong> 位使能。 </li>
+<li>同步输入通过 <strong>SYNC_ID</strong> 字段选择。 </li>
+<li>边沿检测由 <strong>SPOL[1:0]</strong> 配置（上升&#x2F;下降沿）。</li>
+</ul>
+</li>
+<li>行为： <ul>
+<li>检测到同步边沿 → 将选中的请求线传递到输出。 </li>
+<li>若没有待处理请求线 → 同步事件被丢弃。</li>
+</ul>
+</li>
+<li>内部请求计数器： <ul>
+<li>每次 DMA 服务一个请求 → 计数器减 1。 </li>
+<li>计数器减到 0 → 自动重新加载 <strong>NBREQ</strong> 值，并断开输入请求线。 </li>
+<li>输出请求次数 &#x3D; <code>NBREQ + 1</code>。</li>
+</ul>
+</li>
+</ul>
+<p><strong>事件生成</strong>：<br><img src="/2025/12/21/stm32h747-DMAMUX/dmamux-event-gen.png"></p>
+<ul>
+<li>通过 <strong>EGE</strong> 位使能。 </li>
+<li>当计数器重新加载时，产生一个 AHB 时钟周期的事件脉冲。 </li>
+<li>特殊情况：若 <code>NBREQ=0</code> 且 EGE&#x3D;1 → 每次请求都会生成事件。</li>
+</ul>
+<p><strong>备注</strong>：对于DMAMUX_CCR 寄存器中的 NBREQ，当使能了同步模式，NBREQ 影响发生同步事件后可以传递的dma请求数；当使能了事件生成，NBREQ 影响几次DMA触发产生一个事件。</p>
+<p>同步溢出与中断 </p>
+<ul>
+<li>若在计数器未减到 0 前再次检测到同步事件 → 设置 <strong>SOFx</strong> 溢出标志。</li>
+<li>必须在 DMA channel 使用完成后关闭同步（SE&#x3D;0），否则会因无 DMA 应答导致溢出。 </li>
+<li>溢出标志清除：写 <strong>CSOFx</strong> 位于 DMAMUX_CFR。 </li>
+<li>若 <strong>SOIE</strong> 使能 → 溢出时产生中断。</li>
+</ul>
+<h3 id="5-DMAMUX-Request-Generator"><a href="#5-DMAMUX-Request-Generator" class="headerlink" title="5 DMAMUX Request Generator"></a>5 DMAMUX Request Generator</h3><p>基本功能：</p>
+<ul>
+<li><strong>作用</strong>：根据触发输入信号产生 DMA 请求。</li>
+<li><strong>结构</strong>：<ul>
+<li>有多个请求生成器通道。</li>
+<li>所有触发输入并行连接到所有生成器通道。</li>
+<li>每个生成器通道的输出作为 DMAMUX 请求线复用器的输入。</li>
+</ul>
+</li>
+</ul>
+<p>通道配置：</p>
+<ul>
+<li>每个生成器通道 x 有一个 <strong>GE (Generator Enable)</strong> 位，位于 <code>DMAMUX_RGxCR</code>。</li>
+<li>触发输入信号通过 <strong>SIG_ID</strong> 字段选择。</li>
+<li>触发边沿类型通过 <strong>GPOL</strong> 字段选择：<ul>
+<li>上升沿</li>
+<li>下降沿</li>
+<li>双边沿</li>
+</ul>
+</li>
+</ul>
+<p>工作机制：</p>
+<ul>
+<li>检测到触发事件 → 通道开始产生 DMA 请求。</li>
+<li>每次 DMA 控制器服务一个请求 → 内部请求计数器减 1。</li>
+<li>当计数器减到 0 (underrun)：<ul>
+<li>通道停止产生请求。</li>
+<li>计数器在下一次触发事件时自动重新加载为 <strong>GNBREQ</strong>。</li>
+</ul>
+</li>
+<li><strong>请求数量</strong>：每次触发事件后产生的请求数 &#x3D; <code>GNBREQ + 1</code>。</li>
+</ul>
+<p>溢出与中断：</p>
+<ul>
+<li>若在计数器未减到 0 前再次检测到触发事件 → 设置 <strong>OFx 溢出标志</strong> (<code>DMAMUX_RGSR</code>)。</li>
+<li>使用完成后必须禁用通道 (GE&#x3D;0)，否则会因无 DMA 应答导致溢出。</li>
+<li>清除溢出标志：写 <strong>COFx</strong> 位于 <code>DMAMUX_RGCFR</code>。</li>
+<li>若 <strong>OIE</strong> 使能 → 溢出时产生中断。</li>
+</ul>
+<p>总结：</p>
+<ul>
+<li><strong>DMAMUX Request Generator</strong> &#x3D; 触发输入 → 产生 DMA 请求。  </li>
+<li>配置：<code>GE</code> 启用，<code>SIG_ID</code> 选择输入，<code>GPOL</code> 选择边沿，<code>GNBREQ</code> 设置请求数。  </li>
+<li>行为：触发事件 → 产生 <code>GNBREQ+1</code> 个请求 → 计数器减到 0 → 停止，等待下一次触发。</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>[1] STM32H7xx Reference Manual, RM0399</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/12/21/stm32h747-DMAMUX/" title="stm32h747 DMAMUX">http://fengxun2017.github.io/2025/12/21/stm32h747-DMAMUX/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/12/12/stm32h747-LTDC-DSI/" rel="prev" title="stm32h747-LTDC-DSI">
+                  <i class="fa fa-chevron-left"></i> stm32h747-LTDC-DSI
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/12/23/stm32h747-FMC-SDRAM/" rel="next" title="stm32h747 FMC-SDRAM">
+                  stm32h747 FMC-SDRAM <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">676k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">14:06</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

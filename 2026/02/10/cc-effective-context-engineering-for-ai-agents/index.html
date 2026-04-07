@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Effective context engineering for AI agents ，内容为 Anthropic 关于上下文工程化技术的总结 (使用claude code输出的总结)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective context engineering for AI agents">
+<meta property="og:url" content="http://fengxun2017.github.io/2026/02/10/cc-effective-context-engineering-for-ai-agents/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="Effective context engineering for AI agents ，内容为 Anthropic 关于上下文工程化技术的总结 (使用claude code输出的总结)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2026/02/10/cc-effective-context-engineering-for-ai-agents/calibrating-the-system-prompt.webp">
+<meta property="article:published_time" content="2026-02-09T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-07T15:40:58.139Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2026/02/10/cc-effective-context-engineering-for-ai-agents/calibrating-the-system-prompt.webp">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2026/02/10/cc-effective-context-engineering-for-ai-agents/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2026/02/10/cc-effective-context-engineering-for-ai-agents/","path":"2026/02/10/cc-effective-context-engineering-for-ai-agents/","title":"Effective context engineering for AI agents"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Effective context engineering for AI agents | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%E5%8C%96-Effective-Context-Engineering"><span class="nav-number">1.</span> <span class="nav-text">上下文工程化 (Effective Context Engineering)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%BE%E7%A8%8B%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">课程简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B-vs-%E6%8F%90%E7%A4%BA%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">1. 上下文工程 vs 提示工程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%E7%9A%84%E9%87%8D%E8%A6%81%E6%80%A7"><span class="nav-number">1.3.</span> <span class="nav-text">2. 上下文工程的重要性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%B8%8B%E6%96%87%E8%A1%B0%E5%87%8F%EF%BC%88Context-Rot%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">上下文衰减（Context Rot）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E5%8A%9B%E7%A8%80%E7%BC%BA"><span class="nav-number">1.3.2.</span> <span class="nav-text">注意力稀缺</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%9C%89%E6%95%88%E4%B8%8A%E4%B8%8B%E6%96%87%E7%9A%84%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="nav-number">1.4.</span> <span class="nav-text">3. 有效上下文的组成部分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%8F%90%E7%A4%BA"><span class="nav-number">1.4.1.</span> <span class="nav-text">系统提示</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.4.2.</span> <span class="nav-text">工具设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%91%E6%A0%B7%E6%9C%AC%E7%A4%BA%E4%BE%8B"><span class="nav-number">1.4.3.</span> <span class="nav-text">少样本示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%B8%8A%E4%B8%8B%E6%96%87%E6%A3%80%E7%B4%A2%E4%B8%8E%E4%BB%A3%E7%90%86%E6%90%9C%E7%B4%A2"><span class="nav-number">1.5.</span> <span class="nav-text">4. 上下文检索与代理搜索</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A2%84%E6%8E%A8%E7%90%86%E6%A3%80%E7%B4%A2-vs-%E5%8D%B3%E6%97%B6%E6%A3%80%E7%B4%A2"><span class="nav-number">1.5.1.</span> <span class="nav-text">预推理检索 vs 即时检索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E7%AD%96%E7%95%A5"><span class="nav-number">1.5.2.</span> <span class="nav-text">混合策略</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E9%95%BF%E6%9C%9F%E4%BB%BB%E5%8A%A1%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B"><span class="nav-number">1.6.</span> <span class="nav-text">5. 长期任务的上下文工程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%8B%E7%BC%A9%EF%BC%88Compaction%EF%BC%89"><span class="nav-number">1.6.1.</span> <span class="nav-text">压缩（Compaction）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E5%8C%96%E7%AC%94%E8%AE%B0%EF%BC%88Structured-Note-taking%EF%BC%89"><span class="nav-number">1.6.2.</span> <span class="nav-text">结构化笔记（Structured Note-taking）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E4%BB%A3%E7%90%86%E6%9E%B6%E6%9E%84"><span class="nav-number">1.6.3.</span> <span class="nav-text">子代理架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%80%E6%9C%AF%E9%80%89%E6%8B%A9%E5%AF%B9%E6%AF%94"><span class="nav-number">1.6.4.</span> <span class="nav-text">技术选择对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E6%A0%B8%E5%BF%83%E5%8E%9F%E5%88%99%E6%80%BB%E7%BB%93"><span class="nav-number">1.7.</span> <span class="nav-text">6. 核心原则总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E8%A6%81%E7%82%B9"><span class="nav-number">1.7.1.</span> <span class="nav-text">关键要点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E6%80%BB%E7%BB%93"><span class="nav-number">1.8.</span> <span class="nav-text">7. 总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2026/02/10/cc-effective-context-engineering-for-ai-agents/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Effective context engineering for AI agents | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Effective context engineering for AI agents
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-02-10 00:00:00" itemprop="dateCreated datePublished" datetime="2026-02-10T00:00:00+08:00">2026-02-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Claude/" itemprop="url" rel="index"><span itemprop="name">Claude</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.6k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+Effective context engineering for AI agents
+，内容为 Anthropic 关于上下文工程化技术的总结 (使用claude code输出的总结)
+</center>
+
+<span id="more"></span>
+<hr>
+<h1 id="上下文工程化-Effective-Context-Engineering"><a href="#上下文工程化-Effective-Context-Engineering" class="headerlink" title="上下文工程化 (Effective Context Engineering)"></a>上下文工程化 (Effective Context Engineering)</h1><blockquote>
+<p>课程来源: Anthropic - Engineering Blog<br>课程链接: <a target="_blank" rel="noopener" href="https://www.anthropic.com/research/effective-context-engineering-for-ai-agents">https://www.anthropic.com/research/effective-context-engineering-for-ai-agents</a></p>
+</blockquote>
+<h2 id="课程简介"><a href="#课程简介" class="headerlink" title="课程简介"></a>课程简介</h2><p>在经过几年的提示工程（Prompt Engineering）成为应用 AI 的焦点后，一个新术语开始受到关注：<strong>上下文工程（Context Engineering）</strong>。构建大语言模型应用不再只是寻找正确的提示词，而是回答更广泛的问题：”什么样的上下文配置最有可能产生我们期望的模型行为？”</p>
+<p>上下文指的是在从大语言模型采样时包含的 token 集合。工程问题在于优化这些 token 的效用，同时应对 LLM 的固有约束，以持续实现预期目标。</p>
+<hr>
+<h2 id="1-上下文工程-vs-提示工程"><a href="#1-上下文工程-vs-提示工程" class="headerlink" title="1. 上下文工程 vs 提示工程"></a>1. 上下文工程 vs 提示工程</h2><table>
+<thead>
+<tr>
+<th>方面</th>
+<th>提示工程</th>
+<th>上下文工程</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>焦点</strong></td>
+<td>如何编写有效的提示，特别是系统提示</td>
+<td>在 LLM 推理过程中管理和维护最优的 token 集合</td>
+</tr>
+<tr>
+<td><strong>性质</strong></td>
+<td>离散任务</td>
+<td>迭代过程，每次决定向模型传递什么都需要进行管理</td>
+</tr>
+<tr>
+<td><strong>范围</strong></td>
+<td>单一提示的优化</td>
+<td>系统提示、工具、 MCP、外部数据、消息历史等整个上下文状态</td>
+</tr>
+</tbody></table>
+<p>随着我们向更强大的代理发展，需要跨多个推理回合和更长的时间范围运行的策略，上下文工程变得至关重要。</p>
+<hr>
+<h2 id="2-上下文工程的重要性"><a href="#2-上下文工程的重要性" class="headerlink" title="2. 上下文工程的重要性"></a>2. 上下文工程的重要性</h2><h3 id="上下文衰减（Context-Rot）"><a href="#上下文衰减（Context-Rot）" class="headerlink" title="上下文衰减（Context Rot）"></a>上下文衰减（Context Rot）</h3><p>研究表明，随着上下文窗口中 token 数量的增加，模型从该上下文中准确回忆信息的能力会下降。这就是”<strong>大海捞针</strong>“（needle-in-a-haystack）基准测试发现的<strong>上下文衰减</strong>现象。</p>
+<h3 id="注意力稀缺"><a href="#注意力稀缺" class="headerlink" title="注意力稀缺"></a>注意力稀缺</h3><ul>
+<li><strong>LLM 架构限制</strong>：基于 Transformer 架构，每个 token 都可以关注上下文中的所有其他 token，这导致 n 个 token 之间产生 n² 的成对关系</li>
+<li><strong>训练数据分布</strong>：模型在训练数据中，典型短序列比长序列更常见，因此对上下文范围依赖的经验和专用参数较少</li>
+<li><strong>位置编码插值</strong>：允许模型处理更长序列，但会对 token 位置理解产生一定降解</li>
+</ul>
+<p><strong>关键结论</strong>：上下文必须被视为一种有限资源，具有边际递减的回报。LLM 有”注意力预算”，每引入一个新 token 都会消耗一定的预算。</p>
+<hr>
+<h2 id="3-有效上下文的组成部分"><a href="#3-有效上下文的组成部分" class="headerlink" title="3. 有效上下文的组成部分"></a>3. 有效上下文的组成部分</h2><h3 id="系统提示"><a href="#系统提示" class="headerlink" title="系统提示"></a>系统提示</h3><p>系统提示应该极其清晰，使用简单、直接的语言。</p>
+<p><strong>最佳实践</strong>：</p>
+<ul>
+<li>在正确的抽象级别上呈现想法</li>
+<li>使用 <code>&lt;background_information&gt;</code>、<code>&lt;instructions&gt;</code>、<code>## Tool guidance</code>、<code>## Output description</code> 等明确分区</li>
+<li>使用 XML 标签或 Markdown 标题区分各部分</li>
+<li>追求完全概述预期行为的<strong>最小信息集</strong></li>
+</ul>
+<p><strong>两个常见失败模式</strong>：</p>
+<ol>
+<li><strong>过度复杂</strong>：工程师硬编码复杂、脆弱的逻辑来引出精确的代理行为</li>
+<li><strong>过于模糊</strong>：提供模糊、高层次的指导，无法给 LLM 关于期望输出的具体信号</li>
+</ol>
+<p><img src="/2026/02/10/cc-effective-context-engineering-for-ai-agents/calibrating-the-system-prompt.webp"></p>
+<h3 id="工具设计"><a href="#工具设计" class="headerlink" title="工具设计"></a>工具设计</h3><p>工具定义了代理与其信息&#x2F;操作空间之间的契约。</p>
+<p><strong>设计原则</strong>：</p>
+<ul>
+<li><strong>自包含</strong>：工具应该易于理解，专注于单一职责</li>
+<li><strong>鲁棒性</strong>：能够优雅地处理错误</li>
+<li><strong>清晰性</strong>：关于预期用途要极其清晰</li>
+<li><strong>参数描述</strong>：输入参数应该描述性强、明确</li>
+</ul>
+<p><strong>常见失败模式</strong>：臃肿的工具集覆盖太多功能或导致关于使用哪个工具的歧义决策点。</p>
+<h3 id="少样本示例"><a href="#少样本示例" class="headerlink" title="少样本示例"></a>少样本示例</h3><p>提供示例（少样本提示）是一个广为人知的最佳实践。但不建议：</p>
+<ul>
+<li>在提示中塞入大量边缘情况</li>
+<li>试图阐述 LLM 应该遵循的每一条可能规则</li>
+</ul>
+<p><strong>推荐做法</strong>：精心策划一组多样化、典型的示例，有效描绘代理的期望行为。</p>
+<hr>
+<h2 id="4-上下文检索与代理搜索"><a href="#4-上下文检索与代理搜索" class="headerlink" title="4. 上下文检索与代理搜索"></a>4. 上下文检索与代理搜索</h2><h3 id="预推理检索-vs-即时检索"><a href="#预推理检索-vs-即时检索" class="headerlink" title="预推理检索 vs 即时检索"></a>预推理检索 vs 即时检索</h3><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>描述</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>预推理检索</strong></td>
+<td>在推理前嵌入并检索相关数据</td>
+<td>速度快</td>
+<td>可能包含过时信息</td>
+</tr>
+<tr>
+<td><strong>即时检索</strong></td>
+<td>使用轻量级标识符动态加载数据</td>
+<td>更灵活，避免过时</td>
+<td>运行时代探索较慢</td>
+</tr>
+</tbody></table>
+<h3 id="混合策略"><a href="#混合策略" class="headerlink" title="混合策略"></a>混合策略</h3><p>Claude Code 采用了混合模型：</p>
+<ul>
+<li><code>CLAUDE.md</code> 文件预先加载到上下文中</li>
+<li>使用 <code>glob</code> 和 <code>grep</code> 等原语按需导航环境并检索文件</li>
+</ul>
+<p><strong>好处</strong>：</p>
+<ul>
+<li>允许渐进式披露</li>
+<li>元数据（文件夹层次结构、命名约定、时间戳）提供重要信号</li>
+<li>代理可以逐层组装理解</li>
+</ul>
+<hr>
+<h2 id="5-长期任务的上下文工程"><a href="#5-长期任务的上下文工程" class="headerlink" title="5. 长期任务的上下文工程"></a>5. 长期任务的上下文工程</h2><p>对于需要代理在动作序列中保持连贯性、上下文和目标导向行为的长期任务（如大型代码库迁移或综合研究项目），代理需要专门的技巧来应对上下文窗口大小限制。</p>
+<h3 id="压缩（Compaction）"><a href="#压缩（Compaction）" class="headerlink" title="压缩（Compaction）"></a>压缩（Compaction）</h3><p>压缩是将接近上下文窗口限制的对话总结其内容，并重新启动带有摘要的新上下文窗口的实践。</p>
+<p><strong>实现方式</strong>：</p>
+<ul>
+<li>将消息历史传递给模型进行总结和压缩</li>
+<li>保留架构决策、未解决的 bug 和实现细节</li>
+<li>丢弃冗余的工具输出或消息</li>
+</ul>
+<p><strong>最佳实践</strong>：</p>
+<ol>
+<li>首先最大化召回率，确保压缩提示捕获跟踪中的每一条相关信息</li>
+<li>然后迭代改进精度，消除多余内容</li>
+</ol>
+<p><strong>最安全的轻量级压缩形式</strong>：工具结果清除</p>
+<h3 id="结构化笔记（Structured-Note-taking）"><a href="#结构化笔记（Structured-Note-taking）" class="headerlink" title="结构化笔记（Structured Note-taking）"></a>结构化笔记（Structured Note-taking）</h3><p>结构化笔记（或代理记忆）是一种代理定期将笔记写入上下文中保存的技术。</p>
+<p><strong>应用场景</strong>：</p>
+<ul>
+<li>代理跟踪复杂任务中的进度</li>
+<li>维护关键上下文和依赖关系</li>
+<li>跨会话维护项目状态</li>
+</ul>
+<p><strong>示例</strong>：Claude Code 创建待办列表，自定义代理维护 NOTES.md 文件。</p>
+<h3 id="子代理架构"><a href="#子代理架构" class="headerlink" title="子代理架构"></a>子代理架构</h3><p>子代理架构提供了另一种解决上下文限制的方法。</p>
+<p><strong>工作方式</strong>：</p>
+<ul>
+<li>主代理协调高级计划</li>
+<li>子代理执行深度技术工作或使用工具查找相关信息</li>
+<li>每个子代理探索大量内容，但只返回 1,000-2,000 个 token 的精简摘要</li>
+</ul>
+<p><strong>优势</strong>：详细的搜索上下文保留在子代理内部，主代理专注于综合和分析结果。</p>
+<h3 id="技术选择对比"><a href="#技术选择对比" class="headerlink" title="技术选择对比"></a>技术选择对比</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐技术</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>需要大量来回对话的任务</td>
+<td>压缩</td>
+</tr>
+<tr>
+<td>具有明确里程碑的迭代开发</td>
+<td>笔记</td>
+</tr>
+<tr>
+<td>需要并行探索的复杂研究</td>
+<td>多代理架构</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="6-核心原则总结"><a href="#6-核心原则总结" class="headerlink" title="6. 核心原则总结"></a>6. 核心原则总结</h2><blockquote>
+<p><strong>核心原则</strong>：找到最小的高信号 token 集，最大化实现期望结果的可能性。</p>
+</blockquote>
+<h3 id="关键要点"><a href="#关键要点" class="headerlink" title="关键要点"></a>关键要点</h3><ol>
+<li><strong>上下文是有限资源</strong> - 随着上下文增长，模型性能会下降</li>
+<li><strong>少即是多</strong> - 提供相关信息，避免过多无关上下文</li>
+<li><strong>分层管理</strong> - 使用压缩、笔记、工具等多种技术协同工作</li>
+<li><strong>动态检索</strong> - 按需加载数据而非预先加载所有内容</li>
+<li><strong>持续优化</strong> - 随着模型能力的提升，代理设计将趋于让智能模型更自主地行动</li>
+</ol>
+<hr>
+<h2 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h2><p>上下文工程代表了构建 LLM 应用的根本性转变。随着模型变得更有能力，挑战不仅仅是制作完美的提示，而是<strong>深思熟虑地策划什么信息进入模型在每个步骤中的有限注意力预算</strong>。</p>
+<p>无论是为长期任务实施压缩、设计 token 高效的工具，还是让代理按需探索环境，指导原则保持不变：找到最小的高信号 token 集，最大化实现期望结果的可能性。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2026/02/10/cc-effective-context-engineering-for-ai-agents/" title="Effective context engineering for AI agents">http://fengxun2017.github.io/2026/02/10/cc-effective-context-engineering-for-ai-agents/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/02/05/cc-learning-github-integration/" rel="prev" title="Github integration">
+                  <i class="fa fa-chevron-left"></i> Github integration
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2026/02/25/cc-context-management-claude-developer-platform/" rel="next" title="Managing context on the Claude Developer Platform">
+                  Managing context on the Claude Developer Platform <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">676k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">14:06</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

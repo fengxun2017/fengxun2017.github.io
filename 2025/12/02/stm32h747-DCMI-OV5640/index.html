@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="使用 stm32H747 中的 DCMI 模块，获取 OV5640 摄像头数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="stm32h747-DCMI-OV5640">
+<meta property="og:url" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="使用 stm32H747 中的 DCMI 模块，获取 OV5640 摄像头数据">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/h-blanking.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/v-blanking.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/camera_interconnect.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/DCMI-data-flow.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/dcmi-block.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/dcmi-packing.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/frame-sync.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/snapshot.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/continuous.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/dcmi_int.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/dma-data-flow.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/ov5640-pll.png">
+<meta property="og:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/image_window.png">
+<meta property="article:published_time" content="2025-12-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-03-25T13:15:50.037Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/h-blanking.png">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/","path":"2025/12/02/stm32h747-DCMI-OV5640/","title":"stm32h747-DCMI-OV5640"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>stm32h747-DCMI-OV5640 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%85%A7%E7%9B%B8%E6%9C%BA%E6%A8%A1%E5%9D%97%E5%92%8C%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">1 照相机模块和基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E6%88%90%E5%83%8F%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 成像的基本概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E9%A2%9C%E8%89%B2%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 颜色概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E7%85%A7%E7%9B%B8%E6%9C%BA%E6%A8%A1%E5%9D%97"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 照相机模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E7%85%A7%E7%9B%B8%E6%9C%BA%E6%A8%A1%E5%9D%97%E4%B8%8E%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%BF%9E%E6%8E%A5%EF%BC%88%E5%B9%B6%E8%A1%8C%E6%8E%A5%E5%8F%A3%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 照相机模块与嵌入式系统的连接（并行接口）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Stm32h747%E4%B8%AD%E7%9A%84DCMI"><span class="nav-number">2.</span> <span class="nav-text">2 Stm32h747中的DCMI</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E7%A1%AC%E4%BB%B6%E5%90%8C%E6%AD%A5"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 硬件同步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E5%BF%AB%E7%85%A7%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 快照模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E8%BF%9E%E7%BB%AD%E9%87%87%E9%9B%86%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 连续采集模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F%E5%92%8C%E5%AD%98%E5%82%A8"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 数据格式和存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-DCMI-%E4%B8%AD%E6%96%AD"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 DCMI 中断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-DCMI%E8%87%B3%E5%86%85%E5%AD%98%E4%BC%A0%E8%BE%93%E7%9A%84DMA%E5%B8%B8%E7%94%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 DCMI至内存传输的DMA常用配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-%E6%A0%B9%E6%8D%AE%E5%9B%BE%E5%83%8F%E5%A4%A7%E5%B0%8F%E5%92%8C%E6%8D%95%E8%8E%B7%E6%A8%A1%E5%BC%8F%E8%AE%BE%E7%BD%AEDMA"><span class="nav-number">2.7.</span> <span class="nav-text">2.7 根据图像大小和捕获模式设置DMA</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-stm32%E4%BD%BF%E7%94%A8OV5640-%E8%BF%9B%E8%A1%8C%E5%9B%BE%E5%83%8F%E9%87%87%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">3 stm32使用OV5640 进行图像采集</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-OV5640-%E6%91%84%E5%83%8F%E5%A4%B4%E5%83%8F%E7%B4%A0%E6%97%B6%E9%92%9F%E9%85%8D%E7%BD%AE%EF%BC%8C%E5%92%8C%E5%B8%A7%E7%8E%87%E6%8E%A7%E5%88%B6"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 OV5640 摄像头像素时钟配置，和帧率控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-HSYNC%E3%80%81VSYNC%E3%80%81PCLK-%E7%9A%84%E6%9E%81%E6%80%A7%E9%85%8D%E7%BD%AE"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 HSYNC、VSYNC、PCLK 的极性配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E8%BE%93%E5%87%BA%E5%B0%BA%E5%AF%B8%E5%92%8C%E5%83%8F%E7%B4%A0%E6%A0%BC%E5%BC%8F%E9%85%8D%E7%BD%AE"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 输出尺寸和像素格式配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">117</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="stm32h747-DCMI-OV5640 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          stm32h747-DCMI-OV5640
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-12-02 00:00:00" itemprop="dateCreated datePublished" datetime="2025-12-02T00:00:00+08:00">2025-12-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/stm32/" itemprop="url" rel="index"><span itemprop="name">stm32</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>7k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+使用 stm32H747 中的 DCMI 模块，获取 OV5640 摄像头数据
+</center>
+
+<span id="more"></span>
+
+<hr>
+<h3 id="1-照相机模块和基本概念"><a href="#1-照相机模块和基本概念" class="headerlink" title="1 照相机模块和基本概念"></a>1 照相机模块和基本概念</h3><h4 id="1-1-成像的基本概念"><a href="#1-1-成像的基本概念" class="headerlink" title="1.1 成像的基本概念"></a>1.1 成像的基本概念</h4><p>像素：图像上的每个点，体现了彩色图像的颜色或黑白照片的灰度。</p>
+<p>分辨率：图像中像素的数量。像素越多，图像尺寸越大。当图像尺寸相同时，像素的数量越多，图像包含的细节越丰富。</p>
+<p>色深（位深）：用于指示像素颜色的位数。也被称为每像素位数（bpp）。</p>
+<ul>
+<li>对于二值图像，每个像素包含一位。每个像素为黑色或白色（0或1）。</li>
+<li>对于灰度图，图像通常为2 bpp（每个像素可以有4级灰阶中的1级）至8 bbp（每个像素可以有256级灰阶中的1级）。</li>
+<li>对于彩色图像，每个像素的位数为8至24不等（每个像素最多可以有16777216种可能的颜色）</li>
+</ul>
+<p>帧率：每秒传输的帧（或图像）数，表示为帧每秒（FPS）</p>
+<p>水平消隐(Horizontal blanking)：一行末尾与下一行开头之间被忽略的行。<br><img src="/2025/12/02/stm32h747-DCMI-OV5640/h-blanking.png"></p>
+<p>垂直消隐(Vertical blanking)：帧最后一行末尾与下一帧第一行开头之间被忽略的行。<br><img src="/2025/12/02/stm32h747-DCMI-OV5640/v-blanking.png"></p>
+<p>逐行扫描：在构建图像时，逐行扫描时，先绘制第一行，然后是第二行，直到整帧完成。</p>
+<p>隔行扫描：每一帧分为两个场，即奇数行(1,3,5..)和偶数行(2,4..)。在构建图像时时，先画奇数行，再画偶数行，交替显示。</p>
+<h4 id="1-2-颜色概念"><a href="#1-2-颜色概念" class="headerlink" title="1.2 颜色概念"></a>1.2 颜色概念</h4><p><strong>亮度（Brightness）</strong>：<br>通常与 RGB 三通道的整体强度相关，可以近似用加权平均计算：<code>𝐿 = 0.299⋅𝑅 + 0.587⋅𝐺 + 0.114⋅𝐵</code><br>调高亮度就是同时提高 R&#x2F;G&#x2F;B 的数值，调低则降低。</p>
+<p><strong>对比度（Contrast）</strong><br>对比度不是单个像素的属性，而是图像整体的 亮度差异范围。在数值上，常用公式：<br><code>C = (𝐿𝑚𝑎𝑥 − 𝐿𝑚𝑖𝑛) / (𝐿𝑚𝑎𝑥 + 𝐿𝑚𝑖𝑛)</code><br>提高对比度意味着把亮的像素更亮，暗的更暗（拉伸亮度范围）。</p>
+<p><strong>饱和度（Saturation）</strong><br>饱和度是颜色相对灰度的偏离程度。转换到 HSL&#x2F;HSV 空间时，饱和度定义为：<br><code>𝑆 = (𝑚𝑎𝑥(𝑅,𝐺,𝐵) − 𝑚𝑖𝑛(𝑅,𝐺,𝐵)) / 𝑚𝑎𝑥(𝑅,𝐺,𝐵)</code><br>降低饱和度就是让 R&#x2F;G&#x2F;B 更接近，趋向灰色。</p>
+<p><strong>透明度（Opacity &#x2F; Alpha）</strong><br>透明度描述一个像素的“可见程度”或“遮挡程度”。前景图像的透明度决定其与背景的融合程度。</p>
+<h4 id="1-3-照相机模块"><a href="#1-3-照相机模块" class="headerlink" title="1.3 照相机模块"></a>1.3 照相机模块</h4><p>照相机模块由四部分组成：图像传感器、镜头、印刷电路板（PCB）和接口</p>
+<p>镜头：镜头是一种光学镜片，能够将真实场景的光线聚焦到图像传感器上。</p>
+<p>图像传感器：一种模拟设备，能够将接收到的光转换为电子信号。这些信号传输构成数字图像的信息。数字照相机中可以使用两种类型的传感器： </p>
+<ul>
+<li>CCD (电荷耦合器件)：传统方案，成像质量好，但功耗高、成本高。</li>
+<li>CMOS (互补金属氧化物半导体)：成本低、功耗低、集成度高，现在已经成为主流。</li>
+</ul>
+<p>印刷电路板 (PCB)：摄像头的“底座和电源管理中心”，是摄像头模组里的电路板，负责：给传感器提供合适的电源极性和稳定性。支撑和连接整个摄像头模块的其他元件。</p>
+<p>照相机模块的互联：照相机接口是一种桥接器，能够将图像传感器连接到嵌入式系统并发送或接收信号。照相机与嵌入式系统之间传输的信号主要是：<br>• 控制信号<br>• 图像数据信号<br>• 电源信号<br>• 照相机配置信号。<br>根据数据信号的传输方式，可将照相机接口分为两种类型：并行和串行接口。</p>
+<h4 id="1-4-照相机模块与嵌入式系统的连接（并行接口）"><a href="#1-4-照相机模块与嵌入式系统的连接（并行接口）" class="headerlink" title="1.4 照相机模块与嵌入式系统的连接（并行接口）"></a>1.4 照相机模块与嵌入式系统的连接（并行接口）</h4><p>照相机模块需要四种主要类型的信号来正确发送图像数据：控制信号、图像数据信号、电源信号和照相机配置信号。</p>
+<p><img src="/2025/12/02/stm32h747-DCMI-OV5640/camera_interconnect.png"></p>
+<p>控制信号：摄像头模块和MCU间进行时序同步（时钟、HSYNC、VSYNC）。</p>
+<p>图像数据信号：传输像素数据，宽度决定带宽。</p>
+<p>电源信号：提供工作电压。</p>
+<p>配置信号：通过寄存器设置图像参数和接口模式</p>
+<ul>
+<li>配置图像分辨率、格式（RGB&#x2F;YUV&#x2F;RAW）、帧率</li>
+<li>配置图像质量参数（亮度、对比度等）</li>
+<li>接口类型选择（并行接口 &#x2F; 串行接口）</li>
+</ul>
+<h3 id="2-Stm32h747中的DCMI"><a href="#2-Stm32h747中的DCMI" class="headerlink" title="2 Stm32h747中的DCMI"></a>2 Stm32h747中的DCMI</h3><p>DCMI通过AHB2外设总线连接到AHB总线矩阵。DMA将DCMI模块所接收到的图像数据搬移到目标内存中。</p>
+<p><img src="/2025/12/02/stm32h747-DCMI-OV5640/DCMI-data-flow.png"></p>
+<p>STM32H747 DCMI 特性：</p>
+<ul>
+<li>接口类型：并行摄像头接口，支持 8~14 位数据线 + 像素时钟。</li>
+<li>同步方式：支持 HSYNC&#x2F;VSYNC 或嵌入式同步码。</li>
+<li>采集模式：连续采集（视频流）或快照采集（单帧）。</li>
+<li>功能：支持裁剪（只采集图像的一部分）。</li>
+<li>时钟要求：AHB 时钟必须 ≥ 2.5 × PIXCLK。</li>
+<li>数据格式：Raw Bayer、YCbCr 4:2:2、RGB565、JPEG 压缩。</li>
+<li>8 级FIFO（8个32 位的硬件缓冲队列）<br><img src="/2025/12/02/stm32h747-DCMI-OV5640/dcmi-block.png"></li>
+</ul>
+<p>为了减少系统总线争用并避免数据丢失，即使在接口数据速率很高的情况下，接收的数据也会先打包到一个 FIFO 缓冲区中。根据接口位宽（8、10、12 或 14 位），2 或 4 个数据项会存储在一个 32 位字中。一旦形成完整的 32 位字，就通过 DMA 传输到内存。这种方式可以降低 DCMI 对总线带宽的占用，即使在高速情况下也能保证稳定。<br><img src="/2025/12/02/stm32h747-DCMI-OV5640/dcmi-packing.png"></p>
+<p>DCMI 可以选择每 2 个字节取 1 个，或者每 4 个字节取 1 个。这一功能可用于将彩色图像转换为黑白图像，或者缩小图像尺寸。在缩小图像的情况下，为了保持图像比例，DCMI 还可以只存储隔行数据，从而将垂直分辨率减半。</p>
+<h4 id="2-1-硬件同步"><a href="#2-1-硬件同步" class="headerlink" title="2.1 硬件同步"></a>2.1 硬件同步</h4><p>DCMI_HSYNC (LINE VALID)：行同步信号，可以配置为 高电平有效 或 低电平有效。</p>
+<p>DCMI_VSYNC (FRAME VALID)：帧同步信号，可以配置为 高电平有效 或 低电平有效。</p>
+<p>DCMI_PIXCLK ：像素时钟，决定数据采样的时序。可以选择在 上升沿 或 下降沿 捕获数据。</p>
+<p>当 VSYNC 或 HSYNC 处于“有效电平”时，表示处于 blanking 区间（即无效数据），当 VSYNC 或 HSYNC 处于“非有效电平”时，数据才是有效的。</p>
+<p>下图为 HSYNC、VSYNC高电平有效，PIXCLK上升沿采样数据的示例：<br><img src="/2025/12/02/stm32h747-DCMI-OV5640/frame-sync.png"></p>
+<h4 id="2-2-快照模式"><a href="#2-2-快照模式" class="headerlink" title="2.2 快照模式"></a>2.2 快照模式</h4><p>在快照模式下，仅捕获一个帧。<br>通过将DCMI_CR寄存器的CAPTURE位置1使能捕获后，接口等待帧起始信号（下一个DCMI_VSYNC）。在接收到第一个完整帧后，将自动禁用DCMI（CAPTURE位自动清零）并忽略所有其他帧。<br><img src="/2025/12/02/stm32h747-DCMI-OV5640/snapshot.png"></p>
+<h4 id="2-3-连续采集模式"><a href="#2-3-连续采集模式" class="headerlink" title="2.3 连续采集模式"></a>2.3 连续采集模式</h4><p>选择该模式并使能捕获（CAPTURE位置位）后，接口等待帧起始信号（下一个DCMI_VSYNC），之后连续捕获数据帧。</p>
+<p>在该模式下，可以将DCMI配置为捕获所有帧、每隔一帧捕获一帧（减少50%带宽）或每四帧捕获一帧（减少75%带宽）。</p>
+<p>在该模式下，照相机接口不自动禁用，用户通过将CAPTURE位清零将其禁用。在被用户主动禁用后，DCMI继续抓取数据，直至当前帧结束。<br><img src="/2025/12/02/stm32h747-DCMI-OV5640/continuous.png"></p>
+<h4 id="2-4-数据格式和存储"><a href="#2-4-数据格式和存储" class="headerlink" title="2.4 数据格式和存储"></a>2.4 数据格式和存储</h4><p>DCMI支持以下数据格式：</p>
+<ul>
+<li>8位逐行视频：单色或原始拜尔格式</li>
+<li>YCbCr 4:2:2 <ul>
+<li>Y表示亮度（黑和白）</li>
+<li>Cb表示蓝色差色度</li>
+<li>Cr表示红色差色度</li>
+</ul>
+</li>
+<li>RGB565</li>
+<li>压缩数据（JPEG）</li>
+</ul>
+<p>对于单色、RGB或YCbCr数据，最大输入大小为2048 * 2048像素。JPEG压缩数据没有大小限制。</p>
+<h4 id="2-5-DCMI-中断"><a href="#2-5-DCMI-中断" class="headerlink" title="2.5 DCMI 中断"></a>2.5 DCMI 中断</h4><p>可产生的中断类型</p>
+<ul>
+<li>IT_LINE：表示一行数据接收完成（End of Line）。</li>
+<li>IT_FRAME：表示一帧图像接收完成（End of Frame）。</li>
+<li>IT_OVR：表示数据接收溢出（Overrun）。</li>
+<li>IT_VSYNC：表示帧同步信号（Vertical Sync），用于检测新一帧的开始。</li>
+<li>IT_ERR：表示嵌入式同步码模式下的错误（Embedded Sync Error）。</li>
+</ul>
+<p>中断屏蔽与全局中断</p>
+<ul>
+<li>所有中断都可以通过软件屏蔽。</li>
+<li>dcmi_it：全局中断 &#x3D; 各个中断的逻辑 OR。只要有一个事件发生且对应中断使能，就会触发全局 DCMI 中断。</li>
+</ul>
+<p>应用程序在中断服务函数里再区分具体是哪一个事件，相关寄存器：</p>
+<ul>
+<li><p>DCMI_IER (Interrupt Enable Register)：可读写，用来使能或屏蔽某个中断。</p>
+</li>
+<li><p>DCMI_RIS (Raw Interrupt Status)：只读，显示当前中断事件的原始状态（未屏蔽）。即使中断未使能，这里也能看到事件发生情况。</p>
+</li>
+<li><p>DCMI_MIS (Masked Interrupt Status) ：只读，显示经过屏蔽后的中断状态。</p>
+</li>
+</ul>
+<p>只有在 DCMI_IER 使能的情况下，RIS 中的事件才会反映到 MIS。程序通常检查 MIS 来判断是否需要处理。<br><img src="/2025/12/02/stm32h747-DCMI-OV5640/dcmi_int.png"></p>
+<h4 id="2-6-DCMI至内存传输的DMA常用配置"><a href="#2-6-DCMI至内存传输的DMA常用配置" class="headerlink" title="2.6 DCMI至内存传输的DMA常用配置"></a>2.6 DCMI至内存传输的DMA常用配置</h4><p>对于DCMI至内存的传输：</p>
+<ul>
+<li><p>传输方向必须是外设内存，通过配置DMA_SxCR寄存器中的DIR[1:0]位来实现。在这<br>种情况下：</p>
+<ul>
+<li>必须在DMA_SxPAR寄存器中写入源地址（DCMI数据寄存器地址）。</li>
+<li>必须在DMA_SxMAR寄存器中写入目标地址（内部SRAM或外部SRAM&#x2F;SDRAM中的帧<br>缓冲区地址）。</li>
+</ul>
+</li>
+<li><p>为确保从DCMI数据寄存器传输数据，DMA等待DCMI生成请求。因此，必须配置相关的流<br>和通道。</p>
+</li>
+<li><p>由于每次填充DCMI数据寄存器时都会生成DMA请求，从DCMI传输至DMA的数据必须具有32位宽度。因此，DMA_SxCR寄存器中PSIZE位设定的外设数据宽度必须为32位字。</p>
+</li>
+<li><p>DMA是流控制器：要传输的32位数据字的数量可在DMA_SxNDTR寄存器中进行软件设定，范围为1至65535。<br>DMA 可在以下两种模式下工作：<br>• 直接模式：从DCMI接收的每个字被传输到存储器帧缓冲区。<br>• FIFO模式：DMA使用其内部FIFO确保批量传输（多个字从DMA FIFO传输至目标存<br>储区）</p>
+</li>
+</ul>
+<p><img src="/2025/12/02/stm32h747-DCMI-OV5640/dma-data-flow.png"></p>
+<h4 id="2-7-根据图像大小和捕获模式设置DMA"><a href="#2-7-根据图像大小和捕获模式设置DMA" class="headerlink" title="2.7 根据图像大小和捕获模式设置DMA"></a>2.7 根据图像大小和捕获模式设置DMA</h4><p>必须根据图像大小（色深和分辨率）和捕获模式配置DMA：</p>
+<ul>
+<li><p>在快照模式下：DMA必须确保一个帧（图像）从DCMI到所需存储器的传输：</p>
+<ul>
+<li>如果以字计的图像大小不超过65535，则流可以配置为<strong>正常模式</strong>。</li>
+<li>如果以字计的图像大小介于65535和131070之间，，则流可以配置为双缓冲区模<br>式。</li>
+<li>如果以字计的图像大小超过131070，则需要软件介入，根据信号交替修改DMA_SxM0AR&#x2F;DMA_SxM1AR 的值，来动态修改目标内存帧缓存地址，以实现存储高分辨率的图像帧数据。</li>
+</ul>
+</li>
+<li><p>在连续模式下：DMA必须确保连续多个帧（图像）从DCMI到所需存储器的传输。每次DMA<br>完成一帧的传输时，将开始下一帧的传输：</p>
+<ul>
+<li>如果以字计的图像大小不超过65535，则流可以配置为<strong>循环模式</strong>。</li>
+<li>如果以字计的图像大小介于65535和131070之间，则流可以配置为循环模式+双缓冲区模式。</li>
+<li>如果以字计的图像大小超过131070，则需要软件介入，根据信号交替修改DMA_SxM0AR&#x2F;DMA_SxM1AR 的值，来动态修改目标内存帧缓存地址，以实现存储高分辨率的图像帧数据。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-stm32使用OV5640-进行图像采集"><a href="#3-stm32使用OV5640-进行图像采集" class="headerlink" title="3 stm32使用OV5640 进行图像采集"></a>3 stm32使用OV5640 进行图像采集</h3><p>为了让 OV5640 能正常工作，主要涉及以下几个核心配置：</p>
+<ul>
+<li>OV5640 摄像头像素时钟配置，和帧率控制</li>
+<li>HSYNC、VSYNC、PCLK 的极性配置</li>
+<li>输出尺寸和像素格式配置</li>
+</ul>
+<p>这里，使用stm32h747 DCMI 8bit并行接口连接OV5640，因此需要设置 OV5640 的 0x300e 寄存器使用  digital video port (DVP)  并行输出模式。</p>
+<h4 id="3-1-OV5640-摄像头像素时钟配置，和帧率控制"><a href="#3-1-OV5640-摄像头像素时钟配置，和帧率控制" class="headerlink" title="3.1 OV5640 摄像头像素时钟配置，和帧率控制"></a>3.1 OV5640 摄像头像素时钟配置，和帧率控制</h4><p>网上能找到的ov5640手册中，信息不完备。关于ov5640 的时钟配置，这里主要是基于网上资料，以及手动实验。ov5640 的内部时钟框图系统，网上找到的一个图显示如下：<br><img src="/2025/12/02/stm32h747-DCMI-OV5640/ov5640-pll.png"></p>
+<p>根据上图，以及实验测试，与像素输出时钟PCLK 相关的主要为以下几个寄存器：</p>
+<ul>
+<li>0x3034 (bit[3:0]的值为8-》2分频； 值为A-》2.5分频； 其它值-》1分频)</li>
+<li>0x3035 (bit[7:4]的值为DVP模式分频系数，bit[3:0]应该是针对MIPI模式的分频系数，实测修改该值帧率不变或直接导致摄像头输出异常)</li>
+<li>0x3036 (值作为倍频系数)</li>
+<li>0x3037 (bit[4]:值为0不分频，值为1二分频，bit[3:0]值为分频系数)</li>
+<li>0x3108 (bit [5:4]分频值, 本地实测这个值需要保持0不分频，修改值让其分频会异常，可能与一些其它参数存在限制约束)</li>
+</ul>
+<p><strong>输出帧率</strong> ：fps &#x3D; pclk &#x2F; （VTS * HTS ）</p>
+<ul>
+<li>HTS 由0x380C、x380D 寄存器设置。</li>
+<li>VTS 由0x380E、x380F 寄存器设置。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">    &#123;0x3034, 0x18&#125;,</span><br><span class="line">    &#123;0x3035, 0x41&#125;,	 </span><br><span class="line">    &#123;0x3036, 0x30&#125;,	</span><br><span class="line">    &#123;0x3037, 0x13&#125;, </span><br><span class="line">    &#123;0x3108, 0x01&#125;,</span><br><span class="line"></span><br><span class="line">    &#123;0x380C, 0x06&#125;,</span><br><span class="line">    &#123;0x380D, 0x40&#125;, // VTS 1600</span><br><span class="line">    &#123;0x380E, 0x03&#125;,</span><br><span class="line">    &#123;0x380F, 0xe8&#125;, // HTS 1000</span><br><span class="line"></span><br><span class="line">当 ov5640 的输入时钟为 24MHz 时，根据上述配置</span><br><span class="line">	 input = 24M</span><br><span class="line">	 pre-div = 3 分频  -》8M</span><br><span class="line">	 multiplier  = 48 倍频 -》384</span><br><span class="line">	 sys div = 4 分频 -》 96</span><br><span class="line">	 pll root div = 2 分频 -》48</span><br><span class="line">	 BIT div = 2分频 -》 24</span><br><span class="line">   最终 PCLK = 24M</span><br><span class="line"></span><br><span class="line">对于一个像素占用一个字节的像素模式，最终帧率为：24M / 1600 * 1000 = 15 帧/秒</span><br><span class="line"></span><br><span class="line">对于 RGB565 像素模式，一个像素占用2字节，帧率为 还要再除以2 = 7.5 帧/秒</span><br></pre></td></tr></table></figure>
+<p>修改帧率时，有限通过修改 倍频&#x2F;分频 寄存器来改变帧率。VTS、HTS应该和其它寄存器有一些关联约束，随意修改容易导致摄像头没有输出内容。</p>
+<h4 id="3-2-HSYNC、VSYNC、PCLK-的极性配置"><a href="#3-2-HSYNC、VSYNC、PCLK-的极性配置" class="headerlink" title="3.2 HSYNC、VSYNC、PCLK 的极性配置"></a>3.2 HSYNC、VSYNC、PCLK 的极性配置</h4><p>OV5640会输出 HSYNC、VSYNC、PCLK信号，Stm32 DCMI会根据 PCLK 的边沿进行采样，也需要根据配置的 HSYNC、VSYNC 信号的极性来识别行&#x2F;列消隐（即那些无效数据）。</p>
+<p>在 OV5640 手册中，0x4740 寄存器描述了对应信号的极性：这里没有实际描述对应信号的 “active” 是表示数据有效还是无效。</p>
+<ul>
+<li>Bit[5]: PCLK polarity<ul>
+<li>0: Active low</li>
+<li>1: Active high</li>
+</ul>
+</li>
+<li>Bit[1]: HREF polarity<ul>
+<li>0: Active low</li>
+<li>1: Active high</li>
+</ul>
+</li>
+<li>Bit[0]: VSYNC polarity<ul>
+<li>0: Active low</li>
+<li>1: Active high</li>
+</ul>
+</li>
+</ul>
+<p>在 stm32h7 中，DCMI 的 DCMI_CR 中 ：明确描述了这两位表示数据无效时的极性</p>
+<ul>
+<li>Bit 7 VSPOL: Vertical synchronization polarity<br>This bit indicates the level on the DCMI_VSYNC pin when the data are not valid on the parallel interface.<ul>
+<li>0: DCMI_VSYNC active low</li>
+<li>1: DCMI_VSYNC active high</li>
+</ul>
+</li>
+<li>Bit 6 HSPOL: Horizontal synchronization polarity<br>This bit indicates the level on the DCMI_HSYNC pin when the data are not valid on the parallel interface.<ul>
+<li>0: DCMI_HSYNC active low</li>
+<li>1: DCMI_HSYNC active high</li>
+</ul>
+</li>
+</ul>
+<p>例如：<br>配置 OV5640 的 0x4740 值为 0x23时。实际根据当前 PCLK 周期，以及设置的输出尺寸和像素格式，用示波器观察，发现：<strong>实际配置 0x4740 &#x3D; 23 时，数据有效时 OV5640 输出的 VSYNC 信号的极性是高电平，而HREF（HSYNC）极性是低电平。</strong> 因此，对应的 stm32 DCMI_CR 需要配置为： VSPOL &#x3D; 0，HSPOL &#x3D; 1</p>
+<p>同样</p>
+<ul>
+<li>ov5640 的 0x4740 值为 0x22时。 stm32 的 DCMI_CR 需要配置为： VSPOL &#x3D; 1，HSPOL &#x3D; 1</li>
+<li>ov5640 的 0x4740 值为 0x20时。 stm32 的 DCMI_CR 需要配置为： VSPOL &#x3D; 1，HSPOL &#x3D; 0</li>
+</ul>
+<h4 id="3-3-输出尺寸和像素格式配置"><a href="#3-3-输出尺寸和像素格式配置" class="headerlink" title="3.3 输出尺寸和像素格式配置"></a>3.3 输出尺寸和像素格式配置</h4><p><img src="/2025/12/02/stm32h747-DCMI-OV5640/image_window.png"><br>上图为 OV5640 手册中的介绍。<br>pre-scalling size 即为摄像头内部图像处理器ISP输出的尺寸，经过缩放后，输出期望获取的图像尺寸（通过0x3808 - 0x380B 寄存器设置）。</p>
+<p>0v5640 输出的像素格式，通过 0x4300 寄存器设置。<br>这里设置的为：0x6f</p>
+<ul>
+<li>其中 高四位值 6表示 RGB565 模式</li>
+<li>低四位值 0xF ,表示输出序列为： first:{g[2:0],b[4:0]}, second: {r[4:0],g[5:3]}</li>
+</ul>
+<p>这么设置是当前实例中，会使用 stm32h7 的 DMA2D 对摄像头输出进行格式变化。而 DMA2D 对于 RGB565 模式的输入内容，在内存中的格式要求为：</p>
+<ul>
+<li>@ + 0: G0[2:0]B0[4:0]</li>
+<li>@ + 1: R0[4:0]G0[5:3]</li>
+<li>@ + 2: G1[2:0]B1[4:0]</li>
+<li>@ + 3: R1[4:0]G1[5:3]</li>
+</ul>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>[1] <a target="_blank" rel="noopener" href="https://www.st.com/content/ccc/resource/training/technical/product_training/group0/ec/99/3b/61/b3/96/49/1b/STM32H7-Peripheral-Digital_Camera_Interface_DCMI/files/STM32H7-Peripheral-Digital_Camera_Interface_DCMI.pdf/_jcr_content/translations/en.STM32H7-Peripheral-Digital_Camera_Interface_DCMI.pdf">stm32h747-DCMI</a><br>[2] <a target="_blank" rel="noopener" href="https://www.st.com/resource/en/application_note/an5020-digital-camera-interface-dcmi-on-stm32-mcus-stmicroelectronics.pdf">AN052</a><br>[3] <a target="_blank" rel="noopener" href="https://www.linmingjie.cn/index.php/archives/194/">OV5640摄像头的时钟配置</a><br>[4] STM32H7xx Reference Manual, RM0399</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/" title="stm32h747-DCMI-OV5640">http://fengxun2017.github.io/2025/12/02/stm32h747-DCMI-OV5640/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/12/01/stm32h747-DMA/" rel="prev" title="stm32h747 DMA">
+                  <i class="fa fa-chevron-left"></i> stm32h747 DMA
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/12/12/stm32h747-LTDC-DSI/" rel="next" title="stm32h747-LTDC-DSI">
+                  stm32h747-LTDC-DSI <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">676k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">14:06</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
