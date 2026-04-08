@@ -1,0 +1,13 @@
+
+下载 源码
+git@github.com:tensorflow/tflite-micro.git
+
+
+编译命令： 参考：https://github.com/tensorflow/tflite-micro/blob/main/tensorflow/lite/micro/cortex_m_generic/README.md
+make -f tensorflow/lite/micro/tools/make/Makefile TARGET=cortex_m_generic TARGET_ARCH=cortex-m7 microlite
+
+如果命令执行过程中，一些资源下载失败，可以手动下载放到：tensorflow/lite/micro/tools/make/downloads/ 中
+
+过程中依赖 unzip: sudo apt-get install unzip
+python numpy 模块 ：pip install numpy
+python PIL 模块 ：pip install pillow

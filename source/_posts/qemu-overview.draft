@@ -1,0 +1,36 @@
+---
+title: qemu - overview
+date: 2025/5/30
+categories: 
+- QEMU
+---
+
+<center>
+overview
+</center>
+
+<!--more-->
+
+***
+
+QEMU：通用开源的机器模拟器和虚拟化工具
+
+QEMU可以以多种方式使用，最常见的是**系统仿真（System Emulation）**：它提供了一个完整的虚拟计算机模型，包括 CPU、内存和模拟设备，用于运行客体操作系统（Guest OS）。在此模式下，CPU 可以完全模拟，或者与 KVM、Xen 或 Hypervisor.Framework 等管理程序协作，让客体系统直接运行在宿主 CPU 上。
+例如：在 Windows 电脑上运行 Linux，或者在 x86 电脑上运行 ARM 版本的 Android。
+```
+qemu-system-x86_64 -m 2048 -hda ubuntu.img -cdrom ubuntu.iso -boot d
+```
+QEMU会模拟一整台计算机，包括 CPU、内存、硬件设备 等。你可以在 Windows 上完整运行一个 Linux 或 Android 系统，它以虚拟机的方式运行。
+
+另一种方式是**用户模式仿真（User Mode Emulation）**：在这种模式下，QEMU 可以在不同 CPU 架构上运行编译好的进程。CPU 始终被模拟，**不会使用宿主机的硬件加速**。
+例如：一个 ARM 处理器编译的程序，在 x86 电脑上运行它。
+```
+qemu-arm -L /usr/arm-linux-gnueabi ./test_program
+```
+QEMU 只模拟 CPU 指令，以实现不同架构的 CPU 上运行单个应用程序。不会模拟整个计算机，因此它不像虚拟机那样运行完整的操作系统。运行时，它会翻译 ARM 指令，让 x86 电脑可以理解并执行它。
+
+
+**总结**
+- **系统仿真**适用于运行完整的操作系统（虚拟机）。
+- **用户模式仿真**适用于运行不同架构的程序，而不需要虚拟机。
+

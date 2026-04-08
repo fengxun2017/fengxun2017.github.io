@@ -1,0 +1,107 @@
+---
+title: lwip 实验环境搭建
+date: 2025/4/22
+categories: 
+- TCP/IP
+---
+
+<center>
+lwip 实验环境搭建
+</center>
+
+<!--more-->
+
+***
+
+直接安装qemu，这里仅需要安装用于 ARM 架构的系统模拟器：sudo apt install qemu-system-arm
+
+或自己编译qemu，编译依赖 python3-vent，安装：sudo apt install python3-venv
+
+git clone git@github.com:qemu/qemu.git
+# 我选择的版本：git checkout v9.2.2
+mkdir build
+cd build
+../configure --target-list=arm-softmmu,aarch64-softmmu
+make
+#安装
+sudo make install
+
+
+
+安装 ARM 交叉编译工具链：
+- sudo apt install -y gcc-arm-none-eabi binutils-arm-none-eabi libnewlib-arm-none-eabi
+- sudo apt install gdb-multiarch
+
+下载 FreeRTOS ：https://github.com/FreeRTOS/FreeRTOS
+备注： clone完成后，需要在仓库下使用命令：git submodule update --init --recursive ，用来拉取它引用的FreeRTOS-Kernel等仓库。
+如果使用zip下载文件，仓库中引用的其它库不会自动下载，编译时会报错，需要自己手动下载依赖的仓库。
+demo编译涉及：
+- FreeRTOS/FreeRTOS-Plus/Source/FreeRTOS-Plus-Trace
+- FreeRTOS/FreeRTOS/Source   
+下载时，直接进入FreeRTOS 仓库页面，按上述路径去点击，这样可以自动跳转到依赖的其它仓库，避免手动下载时选错版本
+
+选择使用该Demo：FreeRTOS-main/FreeRTOS/Demo/CORTEX_MPS2_QEMU_IAR_GCC
+这是一个支持 Qume 的通用 cortex-m3 Demo 样例。可以参考FreeRTOS的官方介绍:[FreeRTOS MPS2 QEMU Demo](https://www.freertos.org/Documentation/02-Kernel/03-Supported-devices/04-Demos/03-Emulation-and-simulation/QEMU/freertos-on-qemu-mps2-an385-model)
+
+
+编译： 进入 Demo/CORTEX_MPS2_QEMU_IAR_GCC/build/gcc 目录， 直接 make 即可。
+输出可执行文件为： Demo/CORTEX_MPS2_QEMU_IAR_GCC/build/gcc/output/RTOSDemo.out
+
+
+qemu中启动编译出来的程序。
+qemu-system-arm -machine mps2-an385 -cpu cortex-m3 -kernel [path-to]/RTOSDemo.out -monitor none -nographic -serial stdio 
+
+可以在命令后额外添加两个参数：-s -S   ，让程序停在初始入口，并可使用gdb链接调试。
+进入gdb，并加载该程序符号表：gdb-multiarch ./output/RTOSDemo.out 
+链接qemu：target remote localhost:1234
+
+
+创建TAP 虚拟网络接口：
+
+# 创建 tap0 设备
+sudo ip tuntap add dev tap0 mode tap
+# 激活 TAP 设备
+sudo ip addr add 192.168.100.1/24 dev tap0
+sudo ip link set tap0 up 
+
+查看： ip link show tap0
+删除:sudo ip tuntap del dev tap0 mode tap
+
+
+qemu-system-arm \
+  -M mps2-an385 \
+  -cpu cortex-m3 \
+  -kernel ./output/RTOSDemo.out \
+  -nographic \
+  -serial mon:stdio \
+  -netdev tap,id=mynet0,ifname=tap0,script=no,downscript=no \
+  -net nic,model=lan9118,netdev=mynet0
+
+
+### 备注：安装python3-venv，可能因为系统默认python 版本冲突问题，导致失败。
+可以安装pyenv，并创建对应需要的python版本，一种参考方法：
+
+安装pyenv：
+```
+git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+
+# 将以下内容添加到你的 ~/.bashrc
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
+```
+
+下载并安装目标python版本：
+```
+mkdir -p ~/.pyenv/cache
+wget https://npmmirror.com/mirrors/python/3.10.4/Python-3.10.4.tar.xz -P ~/.pyenv/cache/
+pyenv install 3.10.4
+```
+
+设置全局默认的 Python 版本：
+pyenv global 3.10.4
+
+### 参考：
+【1】[tun/tap 网络设备](https://juejin.cn/post/7057833934947614750)
+【2】[mps2板卡lan9118驱动参考](https://gitee.com/openharmony/device_qemu/tree/master/arm_mps2_an386/liteos_m/board/driver/net)

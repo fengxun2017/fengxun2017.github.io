@@ -1,12 +1,12 @@
 ---
-title: FreeRTOS-TCP/IP-相关基本概念
+title: TCP/IP-相关基本概念
 date: 2023/4/2
 categories: 
 - TCP/IP
 ---
 
 <center>
-FreeRTOS-TCP/IP-相关基本概念
+TCP/IP-相关基本概念
 </center>
 
 <!--more-->

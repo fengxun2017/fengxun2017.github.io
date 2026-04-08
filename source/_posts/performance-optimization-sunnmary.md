@@ -2,7 +2,7 @@
 title: 性能优化核心思想：个人笔记
 date: 2023/4/15
 categories: 
-- 性能优化
+- 资源优化
 ---
 
 <center>
