@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="从按下复位键到 &#96;main()&#96; 函数被调用，Zephyr RTOS 经历了一段精密的初始化旅程。本文以 STM32H747I-DISCO 开发板为例，逐行解析从硬件复位向量到内核多线程切换的完整链路，涵盖 STM32H7 启动地址机制、向量表布局、&#96;reset.S&#96; 汇编初始化、&#96;z_prep_c()&#96; C 运行时准备、以及内核初始化等级的层层递进。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解 Zephyr RTOS 启动流程：从上电复位到 main 函数的完整追踪（基于AI协助总结）">
+<meta property="og:url" content="http://fengxun2017.github.io/2026/04/27/zephyr-boot-progress/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="从按下复位键到 &#96;main()&#96; 函数被调用，Zephyr RTOS 经历了一段精密的初始化旅程。本文以 STM32H747I-DISCO 开发板为例，逐行解析从硬件复位向量到内核多线程切换的完整链路，涵盖 STM32H7 启动地址机制、向量表布局、&#96;reset.S&#96; 汇编初始化、&#96;z_prep_c()&#96; C 运行时准备、以及内核初始化等级的层层递进。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-26T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-28T15:58:18.924Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2026/04/27/zephyr-boot-progress/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2026/04/27/zephyr-boot-progress/","path":"2026/04/27/zephyr-boot-progress/","title":"深入理解 Zephyr RTOS 启动流程：从上电复位到 main 函数的完整追踪（基于AI协助总结）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>深入理解 Zephyr RTOS 启动流程：从上电复位到 main 函数的完整追踪（基于AI协助总结） | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%90%86%E8%A7%A3%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">1. 为什么要理解启动流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%85%A8%E5%B1%80%E9%B8%9F%E7%9E%B0%EF%BC%9A%E4%BB%8E%E4%B8%8A%E7%94%B5%E5%88%B0-main-%E7%9A%84%E5%AE%8C%E6%95%B4%E8%B7%AF%E5%BE%84"><span class="nav-number">2.</span> <span class="nav-text">2. 全局鸟瞰：从上电到 main 的完整路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E7%A1%AC%E4%BB%B6%E5%A4%8D%E4%BD%8D-%E2%80%94-STM32H7-%E5%A6%82%E4%BD%95%E6%89%BE%E5%88%B0%E7%AC%AC%E4%B8%80%E8%A1%8C%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">3. 第一步：硬件复位 — STM32H7 如何找到第一行代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E5%90%AF%E5%8A%A8%E5%9C%B0%E5%9D%80%E6%9C%BA%E5%88%B6%EF%BC%9AOption-Bytes-%E4%B8%8E-BOOT-%E5%BC%95%E8%84%9A"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 启动地址机制：Option Bytes 与 BOOT 引脚</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E4%B8%8A%E7%94%B5%E6%97%B6-VTOR-%E7%9A%84%E7%8A%B6%E6%80%81"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 上电时 VTOR 的状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E5%90%91%E9%87%8F%E8%A1%A8%EF%BC%9AFlash-%E5%BC%80%E5%A4%B4%E7%9A%84%E4%B8%80%E5%BC%A0%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E6%95%B0%E7%BB%84"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 向量表：Flash 开头的一张函数指针数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-%E5%90%91%E9%87%8F%E8%A1%A8%E5%9C%B0%E5%9D%80-0x08000000-%E7%9A%84%E5%AE%8C%E6%95%B4%E4%BC%A0%E9%80%92%E9%93%BE"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 向量表地址 0x08000000 的完整传递链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-%E9%93%BE%E6%8E%A5%E8%84%9A%E6%9C%AC%E4%B8%AD%E5%90%91%E9%87%8F%E8%A1%A8%E6%AE%B5%E7%9A%84%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 链接脚本中向量表段的详细分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-%E5%90%91%E9%87%8F%E8%A1%A8%E7%9A%84%E5%AE%9E%E9%99%85%E5%86%85%E5%AE%B9"><span class="nav-number">3.6.</span> <span class="nav-text">3.6 向量表的实际内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-7-%E9%9D%99%E6%80%81%E5%90%91%E9%87%8F%E8%A1%A8-vs-%E5%8A%A8%E6%80%81-ISR-%E8%A1%A8"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 静态向量表 vs 动态 ISR 表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-8-%E5%90%91%E9%87%8F%E8%A1%A8%E7%9A%84%E4%B8%A4%E7%BA%A7%E6%BA%90%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.8.</span> <span class="nav-text">3.8 向量表的两级源码实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9Az-arm-reset-%E2%80%94-%E6%B1%87%E7%BC%96%E7%BA%A7%E9%80%90%E8%A1%8C%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">4. 第二步：z_arm_reset() — 汇编级逐行深度解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%AE%8C%E6%95%B4%E6%89%A7%E8%A1%8C%E6%97%B6%E9%97%B4%E7%BA%BF%EF%BC%88STM32H7-%E5%AE%9E%E9%99%85%E8%B7%AF%E5%BE%84%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 完整执行时间线（STM32H7 实际路径）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E6%B6%89%E5%8F%8A%E7%9A%84-ARM-Cortex-M-%E7%B3%BB%E7%BB%9F%E5%AF%84%E5%AD%98%E5%99%A8%E9%80%9F%E6%9F%A5"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 涉及的 ARM Cortex-M 系统寄存器速查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E9%80%90%E8%A1%8C%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 逐行详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-1%EF%BC%9A%E9%87%8D%E7%BD%AE-CONTROL-%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">4.3.1.</span> <span class="nav-text">阶段 1：重置 CONTROL 寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-2%EF%BC%9A%E6%B8%85%E9%9B%B6%E6%A0%88%E9%99%90%E5%88%B6%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-number">4.3.2.</span> <span class="nav-text">阶段 2：清零栈限制寄存器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-3%EF%BC%9A%E8%AE%BE%E7%BD%AE-MSP-%E5%88%B0%E4%B8%BB%E6%A0%88"><span class="nav-number">4.3.3.</span> <span class="nav-text">阶段 3：设置 MSP 到主栈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-4%EF%BC%9A%E8%B0%83%E7%94%A8-SoC-%E5%A4%8D%E4%BD%8D%E9%92%A9%E5%AD%90"><span class="nav-number">4.3.4.</span> <span class="nav-text">阶段 4：调用 SoC 复位钩子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-5%EF%BC%9A%E7%A6%81%E7%94%A8-MPU"><span class="nav-number">4.3.5.</span> <span class="nav-text">阶段 5：禁用 MPU</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-6%EF%BC%9A%E5%88%9D%E5%A7%8B%E5%8C%96%E6%9E%B6%E6%9E%84%E7%A1%AC%E4%BB%B6"><span class="nav-number">4.3.6.</span> <span class="nav-text">阶段 6：初始化架构硬件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-7%EF%BC%9A%E7%A6%81%E7%94%A8%E6%99%AE%E9%80%9A%E4%B8%AD%E6%96%AD%EF%BC%88%E4%BF%9D%E7%95%99-Fault%EF%BC%89"><span class="nav-number">4.3.7.</span> <span class="nav-text">阶段 7：禁用普通中断（保留 Fault）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-8%EF%BC%9A%E5%88%87%E6%8D%A2%E5%88%B0-PSP%EF%BC%88%E8%BF%9B%E7%A8%8B%E6%A0%88%E6%8C%87%E9%92%88%EF%BC%89"><span class="nav-number">4.3.8.</span> <span class="nav-text">阶段 8：切换到 PSP（进程栈指针）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%B6%E6%AE%B5-9%EF%BC%9A%E8%B7%B3%E8%BD%AC%E5%88%B0-C-%E8%AF%AD%E8%A8%80"><span class="nav-number">4.3.9.</span> <span class="nav-text">阶段 9：跳转到 C 语言</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E4%B8%89%E4%B8%AA%E5%B1%8F%E9%9A%9C%E6%8C%87%E4%BB%A4%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.4.</span> <span class="nav-text">4.4 三个屏障指令的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E7%AC%AC%E4%B8%89%E6%AD%A5%EF%BC%9Az-prep-c-%E2%80%94-C-%E8%BF%90%E8%A1%8C%E6%97%B6%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-number">5.</span> <span class="nav-text">5. 第三步：z_prep_c() — C 运行时环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-relocate-vector-table-%E2%80%94-%E5%90%91%E9%87%8F%E8%A1%A8%E9%87%8D%E5%AE%9A%E4%BD%8D"><span class="nav-number">5.1.</span> <span class="nav-text">5.1 relocate_vector_table() — 向量表重定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-z-arm-floating-point-init-%E2%80%94-FPU-%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">5.2.</span> <span class="nav-text">5.2 z_arm_floating_point_init() — FPU 初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-arch-bss-zero-%E2%80%94-bss-%E6%AE%B5%E6%B8%85%E9%9B%B6"><span class="nav-number">5.3.</span> <span class="nav-text">5.3 arch_bss_zero() — .bss 段清零</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-arch-data-copy-%E2%80%94-data-%E6%AE%B5%E6%8B%B7%E8%B4%9D"><span class="nav-number">5.4.</span> <span class="nav-text">5.4 arch_data_copy() — .data 段拷贝</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-5-z-arm-interrupt-init-%E2%80%94-NVIC-%E4%BC%98%E5%85%88%E7%BA%A7%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">5.5.</span> <span class="nav-text">5.5 z_arm_interrupt_init() — NVIC 优先级初始化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E7%AC%AC%E5%9B%9B%E6%AD%A5%EF%BC%9Az-cstart-%E2%80%94-%E5%86%85%E6%A0%B8%E6%A0%B8%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">6.</span> <span class="nav-text">6. 第四步：z_cstart() — 内核核心初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-gcov-static-init-%E2%80%94-%E4%BB%A3%E7%A0%81%E8%A6%86%E7%9B%96%E7%8E%87%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">6.1.</span> <span class="nav-text">6.1 gcov_static_init() — 代码覆盖率初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-z-sys-init-run-level-%E2%80%94-%E5%88%9D%E5%A7%8B%E5%8C%96%E7%AD%89%E7%BA%A7%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E"><span class="nav-number">6.2.</span> <span class="nav-text">6.2 z_sys_init_run_level() — 初始化等级执行引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-1-init-entry-%E7%BB%93%E6%9E%84%E4%BD%93%E4%B8%8E%E4%B8%A4%E6%9D%A1%E6%B3%A8%E5%86%8C%E8%B7%AF%E5%BE%84"><span class="nav-number">6.2.1.</span> <span class="nav-text">6.2.1 init_entry 结构体与两条注册路径</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-2-%E6%A0%B8%E5%BF%83%E6%9C%BA%E5%88%B6%EF%BC%9A%E7%BC%96%E8%AF%91%E6%97%B6%E6%8E%92%E5%BA%8F-%E8%BF%90%E8%A1%8C%E6%97%B6%E9%81%8D%E5%8E%86"><span class="nav-number">6.2.2.</span> <span class="nav-text">6.2.2 核心机制：编译时排序 + 运行时遍历</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-3-%E9%93%BE%E6%8E%A5%E8%84%9A%E6%9C%AC%E6%8E%92%E5%BA%8F%E5%8E%9F%E7%90%86"><span class="nav-number">6.2.3.</span> <span class="nav-text">6.2.3 链接脚本排序原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-4-%E8%BF%90%E8%A1%8C%E6%97%B6%E6%89%A7%E8%A1%8C"><span class="nav-number">6.2.4.</span> <span class="nav-text">6.2.4 运行时执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-5-STM32H7-%E7%9A%84%E5%85%B8%E5%9E%8B%E5%88%9D%E5%A7%8B%E5%8C%96%E5%BA%8F%E5%88%97"><span class="nav-number">6.2.5.</span> <span class="nav-text">6.2.5 STM32H7 的典型初始化序列</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-arch-kernel-init-%E2%80%94-ARM-Cortex-M-%E6%9E%B6%E6%9E%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">6.3.</span> <span class="nav-text">6.3 arch_kernel_init() — ARM Cortex-M 架构初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-LOG-CORE-INIT-%E2%80%94-%E6%97%A5%E5%BF%97%E5%AD%90%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">6.4.</span> <span class="nav-text">6.4 LOG_CORE_INIT() — 日志子系统核心初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-5-z-dummy-thread-init-%E2%80%94-%E5%81%87%E7%BA%BF%E7%A8%8B%E5%8D%A0%E4%BD%8D"><span class="nav-number">6.5.</span> <span class="nav-text">6.5 z_dummy_thread_init() — 假线程占位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-6-z-device-state-init-%E2%80%94-%E8%AE%BE%E5%A4%87%E5%AF%B9%E8%B1%A1%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">6.6.</span> <span class="nav-text">6.6 z_device_state_init() — 设备对象初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-7-soc-early-init-hook-%E2%80%94-STM32H7-SoC-%E6%97%A9%E6%9C%9F%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">6.7.</span> <span class="nav-text">6.7 soc_early_init_hook() — STM32H7 SoC 早期初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-8-board-early-init-hook-%E2%80%94-%E6%9D%BF%E7%BA%A7%E6%97%A9%E6%9C%9F%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">6.8.</span> <span class="nav-text">6.8 board_early_init_hook() — 板级早期初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-9-Stack-Canary-%E5%88%9D%E5%A7%8B%E5%8C%96-%E2%80%94-%E6%A0%88%E6%BA%A2%E5%87%BA%E4%BF%9D%E6%8A%A4"><span class="nav-number">6.9.</span> <span class="nav-text">6.9 Stack Canary 初始化 — 栈溢出保护</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E7%AC%AC%E4%BA%94%E6%AD%A5%EF%BC%9A%E5%87%86%E5%A4%87%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%8E%E9%A6%96%E6%AC%A1%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2"><span class="nav-number">7.</span> <span class="nav-text">7. 第五步：准备多线程与首次上下文切换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-prepare-multithreading-%E2%80%94-%E5%88%9B%E5%BB%BA-main-%E7%BA%BF%E7%A8%8B%E5%92%8C-idle-%E7%BA%BF%E7%A8%8B"><span class="nav-number">7.1.</span> <span class="nav-text">7.1 prepare_multithreading() — 创建 main 线程和 idle 线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-switch-to-main-thread-%E2%80%94-%E9%A6%96%E6%AC%A1%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2"><span class="nav-number">7.2.</span> <span class="nav-text">7.2 switch_to_main_thread() — 首次上下文切换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-1-arch-switch-to-main-thread-%E5%AE%8C%E6%95%B4%E6%B5%81%E7%A8%8B"><span class="nav-number">7.2.1.</span> <span class="nav-text">7.2.1 arch_switch_to_main_thread() 完整流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-2-%E9%80%90%E6%AD%A5%E8%AF%A6%E8%A7%A3"><span class="nav-number">7.2.2.</span> <span class="nav-text">7.2.2 逐步详解</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#TLS-%E7%9F%A5%E8%AF%86%E7%82%B9%E8%AF%A6%E8%A7%A3"><span class="nav-number">7.2.2.1.</span> <span class="nav-text">TLS 知识点详解</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Guard-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF-64-%E5%AD%97%E8%8A%82%EF%BC%9F"><span class="nav-number">7.2.2.2.</span> <span class="nav-text">Guard 为什么是 64 字节？</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-3-%E5%AF%84%E5%AD%98%E5%99%A8%E7%8A%B6%E6%80%81%E8%BF%BD%E6%BA%AF%EF%BC%9A%E4%BB%8E%E4%B8%8A%E7%94%B5%E5%88%B0%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E6%89%A7%E8%A1%8C%E5%89%8D"><span class="nav-number">7.2.3.</span> <span class="nav-text">7.2.3 寄存器状态追溯：从上电到内联汇编执行前</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-4-%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E9%80%90%E6%9D%A1%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90"><span class="nav-number">7.2.4.</span> <span class="nav-text">7.2.4 内联汇编逐条指令解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-5-%E5%AE%8C%E6%95%B4%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">7.2.5.</span> <span class="nav-text">7.2.5 完整执行流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#7-2-5-1-z-thread-entry-%E2%80%94-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%9C%9F%E6%AD%A3%E5%85%A5%E5%8F%A3"><span class="nav-number">7.2.5.1.</span> <span class="nav-text">7.2.5.1 z_thread_entry — 线程的真正入口</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-6-%E6%A0%88%E4%BD%BF%E7%94%A8%E6%97%B6%E9%97%B4%E7%BA%BF"><span class="nav-number">7.2.6.</span> <span class="nav-text">7.2.6 栈使用时间线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-7-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E7%94%A8%E5%86%85%E8%81%94%E6%B1%87%E7%BC%96%E8%80%8C%E4%B8%8D%E6%98%AF-C-%E4%BB%A3%E7%A0%81%EF%BC%9F"><span class="nav-number">7.2.7.</span> <span class="nav-text">7.2.7 为什么必须用内联汇编而不是 C 代码？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-%E5%81%87%E7%BA%BF%E7%A8%8B%E5%AD%98%E5%9C%A8%E7%9A%84%E6%84%8F%E4%B9%89"><span class="nav-number">7.3.</span> <span class="nav-text">7.3 假线程存在的意义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E7%AC%AC%E5%85%AD%E6%AD%A5%EF%BC%9Abg-thread-main-%E2%80%94-%E5%BA%94%E7%94%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E7%9A%84%E6%9C%80%E5%90%8E%E4%B8%80%E6%AD%A5"><span class="nav-number">8.</span> <span class="nav-text">8. 第六步：bg_thread_main() — 应用初始化的最后一步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-%E6%80%BB%E7%BB%93"><span class="nav-number">9.</span> <span class="nav-text">9. 总结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">119</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2026/04/27/zephyr-boot-progress/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="深入理解 Zephyr RTOS 启动流程：从上电复位到 main 函数的完整追踪（基于AI协助总结） | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深入理解 Zephyr RTOS 启动流程：从上电复位到 main 函数的完整追踪（基于AI协助总结）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-04-27 00:00:00" itemprop="dateCreated datePublished" datetime="2026-04-27T00:00:00+08:00">2026-04-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Zephyr/" itemprop="url" rel="index"><span itemprop="name">Zephyr</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>40k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>50 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+从按下复位键到 `main()` 函数被调用，Zephyr RTOS 经历了一段精密的初始化旅程。本文以 STM32H747I-DISCO 开发板为例，逐行解析从硬件复位向量到内核多线程切换的完整链路，涵盖 STM32H7 启动地址机制、向量表布局、`reset.S` 汇编初始化、`z_prep_c()` C 运行时准备、以及内核初始化等级的层层递进。
+</center>
+<span id="more"></span>
+
+<hr>
+<blockquote>
+<p><strong>硬件平台</strong>: STM32H747I-DISCO | <strong>Zephyr 版本</strong>: v4.3.0-dev | <strong>架构</strong>: ARM Cortex-M7 (ARMv7-M)</p>
+</blockquote>
+<h2 id="1-为什么要理解启动流程"><a href="#1-为什么要理解启动流程" class="headerlink" title="1. 为什么要理解启动流程"></a>1. 为什么要理解启动流程</h2><p>理解 Zephyr 的启动流程，意味着你能回答这些问题：</p>
+<ul>
+<li>CPU 上电后第一条指令从哪里开始执行？<code>0x08000000</code> 这个地址是谁决定的？</li>
+<li>为什么有些日志”看不到”——实际上是因为打印太早、串口驱动还没初始化</li>
+<li>链接脚本里的 <code>FLASH</code> 和 <code>RAM</code> 区域地址是怎么来的？DTS 的 <code>chosen</code> 节点如何影响链接结果？</li>
+<li><code>main()</code> 函数被调用之前，内核已经完成了哪些初始化？驱动的初始化顺序是谁定的？</li>
+<li>第一次上下文切换发生在哪个节点？假线程（dummy thread）存在的意义是什么？</li>
+</ul>
+<p>本文从硬件复位开始，逐阶段追踪 Zephyr 的启动序列。</p>
+<hr>
+<h2 id="2-全局鸟瞰：从上电到-main-的完整路径"><a href="#2-全局鸟瞰：从上电到-main-的完整路径" class="headerlink" title="2. 全局鸟瞰：从上电到 main 的完整路径"></a>2. 全局鸟瞰：从上电到 main 的完整路径</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">CPU 上电</span><br><span class="line">  │</span><br><span class="line">  ▼</span><br><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│ 1. 硬件复位                                                  │</span><br><span class="line">│    从向量表读取 MSP（主栈指针）和 Reset_Handler 地址           │</span><br><span class="line">│    向量表位置：0x08000000（STM32 Flash 起始地址）             │</span><br><span class="line">└─────────────┬───────────────────────────────────────────────┘</span><br><span class="line">              │</span><br><span class="line">              ▼</span><br><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│ 2. z_arm_reset()            ← reset.S（纯汇编）              │</span><br><span class="line">│    设置 MSP/PSP，禁用中断，初始化 FPU/MPU                     │</span><br><span class="line">│    调用 soc_reset_hook()（SoC 专用初始化，如 TCM ECC 清零）   │</span><br><span class="line">└─────────────┬───────────────────────────────────────────────┘</span><br><span class="line">              │</span><br><span class="line">              ▼</span><br><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│ 3. z_prep_c()             ← prep_c.c（C 语言开始）           │</span><br><span class="line">│    清零 .bss，拷贝 .data，初始化中断控制器                    │</span><br><span class="line">└─────────────┬───────────────────────────────────────────────┘</span><br><span class="line">              │</span><br><span class="line">              ▼</span><br><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│ 4. z_cstart()             ← kernel/init.c（内核核心初始化）   │</span><br><span class="line">│    EARLY 等级 → arch_kernel_init → soc_early_init_hook       │</span><br><span class="line">│    PRE_KERNEL_1/2 等级 → stack canary → 多线程切换            │</span><br><span class="line">└─────────────┬───────────────────────────────────────────────┘</span><br><span class="line">              │</span><br><span class="line">              ▼</span><br><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│ 5. prepare_multithreading()                                  │</span><br><span class="line">│    初始化调度器，创建 main 线程 + idle 线程                   │</span><br><span class="line">└─────────────┬───────────────────────────────────────────────┘</span><br><span class="line">              │</span><br><span class="line">              ▼</span><br><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│ 6. switch_to_main_thread()                                   │</span><br><span class="line">│    首次上下文切换，跳转到 bg_thread_main()                    │</span><br><span class="line">└─────────────┬───────────────────────────────────────────────┘</span><br><span class="line">              │</span><br><span class="line">              ▼</span><br><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│ 7. bg_thread_main()                                         │</span><br><span class="line">│    执行 POST_KERNEL / APPLICATION 初始化等级                 │</span><br><span class="line">│    调用 main()                                               │</span><br><span class="line">└─────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="3-第一步：硬件复位-—-STM32H7-如何找到第一行代码"><a href="#3-第一步：硬件复位-—-STM32H7-如何找到第一行代码" class="headerlink" title="3. 第一步：硬件复位 — STM32H7 如何找到第一行代码"></a>3. 第一步：硬件复位 — STM32H7 如何找到第一行代码</h2><h3 id="3-1-启动地址机制：Option-Bytes-与-BOOT-引脚"><a href="#3-1-启动地址机制：Option-Bytes-与-BOOT-引脚" class="headerlink" title="3.1 启动地址机制：Option Bytes 与 BOOT 引脚"></a>3.1 启动地址机制：Option Bytes 与 BOOT 引脚</h3><p>STM32H747 是双核芯片（Cortex-M7 + Cortex-M4），启动行为由 <strong>Option Bytes</strong>（选项字节）控制，而非单一的 BOOT 引脚。</p>
+<p><strong>Option Byte 不是普通寄存器</strong>：存在于 Flash 的特殊区域，掉电保持，硬件上电时自动读取（此时软件尚未运行）。可通过 STM32CubeProgrammer 修改。</p>
+<p><strong>三个关键配置</strong>：</p>
+<p>① <strong>BCM7 &#x2F; BCM4</strong> — 控制哪个核启动</p>
+<table>
+<thead>
+<tr>
+<th>BCM7</th>
+<th>BCM4</th>
+<th>行为</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>1</strong></td>
+<td><strong>1</strong></td>
+<td><strong>出厂默认：两个核都启动</strong></td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>只有 M7 启动（M4 可被 M7 软件唤醒）</td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>只有 M4 启动</td>
+</tr>
+<tr>
+<td>0</td>
+<td>0</td>
+<td>两个核都不自动启动</td>
+</tr>
+</tbody></table>
+<p>② <strong>BCM7_ADD0 &#x2F; ADD1</strong> — M7 的启动地址</p>
+<table>
+<thead>
+<tr>
+<th>Option Byte</th>
+<th>出厂默认值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BCM7_ADD0</td>
+<td><strong>0x08000000</strong></td>
+<td>Flash（BOOT&#x3D;0 时使用）</td>
+</tr>
+<tr>
+<td>BCM7_ADD1</td>
+<td>0x00000000</td>
+<td>ITCM-RAM（BOOT&#x3D;1 时使用）</td>
+</tr>
+</tbody></table>
+<p>③ <strong>BOOT 引脚</strong> — 芯片上的物理引脚，选择用 ADD0 还是 ADD1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">BOOT = 0（当前开发板设置，BOOT 脚接地）→ 使用 ADD0 = 0x08000000（从 Flash 启动）</span><br><span class="line">BOOT = 1                              → 使用 ADD1 = 0x00000000（从 ITCM-RAM 启动）</span><br></pre></td></tr></table></figure>
+
+<p><strong>完整启动决策流程</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">上电</span><br><span class="line">  │</span><br><span class="line">  ├─ ① 硬件读取 Option Byte: BCM7=1, BCM4=1 → M7 启动（M4 也启动但无固件）</span><br><span class="line">  ├─ ② 硬件采样 BOOT 引脚 → BOOT=0 → 使用 BCM7_ADD0</span><br><span class="line">  ├─ ③ 硬件读取 BCM7_ADD0 = 0x08000000</span><br><span class="line">  ├─ ④ 硬件将 CPU 取指地址指向 0x08000000</span><br><span class="line">  └─ ⑤ 从 0x08000000 读 MSP，从 0x08000004 读 Reset_Handler → CPU 开始执行</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-上电时-VTOR-的状态"><a href="#3-2-上电时-VTOR-的状态" class="headerlink" title="3.2 上电时 VTOR 的状态"></a>3.2 上电时 VTOR 的状态</h3><p>ARM Cortex-M 架构规定：<strong>复位后 VTOR &#x3D; 0</strong>，CPU 理论上从 <code>0x00000000</code> 读取向量表。</p>
+<p>STM32H7 的实现：不是简单地把 <code>0x08000000</code> 别名映射到 <code>0x00000000</code>，而是通过 <strong>BOOT 引脚 + Option Bytes 机制</strong>，硬件直接把 CPU 的初始取指地址指向 <code>BCM7_ADD0</code> 指定的地址（默认 <code>0x08000000</code>）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">上电时：硬件直接从 0x08000000 取 MSP 和 Reset_Handler（不经过 VTOR）</span><br><span class="line">         │</span><br><span class="line">         ▼ z_prep_c() 中显式设置</span><br><span class="line">运行时：SCB-&gt;VTOR = 0x08000000  ← 锁定向量表位置，确保后续中断可靠</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-向量表：Flash-开头的一张函数指针数组"><a href="#3-3-向量表：Flash-开头的一张函数指针数组" class="headerlink" title="3.3 向量表：Flash 开头的一张函数指针数组"></a>3.3 向量表：Flash 开头的一张函数指针数组</h3><p>向量表是 Flash 开头的一张<strong>函数指针数组</strong>，CPU 上电后第一条指令就从这里找：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Flash: 0x0800_0000</span><br><span class="line">  ┌──────────────┐</span><br><span class="line">  │ 0x0800_0000  │ → MSP 初始值（主栈指针，指向栈顶）</span><br><span class="line">  ├──────────────┤</span><br><span class="line">  │ 0x0800_0004  │ → Reset_Handler（复位入口 = z_arm_reset）</span><br><span class="line">  ├──────────────┤</span><br><span class="line">  │ 0x0800_0008  │ → NMI_Handler</span><br><span class="line">  ├──────────────┤</span><br><span class="line">  │ 0x0800_000C  │ → HardFault_Handler</span><br><span class="line">  ├──────────────┤</span><br><span class="line">  │ ...          │ → 其他异常和中断</span><br><span class="line">  └──────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键理解</strong>：</p>
+<ul>
+<li>CPU 硬件自动从 <code>0x0800_0000</code> 加载 MSP，从 <code>0x0800_0004</code> 加载 PC</li>
+<li>STM32H7 通过 <code>SCB-&gt;VTOR</code> 寄存器可以在运行时重定位向量表</li>
+</ul>
+<h3 id="3-4-向量表地址-0x08000000-的完整传递链"><a href="#3-4-向量表地址-0x08000000-的完整传递链" class="headerlink" title="3.4 向量表地址 0x08000000 的完整传递链"></a>3.4 向量表地址 0x08000000 的完整传递链</h3><p>0x08000000 从 DTS 到运行时的 5 层传递：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">① 设备树 DTS:</span><br><span class="line">   stm32h747Xi_m7.dtsi:</span><br><span class="line">     flash0: flash@8000000 &#123; reg = &lt;0x08000000 DT_SIZE_K(1024)&gt;; &#125;</span><br><span class="line">   stm32h747i_disco_m7.dts:</span><br><span class="line">     chosen &#123; zephyr,flash = &amp;flash0; &#125;</span><br><span class="line"></span><br><span class="line">② CMake 阶段（dts.cmake）:</span><br><span class="line">   运行 gen_edt.py 解析所有 DTS 文件</span><br><span class="line">   → 生成 edt.pickle（序列化的 Python EDT 对象）</span><br><span class="line"></span><br><span class="line">③ Kconfig 函数（kconfigfunctions.py）:</span><br><span class="line">   调用 dt_chosen_reg_addr_hex(&quot;zephyr,flash&quot;):</span><br><span class="line">     ① edt.chosen_node(&quot;zephyr,flash&quot;) → 找到 flash0 节点</span><br><span class="line">     ② flash0.regs[0].addr → 提取 0x08000000</span><br><span class="line">     ③ hex(0x08000000) → 返回 &quot;0x8000000&quot;</span><br><span class="line"></span><br><span class="line">④ Kconfig 定义（arch/Kconfig）:</span><br><span class="line">   config FLASH_BASE_ADDRESS</span><br><span class="line">       default $(dt_chosen_reg_addr_hex,zephyr,flash)</span><br><span class="line">       → CONFIG_FLASH_BASE_ADDRESS = 0x8000000</span><br><span class="line"></span><br><span class="line">⑤ 链接脚本（linker.cmd）:</span><br><span class="line">   __rom_region_start = 0x08000000</span><br><span class="line">   _vector_start = .（在 FLASH 最开头）</span><br><span class="line">   → prep_c.c 中: SCB-&gt;VTOR = _vector_start</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键机制</strong>：CMake 把 DTS 解析成 Python 对象（edt.pickle），Kconfig 求值时通过 Python 函数 <code>dt_chosen_reg_addr_hex()</code> 从中查找 <code>zephyr,flash</code> 指向的节点的 <code>reg</code> 属性，提取出 <code>0x08000000</code>。</p>
+<h3 id="3-5-链接脚本中向量表段的详细分析"><a href="#3-5-链接脚本中向量表段的详细分析" class="headerlink" title="3.5 链接脚本中向量表段的详细分析"></a>3.5 链接脚本中向量表段的详细分析</h3><p><strong>源码位置</strong>：<code>build/zephyr/linker.cmd</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">__rom_region_start = (0x8000000 + 0x0);</span><br><span class="line">rom_start :</span><br><span class="line">&#123;</span><br><span class="line">    . = ALIGN(4);</span><br><span class="line">    . = ALIGN( 1 &lt;&lt; LOG2CEIL(4 * 32) );         ← VTOR 对齐：128 字节</span><br><span class="line">    . = ALIGN( 1 &lt;&lt; LOG2CEIL(4 * (16 + 150)) );   ← 向量表大小对齐：1024 字节</span><br><span class="line">    _vector_start = .;</span><br><span class="line">    KEEP(*(.exc_vector_table))          ← 系统异常向量（编译时固定）</span><br><span class="line">    KEEP(*(&quot;.exc_vector_table.*&quot;))</span><br><span class="line">    KEEP(*(.vectors))</span><br><span class="line">    _vector_end = .;</span><br><span class="line">    KEEP(*(.gnu.linkonce.irq_vector_table*))  ← IRQ 向量（指向 _isr_wrapper）</span><br><span class="line">    _vector_end = .;</span><br><span class="line">&#125; &gt; FLASH</span><br></pre></td></tr></table></figure>
+
+<p><strong>ALIGN 为什么不移动位置？</strong></p>
+<p><code>0x08000000</code> &#x3D; 二进制末尾有 27 个零，天然满足所有对齐要求：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">. = ALIGN(4)    → 需要 2 位对齐   ✓ 不动</span><br><span class="line">. = ALIGN(128)  → 需要 7 位对齐   ✓ 不动</span><br><span class="line">. = ALIGN(1024) → 需要 10 位对齐  ✓ 不动</span><br><span class="line">→ _vector_start = 0x08000000（精确在 Flash 起始位置）</span><br></pre></td></tr></table></figure>
+
+<p>ALIGN 是<strong>安全网</strong>——如果起始地址不是 <code>0x08000000</code>（比如从 SRAM 启动），对齐操作会自动调整。</p>
+<h3 id="3-6-向量表的实际内容"><a href="#3-6-向量表的实际内容" class="headerlink" title="3.6 向量表的实际内容"></a>3.6 向量表的实际内容</h3><p><strong>源码位置</strong>：<code>zephyr/arch/arm/core/cortex_m/vector_table.S</code></p>
+<p>STM32H7 M7 核是 ARMv7-M Mainline 架构，16 个系统异常<strong>全都有</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">偏移    内容</span><br><span class="line">[0] +0x00  z_main_stack + CONFIG_MAIN_STACK_SIZE  ← MSP 初始值</span><br><span class="line">[1] +0x04  z_arm_reset                            ← Reset Handler</span><br><span class="line">[2] +0x08  z_arm_nmi                              ← NMI</span><br><span class="line">[3] +0x0C  z_arm_hard_fault                       ← HardFault</span><br><span class="line">[4] +0x10  z_arm_mpu_fault                        ← MemManage</span><br><span class="line">[5] +0x14  z_arm_bus_fault                        ← BusFault</span><br><span class="line">[6] +0x18  z_arm_usage_fault                      ← UsageFault</span><br><span class="line">[7] +0x1C  0（SecureFault，需 TrustZone）</span><br><span class="line">[8]-[10]   0（保留）</span><br><span class="line">[11]+0x2C  z_arm_svc                              ← SVCall</span><br><span class="line">[12]+0x30  z_arm_debug_monitor                    ← Debug Monitor</span><br><span class="line">[13]+0x34  0（保留）</span><br><span class="line">[14]+0x38  z_arm_pendsv                           ← PendSV（上下文切换）</span><br><span class="line">[15]+0x3C  sys_clock_isr                          ← SysTick（系统时钟）</span><br><span class="line">[16]+0x40  外设 IRQ 0 ...                         ← 150 个外设中断</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-7-静态向量表-vs-动态-ISR-表"><a href="#3-7-静态向量表-vs-动态-ISR-表" class="headerlink" title="3.7 静态向量表 vs 动态 ISR 表"></a>3.7 静态向量表 vs 动态 ISR 表</h3><p>链接脚本中有两种向量段，对应不同的中断处理方式：</p>
+<table>
+<thead>
+<tr>
+<th>段名</th>
+<th>内容</th>
+<th>可变性</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>.exc_vector_table</code></td>
+<td>系统异常（Reset, NMI, Fault…）</td>
+<td>编译时固定</td>
+</tr>
+<tr>
+<td><code>.gnu.linkonce.irq_vector_table</code></td>
+<td>外设中断（IRQ 0~149）</td>
+<td>全部指向 <code>_isr_wrapper</code></td>
+</tr>
+</tbody></table>
+<p><strong>动态分发机制</strong>：</p>
+<pre class="mermaid">flowchart LR
+    subgraph VT["向量表 (Flash, 固定)"]
+        direction TB
+        V0["IRQ 0"]
+        V1["IRQ 1"]
+        V2["IRQ 2"]
+        VN["..."]
+        V149["IRQ 149"]
+    end
+
+    subgraph ISR["ISR 软件表 (RAM, 运行时可改)"]
+        direction TB
+        S0["[0] spi1_isr"]
+        S1["[1] uart1_isr"]
+        S2["[2] gpio_isr"]
+        SN["..."]
+    end
+
+    W["_isr_wrapper()"]
+    C["IRQ_CONNECT() 驱动注册"]
+
+    VT --> W
+    W -- "查表 _irq_table[irq_num]" --> ISR
+    C -. "运行时填充" .-> ISR</pre>
+
+<p><strong>动态分发的意义</strong>：驱动在运行时用 <code>IRQ_CONNECT()</code> 注册 ISR，而不是编译时写死。这样同一中断号可以接不同驱动，支持动态加载。</p>
+<h3 id="3-8-向量表的两级源码实现"><a href="#3-8-向量表的两级源码实现" class="headerlink" title="3.8 向量表的两级源码实现"></a>3.8 向量表的两级源码实现</h3><p><code>vector_table.S</code> 中只有 16 个系统异常，外设中断（IRQ 0~149）的定义在 <code>zephyr/arch/common/isr_tables.c</code> 中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// zephyr/arch/common/isr_tables.c:59-83</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_GEN_SW_ISR_TABLE</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IRQ_VECTOR_TABLE_DEFAULT_ISR    _isr_wrapper    <span class="comment">// 有软件 ISR 表 → 统一指向 _isr_wrapper</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IRQ_VECTOR_TABLE_DEFAULT_ISR    z_irq_spurious  <span class="comment">// 无软件 ISR 表 → 指向空处理</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 外设中断向量表：所有 IRQ 统一填充为同一个入口</span></span><br><span class="line"><span class="type">const</span> <span class="type">uintptr_t</span> __irq_vector_table _irq_vector_table[IRQ_TABLE_SIZE] = &#123;</span><br><span class="line">    [<span class="number">0</span> ...(IRQ_TABLE_SIZE - <span class="number">1</span>)] = (<span class="type">uintptr_t</span>)&amp;IRQ_VECTOR_TABLE_DEFAULT_ISR,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>两级向量表的源码分工</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>源文件</th>
+<th>段名</th>
+<th>内容</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>vector_table.S</code></td>
+<td><code>.exc_vector_table</code></td>
+<td>16 个系统异常</td>
+<td>每个异常有独立处理函数（hard_fault、svc、pendsv 等），必须逐个定义</td>
+</tr>
+<tr>
+<td><code>isr_tables.c</code></td>
+<td><code>.gnu.linkonce.irq_vector_table</code></td>
+<td>全部 IRQ → <code>_isr_wrapper</code></td>
+<td>本质是同值数组，用 C 的 range initializer <code>[0 ...(N-1)]</code> 一行填充</td>
+</tr>
+</tbody></table>
+<p>链接脚本将两个段拼在一起，形成完整的向量表：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">KEEP(*(.exc_vector_table))                         ← 系统异常（vector_table.S）</span><br><span class="line">KEEP(*(.vectors))</span><br><span class="line">KEEP(*(.gnu.linkonce.irq_vector_table*))            ← 外设中断（isr_tables.c）</span><br></pre></td></tr></table></figure>
+
+<p>最终 ELF 中是一段连续的函数指针数组：16 个系统异常入口 + 150 个 <code>_isr_wrapper</code>。</p>
+<hr>
+<h2 id="4-第二步：z-arm-reset-—-汇编级逐行深度解析"><a href="#4-第二步：z-arm-reset-—-汇编级逐行深度解析" class="headerlink" title="4. 第二步：z_arm_reset() — 汇编级逐行深度解析"></a>4. 第二步：z_arm_reset() — 汇编级逐行深度解析</h2><p><strong>源码位置</strong>：<code>zephyr/arch/arm/core/cortex_m/reset.S</code></p>
+<p>这是 CPU 执行的<strong>第一段用户代码</strong>（纯汇编）。以下按 STM32H7（ARMv7-M Mainline）实际执行的路径，逐行详解每条汇编和涉及的系统寄存器。</p>
+<h3 id="4-1-完整执行时间线（STM32H7-实际路径）"><a href="#4-1-完整执行时间线（STM32H7-实际路径）" class="headerlink" title="4.1 完整执行时间线（STM32H7 实际路径）"></a>4.1 完整执行时间线（STM32H7 实际路径）</h3><p>在逐行分析前，先看 <code>z_arm_reset()</code> 的完整执行流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">z_arm_reset:</span><br><span class="line">  │</span><br><span class="line">  ├─ movs r0, #0; msr CONTROL, r0; isb      ← 重置 CONTROL</span><br><span class="line">  │   此时：CONTROL=0, 使用MSP, 特权模式</span><br><span class="line">  │</span><br><span class="line">  ├─ ldr r0, =z_main_stack+size; msr msp, r0 ← 设置 MSP</span><br><span class="line">  │   此时：MSP = 主栈顶部</span><br><span class="line">  │</span><br><span class="line">  ├─ bl soc_reset_hook                       ← 清零 TCM（防 ECC）</span><br><span class="line">  │</span><br><span class="line">  ├─ movs r0, #0; str r0, [MPU_CTRL]; dsb    ← 禁用 MPU</span><br><span class="line">  │</span><br><span class="line">  ├─ bl z_arm_init_arch_hw_at_boot           ← 初始化 NVIC、Cache</span><br><span class="line">  │</span><br><span class="line">  ├─ movs r0, #prio; msr BASEPRI, r0         ← 屏蔽普通中断</span><br><span class="line">  │   此时：中断全禁，只有 NMI/Fault 能触发</span><br><span class="line">  │</span><br><span class="line">  ├─ ldr r0, =z_interrupt_stacks+size        ← 设置 PSP</span><br><span class="line">  │  msr PSP, r0</span><br><span class="line">  ├─ mrs r0, CONTROL; orrs r0, #2; msr CONTROL, r0; isb</span><br><span class="line">  │   此时：CONTROL.SPSEL=1, CPU 使用 PSP</span><br><span class="line">  │</span><br><span class="line">  └─ bl z_prep_c                             ← 跳转至 C 运行时准备</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-涉及的-ARM-Cortex-M-系统寄存器速查"><a href="#4-2-涉及的-ARM-Cortex-M-系统寄存器速查" class="headerlink" title="4.2 涉及的 ARM Cortex-M 系统寄存器速查"></a>4.2 涉及的 ARM Cortex-M 系统寄存器速查</h3><table>
+<thead>
+<tr>
+<th>寄存器</th>
+<th>访问方式</th>
+<th>位域</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>CONTROL</strong></td>
+<td>特殊寄存器（MRS&#x2F;MSR）</td>
+<td>bit[2] FPCA: FP 上下文活跃<br>bit[1] SPSEL: 0&#x3D;MSP, 1&#x3D;PSP<br>bit[0] nPRIV: 0&#x3D;特权, 1&#x3D;非特权</td>
+<td>控制栈选择和特权级别</td>
+</tr>
+<tr>
+<td><strong>MSP</strong></td>
+<td>特殊寄存器（MRS&#x2F;MSR）</td>
+<td>32bit</td>
+<td>主栈指针（复位后默认使用）</td>
+</tr>
+<tr>
+<td><strong>PSP</strong></td>
+<td>特殊寄存器（MRS&#x2F;MSR）</td>
+<td>32bit</td>
+<td>进程栈指针（线程使用）</td>
+</tr>
+<tr>
+<td><strong>BASEPRI</strong></td>
+<td>特殊寄存器（MRS&#x2F;MSR）</td>
+<td>bit[7:0]</td>
+<td>优先级屏蔽阈值（≥此值的中断被屏蔽）</td>
+</tr>
+<tr>
+<td><strong>FAULTMASK</strong></td>
+<td>特殊寄存器（MRS&#x2F;MSR）</td>
+<td>bit[0]</td>
+<td>异常屏蔽（&#x3D;1 时屏蔽所有可编程异常）</td>
+</tr>
+<tr>
+<td><strong>MPU_CTRL</strong></td>
+<td>0xE000ED94（存储器映射）</td>
+<td>bit[0] ENABLE, bit[1] HFNMIENA, bit[2] PRIVDEFENA</td>
+<td>MPU 总开关</td>
+</tr>
+</tbody></table>
+<h3 id="4-3-逐行详解"><a href="#4-3-逐行详解" class="headerlink" title="4.3 逐行详解"></a>4.3 逐行详解</h3><h4 id="阶段-1：重置-CONTROL-寄存器"><a href="#阶段-1：重置-CONTROL-寄存器" class="headerlink" title="阶段 1：重置 CONTROL 寄存器"></a>阶段 1：重置 CONTROL 寄存器</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/* 第 93-97 行：重置 CONTROL 为默认值 */</span><br><span class="line">movs.n r0, #0            /* r0 = 0 */</span><br><span class="line">msr CONTROL, r0          /* CONTROL = 0 → 使用 MSP，特权模式 */</span><br><span class="line">isb                       /* 指令同步屏障：确保 CONTROL 写入生效 */</span><br></pre></td></tr></table></figure>
+
+<p><strong>CONTROL 寄存器详解</strong>（ARMv7-M，Cortex-M7 有效位域）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CONTROL 寄存器（特殊寄存器，通过 MRS/MSR 访问）:</span><br><span class="line">  bit[0] nPRIV  = 0  → 特权模式（可访问所有资源）</span><br><span class="line">  bit[1] SPSEL  = 0  → 使用 MSP（主栈指针）</span><br><span class="line">  bit[2] FPCA   = 0  → 无活跃的浮点上下文</span><br></pre></td></tr></table></figure>
+
+<p><strong>重置的原因</strong>：这段代码可能被 bootloader 链式加载（chain-loading），此时 CONTROL 可能不是默认值。重置确保从已知状态开始。</p>
+<p><strong><code>isb</code> 是什么？</strong> Instruction Synchronization Barrier（指令同步屏障）。写 CONTROL 后必须跟 <code>isb</code>，否则 CPU 流水线可能还在用旧的栈指针。ARM 架构要求：<strong>修改 CONTROL 或栈指针后，必须用 <code>isb</code> 确保生效</strong>。</p>
+<h4 id="阶段-2：清零栈限制寄存器"><a href="#阶段-2：清零栈限制寄存器" class="headerlink" title="阶段 2：清零栈限制寄存器"></a>阶段 2：清零栈限制寄存器</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/* 第 98-103 行：清零 SPLIM（如果 CPU 支持） */</span><br><span class="line">movs.n r0, #0            /* r0 = 0 */</span><br><span class="line">msr MSPLIM, r0           /* MSP 栈下限 = 0（不限制） */</span><br><span class="line">msr PSPLIM, r0           /* PSP 栈下限 = 0（不限制） */</span><br></pre></td></tr></table></figure>
+
+<p><strong>MSPLIM &#x2F; PSPLIM 是什么？</strong> ARMv8-M 引入的栈溢出检测寄存器。如果 MSP &lt; MSPLIM，触发 Stack Overflow 异常。启动阶段清零 &#x3D; 暂不检测。</p>
+<p>STM32H7 的 Cortex-M7 是 ARMv7-M 架构，<strong>没有 SPLIM 寄存器</strong>，所以这段代码实际<strong>不编译</strong>（被 <code>#if defined(CONFIG_CPU_CORTEX_M_HAS_SPLIM)</code> 排除）。ARMv8-M 架构的处理器（如 Cortex-M33&#x2F;M55）才有此寄存器。</p>
+<h4 id="阶段-3：设置-MSP-到主栈"><a href="#阶段-3：设置-MSP-到主栈" class="headerlink" title="阶段 3：设置 MSP 到主栈"></a>阶段 3：设置 MSP 到主栈</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/* 第 147-148 行：设置 MSP */</span><br><span class="line">ldr r0, =z_main_stack + CONFIG_MAIN_STACK_SIZE    /* r0 = 主栈顶部地址 */</span><br><span class="line">msr msp, r0              /* MSP = 主栈顶部 */</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>ldr r0, =xxx</code></strong> 是伪指令，把 32 位常量加载到 r0。<code>z_main_stack</code> 是链接脚本中定义的符号，<code>CONFIG_MAIN_STACK_SIZE</code> 通常为 1024 或 2048。</p>
+<p><strong>使用 MSP 的原因</strong>：此时 CONTROL.SPSEL&#x3D;0，CPU 还在使用 MSP。后续代码需要 MSP 来执行 <code>soc_reset_hook()</code> 等函数调用（函数调用需要栈来保存返回地址）。</p>
+<h4 id="阶段-4：调用-SoC-复位钩子"><a href="#阶段-4：调用-SoC-复位钩子" class="headerlink" title="阶段 4：调用 SoC 复位钩子"></a>阶段 4：调用 SoC 复位钩子</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/* 第 162-164 行：调用 STM32H7 专用复位函数 */</span><br><span class="line">bl soc_reset_hook         /* 跳转并保存返回地址到 LR */</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>bl</code> &#x3D; Branch with Link</strong>：跳转到 <code>soc_reset_hook</code>，同时把下一条指令的地址保存到 <code>LR</code>（R14），函数返回时 <code>bx lr</code> 跳回来。</p>
+<p><strong>soc_reset_hook() 做了什么？</strong> 以 STM32H7 为例，清零 TCM 内存（防 ECC 错误）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// zephyr/soc/st/stm32/stm32h7x/soc_m7.c</span></span><br><span class="line"><span class="comment">// 地址和大小从 Device Tree chosen 节点获取，非硬编码</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ITCM_BASE  DT_REG_ADDR(DT_CHOSEN(zephyr_itcm))   <span class="comment">// → 0x00000000</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ITCM_END   (ITCM_BASE + DT_REG_SIZE(DT_CHOSEN(zephyr_itcm)))  <span class="comment">// → 0x00010000 (64KB)</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DTCM_BASE  DT_REG_ADDR(DT_CHOSEN(zephyr_dtcm))   <span class="comment">// → 0x20000000</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DTCM_END   (DTCM_BASE + DT_REG_SIZE(DT_CHOSEN(zephyr_dtcm)))  <span class="comment">// → 0x20020000 (128KB)</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">soc_reset_hook</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 清零 ITCM — volatile 64位对齐写入（防止编译器优化掉清零操作）</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> ITCM_BASE</span></span><br><span class="line">    BUILD_ASSERT(ITCM_BASE % <span class="keyword">sizeof</span>(<span class="type">uint64_t</span>) == <span class="number">0</span>, <span class="string">&quot;ITCM must be 64-bit aligned&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">volatile</span> <span class="type">uint64_t</span> *p = (<span class="keyword">volatile</span> <span class="type">uint64_t</span> *)ITCM_BASE;</span><br><span class="line">         p &lt; (<span class="keyword">volatile</span> <span class="type">uint64_t</span> *)ITCM_END; p++) &#123; *p = <span class="number">0</span>; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 清零 DTCM — volatile 32位对齐写入</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> DTCM_BASE</span></span><br><span class="line">    BUILD_ASSERT(DTCM_BASE % <span class="keyword">sizeof</span>(<span class="type">uint32_t</span>) == <span class="number">0</span>, <span class="string">&quot;DTCM must be 32-bit aligned&quot;</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">volatile</span> <span class="type">uint32_t</span> *p = (<span class="keyword">volatile</span> <span class="type">uint32_t</span> *)DTCM_BASE;</span><br><span class="line">         p &lt; (<span class="keyword">volatile</span> <span class="type">uint32_t</span> *)DTCM_END; p++) &#123; *p = <span class="number">0</span>; &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键设计</strong>：地址和大小从 Device Tree 的 <code>zephyr_itcm</code> &#x2F; <code>zephyr_dtcm</code> chosen 节点获取，同一 SoC 的不同变体（ITCM 大小不同）无需改代码。<code>BUILD_ASSERT</code> 在编译时验证对齐要求。<code>volatile</code> 防止编译器将清零循环优化掉。</p>
+<p>STM32H7 需要清零 TCM 是因为其上电后内容未定义，访问会触发 ECC 错误 → HardFault（参考 ST AN5342 Rev.7 §3.1.1）。其他 SoC 可能在此执行 PLL 预配置、看门狗关闭等操作。</p>
+<h4 id="阶段-5：禁用-MPU"><a href="#阶段-5：禁用-MPU" class="headerlink" title="阶段 5：禁用 MPU"></a>阶段 5：禁用 MPU</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/* 第 167-173 行：关闭 MPU */</span><br><span class="line">movs.n r0, #0                         /* r0 = 0 */</span><br><span class="line">ldr r1, =_SCS_MPU_CTRL                /* r1 = 0xE000ED94 (MPU_CTRL 地址) */</span><br><span class="line">str r0, [r1]                          /* MPU_CTRL = 0 → 禁用 MPU */</span><br><span class="line">dsb                                    /* 数据同步屏障 */</span><br></pre></td></tr></table></figure>
+
+<p><strong>MPU_CTRL 寄存器详解</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MPU_CTRL (0xE000ED94):</span><br><span class="line">  bit[0] ENABLE      = 0  → MPU 禁用</span><br><span class="line">  bit[1] HFNMIENA    = 0  → HardFault/NMI 时禁用 MPU</span><br><span class="line">  bit[2] PRIVDEFENA  = 0  → 特权模式默认映射禁用</span><br></pre></td></tr></table></figure>
+
+<p><strong>先禁用 MPU 的原因</strong>：后续要设置栈指针、拷贝数据，如果 MPU 配置了内存保护，可能会阻止这些操作。先禁用，等内核初始化完成后再配置并启用。</p>
+<p><strong><code>dsb</code> 是什么？</strong> Data Synchronization Barrier（数据同步屏障）。确保 MPU_CTRL 写入到达硬件后再继续。</p>
+<h4 id="阶段-6：初始化架构硬件"><a href="#阶段-6：初始化架构硬件" class="headerlink" title="阶段 6：初始化架构硬件"></a>阶段 6：初始化架构硬件</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/* 第 176 行 */</span><br><span class="line">bl z_arm_init_arch_hw_at_boot    /* 初始化 NVIC、MPU、Cache */</span><br></pre></td></tr></table></figure>
+
+<p><strong>源码位置</strong>：<code>zephyr/arch/arm/core/cortex_m/scb.c</code>（93-155 行）</p>
+<p>这个函数把 CPU 内部所有硬件状态重置到已知值，防止前一个固件（bootloader）留下残余配置：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">z_arm_init_arch_hw_at_boot</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    __disable_irq();                    <span class="comment">// 1. 禁用全局中断</span></span><br><span class="line">    __set_FAULTMASK(<span class="number">0</span>);                 <span class="comment">// 2. 清除 Fault 屏蔽</span></span><br><span class="line"></span><br><span class="line">    z_arm_clear_arm_mpu_config();       <span class="comment">// 3. 清除所有 MPU 区域配置</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 禁用所有 NVIC 中断</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; ARRAY_SIZE(NVIC-&gt;ICER); i++)</span><br><span class="line">        NVIC-&gt;ICER[i] = <span class="number">0xFFFFFFFF</span>;    <span class="comment">// ICER: Interrupt Clear Enable Register</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 清除所有 NVIC 挂起中断</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; ARRAY_SIZE(NVIC-&gt;ICPR); i++)</span><br><span class="line">        NVIC-&gt;ICPR[i] = <span class="number">0xFFFFFFFF</span>;    <span class="comment">// ICPR: Interrupt Clear Pending Register</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 6. 处理 Cache 状态</span></span><br><span class="line">    <span class="keyword">if</span> (SCB-&gt;CCR &amp; SCB_CCR_DC_Msk)</span><br><span class="line">        SCB_DisableDCache();            <span class="comment">// D-Cache 已启用 → 先清空再禁用</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        SCB_InvalidateDCache();         <span class="comment">// D-Cache 未启用 → 直接无效化</span></span><br><span class="line">    SCB_DisableICache();                <span class="comment">// 禁用 I-Cache</span></span><br><span class="line"></span><br><span class="line">    __enable_irq();                     <span class="comment">// 7. 恢复中断</span></span><br><span class="line">    barrier_dsync_fence_full();         <span class="comment">// 8. 数据屏障</span></span><br><span class="line">    barrier_isync_fence_full();         <span class="comment">// 9. 指令屏障</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>涉及的寄存器详解</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>寄存器</th>
+<th>访问方式</th>
+<th>操作</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2</td>
+<td>FAULTMASK</td>
+<td>特殊寄存器（MRS&#x2F;MSR）</td>
+<td>写 0</td>
+<td>允许所有 Fault 触发</td>
+</tr>
+<tr>
+<td>3</td>
+<td>MPU_RNR&#x2F;RBAR&#x2F;RASR</td>
+<td>0xE000ED98..（存储器映射）</td>
+<td>清除所有区域</td>
+<td>MPU 回到空白状态</td>
+</tr>
+<tr>
+<td>4</td>
+<td>NVIC-&gt;ICER[n]</td>
+<td>0xE000E180..（存储器映射）</td>
+<td>写全 1</td>
+<td>禁用所有外设中断</td>
+</tr>
+<tr>
+<td>5</td>
+<td>NVIC-&gt;ICPR[n]</td>
+<td>0xE000E280..（存储器映射）</td>
+<td>写全 1</td>
+<td>清除所有挂起中断</td>
+</tr>
+<tr>
+<td>6</td>
+<td>SCB-&gt;CCR</td>
+<td>0xE000ED14（存储器映射）</td>
+<td>检查 DC 位</td>
+<td>根据当前状态决定如何处理 Cache</td>
+</tr>
+</tbody></table>
+<p><strong>NVIC 寄存器特性</strong>：<code>ICER</code>（Interrupt Clear Enable）写 1 禁用对应中断，<code>ICPR</code>（Interrupt Clear Pending）写 1 清除挂起状态。这是 ARM 的”写 1 清除&#x2F;设置”模式——读和写的含义不同。</p>
+<h4 id="阶段-7：禁用普通中断（保留-Fault）"><a href="#阶段-7：禁用普通中断（保留-Fault）" class="headerlink" title="阶段 7：禁用普通中断（保留 Fault）"></a>阶段 7：禁用普通中断（保留 Fault）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/* 第 182-184 行（ARMv7-M 路径） */</span><br><span class="line">movs.n r0, #_EXC_IRQ_DEFAULT_PRIO    /* r0 = 优先级阈值 */</span><br><span class="line">msr BASEPRI, r0                       /* BASEPRI = 阈值 → 屏蔽普通中断 */</span><br></pre></td></tr></table></figure>
+
+<p><strong>ARM Cortex-M 三级优先级体系</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>优先级</th>
+<th>异常</th>
+<th>BASEPRI 能屏蔽？</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>固定（不可屏蔽）</td>
+<td>-3</td>
+<td>Reset</td>
+<td>永远不能</td>
+</tr>
+<tr>
+<td>固定（不可屏蔽）</td>
+<td>-2</td>
+<td>NMI（不可屏蔽中断）</td>
+<td>永远不能</td>
+</tr>
+<tr>
+<td>固定（不可屏蔽）</td>
+<td>-1</td>
+<td>HardFault</td>
+<td>永远不能</td>
+</tr>
+<tr>
+<td>可编程 Fault</td>
+<td>0x00（默认）</td>
+<td>MemManage &#x2F; BusFault &#x2F; UsageFault</td>
+<td>不屏蔽（&lt; 0x10）</td>
+</tr>
+<tr>
+<td>可编程系统</td>
+<td>0x00（默认）</td>
+<td>SVCall</td>
+<td>不屏蔽（&lt; 0x10）</td>
+</tr>
+<tr>
+<td>普通外设</td>
+<td>0x10~0xF0</td>
+<td>UART, SPI, DMA, TIM…</td>
+<td><strong>全部屏蔽</strong></td>
+</tr>
+<tr>
+<td>系统</td>
+<td>0xFF</td>
+<td>PendSV, SysTick</td>
+<td><strong>全部屏蔽</strong></td>
+</tr>
+</tbody></table>
+<p><strong>BASEPRI 寄存器详解</strong>（特殊寄存器，通过 MRS&#x2F;MSR 访问）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">规则：屏蔽所有优先级 ≥ 写入值的中断</span><br><span class="line">写入 0x10 → 屏蔽 ≥ 0x10 的中断，保留 &lt; 0x10 的</span><br><span class="line">写入 0x00 → 不屏蔽任何中断（全部允许）</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>_EXC_IRQ_DEFAULT_PRIO</code> 的推导</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// DTS 定义: stm32h7.dtsi → NUM_IRQ_PRIO_BITS = 4（STM32H7 用 4 位优先级）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// exception.h 计算链:</span></span><br><span class="line">_EXCEPTION_RESERVED_PRIO  = <span class="number">1</span>     <span class="comment">// ARMv7-M 为 Fault 保留 1 级</span></span><br><span class="line">_EXC_SVC_PRIO             = <span class="number">0</span>     <span class="comment">// 未启用 ZERO_LATENCY_IRQS</span></span><br><span class="line">_IRQ_PRIO_OFFSET          = <span class="number">1</span> + <span class="number">0</span> = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">Z_EXC_PRIO(pri) = (pri &lt;&lt; (<span class="number">8</span> - NUM_IRQ_PRIO_BITS)) &amp; <span class="number">0xFF</span></span><br><span class="line">                = (pri &lt;&lt; <span class="number">4</span>) &amp; <span class="number">0xFF</span>    <span class="comment">// 左移 4 位，填到高半字节</span></span><br><span class="line"></span><br><span class="line">_EXC_IRQ_DEFAULT_PRIO = Z_EXC_PRIO(<span class="number">1</span>) = (<span class="number">1</span> &lt;&lt; <span class="number">4</span>) = <span class="number">0x10</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>优先级寄存器的位布局</strong>：STM32H7 只有 4 位有效优先级，放在 8 位寄存器的高 4 位：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">硬件 8 位优先级寄存器:</span><br><span class="line">  bit[7:4] = 有效位    bit[3:0] = 始终为 0</span><br><span class="line"></span><br><span class="line">  逻辑优先级 0  → 0b0001_0000 = 0x10  ← Fault 用</span><br><span class="line">  逻辑优先级 1  → 0b0001_0000 = 0x10  ← _EXC_IRQ_DEFAULT_PRIO</span><br><span class="line">  逻辑优先级 2  → 0b0010_0000 = 0x20</span><br><span class="line">  ...</span><br><span class="line">  逻辑优先级 15 → 0b1111_0000 = 0xF0  ← 最低</span><br></pre></td></tr></table></figure>
+
+<p><strong>BASEPRI&#x3D;0x10 后的效果</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">能触发: Reset, NMI, HardFault（固定优先级，BASEPRI 管不了）</span><br><span class="line">能触发: MemManage, BusFault, UsageFault, SVC（优先级 0x00 &lt; 0x10）</span><br><span class="line">被屏蔽: 所有外设中断（UART, SPI, TIM...）、PendSV、SysTick（≥ 0x10）</span><br><span class="line"></span><br><span class="line">设计原因: 启动阶段中断全关，但 Fault 必须能触发</span><br><span class="line">         如果启动代码有 bug（如非法地址访问），Fault 能捕获</span><br><span class="line">         否则系统会无声死锁</span><br></pre></td></tr></table></figure>
+
+<h4 id="阶段-8：切换到-PSP（进程栈指针）"><a href="#阶段-8：切换到-PSP（进程栈指针）" class="headerlink" title="阶段 8：切换到 PSP（进程栈指针）"></a>阶段 8：切换到 PSP（进程栈指针）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/* 第 213-226 行 */</span><br><span class="line">ldr r0, =z_interrupt_stacks                         /* r0 = 中断栈起始 */</span><br><span class="line">ldr r1, =CONFIG_ISR_STACK_SIZE + MPU_GUARD_ALIGN_AND_SIZE  /* r1 = 栈大小 */</span><br><span class="line">adds r0, r0, r1                                      /* r0 = 中断栈顶部 */</span><br><span class="line">msr PSP, r0                                          /* PSP = 中断栈顶部 */</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mrs r0, CONTROL                    /* 读取 CONTROL 当前值 */</span><br><span class="line">movs r1, #(2 | CONTROL_ARM_PAC_MASK | CONTROL_ARM_BTI_MASK)</span><br><span class="line">                                   /* Cortex-M7: PAC/BTI 未启用，两个 MASK = 0 */</span><br><span class="line">                                   /* 实际等价于 movs r1, #2（只设 SPSEL 位） */</span><br><span class="line">orrs r0, r1                        /* r0 |= 0x02 → 设置 SPSEL 位 */</span><br><span class="line">msr CONTROL, r0                    /* CONTROL.SPSEL = 1 → 切换到 PSP */</span><br><span class="line">isb                                 /* 同步屏障：确保栈切换生效 */</span><br></pre></td></tr></table></figure>
+
+<p><strong>CONTROL.SPSEL 的含义</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CONTROL 寄存器:</span><br><span class="line">  bit[1] SPSEL = 0  → CPU 使用 MSP（复位默认）</span><br><span class="line">  bit[1] SPSEL = 1  → CPU 使用 PSP（线程模式）</span><br><span class="line"></span><br><span class="line">这一步之后：</span><br><span class="line">  MSP → 空出来，后续设为中断栈</span><br><span class="line">  PSP → 当前代码使用，指向 interrupt_stack 顶部</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>mrs</code> &#x2F; <code>msr</code> 而非 <code>movs</code> 的原因</strong>：CONTROL 是特殊寄存器，必须通过 <code>mrs</code>（读）和 <code>msr</code>（写）访问，不能用普通 mov 指令。</p>
+<h4 id="阶段-9：跳转到-C-语言"><a href="#阶段-9：跳转到-C-语言" class="headerlink" title="阶段 9：跳转到 C 语言"></a>阶段 9：跳转到 C 语言</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/* 第 233 行 */</span><br><span class="line">bl z_prep_c             /* 跳转到 C 运行时准备函数 */</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>bl</code></strong> &#x3D; Branch with Link，跳转并把返回地址存入 LR。但 <code>z_prep_c()</code> 声明为 <code>FUNC_NORETURN</code>，永远不会返回。</p>
+<h3 id="4-4-三个屏障指令的区别"><a href="#4-4-三个屏障指令的区别" class="headerlink" title="4.4 三个屏障指令的区别"></a>4.4 三个屏障指令的区别</h3><table>
+<thead>
+<tr>
+<th>指令</th>
+<th>全称</th>
+<th>作用</th>
+<th>何时使用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>isb</code></td>
+<td>Instruction Synchronization Barrier</td>
+<td>刷新流水线，确保后续指令看到之前的系统寄存器修改</td>
+<td>修改 CONTROL、栈指针后</td>
+</tr>
+<tr>
+<td><code>dsb</code></td>
+<td>Data Synchronization Barrier</td>
+<td>等待所有显式内存访问完成</td>
+<td>修改 MPU 配置后</td>
+</tr>
+<tr>
+<td><code>dmb</code></td>
+<td>Data Memory Barrier</td>
+<td>确保内存操作顺序</td>
+<td>多核共享内存时</td>
+</tr>
+</tbody></table>
+<p><strong>区分要点</strong>：<code>isb</code> 作用于 CPU 流水线，<code>dsb</code> 等待内存总线写入完成，<code>dmb</code> 保证内存操作顺序。</p>
+<hr>
+<h2 id="5-第三步：z-prep-c-—-C-运行时环境准备"><a href="#5-第三步：z-prep-c-—-C-运行时环境准备" class="headerlink" title="5. 第三步：z_prep_c() — C 运行时环境准备"></a>5. 第三步：z_prep_c() — C 运行时环境准备</h2><p><strong>源码位置</strong>：<code>zephyr/arch/arm/core/cortex_m/prep_c.c</code></p>
+<p>进入 C 语言世界前，需要建立 C 程序的基本假设：<code>.bss</code> 清零、<code>.data</code> 拷贝、中断控制器就绪。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">z_prep_c()</span><br><span class="line">  │</span><br><span class="line">  ├─ 1. soc_prep_hook()            ← SoC 级预备（可选）</span><br><span class="line">  ├─ 2. relocate_vector_table()    ← 设置 SCB-&gt;VTOR</span><br><span class="line">  ├─ 3. z_arm_floating_point_init() ← FPU 初始化</span><br><span class="line">  ├─ 4. arch_bss_zero()            ← 清零 .bss 段</span><br><span class="line">  ├─ 5. arch_data_copy()           ← 拷贝 .data 段（Flash → RAM）</span><br><span class="line">  ├─ 6. z_arm_interrupt_init()      ← NVIC 优先级初始化</span><br><span class="line">  ├─ 7. arch_cache_init()          ← Cache 初始化（Cortex-M 为空函数）</span><br><span class="line">  ├─ 8. [可选] 空指针检测           ← DWT 空指针异常检测（默认关闭）</span><br><span class="line">  └─ 9. z_cstart()                 ← 进入内核核心初始化</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-1-relocate-vector-table-—-向量表重定位"><a href="#5-1-relocate-vector-table-—-向量表重定位" class="headerlink" title="5.1 relocate_vector_table() — 向量表重定位"></a>5.1 relocate_vector_table() — 向量表重定位</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> __weak <span class="title function_">relocate_vector_table</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_SRAM_VECTOR_TABLE</span></span><br><span class="line">    <span class="comment">// 如果配置了 SRAM 向量表：拷贝向量表到 RAM（更快响应中断）</span></span><br><span class="line">    <span class="type">size_t</span> vector_size = (<span class="type">size_t</span>)_vector_end - (<span class="type">size_t</span>)_vector_start;</span><br><span class="line">    arch_early_memcpy(_sram_vector_start, _vector_start, vector_size);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="comment">// 核心操作：设置 VTOR 指向向量表地址</span></span><br><span class="line">    SCB-&gt;VTOR = VECTOR_ADDRESS &amp; VTOR_MASK;  <span class="comment">// = 0x08000000</span></span><br><span class="line">    barrier_dsync_fence_full();   <span class="comment">// 确保写入到达硬件</span></span><br><span class="line">    barrier_isync_fence_full();   <span class="comment">// 刷新流水线</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>__weak</code> 的含义</strong>：弱符号——SoC 可以提供一个强符号版本来覆盖此函数。</p>
+<p><strong>VTOR 寄存器</strong>（<code>0xE000ED08</code>）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bit[31:7]  = 向量表基地址（0x08000000 对齐到 128 字节）</span><br><span class="line">bit[6:0]   = 保留（必须为 0）</span><br><span class="line">VTOR_MASK  = SCB_VTOR_TBLOFF_Msk  ← 屏蔽掉低 7 位</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-z-arm-floating-point-init-—-FPU-初始化"><a href="#5-2-z-arm-floating-point-init-—-FPU-初始化" class="headerlink" title="5.2 z_arm_floating_point_init() — FPU 初始化"></a>5.2 z_arm_floating_point_init() — FPU 初始化</h3><p>STM32H7 有<strong>双精度浮点单元</strong>（FPU），需要配置 CPACR 和 FPCCR 两个寄存器：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="keyword">inline</span> <span class="type">void</span> <span class="title function_">z_arm_floating_point_init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 先禁用 FPU 访问（清除之前的配置）</span></span><br><span class="line">    SCB-&gt;CPACR &amp;= (~(CPACR_CP10_Msk | CPACR_CP11_Msk));</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(CONFIG_FPU)  <span class="comment">// 项目中启用了 FPU</span></span></span><br><span class="line">    <span class="comment">// 2. 启用 CP10/CP11 协处理器（FPU 寄存器访问）</span></span><br><span class="line">    SCB-&gt;CPACR |= CPACR_CP10_PRIV_ACCESS | CPACR_CP11_PRIV_ACCESS;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 配置浮点上下文保存策略</span></span><br><span class="line">    FPU-&gt;FPCCR = FPU_FPCCR_ASPEN_Msk | FPU_FPCCR_LSPEN_Msk;</span><br><span class="line">    <span class="comment">//  ASPEN = 自动保存：使用 FP 指令时自动设 FPCA 位</span></span><br><span class="line">    <span class="comment">//  LSPEN = 延迟保存：中断进入时不立即保存 FP 寄存器，用到时才保存</span></span><br><span class="line">    <span class="comment">//  → 减少中断延迟，节省栈空间</span></span><br><span class="line"></span><br><span class="line">    __set_FPSCR(<span class="number">0</span>);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>延迟保存（Lazy Stacking）的意义</strong>：</p>
+<p>Cortex-M7 FPU 有 S0-S31 共 32 个单精度寄存器和 1 个 FPSCR。但硬件异常入口只保存其中一半：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">硬件自动保存: S0-S15 + FPSCR + reserved = 18 words (72 字节)</span><br><span class="line">软件保存:     S16-S31（callee-saved，仅上下文切换时由软件保存）</span><br><span class="line"></span><br><span class="line">无延迟保存: 中断进入时硬件立即写入 S0-S15 + FPSCR = 72 字节，需要数十个时钟周期</span><br><span class="line">有延迟保存: 中断进入时硬件只预留空间，不实际写入</span><br><span class="line">            → 如果 ISR 不用 FP，完全省去保存开销</span><br><span class="line">            → 如果 ISR 用 FP，在第一次 FP 指令时才触发实际保存</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-arch-bss-zero-—-bss-段清零"><a href="#5-3-arch-bss-zero-—-bss-段清零" class="headerlink" title="5.3 arch_bss_zero() — .bss 段清零"></a>5.3 arch_bss_zero() — .bss 段清零</h3><p><strong>源码位置</strong>：<code>zephyr/arch/common/init.c</code>（50-81 行）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">__boot_func <span class="type">void</span> <span class="title function_">arch_bss_zero</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 主 .bss 段清零（AXI SRAM 中）</span></span><br><span class="line">    arch_early_memset(__bss_start, <span class="number">0</span>, __bss_end - __bss_start);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// DTCM .bss 段清零（如果有）</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> DT_NODE_HAS_STATUS_OKAY(DT_CHOSEN(zephyr_dtcm))</span></span><br><span class="line">    arch_early_memset(&amp;__dtcm_bss_start, <span class="number">0</span>,</span><br><span class="line">        (<span class="type">uintptr_t</span>)&amp;__dtcm_bss_end - (<span class="type">uintptr_t</span>)&amp;__dtcm_bss_start);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>__bss_start</code> 和 <code>__bss_end</code> 是链接脚本提供的符号，标记 <code>.bss</code> 段的起止地址。</p>
+<h3 id="5-4-arch-data-copy-—-data-段拷贝"><a href="#5-4-arch-data-copy-—-data-段拷贝" class="headerlink" title="5.4 arch_data_copy() — .data 段拷贝"></a>5.4 arch_data_copy() — .data 段拷贝</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">arch_data_copy</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 主 .data 段：从 Flash 拷贝到 RAM</span></span><br><span class="line">    arch_early_memcpy(&amp;__data_region_start, &amp;__data_region_load_start,</span><br><span class="line">        __data_region_end - __data_region_start);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// DTCM 数据段（如果有）</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> DT_NODE_HAS_STATUS_OKAY(DT_CHOSEN(zephyr_dtcm))</span></span><br><span class="line">    arch_early_memcpy(&amp;__dtcm_data_start, &amp;__dtcm_data_load_start,</span><br><span class="line">        __dtcm_data_end - __dtcm_data_start);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>涉及的符号</strong>（全部由链接脚本定义）：</p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>__data_region_start</code></td>
+<td>RAM 中 .data 段的起始地址（目标）</td>
+</tr>
+<tr>
+<td><code>__data_region_load_start</code></td>
+<td>Flash 中 .data 段初始值的起始地址（源）</td>
+</tr>
+<tr>
+<td><code>__data_region_end</code></td>
+<td>RAM 中 .data 段的结束地址</td>
+</tr>
+</tbody></table>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Flash                        RAM</span><br><span class="line">┌─────────────────┐          ┌─────────────────┐</span><br><span class="line">│ __data_load_start│ ──copy→ │ __data_start     │</span><br><span class="line">│   (.data 初始值) │          │   (.data 运行时) │</span><br><span class="line">│                 │          │ __data_end       │</span><br><span class="line">└─────────────────┘          └─────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-5-z-arm-interrupt-init-—-NVIC-优先级初始化"><a href="#5-5-z-arm-interrupt-init-—-NVIC-优先级初始化" class="headerlink" title="5.5 z_arm_interrupt_init() — NVIC 优先级初始化"></a>5.5 z_arm_interrupt_init() — NVIC 优先级初始化</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">z_arm_interrupt_init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> irq = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 遍历所有 IRQ，设置默认优先级</span></span><br><span class="line">    <span class="keyword">for</span> (; irq &lt; CONFIG_NUM_IRQS; irq++) &#123;</span><br><span class="line">        NVIC_SetPriority((IRQn_Type)irq, _IRQ_PRIO_OFFSET);</span><br><span class="line">        <span class="comment">// _IRQ_PRIO_OFFSET = 1（逻辑优先级）</span></span><br><span class="line">        <span class="comment">// 经 Z_EXC_PRIO 转换后 = 0x10（硬件值）</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>效果</strong>：所有 150 个外设中断的默认优先级设为 <code>0x10</code>（第二高优先级）。驱动初始化时可通过 <code>IRQ_CONNECT()</code> 覆盖。</p>
+<hr>
+<h2 id="6-第四步：z-cstart-—-内核核心初始化"><a href="#6-第四步：z-cstart-—-内核核心初始化" class="headerlink" title="6. 第四步：z_cstart() — 内核核心初始化"></a>6. 第四步：z_cstart() — 内核核心初始化</h2><p><strong>源码位置</strong>：<code>zephyr/kernel/init.c</code>（538-610 行）</p>
+<p>这是 Zephyr 内核真正的”启动管理器”，负责按优先级执行所有初始化。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">z_cstart()                                         ← kernel/init.c:538</span><br><span class="line">  │</span><br><span class="line">  ├─ 1. gcov_static_init()                         ← 代码覆盖率初始化（调试用）</span><br><span class="line">  │</span><br><span class="line">  ├─ 2. z_sys_init_run_level(INIT_LEVEL_EARLY)    ← 最早期的设备初始化</span><br><span class="line">  │</span><br><span class="line">  ├─ 3. arch_kernel_init()                         ← 架构相关初始化（MPU 等）</span><br><span class="line">  │</span><br><span class="line">  ├─ 4. LOG_CORE_INIT()                            ← 日志子系统核心初始化</span><br><span class="line">  │</span><br><span class="line">  ├─ 5. z_dummy_thread_init()                      ← 创建&quot;假线程&quot;（启动期占位）</span><br><span class="line">  │</span><br><span class="line">  ├─ 6. z_device_state_init()                      ← 静态设备状态初始化</span><br><span class="line">  │</span><br><span class="line">  ├─ 7. soc_early_init_hook()                       ← SoC 早期初始化（Cache、电源）</span><br><span class="line">  │</span><br><span class="line">  ├─ 8. board_early_init_hook()                     ← 板级早期初始化（可选）</span><br><span class="line">  │</span><br><span class="line">  ├─ 9. z_sys_init_run_level(INIT_LEVEL_PRE_KERNEL_1) ← 内核前初始化 第一阶段</span><br><span class="line">  │</span><br><span class="line">  ├─ 10. z_sys_init_run_level(INIT_LEVEL_PRE_KERNEL_2) ← 内核前初始化 第二阶段</span><br><span class="line">  │</span><br><span class="line">  ├─ 11. stack canary 初始化                       ← 栈溢出保护（随机数填充）</span><br><span class="line">  │</span><br><span class="line">  ├─ 12. [可选] timing_init() + timing_start()     ← 性能计时初始化</span><br><span class="line">  │</span><br><span class="line">  └─ 13. switch_to_main_thread(prepare_multithreading()) ← 多线程就绪</span><br><span class="line">       │</span><br><span class="line">       └─ 首次上下文切换 → bg_thread_main()</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-1-gcov-static-init-—-代码覆盖率初始化"><a href="#6-1-gcov-static-init-—-代码覆盖率初始化" class="headerlink" title="6.1 gcov_static_init() — 代码覆盖率初始化"></a>6.1 gcov_static_init() — 代码覆盖率初始化</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* init.c:541 */</span></span><br><span class="line">gcov_static_init();</span><br></pre></td></tr></table></figure>
+
+<p>遍历 GCC 的 <code>__init_array</code> 段（存放全局构造函数指针），逐个调用。仅在启用 <code>CONFIG_COVERAGE</code> 时有实际代码，正常构建中是空内联函数，编译器直接优化掉，<strong>零开销</strong>。</p>
+<h3 id="6-2-z-sys-init-run-level-—-初始化等级执行引擎"><a href="#6-2-z-sys-init-run-level-—-初始化等级执行引擎" class="headerlink" title="6.2 z_sys_init_run_level() — 初始化等级执行引擎"></a>6.2 z_sys_init_run_level() — 初始化等级执行引擎</h3><p>这是 <code>z_cstart</code> 中被调用多次的核心函数，也是理解 Zephyr 驱动初始化秩序的关键。</p>
+<h4 id="6-2-1-init-entry-结构体与两条注册路径"><a href="#6-2-1-init-entry-结构体与两条注册路径" class="headerlink" title="6.2.1 init_entry 结构体与两条注册路径"></a>6.2.1 init_entry 结构体与两条注册路径</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// zephyr/include/zephyr/init.h</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">init_entry</span> &#123;</span></span><br><span class="line">    <span class="type">int</span> (*init_fn)(<span class="type">void</span>);          <span class="comment">// 初始化函数指针（SYS_INIT 时有值）</span></span><br><span class="line">    <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">device</span> *<span class="title">dev</span>;</span>      <span class="comment">// 关联的设备（DEVICE_DT_DEFINE 时有值）</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>两个字段<strong>互斥</strong>：要么 <code>init_fn != NULL</code>（纯函数），要么 <code>dev != NULL</code>（设备驱动）。</p>
+<p><strong>路径一：设备驱动 — <code>DEVICE_DT_DEFINE()</code></strong></p>
+<p>每个 DTS 中 <code>status = &quot;okay&quot;</code> 的设备节点，驱动用此宏注册：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 驱动源码示例：zephyr/drivers/interrupt_controller/intc_exti_stm32.c</span></span><br><span class="line">DEVICE_DT_DEFINE(STM32_EXTI_INTCELL,</span><br><span class="line">         stm32_exti_gpio_intc_init,   <span class="comment">// init 函数</span></span><br><span class="line">         <span class="literal">NULL</span>, <span class="literal">NULL</span>, &amp;exti_config,</span><br><span class="line">         PRE_KERNEL_1,                 <span class="comment">// ← 等级</span></span><br><span class="line">         CONFIG_INTC_INIT_PRIORITY,    <span class="comment">// ← 优先级</span></span><br><span class="line">         <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 宏展开后放入命名段：</span></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">init_entry</span> __<span class="title">init___device_dts_ord_100</span></span></span><br><span class="line"><span class="class">    __<span class="title">attribute__</span>((<span class="title">section</span>(&quot;.<span class="title">z_init_PRE_KERNEL_1_P_40_SUB_0_</span>&quot;)))</span></span><br><span class="line"><span class="class">    __<span class="title">used</span> =</span> &#123; .init_fn = <span class="literal">NULL</span>, .dev = &amp;__device_dts_ord_100 &#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>路径二：纯函数 — <code>SYS_INIT()</code></strong></p>
+<p>不需要设备结构体的初始化，直接注册函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 驱动源码示例：zephyr/drivers/console/uart_console.c</span></span><br><span class="line">SYS_INIT(uart_console_init, PRE_KERNEL_1, CONFIG_UART_CONSOLE_INIT_PRIORITY);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 宏展开后：</span></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">init_entry</span> __<span class="title">init_uart_console_init</span></span></span><br><span class="line"><span class="class">    __<span class="title">attribute__</span>((<span class="title">section</span>(&quot;.<span class="title">z_init_PRE_KERNEL_1_P_60_SUB_0_</span>&quot;)))</span></span><br><span class="line"><span class="class">    __<span class="title">used</span> =</span> &#123; .init_fn = uart_console_init, .dev = <span class="literal">NULL</span> &#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-2-2-核心机制：编译时排序-运行时遍历"><a href="#6-2-2-核心机制：编译时排序-运行时遍历" class="headerlink" title="6.2.2 核心机制：编译时排序 + 运行时遍历"></a>6.2.2 核心机制：编译时排序 + 运行时遍历</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">源码阶段                          链接阶段                     运行时</span><br><span class="line">┌──────────────┐               ┌──────────────┐            ┌──────────────┐</span><br><span class="line">│ 驱动 A:      │               │ 链接脚本按段  │            │ z_sys_init   │</span><br><span class="line">│   SYS_INIT() │ ──编译器──→   │ 名排序：      │ ──运行──→  │ _run_level() │</span><br><span class="line">│   或         │   放入命名段  │              │   遍历数组  │  逐个调用    │</span><br><span class="line">│ 驱动 B:      │               │ .z_init_     │            │              │</span><br><span class="line">│   DEVICE_    │               │  PRE_KERNEL_1│            │  entry[0]()  │</span><br><span class="line">│  DT_DEFINE() │               │  _P_40_SUB_0 │            │  entry[1]()  │</span><br><span class="line">└──────────────┘               └──────────────┘            └──────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>运行时只是简单的数组遍历，<strong>所有排序逻辑在编译&#x2F;链接时已完成</strong>。</p>
+<h4 id="6-2-3-链接脚本排序原理"><a href="#6-2-3-链接脚本排序原理" class="headerlink" title="6.2.3 链接脚本排序原理"></a>6.2.3 链接脚本排序原理</h4><p>段名 <code>.z_init_&#123;LEVEL&#125;_P_&#123;PRIO&#125;_SUB_&#123;SUB&#125;_</code> 中的数字决定了排序：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.z_init_PRE_KERNEL_1_P_0_SUB_0_    ← RCC 时钟（优先级 0）</span><br><span class="line">.z_init_PRE_KERNEL_1_P_40_SUB_0_   ← EXTI（优先级 40）</span><br><span class="line">.z_init_PRE_KERNEL_1_P_60_SUB_0_   ← UART 控制台（优先级 60）</span><br><span class="line">.z_init_PRE_KERNEL_2_P_0_SUB_0_    ← 系统时钟驱动</span><br><span class="line">.z_init_POST_KERNEL_P_70_SUB_0_     ← I2C（POST_KERNEL，优先级 70）</span><br></pre></td></tr></table></figure>
+
+<p>链接脚本用 <code>SORT</code> 按段名字母顺序排列。因为段名中嵌入了等级和优先级数字，排序后的物理内存布局自然就是正确的执行顺序。</p>
+<h4 id="6-2-4-运行时执行"><a href="#6-2-4-运行时执行" class="headerlink" title="6.2.4 运行时执行"></a>6.2.4 运行时执行</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">z_sys_init_run_level</span><span class="params">(<span class="keyword">enum</span> init_level level)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// levels[] 存放每个等级的起始地址（链接脚本定义的边界符号）</span></span><br><span class="line">    <span class="type">static</span> <span class="type">const</span> <span class="class"><span class="keyword">struct</span> <span class="title">init_entry</span> *<span class="title">levels</span>[] =</span> &#123;</span><br><span class="line">        __init_EARLY_start,</span><br><span class="line">        __init_PRE_KERNEL_1_start,</span><br><span class="line">        __init_PRE_KERNEL_2_start,</span><br><span class="line">        __init_POST_KERNEL_start,</span><br><span class="line">        __init_APPLICATION_start,</span><br><span class="line">        __init_end,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历 [levels[level], levels[level+1]) 区间</span></span><br><span class="line">    <span class="keyword">for</span> (entry = levels[level]; entry &lt; levels[level+<span class="number">1</span>]; entry++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (entry-&gt;dev != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="comment">// 设备驱动路径 → 调用 dev-&gt;config-&gt;init_fn(dev)</span></span><br><span class="line">            result = do_device_init(entry-&gt;dev);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 纯函数路径 → 直接调用</span></span><br><span class="line">            result = entry-&gt;init_fn();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行时逻辑极简：根据等级找到对应的数组区间，逐个调用。区分设备驱动和纯函数两条路径。</p>
+<h4 id="6-2-5-STM32H7-的典型初始化序列"><a href="#6-2-5-STM32H7-的典型初始化序列" class="headerlink" title="6.2.5 STM32H7 的典型初始化序列"></a>6.2.5 STM32H7 的典型初始化序列</h4><p>以 STM32H747I-DISCO 板为例，通过 <code>nm build/zephyr/zephyr.elf | grep __init_ | sort</code> 可以看到各等级的初始化内容：</p>
+<p><strong>EARLY</strong>：通常为空（极少需要如此早期的初始化）</p>
+<p><strong>PRE_KERNEL_1</strong>：基础硬件</p>
+<table>
+<thead>
+<tr>
+<th>设备</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RCC 时钟控制器</td>
+<td>所有外设的时钟源，必须最先初始化</td>
+</tr>
+<tr>
+<td>STM32 时钟配置</td>
+<td>配置 PLL、系统时钟树</td>
+</tr>
+<tr>
+<td>内存 slab</td>
+<td>内核内存管理基础设施</td>
+</tr>
+<tr>
+<td>Reset Controller</td>
+<td>硬件复位控制</td>
+</tr>
+<tr>
+<td>GPIOA&#x2F;B&#x2F;C&#x2F;…</td>
+<td>引脚控制器（I2C&#x2F;SPI&#x2F;UART 等外设需要 GPIO）</td>
+</tr>
+<tr>
+<td>EXTI 中断控制器</td>
+<td>外部中断路由</td>
+</tr>
+<tr>
+<td>DMA</td>
+<td>直接内存访问</td>
+</tr>
+<tr>
+<td>EXTI GPIO 中断</td>
+<td>GPIO 到 EXTI 的中断映射</td>
+</tr>
+<tr>
+<td>UART 串口</td>
+<td>调试串口</td>
+</tr>
+<tr>
+<td>串口控制台</td>
+<td>printk 输出从此开始可用</td>
+</tr>
+</tbody></table>
+<p><strong>PRE_KERNEL_2</strong>：系统时钟</p>
+<table>
+<thead>
+<tr>
+<th>设备</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>sys_clock_driver</td>
+<td>系统节拍定时器（Cortex-M SysTick 或 STM32 TIM）</td>
+</tr>
+</tbody></table>
+<p><strong>POST_KERNEL</strong>：外设驱动</p>
+<table>
+<thead>
+<tr>
+<th>设备</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>日志后端</td>
+<td>日志输出初始化</td>
+</tr>
+<tr>
+<td>系统工作队列</td>
+<td>内核异步工作队列</td>
+</tr>
+<tr>
+<td>SPI&#x2F;I2C&#x2F;USB 等总线驱动</td>
+<td>具体外设取决于板级配置</td>
+</tr>
+<tr>
+<td>磁盘&#x2F;Flash</td>
+<td>存储设备</td>
+</tr>
+</tbody></table>
+<p><strong>依赖关系示例</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">RCC 时钟 (prio 0)</span><br><span class="line">  └→ GPIO (prio 高于 EXTI)</span><br><span class="line">       └→ EXTI</span><br><span class="line">  └→ DMA</span><br><span class="line">  └→ UART</span><br><span class="line">       └→ 串口控制台 (prio 最低)</span><br></pre></td></tr></table></figure>
+
+<p>RCC 必须最先：所有外设寄存器需要时钟才能响应。UART 在控制台之前：控制台依赖 UART 驱动就绪。</p>
+<p><strong>日志”消失”的原因</strong>：PRE_KERNEL_1 阶段初期，串口控制台还没初始化，<code>printk()</code> 输出被丢弃。串口控制台初始化之后，<code>printk()</code> 才真正输出到串口。</p>
+<h3 id="6-3-arch-kernel-init-—-ARM-Cortex-M-架构初始化"><a href="#6-3-arch-kernel-init-—-ARM-Cortex-M-架构初始化" class="headerlink" title="6.3 arch_kernel_init() — ARM Cortex-M 架构初始化"></a>6.3 arch_kernel_init() — ARM Cortex-M 架构初始化</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> ALWAYS_INLINE <span class="type">void</span> <span class="title function_">arch_kernel_init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    z_arm_interrupt_stack_setup();      <span class="comment">// 1. 设置中断栈（MSP → interrupt_stack）</span></span><br><span class="line">    z_arm_exc_setup();                  <span class="comment">// 2. 配置异常优先级</span></span><br><span class="line">    z_arm_fault_init();                 <span class="comment">// 3. 启用 Fault 异常</span></span><br><span class="line">    z_arm_cpu_idle_init();              <span class="comment">// 4. 配置低功耗行为</span></span><br><span class="line">    z_arm_clear_faults();               <span class="comment">// 5. 清除残留 Fault 状态</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(CONFIG_ARM_MPU)</span></span><br><span class="line">    z_arm_mpu_init();                   <span class="comment">// 6. 初始化 MPU</span></span><br><span class="line">    z_arm_configure_static_mpu_regions(); <span class="comment">// 7. 配置静态 MPU 区域</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    soc_per_core_init_hook();           <span class="comment">// 8. SoC 每核初始化钩子</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>函数</th>
+<th>做了什么</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><code>z_arm_interrupt_stack_setup()</code></td>
+<td>MSP &#x3D; interrupt_stack 栈顶</td>
+<td>让中断处理使用专用栈（与线程栈分离）</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>z_arm_exc_setup()</code></td>
+<td>设置 PendSV&#x3D;0xFF（最低优先级），SVC&#x3D;0x00；设置 Fault 优先级（MemManage&#x2F;BusFault&#x2F;UsageFault&#x3D;0）；<strong>SHCSR 启用这三个 Fault</strong></td>
+<td>PendSV 用于上下文切换必须在最低优先级；Fault 必须能捕获启动阶段的错误</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>z_arm_fault_init()</code></td>
+<td>CCR 寄存器：启用 DIV_0_TRP（除零陷阱）；配置 UNALIGN_TRP（非对齐访问）</td>
+<td>让 CPU 捕获除零和非对齐等编程错误</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>z_arm_cpu_idle_init()</code></td>
+<td><code>SCB-&gt;SCR = SCB_SCR_SEVONPEND_Msk</code>（赋值，非 OR）</td>
+<td>中断挂起时产生事件，唤醒 WFE 等待的 CPU</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>z_arm_clear_faults()</code></td>
+<td>清除 CFSR、HFSR 等 Fault 状态寄存器（写 1 清除）</td>
+<td>防止启动阶段的残余 Fault 标志影响运行时</td>
+</tr>
+<tr>
+<td>6-7</td>
+<td>MPU 初始化</td>
+<td>配置 MPU 区域（Flash、RAM、外设等）（<code>#ifdef CONFIG_ARM_MPU</code>）</td>
+<td>内存保护</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>soc_per_core_init_hook()</code></td>
+<td>SoC 每核初始化钩子（可选，默认空操作）</td>
+<td>多核场景下每个核的独立初始化</td>
+</tr>
+</tbody></table>
+<h3 id="6-4-LOG-CORE-INIT-—-日志子系统核心初始化"><a href="#6-4-LOG-CORE-INIT-—-日志子系统核心初始化" class="headerlink" title="6.4 LOG_CORE_INIT() — 日志子系统核心初始化"></a>6.4 LOG_CORE_INIT() — 日志子系统核心初始化</h3><p>初始化日志缓冲区、默认时间戳函数、运行时过滤级别、并遍历初始化所有后端（UART、RTT 等）。放在 <code>arch_kernel_init()</code> 之后（需要硬件计数器支持时间戳）、PRE_KERNEL_1 之前（驱动初始化过程中需要用 <code>LOG_INF()</code> 等宏）。</p>
+<h3 id="6-5-z-dummy-thread-init-—-假线程占位"><a href="#6-5-z-dummy-thread-init-—-假线程占位" class="headerlink" title="6.5 z_dummy_thread_init() — 假线程占位"></a>6.5 z_dummy_thread_init() — 假线程占位</h3><p>内核中大量代码通过 <code>_current</code>（当前线程指针）获取上下文信息。此时调度器尚未就绪，没有真正的线程，但 <code>_current</code> 不能为 NULL（解引用会触发 HardFault）。假线程将 <code>_current</code> 指向一个标记为 <code>_THREAD_DUMMY</code> 的结构体，作为安全占位指针。</p>
+<p>假线程从 <code>z_cstart()</code> 创建，到 <code>switch_to_main_thread()</code> 首次上下文切换后丢弃，永远不会被调度。详见第 7.3 节。</p>
+<h3 id="6-6-z-device-state-init-—-设备对象初始化"><a href="#6-6-z-device-state-init-—-设备对象初始化" class="headerlink" title="6.6 z_device_state_init() — 设备对象初始化"></a>6.6 z_device_state_init() — 设备对象初始化</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">z_device_state_init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    STRUCT_SECTION_FOREACH(device, dev) &#123;</span><br><span class="line">        k_object_init(dev);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>遍历所有静态定义的 <code>device</code> 结构体（由驱动 <code>DEVICE_DT_DEFINE()</code> 宏创建），标记为已注册。在驱动实际初始化（PRE_KERNEL_1 阶段）之前完成，确保 <code>device_is_ready()</code> 等函数可用。</p>
+<h3 id="6-7-soc-early-init-hook-—-STM32H7-SoC-早期初始化"><a href="#6-7-soc-early-init-hook-—-STM32H7-SoC-早期初始化" class="headerlink" title="6.7 soc_early_init_hook() — STM32H7 SoC 早期初始化"></a>6.7 soc_early_init_hook() — STM32H7 SoC 早期初始化</h3><p><strong>源码位置</strong>：<code>zephyr/soc/st/stm32/stm32h7x/soc_m7.c</code>（150-171 行）</p>
+<p><strong>调用位置</strong>：<code>z_cstart()</code> → <code>init.c:557</code>（在 EARLY 等级<strong>之后</strong>）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">soc_early_init_hook</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 启用 I-Cache 和 D-Cache</span></span><br><span class="line">    sys_cache_instr_enable();    <span class="comment">// I-Cache 开启（代码执行加速）</span></span><br><span class="line">    sys_cache_data_enable();     <span class="comment">// D-Cache 开启（数据访问加速）</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 设置系统时钟默认值</span></span><br><span class="line">    SystemCoreClock = <span class="number">64000000</span>;  <span class="comment">// HSI 默认 64MHz</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 配置电源方案</span></span><br><span class="line">    LL_PWR_ConfigSupply(SELECTED_POWER_SUPPLY);  <span class="comment">// LDO 或 SMPS</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. Errata 修复（RevY 芯片的 AXI SRAM 读错误）</span></span><br><span class="line">    <span class="keyword">if</span> (LL_DBGMCU_GetRevisionID() == <span class="number">0x1003</span>) &#123;</span><br><span class="line">        stm32_reg_set_bits(&amp;GPV-&gt;AXI_TARG7_FN_MOD, <span class="number">0x1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>时序约束</strong>：必须放在 EARLY 之后、PRE_KERNEL_1 之前。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">时序设计：</span><br><span class="line">  z_arm_init_arch_hw_at_boot()   ← Cache 被禁用</span><br><span class="line">  arch_data_copy()               ← Flash → RAM 拷贝（需要 Cache 禁用）</span><br><span class="line">  z_sys_init_run_level(EARLY)    ← 极少数早期驱动</span><br><span class="line">  soc_early_init_hook()          ← Cache 在此启用</span><br><span class="line">  z_sys_init_run_level(PRE_KERNEL_1) ← 后续驱动使用 Cache 加速</span><br><span class="line">  z_sys_init_run_level(PRE_KERNEL_1) ← 后续驱动享受 Cache 加速</span><br></pre></td></tr></table></figure>
+
+<p><strong>Cache 必须在 <code>.data</code> 拷贝和 <code>.bss</code> 清零之后才能启用</strong>，原因如下：</p>
+<p>如果 D-Cache 在 <code>.data</code> 拷贝<strong>之前</strong>就启用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1. .data 区域 RAM 中还是上电垃圾值</span><br><span class="line">2. 任何代码读了该地址 → D-Cache 把垃圾缓存进来</span><br><span class="line">3. .data 拷贝写入正确值 → 走 Cache write-back 路径</span><br><span class="line">   CPU 写入 → Cache 中更新 ✓，但 RAM 中还是旧值</span><br><span class="line"></span><br><span class="line">   结果：Cache [正确值]    RAM [垃圾值] ← 数据不一致</span><br></pre></td></tr></table></figure>
+
+<p>D-Cache 关闭时执行拷贝，CPU 写入直达 RAM（无 Cache 中间层）。完成后启用 D-Cache，Cache 从空开始，只缓存正确的数据。</p>
+<h3 id="6-8-board-early-init-hook-—-板级早期初始化"><a href="#6-8-board-early-init-hook-—-板级早期初始化" class="headerlink" title="6.8 board_early_init_hook() — 板级早期初始化"></a>6.8 board_early_init_hook() — 板级早期初始化</h3><p>默认行为：空宏（<code>do &#123; &#125; while (0)</code>），需要板级代码定义 <code>CONFIG_BOARD_EARLY_INIT_HOOK</code> 并实现函数才会生效。典型用途：配置板级特定的电压调节器、时钟树、GPIO 引脚复用等。</p>
+<p>与 <code>soc_early_init_hook</code> 的区别：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>soc_early_init_hook</th>
+<th>board_early_init_hook</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>实现者</td>
+<td>SoC 系列（所有同 SoC 的板共用）</td>
+<td>具体板级（同一 SoC 的不同板可不同）</td>
+</tr>
+<tr>
+<td>位置</td>
+<td><code>soc/st/stm32/stm32h7x/soc_m7.c</code></td>
+<td><code>boards/st/stm32h747i_disco/</code></td>
+</tr>
+<tr>
+<td>典型内容</td>
+<td>Cache、电源方案、Errata</td>
+<td>板级电源芯片、特殊 GPIO 配置</td>
+</tr>
+</tbody></table>
+<h3 id="6-9-Stack-Canary-初始化-—-栈溢出保护"><a href="#6-9-Stack-Canary-初始化-—-栈溢出保护" class="headerlink" title="6.9 Stack Canary 初始化 — 栈溢出保护"></a>6.9 Stack Canary 初始化 — 栈溢出保护</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* init.c:568-574 */</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_REQUIRES_STACK_CANARIES</span></span><br><span class="line">    <span class="type">uintptr_t</span> stack_guard;</span><br><span class="line">    z_early_rand_get((<span class="type">uint8_t</span> *)&amp;stack_guard, <span class="keyword">sizeof</span>(stack_guard));</span><br><span class="line">    __stack_chk_guard = stack_guard;</span><br><span class="line">    __stack_chk_guard &lt;&lt;= <span class="number">8</span>;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>启用传递链</strong>：<code>prj.conf: CONFIG_STACK_CANARIES=y</code> → CMake → GCC <code>-fstack-protector</code> 编译选项。</p>
+<p><strong>机制</strong>：编译器在受保护函数的栈帧中插入”金丝雀”值（canary），函数返回前比较栈上副本与全局变量 <code>__stack_chk_guard</code> 中的原件。栈溢出会覆盖栈上副本，比较失败时触发 <code>__stack_chk_fail()</code> → 系统终止。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">栈帧布局（受保护函数）:</span><br><span class="line">                    高地址</span><br><span class="line">┌──────────────────────┐</span><br><span class="line">│  返回地址 (LR)        │</span><br><span class="line">├──────────────────────┤</span><br><span class="line">│  保存的 R7            │</span><br><span class="line">├──────────────────────┤</span><br><span class="line">│  CANARY 副本          │ ← 函数入口从 __stack_chk_guard 复制</span><br><span class="line">│  (0xB2C1D500)         │   溢出的必经之路</span><br><span class="line">├──────────────────────┤</span><br><span class="line">│  buffer[0..7]         │</span><br><span class="line">└──────────────────────┘</span><br><span class="line">                    低地址 (SP)</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么 <code>&lt;&lt;= 8</code>？</strong> 最低字节变为 <code>\0</code>。攻击者通过 <code>strcpy()</code> 溢出时，payload 中的 <code>\0</code> 会导致字符串截断，无法传递完整的伪造 canary 值来绕过检查。</p>
+<p><strong>随机数来源</strong>：<code>z_early_rand_get()</code> 优先使用硬件熵源（STM32H7 的 RNG 外设），回退到基于 CPU 周期计数器的伪随机数。</p>
+<hr>
+<h2 id="7-第五步：准备多线程与首次上下文切换"><a href="#7-第五步：准备多线程与首次上下文切换" class="headerlink" title="7. 第五步：准备多线程与首次上下文切换"></a>7. 第五步：准备多线程与首次上下文切换</h2><h3 id="7-1-prepare-multithreading-—-创建-main-线程和-idle-线程"><a href="#7-1-prepare-multithreading-—-创建-main-线程和-idle-线程" class="headerlink" title="7.1 prepare_multithreading() — 创建 main 线程和 idle 线程"></a>7.1 prepare_multithreading() — 创建 main 线程和 idle 线程</h3><p><strong>源码位置</strong>：<code>zephyr/kernel/init.c</code>（442-473 行）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">char</span> *<span class="title function_">prepare_multithreading</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> *stack_ptr;</span><br><span class="line"></span><br><span class="line">    z_sched_init();                              <span class="comment">// 1. 初始化调度器</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> CONFIG_SMP</span></span><br><span class="line">    _kernel.ready_q.cache = &amp;z_main_thread;      <span class="comment">// 2. 预热调度缓存</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 创建 main 线程（入口函数 = bg_thread_main）</span></span><br><span class="line">    stack_ptr = z_setup_new_thread(&amp;z_main_thread, z_main_stack,</span><br><span class="line">                                   K_THREAD_STACK_SIZEOF(z_main_stack),</span><br><span class="line">                                   bg_thread_main,</span><br><span class="line">                                   <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="literal">NULL</span>,</span><br><span class="line">                                   CONFIG_MAIN_THREAD_PRIORITY,</span><br><span class="line">                                   K_ESSENTIAL, <span class="string">&quot;main&quot;</span>);</span><br><span class="line">    z_mark_thread_as_not_sleeping(&amp;z_main_thread);</span><br><span class="line">    z_ready_thread(&amp;z_main_thread);              <span class="comment">// 4. 加入就绪队列</span></span><br><span class="line"></span><br><span class="line">    z_init_cpu(<span class="number">0</span>);                               <span class="comment">// 5. 初始化 CPU 0（含 idle 线程）</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> stack_ptr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行步骤详解</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>函数</th>
+<th>做了什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><code>z_sched_init()</code></td>
+<td>初始化调度器内部数据结构（就绪队列、优先级位图）</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>_kernel.ready_q.cache = &amp;z_main_thread</code></td>
+<td>调度缓存预热：缓存不能为 NULL，且此时只有 main 线程，直接填入避免调度器空转</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>z_setup_new_thread()</code></td>
+<td>创建 main 线程：分配栈空间，初始化线程结构体，入口设为 <code>bg_thread_main</code>，优先级为 <code>CONFIG_MAIN_THREAD_PRIORITY</code>，标记 <code>K_ESSENTIAL</code>（线程退出时系统 panic）</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>z_ready_thread()</code></td>
+<td>将 main 线程加入就绪队列</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>z_init_cpu(0)</code></td>
+<td>初始化 CPU 0 数据结构：<strong>创建 idle 线程</strong>（<code>init_idle_thread(0)</code>）、设置 CPU 中断栈、CPU ID 映射</td>
+</tr>
+</tbody></table>
+<p><strong>idle 线程的创建</strong>藏在 <code>z_init_cpu(0)</code> → <code>init_idle_thread(0)</code> 中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">init_idle_thread</span><span class="params">(<span class="type">int</span> i)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">k_thread</span> *<span class="title">thread</span> =</span> &amp;z_idle_threads[i];</span><br><span class="line">    <span class="type">k_thread_stack_t</span> *<span class="built_in">stack</span> = z_idle_stacks[i];</span><br><span class="line">    <span class="type">size_t</span> stack_size = K_KERNEL_STACK_SIZEOF(z_idle_stacks[i]);</span><br><span class="line"></span><br><span class="line">    z_setup_new_thread(thread, <span class="built_in">stack</span>, stack_size,</span><br><span class="line">                       idle, &amp;_kernel.cpus[i],  <span class="comment">// 入口函数 = idle()</span></span><br><span class="line">                       <span class="literal">NULL</span>, <span class="literal">NULL</span>, K_IDLE_PRIO, K_ESSENTIAL, <span class="string">&quot;idle&quot;</span>);</span><br><span class="line">    z_mark_thread_as_not_sleeping(thread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>idle 线程优先级 <code>K_IDLE_PRIO</code> 是最低优先级，当没有其他线程就绪时运行，执行 WFI 等待中断。</p>
+<h3 id="7-2-switch-to-main-thread-—-首次上下文切换"><a href="#7-2-switch-to-main-thread-—-首次上下文切换" class="headerlink" title="7.2 switch_to_main_thread() — 首次上下文切换"></a>7.2 switch_to_main_thread() — 首次上下文切换</h3><p><strong>源码位置</strong>：<code>zephyr/kernel/init.c</code>（476-490 行）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> FUNC_NORETURN <span class="type">void</span> <span class="title function_">switch_to_main_thread</span><span class="params">(<span class="type">char</span> *stack_ptr)</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> CONFIG_ARCH_HAS_CUSTOM_SWAP_TO_MAIN</span></span><br><span class="line">    arch_switch_to_main_thread(&amp;z_main_thread, stack_ptr, bg_thread_main);</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    z_swap_unlocked();</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">    CODE_UNREACHABLE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>两条路径</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">switch_to_main_thread(stack_ptr)</span><br><span class="line">  │</span><br><span class="line">  ├─ CONFIG_ARCH_HAS_CUSTOM_SWAP_TO_MAIN=y（ARM Cortex-M）★ 当前项目</span><br><span class="line">  │   → arch_switch_to_main_thread(&amp;z_main_thread, stack_ptr, bg_thread_main)</span><br><span class="line">  │</span><br><span class="line">  └─ 其他架构</span><br><span class="line">      → z_swap_unlocked()    ← 通用上下文切换（保存假线程状态，然后丢弃）</span><br></pre></td></tr></table></figure>
+
+<p>通用路径 <code>z_swap_unlocked()</code> 会保存假线程的状态再丢弃，浪费一次上下文保存。ARM Cortex-M 有专门的优化路径，完全绕过这个无意义操作。</p>
+<h4 id="7-2-1-arch-switch-to-main-thread-完整流程"><a href="#7-2-1-arch-switch-to-main-thread-完整流程" class="headerlink" title="7.2.1 arch_switch_to_main_thread() 完整流程"></a>7.2.1 arch_switch_to_main_thread() 完整流程</h4><p><strong>源码位置</strong>：<code>arch/arm/core/cortex_m/thread.c</code>（564-656 行）</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">arch_switch_to_main_thread</span><span class="params">(<span class="keyword">struct</span> k_thread *main_thread, <span class="type">char</span> *stack_ptr,</span></span><br><span class="line"><span class="params">                                <span class="type">k_thread_entry_t</span> _main)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// ① FPU 准备</span></span><br><span class="line">    z_arm_prepare_switch_to_main();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ② 直接设置 _current = main 线程（绕过 do_swap）</span></span><br><span class="line">    z_current_thread_set(main_thread);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ③ TLS 指针初始化（如果启用了线程本地存储）</span></span><br><span class="line">    <span class="meta">#<span class="keyword">if</span> defined(CONFIG_THREAD_LOCAL_STORAGE)</span></span><br><span class="line">    z_arm_tls_ptr = main_thread-&gt;tls;</span><br><span class="line">    <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ④ MPU 栈保护（如果启用）</span></span><br><span class="line">    <span class="meta">#<span class="keyword">if</span> defined(CONFIG_MPU_STACK_GUARD) || defined(CONFIG_USERSPACE)</span></span><br><span class="line">    z_arm_configure_dynamic_mpu_regions(main_thread);</span><br><span class="line">    <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ⑤ PSPLIM 栈底保护（ARMv8-M，STM32H7 不支持）</span></span><br><span class="line">    <span class="meta">#<span class="keyword">if</span> defined(CONFIG_BUILTIN_STACK_GUARD) &amp;&amp; defined(CONFIG_CPU_CORTEX_M_HAS_SPLIM)</span></span><br><span class="line">    __set_PSPLIM(main_thread-&gt;stack_info.start);</span><br><span class="line">    <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ⑥ 内联汇编：切换栈 + 开中断 + 跳转到 z_thread_entry</span></span><br><span class="line">    __asm__ <span class="title function_">volatile</span><span class="params">(</span></span><br><span class="line"><span class="params">        <span class="string">&quot;mov   r4,  %0\n&quot;</span>     <span class="comment">// 保存 _main 到 r4（callee-saved）</span></span></span><br><span class="line"><span class="params">        <span class="string">&quot;msr   PSP, %1\n&quot;</span>     <span class="comment">// 切换到 main 线程的栈</span></span></span><br><span class="line"><span class="params">        <span class="string">&quot;movs  r0,  #0\n&quot;</span>     <span class="comment">// key = 0（开中断）</span></span></span><br><span class="line"><span class="params">        <span class="string">&quot;blx   r3\n&quot;</span>          <span class="comment">// arch_irq_unlock(0) → 开中断</span></span></span><br><span class="line"><span class="params">        <span class="string">&quot;mov   r0, r4\n&quot;</span>      <span class="comment">// R0 = bg_thread_main</span></span></span><br><span class="line"><span class="params">        <span class="string">&quot;movs  r1, #0\n&quot;</span>      <span class="comment">// p1 = NULL</span></span></span><br><span class="line"><span class="params">        <span class="string">&quot;movs  r2, #0\n&quot;</span>      <span class="comment">// p2 = NULL</span></span></span><br><span class="line"><span class="params">        <span class="string">&quot;movs  r3, #0\n&quot;</span>      <span class="comment">// p3 = NULL</span></span></span><br><span class="line"><span class="params">        <span class="string">&quot;bx    r4\n&quot;</span>          <span class="comment">// 跳转到 z_thread_entry，永不返回</span></span></span><br><span class="line"><span class="params">    )</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-2-2-逐步详解"><a href="#7-2-2-逐步详解" class="headerlink" title="7.2.2 逐步详解"></a>7.2.2 逐步详解</h4><p>**① <code>z_arm_prepare_switch_to_main()</code>**：清零 FPSCR（浮点状态控制寄存器），清除 CONTROL.FPCA 位。确保没有残留的浮点标志影响后续线程。</p>
+<p>**② <code>z_current_thread_set(main_thread)</code>**：将 <code>_current</code> 从假线程切换到 main 线程。从此刻起，<code>_current</code> 指向 <code>z_main_thread</code>。</p>
+<p><strong>③ TLS 指针初始化</strong>：<code>z_arm_tls_ptr = main_thread-&gt;tls</code>。这是线程本地存储的关键一步。</p>
+<h5 id="TLS-知识点详解"><a href="#TLS-知识点详解" class="headerlink" title="TLS 知识点详解"></a>TLS 知识点详解</h5><p><strong>什么是 TLS？</strong> 用 <code>__thread</code> 关键字修饰的变量，每个线程有独立的副本：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> __thread <span class="type">int</span> counter;  <span class="comment">// 每个线程有自己的 counter</span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">thread_fn</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    counter++;  <span class="comment">// 只修改当前线程的副本，不影响其他线程</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>ARM Cortex-M 的困境</strong>：ARM Cortex-A 有专用寄存器 <code>TPIDRURO</code> 存放 TLS 基地址。Cortex-M <strong>没有这个寄存器</strong>，Zephyr 用全局变量 <code>z_arm_tls_ptr</code> 替代。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Cortex-A（硬件支持）：              Cortex-M（软件模拟）：</span><br><span class="line">┌────────────────────┐           ┌────────────────────┐</span><br><span class="line">│ TPIDRURO 寄存器     │           │ z_arm_tls_ptr 全局变量│</span><br><span class="line">│ → TLS 基地址        │           │ → TLS 基地址         │</span><br><span class="line">└────────────────────┘           └────────────────────┘</span><br><span class="line">     ↑ 上下文切换时写入                 ↑ 上下文切换时写入</span><br></pre></td></tr></table></figure>
+
+<p>编译器遇到 <code>__thread</code> 变量时，调用 <code>__aeabi_read_tp()</code>（ARM EABI 标准函数）获取 TLS 基地址，再加偏移量访问变量。每个线程的 TLS 区域在线程栈顶分配。</p>
+<p><strong>为什么必须手动设置？</strong> 正常上下文切换由 PendSV 汇编自动更新 <code>z_arm_tls_ptr</code>。但 <code>arch_switch_to_main_thread()</code> 绕过了 PendSV 路径，如果不手动设置，<code>z_arm_tls_ptr</code> 为 0，main 线程中任何 <code>__thread</code> 变量访问都会解引用地址 0 → HardFault。</p>
+<p><strong>④ MPU 栈保护</strong>：为 main 线程配置 MPU 栈守卫区域。在线程栈底前方（低地址方向）放一个 guard 区域，设为特权只读。栈溢出时 PUSH 写入 guard → MPU 拦截 → MemManage 异常。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">高地址</span><br><span class="line">┌──────────────────┐</span><br><span class="line">│                  │</span><br><span class="line">│   线程栈         │ ← 初始 SP，读/写</span><br><span class="line">│   SP 向下增长 ↓  │</span><br><span class="line">│                  │</span><br><span class="line">├──────────────────┤ ← stack_info.start（栈底，0x24010040）</span><br><span class="line">│   Guard 区域     │ 只读（AP=101）</span><br><span class="line">│   64 字节        │ 写入 → MemManage！</span><br><span class="line">├──────────────────┤ ← guard_start（0x24010000）</span><br><span class="line">│   其他数据       │ 读/写</span><br><span class="line">└──────────────────┘</span><br><span class="line">低地址</span><br></pre></td></tr></table></figure>
+
+<p>Guard 区域的 MPU 配置源码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// arch/arm/core/mpu/arm_core_mpu.c</span></span><br><span class="line">guard_start = thread-&gt;stack_info.start - guard_size;  <span class="comment">// 栈底 - 64</span></span><br><span class="line">dynamic_regions[region_num].start = guard_start;</span><br><span class="line">dynamic_regions[region_num].size  = guard_size;</span><br><span class="line">dynamic_regions[region_num].attr  = K_MEM_PARTITION_P_RO_U_NA;  <span class="comment">// 特权只读</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="Guard-为什么是-64-字节？"><a href="#Guard-为什么是-64-字节？" class="headerlink" title="Guard 为什么是 64 字节？"></a>Guard 为什么是 64 字节？</h5><p>Guard 的大小不是随意选择的，它要保证<strong>溢出被可靠检测</strong>。核心约束：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Guard 大小 ≥ 单次最大 PUSH + 异常帧大小</span><br><span class="line">           = 32 字节 + 32 字节</span><br><span class="line">           = 64 字节</span><br></pre></td></tr></table></figure>
+
+<p>用 32 字节 guard 和 64 字节 guard 的<strong>最坏情况对比</strong>（SP 刚好从栈底溢出）。</p>
+<blockquote>
+<p><strong>Cortex-M PUSH 指令的关键行为</strong>：PUSH 分两步——① 先减 SP（<code>SP = SP - 4×N</code>）② 再从新 SP 写入内存。MPU fault 发生在第 ② 步写内存时，此时 <strong>SP 已经减完了，不会回滚</strong>。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">【32 字节 Guard — 异常帧可能逃逸】</span><br><span class="line"></span><br><span class="line">          ├──────────────────┤ ← 0x24010040  stack_info.start（栈底）</span><br><span class="line">  SP =    │ Guard (32B)      │ 只读</span><br><span class="line">          ├──────────────────┤ ← 0x24010020  guard_start</span><br><span class="line">          │ 其他数据         │ 读/写</span><br><span class="line">          └──────────────────┘</span><br><span class="line"></span><br><span class="line">  ① 线程 PUSH &#123;R4-R11&#125;（32 字节），SP = 0x24010040</span><br><span class="line">     → SP 先减：SP = 0x24010040 - 32 = 0x24010020（已进入 guard）</span><br><span class="line">     → 写入 [0x24010020, 0x2401003F] → guard 区域，只读 → MemManage 触发</span><br><span class="line"></span><br><span class="line">  ② CPU 处理 fault，压异常帧（32 字节），从当前 SP = 0x24010020</span><br><span class="line">     → 写入 [0x24010000, 0x2401001F] → 全部在 guard 下方！</span><br><span class="line">     → 合法内存，push 成功 → 异常帧破坏了其他线程的数据 ✗</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">【64 字节 Guard — 异常帧仍在 guard 内】</span><br><span class="line"></span><br><span class="line">          ├──────────────────┤ ← 0x24010040  stack_info.start（栈底）</span><br><span class="line">          │ Guard 上半 (32B) │ 只读</span><br><span class="line">  SP =    ├──────────────────┤ ← 0x24010020</span><br><span class="line">          │ Guard 下半 (32B) │ 只读</span><br><span class="line">          ├──────────────────┤ ← 0x24010000  guard_start</span><br><span class="line">          │ 其他数据         │ 读/写</span><br><span class="line">          └──────────────────┘</span><br><span class="line"></span><br><span class="line">  ① 线程 PUSH &#123;R4-R11&#125;（32 字节），SP = 0x24010040</span><br><span class="line">     → SP 先减：SP = 0x24010040 - 32 = 0x24010020（进入 guard 中间）</span><br><span class="line">     → 写入 [0x24010020, 0x2401003F] → guard 区域 → MemManage 触发</span><br><span class="line"></span><br><span class="line">  ② CPU 处理 fault，压异常帧（32 字节），从当前 SP = 0x24010020</span><br><span class="line">     → 写入 [0x24010000, 0x2401001F] → 仍在 guard 内！</span><br><span class="line">     → 又一次写只读区域 → 二次 MemManage → 升级 HardFault → 安全终止 ✓</span><br></pre></td></tr></table></figure>
+
+<p>64 字节 guard 的关键：SP 先减进入 guard 后，异常帧 push（32 字节）仍然落在 guard 范围内。Guard 大小 &#x3D; 单次最大 PUSH(32B) + 异常帧(32B) &#x3D; 64 字节，缺一不可。</p>
+<p><strong>MPU 栈保护的局限</strong>：只能防<strong>渐进式溢出</strong>（小 PUSH 一步步进入 guard），防不住<strong>跳跃式溢出</strong>——<code>int buf[1000]</code> 编译器生成 <code>SUB SP, SP, #4000</code>，只改 SP 寄存器不访问内存，MPU 完全无感，SP 直接跳过 guard。</p>
+<table>
+<thead>
+<tr>
+<th>保护方式</th>
+<th>机制</th>
+<th>防跳跃溢出</th>
+<th>STM32H7</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MPU guard</td>
+<td>检查内存访问地址</td>
+<td>不能</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>PSPLIM 硬件寄存器</td>
+<td>检查 SP 值</td>
+<td>能</td>
+<td>不支持（ARMv8-M）</td>
+</tr>
+<tr>
+<td><code>-fstack-clash-protection</code></td>
+<td>编译器插入探测</td>
+<td>缓解</td>
+<td>Zephyr 未启用</td>
+</tr>
+</tbody></table>
+<p><strong>⑤ PSPLIM</strong>（ARMv8-M）：直接检查 SP 值，<code>SP &lt; PSPLIM</code> 立即触发异常。STM32H7 的 Cortex-M7 是 ARMv7E-M，<strong>没有此寄存器</strong>，所以只能依赖 MPU guard。</p>
+<h4 id="7-2-3-寄存器状态追溯：从上电到内联汇编执行前"><a href="#7-2-3-寄存器状态追溯：从上电到内联汇编执行前" class="headerlink" title="7.2.3 寄存器状态追溯：从上电到内联汇编执行前"></a>7.2.3 寄存器状态追溯：从上电到内联汇编执行前</h4><blockquote>
+<p>以下通过源码追溯验证了每个阶段 PSP&#x2F;MSP&#x2F;CONTROL&#x2F;BASEPRI 的变化。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">阶段 0：硬件复位</span><br><span class="line">  MSP = 向量表[0]（初始栈顶）</span><br><span class="line">  PSP = 未定义</span><br><span class="line">  CONTROL.SPSEL = 0（使用 MSP）</span><br><span class="line">  BASEPRI = 0</span><br><span class="line"></span><br><span class="line">阶段 1：reset.S — z_arm_reset()</span><br><span class="line">  MSP = z_main_stack 栈顶（临时供早期启动代码）</span><br><span class="line">  PSP = z_interrupt_stacks 栈顶</span><br><span class="line">  CONTROL.SPSEL = 1  ← 关键转折！从此 CPU 使用 PSP</span><br><span class="line">  BASEPRI = 0x10</span><br><span class="line"></span><br><span class="line">阶段 2：z_prep_c() → z_cstart()</span><br><span class="line">  无 MSP/PSP/CONTROL/BASEPRI 修改</span><br><span class="line">  所有内核初始化代码运行在 PSP 上！</span><br><span class="line"></span><br><span class="line">阶段 3：arch_kernel_init() → z_arm_interrupt_stack_setup()</span><br><span class="line">  MSP = z_interrupt_stacks[0] 栈顶（正式设为中断/异常专用栈）</span><br><span class="line">  PSP 不变（仍在中断栈内某处）</span><br><span class="line">  CONTROL.SPSEL = 1（未改变）</span><br><span class="line"></span><br><span class="line">阶段 4：z_arm_prepare_switch_to_main()</span><br><span class="line">  FPSCR = 0, CONTROL.FPCA = 0</span><br><span class="line">  不修改 SPSEL</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行内联汇编前的最终状态</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">MSP            = z_interrupt_stacks[0] 栈顶（异常 handler 用）</span><br><span class="line">PSP            = 中断栈内某处 ← 当前活跃栈指针！</span><br><span class="line">CONTROL.SPSEL  = 1（线程模式使用 PSP，从 reset.S 起从未改变）</span><br><span class="line">CONTROL.FPCA   = 0（FPU 未激活）</span><br><span class="line">BASEPRI        = 0x10（中断关闭）</span><br></pre></td></tr></table></figure>
+
+<p><strong>纠正常见误解</strong>：所有内核初始化代码（<code>z_prep_c</code>、<code>z_cstart</code>、所有初始化函数）都运行在 <strong>PSP</strong> 上，不是 MSP。MSP 从 <code>z_arm_interrupt_stack_setup()</code> 后就留给异常&#x2F;中断 handler 专用。</p>
+<h4 id="7-2-4-内联汇编逐条指令解析"><a href="#7-2-4-内联汇编逐条指令解析" class="headerlink" title="7.2.4 内联汇编逐条指令解析"></a>7.2.4 内联汇编逐条指令解析</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/* 第 1 步：保存 _main 到 callee-saved 寄存器 */</span><br><span class="line">    mov   r4,  %0           /* r4 = _main (bg_thread_main 的地址) */</span><br></pre></td></tr></table></figure>
+
+<p>GCC 内联汇编占位符 <code>%0</code> 对应输入约束 <code>&quot;r&quot;(_main)</code>。保存到 r4 因为后面调用 <code>arch_irq_unlock</code> 会覆盖 r0-r3（caller-saved），而 r4-r11 是 <strong>callee-saved</strong>——被调用函数必须保存恢复，调用返回后值不变。<code>_main</code> 在函数调用之后还要用，必须放在 callee-saved 寄存器中。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/* 第 2 步：切换活跃栈（中断栈 → main 线程栈） */</span><br><span class="line">    msr   PSP, %1           /* PSP = stack_ptr (main 线程栈顶) */</span><br></pre></td></tr></table></figure>
+
+<p><strong>直接改变活跃栈指针！</strong> 由于 <code>CONTROL.SPSEL = 1</code>，PSP 就是当前活跃栈。<code>msr PSP, stack_ptr</code> 执行后，所有后续的 PUSH&#x2F;CALL 立刻使用 main 线程的栈。必须在开中断之前完成——否则 PendSV 可能在 PSP 还指向中断栈时触发，异常帧压错位置。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">/* 第 3 步：准备开中断参数 */</span><br><span class="line">    movs  r0,  #0           /* r0 = 0（开中断的 key） */</span><br><span class="line"></span><br><span class="line">/* 第 4 步：加载函数地址 */</span><br><span class="line">    ldr   r3, =arch_irq_unlock_outlined</span><br><span class="line"></span><br><span class="line">/* 第 5 步：调用开中断 */</span><br><span class="line">    blx   r3                /* arch_irq_unlock(0) → BASEPRI=0，中断开启 */</span><br></pre></td></tr></table></figure>
+
+<p><code>blx r3</code> 跳转并保存返回地址到 lr。但 <code>arch_switch_to_main_thread</code> 标记 <code>FUNC_NORETURN</code>，<code>lr</code> 的值毫无意义——注释说 “LR is lost which is fine”。r4 中的 <code>bg_thread_main</code> 地址在函数调用后仍然保留（callee-saved）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/* 第 6 步：准备 z_thread_entry 参数 */</span><br><span class="line">    mov   r0, r4            /* r0 = bg_thread_main（第 1 步保存在 r4 中） */</span><br><span class="line">    movs  r1, #0            /* p1 = NULL */</span><br><span class="line">    movs  r2, #0            /* p2 = NULL */</span><br><span class="line">    movs  r3, #0            /* p3 = NULL */</span><br><span class="line"></span><br><span class="line">/* 第 7 步：加载 z_thread_entry 地址 */</span><br><span class="line">    ldr   r4, =z_thread_entry   /* r4 可复用（旧值已复制到 r0） */</span><br><span class="line"></span><br><span class="line">/* 第 8 步：跳转，永不返回 */</span><br><span class="line">    bx    r4                /* 跳转到 z_thread_entry，不保存返回地址 */</span><br></pre></td></tr></table></figure>
+
+<p><code>bx</code>（Branch and Exchange）与 <code>blx</code> 的关键区别：<strong>不保存返回地址到 lr</strong>。这是一次单向跳转：</p>
+<ul>
+<li>lr 已被 <code>arch_irq_unlock</code> 调用覆盖，是垃圾值</li>
+<li><code>arch_switch_to_main_thread</code> 标记 <code>FUNC_NORETURN</code></li>
+<li><code>z_thread_entry</code> 本身也从不返回</li>
+</ul>
+<h4 id="7-2-5-完整执行流程图"><a href="#7-2-5-完整执行流程图" class="headerlink" title="7.2.5 完整执行流程图"></a>7.2.5 完整执行流程图</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">执行前：</span><br><span class="line">  MSP ──► 中断栈顶（异常 handler 用）</span><br><span class="line">  PSP ──► 中断栈内某处（活跃栈！内核初始化一直运行在 PSP 上）</span><br><span class="line">  BASEPRI = 0x10（中断关闭）</span><br><span class="line">  CONTROL.SPSEL = 1</span><br><span class="line"></span><br><span class="line">  │</span><br><span class="line">  ▼ mov r4, _main</span><br><span class="line">  r4 = bg_thread_main</span><br><span class="line"></span><br><span class="line">  │</span><br><span class="line">  ▼ msr PSP, stack_ptr</span><br><span class="line">  PSP = main 线程栈顶（活跃栈切换！后续运行在 main 线程栈上）</span><br><span class="line"></span><br><span class="line">  │</span><br><span class="line">  ▼ blx arch_irq_unlock(0)</span><br><span class="line">  BASEPRI = 0，中断开启</span><br><span class="line">  r4 = bg_thread_main（callee-saved，被恢复）</span><br><span class="line"></span><br><span class="line">  │</span><br><span class="line">  ▼ mov r0, r4; movs r1-3, #0</span><br><span class="line">  r0 = bg_thread_main, r1=r2=r3 = NULL</span><br><span class="line"></span><br><span class="line">  │</span><br><span class="line">  ▼ bx z_thread_entry</span><br><span class="line">  跳转到 z_thread_entry(bg_thread_main, NULL, NULL, NULL)</span><br><span class="line">  永不返回</span><br><span class="line"></span><br><span class="line">     z_thread_entry 内部：</span><br><span class="line">       调用 bg_thread_main(unused1, unused2, unused3)</span><br><span class="line">         调用 main()</span><br><span class="line">           → 你的代码开始执行 ✓</span><br></pre></td></tr></table></figure>
+
+<h5 id="7-2-5-1-z-thread-entry-—-线程的真正入口"><a href="#7-2-5-1-z-thread-entry-—-线程的真正入口" class="headerlink" title="7.2.5.1 z_thread_entry — 线程的真正入口"></a>7.2.5.1 z_thread_entry — 线程的真正入口</h5><p>上面的流程图以 <code>z_thread_entry</code> 结尾， main 线程的真正执行从 <code>z_thread_entry</code> <strong>内部</strong>开始。它不是架构相关的汇编代码，而是一个<strong>通用的 C 函数</strong>（<code>lib/os/thread_entry.c</code>），所有架构、所有线程都经过它：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lib/os/thread_entry.c</span></span><br><span class="line">FUNC_NORETURN <span class="type">void</span> <span class="title function_">z_thread_entry</span><span class="params">(<span class="type">k_thread_entry_t</span> entry,</span></span><br><span class="line"><span class="params">                                   <span class="type">void</span> *p1, <span class="type">void</span> *p2, <span class="type">void</span> *p3)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 1. 标记返回地址未定义（防止调试器回溯到垃圾地址）</span></span><br><span class="line">    ARCH_CFI_UNDEFINED_RETURN_ADDRESS();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. TLS 初始化（如果启用了 CONFIG_CURRENT_THREAD_USE_TLS）</span></span><br><span class="line">    <span class="meta">#<span class="keyword">ifdef</span> CONFIG_CURRENT_THREAD_USE_TLS</span></span><br><span class="line">    z_tls_current = k_sched_current_thread_query();</span><br><span class="line">    <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. TLS 版 Stack Canary（每个线程独立的 canary 值）</span></span><br><span class="line">    <span class="meta">#<span class="keyword">ifdef</span> CONFIG_STACK_CANARIES_TLS</span></span><br><span class="line">    sys_rand_get((<span class="type">uint8_t</span> *)&amp;stack_guard, <span class="keyword">sizeof</span>(stack_guard));</span><br><span class="line">    __stack_chk_guard = stack_guard;</span><br><span class="line">    __stack_chk_guard &lt;&lt;= <span class="number">8</span>;       <span class="comment">// 最低字节清零，防 strcpy 绕过</span></span><br><span class="line">    <span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 4. 调用线程入口函数（对于 main 线程 = bg_thread_main）</span></span><br><span class="line">    entry(p1, p2, p3);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 5. 入口函数返回 → 终止线程（不能让线程&quot;掉出&quot;到随机地址）</span></span><br><span class="line">    k_thread_abort(k_current_get());</span><br><span class="line"></span><br><span class="line">    CODE_UNREACHABLE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么需要这个包装层？</strong> 直接让 <code>bx</code> 跳转到 <code>bg_thread_main</code> 不行吗？不行，原因有三个：</p>
+<ol>
+<li><p><strong>线程安全终止</strong>：如果线程入口函数（如 <code>main()</code>）返回，不能让执行流”掉出”到随机地址。<code>z_thread_entry</code> 在 <code>entry()</code> 返回后调用 <code>k_thread_abort()</code> 清理线程资源。</p>
+</li>
+<li><p><strong>TLS 初始化</strong>：每个线程创建后需要初始化自己的 TLS 变量（如 <code>z_tls_current</code>）和线程独立的 stack canary 值。这必须在 <code>entry()</code> 调用之前完成。</p>
+</li>
+<li><p><strong>CFI 标记</strong>：<code>ARCH_CFI_UNDEFINED_RETURN_ADDRESS()</code> 告诉调试器”此函数没有有效的返回地址”，防止 backtrace 工具回溯到垃圾地址导致 HardFault。</p>
+</li>
+</ol>
+<p><strong>调用链全景</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">arch_switch_to_main_thread() 内联汇编</span><br><span class="line">  │  bx z_thread_entry</span><br><span class="line">  ▼</span><br><span class="line">z_thread_entry(entry=bg_thread_main, p1=NULL, p2=NULL, p3=NULL)</span><br><span class="line">  │  ARCH_CFI_UNDEFINED_RETURN_ADDRESS()    ← 标记无返回地址</span><br><span class="line">  │  [TLS 初始化]</span><br><span class="line">  │  [Stack Canary 初始化]</span><br><span class="line">  │  entry(p1, p2, p3)                      ← 调用 bg_thread_main</span><br><span class="line">  ▼</span><br><span class="line">bg_thread_main(NULL, NULL, NULL)</span><br><span class="line">  │  z_sys_init_run_level(POST_KERNEL)      ← 外设驱动初始化</span><br><span class="line">  │  z_sys_init_run_level(APPLICATION)      ← 应用层初始化</span><br><span class="line">  │  z_init_static_threads()                ← 静态线程就绪</span><br><span class="line">  │  main()                                 ← 用户代码</span><br><span class="line">  │  ...（main 返回）</span><br><span class="line">  ▼</span><br><span class="line">k_thread_abort(k_current_get())             ← main 线程终止</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="7-2-6-栈使用时间线"><a href="#7-2-6-栈使用时间线" class="headerlink" title="7.2.6 栈使用时间线"></a>7.2.6 栈使用时间线</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">硬件复位</span><br><span class="line">  │  MSP 活跃（向量表初始值）</span><br><span class="line">  │</span><br><span class="line">  ▼ reset.S: CONTROL.SPSEL = 1</span><br><span class="line">  │  PSP 活跃（z_interrupt_stacks，所有内核初始化代码运行于此）</span><br><span class="line">  │</span><br><span class="line">  ▼ z_arm_interrupt_stack_setup(): MSP = 中断栈顶</span><br><span class="line">  │  MSP 供异常 handler 使用</span><br><span class="line">  │  PSP 仍活跃（内核初始化继续在中断栈上运行）</span><br><span class="line">  │</span><br><span class="line">  ▼ 内联汇编 msr PSP, stack_ptr</span><br><span class="line">  │  PSP 活跃（main 线程栈，从此开始用 main 线程自己的栈）</span><br><span class="line">  │</span><br><span class="line">  ▼ bx z_thread_entry → bg_thread_main → main()</span><br><span class="line">     全程运行在 PSP 上</span><br><span class="line">     异常发生时硬件自动切到 MSP，异常返回切回 PSP</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-2-7-为什么必须用内联汇编而不是-C-代码？"><a href="#7-2-7-为什么必须用内联汇编而不是-C-代码？" class="headerlink" title="7.2.7 为什么必须用内联汇编而不是 C 代码？"></a>7.2.7 为什么必须用内联汇编而不是 C 代码？</h4><ol>
+<li><p><strong>栈切换</strong>：<code>msr PSP, stack_ptr</code> 切换栈指针。C 函数的局部变量和返回地址在旧栈上，切换后旧栈虽仍在内存但语义上已”不属于当前线程”。汇编精确控制哪些值在寄存器中（r4 保存 <code>_main</code>），不依赖栈。</p>
+</li>
+<li><p><strong>不返回</strong>：<code>bx r4</code> 没有”返回地址”（不是 <code>blx</code>），旧栈上的内容被丢弃。C 函数必须有返回路径，无法表达”永不返回”的跳转。</p>
+</li>
+<li><p><strong>中断时序</strong>：<code>msr PSP</code> 改变活跃栈指针，必须在开中断之前完成。如果先开中断，PendSV 可能在 PSP 还指向中断栈时触发 → 异常帧压错位置 → 上下文混乱。汇编精确控制 <code>msr PSP</code> 在 <code>blx arch_irq_unlock</code> 之前。</p>
+</li>
+</ol>
+<h3 id="7-3-假线程存在的意义"><a href="#7-3-假线程存在的意义" class="headerlink" title="7.3 假线程存在的意义"></a>7.3 假线程存在的意义</h3><p>内核中大量代码通过 <code>_current</code>（当前线程指针）来获取上下文信息。无假线程时 <code>_current</code> 为 NULL，任何解引用都会触发 HardFault。</p>
+<p>假线程的状态 <code>_THREAD_DUMMY</code> 确保它<strong>永远不会被调度</strong>，只是一个安全的占位指针。</p>
+<p><strong>内核中引用 <code>_current</code> 的典型场景</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>代码</th>
+<th>无假线程会怎样</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>调度器加锁</td>
+<td><code>_current-&gt;base.sched_locked++</code></td>
+<td>NULL 解引用 → HardFault</td>
+</tr>
+<tr>
+<td>中断处理</td>
+<td><code>z_get_next_ready_thread()</code> 依赖当前线程上下文</td>
+<td>优先级比较失败</td>
+</tr>
+<tr>
+<td>内核对象权限（USERSPACE）</td>
+<td><code>k_object_access_grant(obj, _current)</code></td>
+<td>授权给 NULL</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="8-第六步：bg-thread-main-—-应用初始化的最后一步"><a href="#8-第六步：bg-thread-main-—-应用初始化的最后一步" class="headerlink" title="8. 第六步：bg_thread_main() — 应用初始化的最后一步"></a>8. 第六步：bg_thread_main() — 应用初始化的最后一步</h2><p><strong>源码位置</strong>：<code>zephyr/kernel/init.c</code>（283-359 行）</p>
+<p><code>bg_thread_main()</code> 在首次上下文切换后运行于 main 线程中，完成剩余初始化并调用 <code>main()</code>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">bg_thread_main</span><span class="params">(<span class="type">void</span> *unused1, <span class="type">void</span> *unused2, <span class="type">void</span> *unused3)</span></span><br><span class="line">&#123;</span><br><span class="line">    z_sys_post_kernel = <span class="literal">true</span>;                        <span class="comment">// 标记内核初始化完成</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> CONFIG_IRQ_OFFLOAD</span></span><br><span class="line">    arch_irq_offload_init();                         <span class="comment">// IRQ 卸载初始化</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    z_sys_init_run_level(INIT_LEVEL_POST_KERNEL);    <span class="comment">// POST_KERNEL 外设驱动</span></span><br><span class="line"></span><br><span class="line">    soc_late_init_hook();                             <span class="comment">// SoC 后期初始化（可选）</span></span><br><span class="line">    board_late_init_hook();                           <span class="comment">// 板级后期初始化（可选）</span></span><br><span class="line"></span><br><span class="line">    boot_banner();                                    <span class="comment">// 打印启动 banner</span></span><br><span class="line"></span><br><span class="line">    z_sys_init_run_level(INIT_LEVEL_APPLICATION);     <span class="comment">// APPLICATION 应用初始化</span></span><br><span class="line"></span><br><span class="line">    z_init_static_threads();                          <span class="comment">// 初始化用户定义的静态线程</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用用户的 main 函数</span></span><br><span class="line">    main();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// main() 返回后：清除 ESSENTIAL 标记，线程可被调度器回收</span></span><br><span class="line">    z_thread_essential_clear(&amp;z_main_thread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>POST_KERNEL 阶段初始化的设备</strong>（STM32H747I-DISCO 典型序列）：</p>
+<table>
+<thead>
+<tr>
+<th>设备</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FMC&#x2F;SDRAM 控制器</td>
+<td>外部内存</td>
+</tr>
+<tr>
+<td>日志后端</td>
+<td>日志输出到串口&#x2F;RTT</td>
+</tr>
+<tr>
+<td>malloc 堆</td>
+<td>动态内存分配</td>
+</tr>
+<tr>
+<td>SPI&#x2F;QSPI Flash</td>
+<td>外部存储</td>
+</tr>
+<tr>
+<td>I2C</td>
+<td>总线驱动</td>
+</tr>
+<tr>
+<td>USB OTG</td>
+<td>USB 设备&#x2F;主机</td>
+</tr>
+<tr>
+<td>磁盘&#x2F;SDMMC</td>
+<td>SD 卡&#x2F;Flash 存储</td>
+</tr>
+<tr>
+<td>FAT 文件系统</td>
+<td>文件系统挂载</td>
+</tr>
+</tbody></table>
+<p>**<code>soc_late_init_hook()</code> vs <code>soc_early_init_hook()</code>**：<code>early</code> 在 PRE_KERNEL_1 之前（Cache 启用、电源配置），<code>late</code> 在 POST_KERNEL 之后（此时所有驱动已就绪，可执行依赖驱动的 SoC 级操作）。</p>
+<p>**<code>boot_banner()</code>**：打印启动信息（如 <code>*** Booting Zephyr OS build xxx ***</code>），出现在串口上的第一行内核输出。</p>
+<p>**<code>z_init_static_threads()</code>**：初始化用户代码中通过 <code>K_THREAD_DEFINE()</code> 定义的静态线程。这些线程在 <code>main()</code> 之前就绪，<code>main()</code> 返回后调度器继续运行它们。</p>
+<p>至此，<code>main()</code> 执行时，所有初始化等级均已完成。</p>
+<hr>
+<h2 id="9-总结"><a href="#9-总结" class="headerlink" title="9. 总结"></a>9. 总结</h2><p>回顾整个启动流程，从硬件复位到 <code>main()</code> 的数据与控制传递：</p>
+<pre class="mermaid">flowchart TD
+    subgraph 硬件["硬件"]
+        direction LR
+        A["CPU 复位"] --> B["向量表 0x08000000"] --> C["MSP + Reset_Handler"]
+    end
+
+    subgraph reset["reset.S"]
+        direction LR
+        D["z_arm_reset()"] --> E["soc_reset_hook()"] --> F["init_arch_hw()"] --> G["BASEPRI=0x10"] --> H["切换 PSP"]
+    end
+
+    subgraph prep["prep_c.c"]
+        direction LR
+        I["z_prep_c()"] --> J["VTOR"] --> K["清 .bss"] --> L["拷 .data"] --> M["NVIC 初始化"]
+    end
+
+    subgraph kernel["kernel/init.c"]
+        direction LR
+        N["z_cstart()"] --> O["Cache"] --> P["PRE_KERNEL_1"] --> Q["PRE_KERNEL_2"] --> R["canary"] --> S["多线程准备"] --> T["首次切换"]
+    end
+
+    subgraph app["应用"]
+        direction LR
+        U["z_thread_entry()"] --> V["bg_thread_main()"] --> W["POST_KERNEL"] --> X["main()"]
+    end
+
+    硬件 --> reset --> prep --> kernel --> app
+
+    style 硬件 fill:#e3f2fd,stroke:#1565c0,color:#000
+    style reset fill:#fff3e0,stroke:#ef6c00,color:#000
+    style prep fill:#e8f5e9,stroke:#2e7d32,color:#000
+    style kernel fill:#fce4ec,stroke:#c62828,color:#000
+    style app fill:#e1f5fe,stroke:#0277bd,color:#000</pre>
+
+<p><strong>五个关键要点</strong>：</p>
+<ol>
+<li><p><strong>硬件向量表地址由 Option Bytes + BOOT 引脚决定</strong>：BCM7_ADD0 指定默认启动地址 <code>0x08000000</code>，这个值通过 DTS 的 <code>chosen</code> → Kconfig 的 <code>dt_chosen_reg_addr_hex()</code> → 链接脚本的 <code>#include</code> 宏，最终成为链接脚本中的 <code>__rom_region_start</code>。</p>
+</li>
+<li><p><strong>reset.S 是一段精密的汇编初始化序列</strong>：CONTROL 重置 → MSP 设置 → TCM 清零 → MPU 禁用 → NVIC&#x2F;Cache 初始化 → BASEPRI 屏蔽普通中断 → PSP 切换。每一步都有明确的硬件目的。</p>
+</li>
+<li><p><strong>Cache 必须在 .data&#x2F;.bss 初始化之后才能启用</strong>：D-Cache 关闭时写操作直达 RAM（最简单可预测）。启用 Cache 后再初始化内存，会导致 Cache 和 RAM 内容不一致。</p>
+</li>
+<li><p><strong>初始化顺序由链接脚本的段名决定，而非代码顺序</strong>：<code>.z_init_&#123;LEVEL&#125;_P_&#123;PRIO&#125;_</code> 格式的段名在链接时按字母排序，保证编译产物中的初始化数组天然有序。</p>
+</li>
+<li><p><strong>首次上下文切换前需要假线程</strong>：<code>_current</code> 在内核中广泛使用，解引用 NULL 会触发 HardFault。假线程是一个安全的占位指针，确保在内核初始化完成前所有代码都能安全访问 <code>_current</code>。</p>
+</li>
+</ol>
+<hr>
+<blockquote>
+<p><strong>参考源码</strong>（基于 Zephyr 主线）：</p>
+<ul>
+<li><code>zephyr/arch/arm/core/cortex_m/reset.S</code> — 复位向量汇编</li>
+<li><code>zephyr/arch/arm/core/cortex_m/prep_c.c</code> — C 运行时准备</li>
+<li><code>zephyr/kernel/init.c</code> — 内核初始化入口</li>
+<li><code>zephyr/arch/arm/core/cortex_m/scb.c</code> — 架构硬件初始化</li>
+<li><code>zephyr/soc/st/stm32/stm32h7x/soc_m7.c</code> — STM32H7 SoC 钩子</li>
+<li><code>zephyr/arch/arm/core/cortex_m/thread.c</code> — 上下文切换实现</li>
+</ul>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2026/04/27/zephyr-boot-progress/" title="深入理解 Zephyr RTOS 启动流程：从上电复位到 main 函数的完整追踪（基于AI协助总结）">http://fengxun2017.github.io/2026/04/27/zephyr-boot-progress/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/04/20/zephyr-compile-progress/" rel="prev" title="深入理解 Zephyr RTOS 编译流程：从 west build 到 ELF 产物的完整拆解（基于AI协助总结）">
+                  <i class="fa fa-chevron-left"></i> 深入理解 Zephyr RTOS 编译流程：从 west build 到 ELF 产物的完整拆解（基于AI协助总结）
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">742k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">15:27</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
