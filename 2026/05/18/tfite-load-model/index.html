@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文是 TFLite Micro 内部实现深度剖析系列的第 1 篇，主要介绍 TFLite Micro的模型加载相关内容。本篇同时提供示例模型的完整结构与数据，作为后续各篇的前置信息。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TFLite Micro 深度剖析（一）：模型加载——FlatBuffer 零拷贝的秘密（基于AI协助总结）">
+<meta property="og:url" content="http://fengxun2017.github.io/2026/05/18/tfite-load-model/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="本文是 TFLite Micro 内部实现深度剖析系列的第 1 篇，主要介绍 TFLite Micro的模型加载相关内容。本篇同时提供示例模型的完整结构与数据，作为后续各篇的前置信息。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-18T15:42:52.303Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2026/05/18/tfite-load-model/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2026/05/18/tfite-load-model/","path":"2026/05/18/tfite-load-model/","title":"TFLite Micro 深度剖析（一）：模型加载——FlatBuffer 零拷贝的秘密（基于AI协助总结）"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>TFLite Micro 深度剖析（一）：模型加载——FlatBuffer 零拷贝的秘密（基于AI协助总结） | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%EF%BC%9A%E7%A4%BA%E4%BE%8B%E6%A8%A1%E5%9E%8B%E5%8F%82%E8%80%83"><span class="nav-number">1.</span> <span class="nav-text">前置信息：示例模型参考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BD%AF%E4%BB%B6%E7%89%88%E6%9C%AC%E4%B8%8E%E8%BF%90%E8%A1%8C%E7%8E%AF%E5%A2%83"><span class="nav-number">1.1.</span> <span class="nav-text">软件版本与运行环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84"><span class="nav-number">1.2.</span> <span class="nav-text">模型架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tensor-%E6%95%B0%E6%8D%AE%E8%A1%A8"><span class="nav-number">1.3.</span> <span class="nav-text">Tensor 数据表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E5%AD%90%E7%B1%BB%E5%9E%8B%E6%B1%87%E6%80%BB"><span class="nav-number">1.4.</span> <span class="nav-text">算子类型汇总</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-FlatBuffer-%E4%B8%8E-tflite-%E6%96%87%E4%BB%B6"><span class="nav-number">1.5.</span> <span class="nav-text">1.1 FlatBuffer 与 .tflite 文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#tflite-%E6%96%87%E4%BB%B6%E7%9A%84%E9%80%BB%E8%BE%91%E7%BB%93%E6%9E%84"><span class="nav-number">1.5.1.</span> <span class="nav-text">.tflite 文件的逻辑结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-Schema-%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.6.</span> <span class="nav-text">1.2 Schema 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%AD%E4%B8%AA%E6%A0%B8%E5%BF%83-table"><span class="nav-number">1.6.1.</span> <span class="nav-text">六个核心 table</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tensor-buffer-%E5%AD%97%E6%AE%B5%E4%B8%8E%E6%95%B0%E6%8D%AE%E6%9D%A5%E6%BA%90"><span class="nav-number">1.6.2.</span> <span class="nav-text">Tensor.buffer 字段与数据来源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AE%97%E5%AD%90%E5%8F%82%E6%95%B0%E2%80%94%E2%80%94BuiltinOptions-%E8%81%94%E5%90%88%E4%BD%93"><span class="nav-number">1.6.3.</span> <span class="nav-text">算子参数——BuiltinOptions 联合体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%87%8F%E5%8C%96%E5%8F%82%E6%95%B0"><span class="nav-number">1.6.4.</span> <span class="nav-text">量化参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E5%BC%95%E7%94%A8%E8%BF%BD%E8%B8%AA%E2%80%94%E2%80%94%E4%BB%A5-Conv1-%E4%B8%BA%E4%BE%8B"><span class="nav-number">1.6.5.</span> <span class="nav-text">索引引用追踪——以 Conv1 为例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-FlatBuffer-%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%A0%BC%E5%BC%8F%E2%80%94%E2%80%94%E5%AF%BC%E8%88%AA%E8%A7%84%E5%88%99"><span class="nav-number">1.7.</span> <span class="nav-text">1.3 FlatBuffer 二进制格式——导航规则</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%BC%E8%88%AA%E7%9A%84%E4%B8%89%E4%B8%AA%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">1.7.1.</span> <span class="nav-text">导航的三个基本操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vtable%E2%80%94%E2%80%94%E5%AD%97%E6%AE%B5%E5%AF%BB%E5%9D%80%E8%A1%A8"><span class="nav-number">1.7.2.</span> <span class="nav-text">vtable——字段寻址表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B0%81%E5%86%B3%E5%AE%9A%E7%94%A8%E5%93%AA%E7%A7%8D%E6%93%8D%E4%BD%9C"><span class="nav-number">1.7.3.</span> <span class="nav-text">谁决定用哪种操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E8%A7%84%E5%88%99%E6%80%BB%E7%BB%93"><span class="nav-number">1.7.4.</span> <span class="nav-text">核心规则总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E5%AD%97%E8%8A%82%E7%BA%A7%E9%AA%8C%E8%AF%81%EF%BC%9A%E7%94%A8%E7%9C%9F%E5%AE%9E%E6%A8%A1%E5%9E%8B%E8%B5%B0%E4%B8%80%E9%81%8D"><span class="nav-number">1.8.</span> <span class="nav-text">1.4 字节级验证：用真实模型走一遍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E5%AF%BC%E8%88%AA%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.8.1.</span> <span class="nav-text">完整导航流程图</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-%E4%BB%A3%E7%A0%81%E4%B8%AD%E7%9A%84%E6%A8%A1%E5%9E%8B%E5%8A%A0%E8%BD%BD%E5%AE%9E%E8%B7%B5"><span class="nav-number">1.9.</span> <span class="nav-text">1.5 代码中的模型加载实践</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#GetModel-%E2%80%94%E2%80%94%E9%9B%B6%E6%8B%B7%E8%B4%9D%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="nav-number">1.9.1.</span> <span class="nav-text">GetModel()——零拷贝的本质</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%AF%B9%E9%BD%90"><span class="nav-number">1.9.2.</span> <span class="nav-text">为什么需要对齐</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%88%E6%9C%AC%E6%A0%A1%E9%AA%8C"><span class="nav-number">1.9.3.</span> <span class="nav-text">版本校验</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%B6%E6%8B%B7%E8%B4%9D%E7%9A%84%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E6%8A%80%E5%B7%A7"><span class="nav-number">1.9.4.</span> <span class="nav-text">零拷贝的类型转换技巧</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%8A%A0%E8%BD%BD%E9%98%B6%E6%AE%B5%E7%9A%84%E5%AE%8C%E6%95%B4%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">1.9.5.</span> <span class="nav-text">模型加载阶段的完整流程图</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">120</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2026/05/18/tfite-load-model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="TFLite Micro 深度剖析（一）：模型加载——FlatBuffer 零拷贝的秘密（基于AI协助总结） | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TFLite Micro 深度剖析（一）：模型加载——FlatBuffer 零拷贝的秘密（基于AI协助总结）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-05-18 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-18T00:00:00+08:00">2026-05-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/tflite/" itemprop="url" rel="index"><span itemprop="name">tflite</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>15k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>19 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+本文是 TFLite Micro 内部实现深度剖析系列的第 1 篇，主要介绍 TFLite Micro的模型加载相关内容。本篇同时提供示例模型的完整结构与数据，作为后续各篇的前置信息。
+</center>
+<span id="more"></span>
+
+<hr>
+<h2 id="前置信息：示例模型参考"><a href="#前置信息：示例模型参考" class="headerlink" title="前置信息：示例模型参考"></a>前置信息：示例模型参考</h2><p>本系列使用一个实际的 INT8 量化 CNN 目标检测模型（C2_BN）贯穿全篇。本节给出该模型的<strong>完整结构</strong>和 <strong>.tflite 文件中的具体数据</strong>，后续各篇将直接引用。</p>
+<h3 id="软件版本与运行环境"><a href="#软件版本与运行环境" class="headerlink" title="软件版本与运行环境"></a>软件版本与运行环境</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>版本</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TFLite Micro</td>
+<td><code>8d404de7</code> (2024-06-27)</td>
+<td>Zephyr module fork</td>
+</tr>
+<tr>
+<td>FlatBuffers</td>
+<td>v23.5.26</td>
+<td><code>FLATBUFFERS_VERSION = 23.5.26</code></td>
+</tr>
+<tr>
+<td>CMSIS-NN</td>
+<td>commit <code>22080c68</code></td>
+<td>ARM-software&#x2F;CMSIS-NN</td>
+</tr>
+<tr>
+<td>Schema</td>
+<td>v3c (<code>TFL3</code>)</td>
+<td><code>schema.fbs</code> → <code>schema_generated.h</code></td>
+</tr>
+<tr>
+<td>目标 MCU</td>
+<td>STM32H747 (Cortex-M7 480MHz)</td>
+<td>AXI SRAM 512KB + SDRAM2 4MB</td>
+</tr>
+</tbody></table>
+<h3 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h3><p>示例训练时包含 BatchNorm 层。转换为 .tflite 时，BN 参数被吸收进 Conv2D 的权重和偏置中，ReLU6 融合为 Conv2D 的输出 clamp 范围 [0, 6]。因此 .tflite 中看不到独立的 BN 和 ReLU6 算子——它们在转换阶段就被融合掉了。</p>
+<p>BN 融合的推导过程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">原始计算链:  Conv → BN → ReLU6</span><br><span class="line"></span><br><span class="line">BN 的数学定义:</span><br><span class="line">  y = γ × (x - μ) / σ + β</span><br><span class="line"></span><br><span class="line">其中 x = Σ(W·in) + B（Conv 的输出），代入展开:</span><br><span class="line">  y = γ × (Σ(W·in) + B - μ) / σ + β</span><br><span class="line"></span><br><span class="line">将乘法分配到求和内部:</span><br><span class="line">  y = Σ(W × (γ/σ) × in) + B × (γ/σ) + (β - γμ/σ)</span><br><span class="line">      ~~~~~~~~~~~~~~~~       ~~~~~~~~~~   ~~~~~~~~~~~~~</span><br><span class="line">      = W_fused × in        = B_fused 的一部分</span><br><span class="line"></span><br><span class="line">定义融合后的参数:</span><br><span class="line">  W_fused = W × (γ/σ)              ← 权重逐通道缩放</span><br><span class="line">  B_fused = B × (γ/σ) + (β - γμ/σ) ← 偏置吸收均值和方差</span><br><span class="line"></span><br><span class="line">融合后:  Conv_fused(W_fused, B_fused) → ReLU6</span><br></pre></td></tr></table></figure>
+
+<p>融合后只需一次矩阵乘加，省去了 BN 层的额外计算和中间 tensor。</p>
+<p>T 表示 tensor。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">输入: T[0]  [1,120,160,1] int8  S=0.003922  Z=-128</span><br><span class="line">          │</span><br><span class="line">  ┌───────┴────────┐</span><br><span class="line">  │ Op[0] CONV_2D  │  1→32通道, 3×3, padding=SAME</span><br><span class="line">  │ +BN融合+ReLU6  │  ← BN 在转换时融入 Conv 权重，ReLU6 融合为 clamp</span><br><span class="line">  └───────┬────────┘</span><br><span class="line">          │ T[15] [1,120,160,32]  S=0.035991  Z=-128</span><br><span class="line">  ┌───────┴────────┐</span><br><span class="line">  │ Op[1] MAX_POOL │  2×2, stride=2</span><br><span class="line">  └───────┬────────┘</span><br><span class="line">          │ T[16] [1,60,80,32]    S=0.035991  Z=-128   ← MaxPool 前后 S/Z 不变</span><br><span class="line">  ┌───────┴────────┐</span><br><span class="line">  │ Op[2] CONV_2D  │  32→64通道, 3×3</span><br><span class="line">  │ +BN融合+ReLU6  │</span><br><span class="line">  └───────┬────────┘</span><br><span class="line">          │ T[17] [1,60,80,64]    S=0.070534  Z=-128</span><br><span class="line">  ┌───────┴────────┐</span><br><span class="line">  │ Op[3] MAX_POOL │  2×2, stride=2</span><br><span class="line">  └───────┬────────┘</span><br><span class="line">          │ T[18] [1,30,40,64]    S=0.070534  Z=-128</span><br><span class="line">  ┌───────┴────────┐</span><br><span class="line">  │ Op[4] CONV_2D  │  64→128通道, 3×3</span><br><span class="line">  │ +BN融合+ReLU6  │</span><br><span class="line">  └───────┬────────┘</span><br><span class="line">          │ T[19] [1,30,40,128]   S=0.041528  Z=-128</span><br><span class="line">  ┌───────┴────────┐</span><br><span class="line">  │ Op[5] MAX_POOL │  2×2, stride=2</span><br><span class="line">  └───────┬────────┘</span><br><span class="line">          │ T[20] [1,15,20,128]   S=0.041528  Z=-128</span><br><span class="line">  ┌───────┴────────┐</span><br><span class="line">  │ Op[6] CONV_2D  │  128→128通道, 3×3</span><br><span class="line">  │ +BN融合+ReLU6  │</span><br><span class="line">  └───────┬────────┘</span><br><span class="line">          │ T[21] [1,15,20,128]   S=0.036833  Z=-128</span><br><span class="line">  ┌───────┴────────┐</span><br><span class="line">  │ Op[7] CONV_2D  │  128→5通道, 1×1 (检测头)</span><br><span class="line">  └───────┬────────┘</span><br><span class="line">          │ T[22] [1,15,20,5]     S=0.130216  Z=73</span><br><span class="line">     ┌────┴────┐</span><br><span class="line">     │ Op[8]   │  StridedSlice 分离置信度(4ch)和 bbox(1ch)</span><br><span class="line">     └────┬────┘</span><br><span class="line">      ┌───┴───┐</span><br><span class="line">      ↓       ↓</span><br><span class="line"> T[23][..,4]  T[26][..,1]  S=0.130216  Z=73</span><br><span class="line">   │           │</span><br><span class="line"> Op[9]       Op[12]        Logistic (Sigmoid，int8 查表实现)</span><br><span class="line">   │           │</span><br><span class="line"> T[24]       T[27]         S=0.003906  Z=-128</span><br><span class="line">   │           │</span><br><span class="line"> Op[10]      Op[13]        Quantize (重量化，对齐 scale 以支持 Concat)</span><br><span class="line">   │           │</span><br><span class="line"> T[25]       T[28]         S=0.003918  Z=-128</span><br><span class="line">   │           │</span><br><span class="line">   └─────┬─────┘</span><br><span class="line">   Op[14] CONCATENATION    ← 要求两个分支 S/Z 一致才能拼接</span><br><span class="line">         │</span><br><span class="line">   T[29] [1,15,20,5]  S=0.003918  Z=-128</span><br><span class="line">         │</span><br><span class="line">   Op[15] DEQUANTIZE   ← int8 → float32，最终输出</span><br><span class="line">         │</span><br><span class="line">   T[30] [1,15,20,5]  float32</span><br></pre></td></tr></table></figure>
+
+<h3 id="Tensor-数据表"><a href="#Tensor-数据表" class="headerlink" title="Tensor 数据表"></a>Tensor 数据表</h3><p><code>.tflite</code> 文件的 <code>subgraphs[0].tensors[]</code> 数组定义了 <strong>31 个 tensor</strong>（T[0]~T[30]）。本文用 <code>T[n]</code> 作为 <code>tensors[n]</code> 的简写。</p>
+<p><strong>算子常量</strong>（buffer 指向非空数据，运行时零拷贝读取）：</p>
+<table>
+<thead>
+<tr>
+<th>Tensor</th>
+<th>内容</th>
+<th>形状</th>
+<th align="center">类型</th>
+<th>量化方式</th>
+<th>scale 范围</th>
+<th>Z</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T[1]</td>
+<td>StridedSlice begin</td>
+<td>[4]</td>
+<td align="center">int32</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>T[2]</td>
+<td>StridedSlice end</td>
+<td>[4]</td>
+<td align="center">int32</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>T[3]</td>
+<td>StridedSlice end</td>
+<td>[4]</td>
+<td align="center">int32</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>T[4]</td>
+<td>StridedSlice strides</td>
+<td>[4]</td>
+<td align="center">int32</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td>T[5]</td>
+<td>Conv5 bias</td>
+<td>[5]</td>
+<td align="center">int32</td>
+<td>per-channel</td>
+<td>0.000064 ~ 0.000149</td>
+<td>0</td>
+</tr>
+<tr>
+<td>T[6]</td>
+<td>Conv5 filter</td>
+<td>[5,1,1,128]</td>
+<td align="center">int8</td>
+<td>per-channel 对称</td>
+<td>0.001745 ~ 0.004041</td>
+<td>0</td>
+</tr>
+<tr>
+<td>T[7]</td>
+<td>Conv4 bias</td>
+<td>[128]</td>
+<td align="center">int32</td>
+<td>per-channel</td>
+<td>0.000014 ~ 0.000072</td>
+<td>0</td>
+</tr>
+<tr>
+<td>T[8]</td>
+<td>Conv4 filter</td>
+<td>[128,3,3,128]</td>
+<td align="center">int8</td>
+<td>per-channel 对称</td>
+<td>0.000332 ~ 0.001743</td>
+<td>0</td>
+</tr>
+<tr>
+<td>T[9]</td>
+<td>Conv3 bias</td>
+<td>[128]</td>
+<td align="center">int32</td>
+<td>per-channel</td>
+<td>0.000031 ~ 0.000087</td>
+<td>0</td>
+</tr>
+<tr>
+<td>T[10]</td>
+<td>Conv3 filter</td>
+<td>[128,3,3,64]</td>
+<td align="center">int8</td>
+<td>per-channel 对称</td>
+<td>0.000442 ~ 0.001237</td>
+<td>0</td>
+</tr>
+<tr>
+<td>T[11]</td>
+<td>Conv2 bias</td>
+<td>[64]</td>
+<td align="center">int32</td>
+<td>per-channel</td>
+<td>0.000024 ~ 0.000079</td>
+<td>0</td>
+</tr>
+<tr>
+<td>T[12]</td>
+<td>Conv2 filter</td>
+<td>[64,3,3,32]</td>
+<td align="center">int8</td>
+<td>per-channel 对称</td>
+<td>0.000660 ~ 0.002191</td>
+<td>0</td>
+</tr>
+<tr>
+<td>T[13]</td>
+<td>Conv1 bias</td>
+<td>[32]</td>
+<td align="center">int32</td>
+<td>per-channel</td>
+<td>0.000022 ~ 0.000183</td>
+<td>0</td>
+</tr>
+<tr>
+<td>T[14]</td>
+<td>Conv1 filter</td>
+<td>[32,3,3,1]</td>
+<td align="center">int8</td>
+<td>per-channel 对称</td>
+<td>0.00572 ~ 0.04677</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<p><strong>激活值</strong>（buffer 指向空数据，运行时由 Arena 分配）：</p>
+<table>
+<thead>
+<tr>
+<th>Tensor</th>
+<th>形状</th>
+<th>scale</th>
+<th>Z</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T[0]</td>
+<td>[1,120,160,1]</td>
+<td>0.003922</td>
+<td>-128</td>
+<td>输入灰度图（对应 float [0,1]）</td>
+</tr>
+<tr>
+<td>T[15]</td>
+<td>[1,120,160,32]</td>
+<td>0.035991</td>
+<td>-128</td>
+<td>Conv1+BN+ReLU6</td>
+</tr>
+<tr>
+<td>T[16]</td>
+<td>[1,60,80,32]</td>
+<td>0.035991</td>
+<td>-128</td>
+<td>MaxPool1</td>
+</tr>
+<tr>
+<td>T[17]</td>
+<td>[1,60,80,64]</td>
+<td>0.070534</td>
+<td>-128</td>
+<td>Conv2+BN+ReLU6</td>
+</tr>
+<tr>
+<td>T[18]</td>
+<td>[1,30,40,64]</td>
+<td>0.070534</td>
+<td>-128</td>
+<td>MaxPool2</td>
+</tr>
+<tr>
+<td>T[19]</td>
+<td>[1,30,40,128]</td>
+<td>0.041528</td>
+<td>-128</td>
+<td>Conv3+BN+ReLU6</td>
+</tr>
+<tr>
+<td>T[20]</td>
+<td>[1,15,20,128]</td>
+<td>0.041528</td>
+<td>-128</td>
+<td>MaxPool3</td>
+</tr>
+<tr>
+<td>T[21]</td>
+<td>[1,15,20,128]</td>
+<td>0.036833</td>
+<td>-128</td>
+<td>Conv4+BN+ReLU6</td>
+</tr>
+<tr>
+<td>T[22]</td>
+<td>[1,15,20,5]</td>
+<td>0.130216</td>
+<td><strong>73</strong></td>
+<td>Conv5 检测头（Z≠-128）</td>
+</tr>
+<tr>
+<td>T[23]</td>
+<td>[1,15,20,4]</td>
+<td>0.130216</td>
+<td>73</td>
+<td>StridedSlice 置信度</td>
+</tr>
+<tr>
+<td>T[24]</td>
+<td>[1,15,20,4]</td>
+<td>0.003906</td>
+<td>-128</td>
+<td>Logistic 置信度</td>
+</tr>
+<tr>
+<td>T[25]</td>
+<td>[1,15,20,4]</td>
+<td>0.003918</td>
+<td>-128</td>
+<td>Quantize 置信度</td>
+</tr>
+<tr>
+<td>T[26]</td>
+<td>[1,15,20,1]</td>
+<td>0.130216</td>
+<td>73</td>
+<td>StridedSlice bbox</td>
+</tr>
+<tr>
+<td>T[27]</td>
+<td>[1,15,20,1]</td>
+<td>0.003906</td>
+<td>-128</td>
+<td>Logistic bbox</td>
+</tr>
+<tr>
+<td>T[28]</td>
+<td>[1,15,20,1]</td>
+<td>0.003918</td>
+<td>-128</td>
+<td>Quantize bbox</td>
+</tr>
+<tr>
+<td>T[29]</td>
+<td>[1,15,20,5]</td>
+<td>0.003918</td>
+<td>-128</td>
+<td>Concat 拼合输出</td>
+</tr>
+<tr>
+<td>T[30]</td>
+<td>[1,15,20,5]</td>
+<td>—</td>
+<td>—</td>
+<td>Dequantize 最终输出（float32）</td>
+</tr>
+</tbody></table>
+<h3 id="算子类型汇总"><a href="#算子类型汇总" class="headerlink" title="算子类型汇总"></a>算子类型汇总</h3><p>模型使用 16 个算子实例，但只定义了 <strong>7 种</strong>算子类型。多个同类算子共用同一个 <code>operator_codes</code> 条目，通过 <code>opcode_index</code> 引用：</p>
+<table>
+<thead>
+<tr>
+<th align="center">opcode_index</th>
+<th>BuiltinOperator</th>
+<th align="center">枚举值</th>
+<th align="center">实例数</th>
+<th>算子编号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">0</td>
+<td>CONV_2D</td>
+<td align="center">3</td>
+<td align="center">5</td>
+<td>Op[0,2,4,6,7]</td>
+</tr>
+<tr>
+<td align="center">1</td>
+<td>MAX_POOL_2D</td>
+<td align="center">17</td>
+<td align="center">3</td>
+<td>Op[1,3,5]</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>STRIDED_SLICE</td>
+<td align="center">45</td>
+<td align="center">2</td>
+<td>Op[8,11]</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td>LOGISTIC</td>
+<td align="center">14</td>
+<td align="center">2</td>
+<td>Op[9,12]</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td>QUANTIZE</td>
+<td align="center">114</td>
+<td align="center">2</td>
+<td>Op[10,13]</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td>CONCATENATION</td>
+<td align="center">2</td>
+<td align="center">1</td>
+<td>Op[14]</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td>DEQUANTIZE</td>
+<td align="center">6</td>
+<td align="center">1</td>
+<td>Op[15]</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="1-1-FlatBuffer-与-tflite-文件"><a href="#1-1-FlatBuffer-与-tflite-文件" class="headerlink" title="1.1 FlatBuffer 与 .tflite 文件"></a>1.1 FlatBuffer 与 .tflite 文件</h3><p>FlatBuffer 是 Google 开发的一种<strong>零拷贝序列化格式</strong>。传统序列化（JSON、XML、Protocol Buffers）需要先解析成内存结构才能使用，FlatBuffer 不需要——程序拿到二进制数据后，直接通过指针偏移就能访问任意字段，无需 malloc、无需反序列化。</p>
+<p>TFLite 模型文件（<code>.tflite</code>）就是用 FlatBuffer 编码的二进制文件。TFLM 选择它有三个原因：</p>
+<ol>
+<li><strong>零解析</strong>：不需要先解析再使用，直接拿到指针</li>
+<li><strong>零 malloc</strong>：不需要动态分配内存来存储解析结果</li>
+<li><strong>紧凑</strong>：没有额外开销，适合嵌入式设备</li>
+</ol>
+<p><strong>Schema 驱动</strong>：<code>.tflite</code> 的数据结构由 <code>schema.fbs</code> 定义，经 <code>flatc</code> 编译器生成 <code>schema_generated.h</code>（25000+ 行 C++ 代码）。应用代码调用的 <code>GetModel()</code> 就定义在其中（详见 1.5 节）。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">schema.fbs  ──(flatc)──→  schema_generated.h</span><br><span class="line">                               ↓</span><br><span class="line">                          GetModel(), Model::version(), ...</span><br></pre></td></tr></table></figure>
+
+<h4 id="tflite-文件的逻辑结构"><a href="#tflite-文件的逻辑结构" class="headerlink" title=".tflite 文件的逻辑结构"></a>.tflite 文件的逻辑结构</h4><p>示例模型（257,304 字节，schema v3c）的逻辑层次：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Model (根表)</span><br><span class="line">├── version = 3                    → schema 版本号</span><br><span class="line">├── operator_codes[]               → 算子类型列表（7 种，去重后）</span><br><span class="line">│   ├── [0] CONV_2D</span><br><span class="line">│   ├── [1] MAX_POOL_2D</span><br><span class="line">│   └── [2..6] STRIDED_SLICE, LOGISTIC, QUANTIZE, CONCATENATION, DEQUANTIZE</span><br><span class="line">├── subgraphs[]                    → 子图数组</span><br><span class="line">│   └── [0] 主子图</span><br><span class="line">│       ├── tensors[]              → 31 个张量描述</span><br><span class="line">│       ├── operators[]            → 16 个算子实例（按执行顺序）</span><br><span class="line">│       ├── inputs[] = [0]         → 模型输入 tensor 索引</span><br><span class="line">│       └── outputs[] = [30]       → 模型输出 tensor 索引</span><br><span class="line">├── buffers[]                      → 35 个数据块</span><br><span class="line">│   ├── [0] 空 (sentinel)</span><br><span class="line">│   ├── [1] 空 (T[0] 输入)</span><br><span class="line">│   ├── [2..15] 常量数据 (权重、偏置、StridedSlice 参数)</span><br><span class="line">│   ├── [16..31] 空 (激活值)</span><br><span class="line">│   └── [32..34] metadata 字符串</span><br><span class="line">└── metadata[]                     → 元数据</span><br></pre></td></tr></table></figure>
+
+<p>所有对象之间通过<strong>数组索引</strong>引用，而非内存指针。例如 <code>operators[0].inputs=[0,14,13]</code> 指向 <code>tensors[]</code> 数组，<code>tensors[14].buffer=15</code> 指向 <code>buffers[]</code> 数组。</p>
+<h3 id="1-2-Schema-详解"><a href="#1-2-Schema-详解" class="headerlink" title="1.2 Schema 详解"></a>1.2 Schema 详解</h3><h4 id="六个核心-table"><a href="#六个核心-table" class="headerlink" title="六个核心 table"></a>六个核心 table</h4><p>Schema 中定义了 6 个核心表，构成模型的完整描述：</p>
+<p><strong>Model（根表）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">table Model &#123;</span><br><span class="line">  version: uint                  → schema 版本号（当前 = 3）</span><br><span class="line">  operator_codes: [OperatorCode] → 算子类型表（去重后的）</span><br><span class="line">  subgraphs: [SubGraph]          → 子图数组（0号是主图）</span><br><span class="line">  description: string            → 描述</span><br><span class="line">  buffers: [Buffer]              → 数据块数组（权重、偏置）</span><br><span class="line">  metadata_buffer: [int]         → 元数据缓冲区索引（已弃用）</span><br><span class="line">  metadata: [Metadata]           → 元数据</span><br><span class="line">  signature_defs: [SignatureDef] → 签名定义</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>SubGraph（子图）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">table SubGraph &#123;</span><br><span class="line">  tensors: [Tensor]       → 该子图所有 tensor 的描述</span><br><span class="line">  inputs: [int]           → 输入 tensor 索引（如 [0]）</span><br><span class="line">  outputs: [int]          → 输出 tensor 索引（如 [30]）</span><br><span class="line">  operators: [Operator]   → 算子列表（按执行顺序排列）</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Operator（算子实例）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">table Operator &#123;</span><br><span class="line">  opcode_index: uint            → 指向 operator_codes[] 的索引</span><br><span class="line">  inputs: [int]                 → 输入 tensor 索引列表（-1 表示可选/无）</span><br><span class="line">  outputs: [int]                → 输出 tensor 索引列表</span><br><span class="line">  builtin_options: BuiltinOptions → 算子参数（联合体，不同算子不同类型）</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Tensor（张量描述）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">table Tensor &#123;</span><br><span class="line">  shape: [int]                        → 形状 [batch, height, width, channels]</span><br><span class="line">  type: TensorType                    → 类型 (FLOAT32=0, INT8=9, ...)</span><br><span class="line">  buffer: uint                        → 指向 buffers[] 的索引</span><br><span class="line">  quantization: QuantizationParameters → 量化参数</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>OperatorCode（算子类型）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">table OperatorCode &#123;</span><br><span class="line">  deprecated_builtin_code: int    → 已弃用，向后兼容</span><br><span class="line">  custom_code: string             → 自定义算子名</span><br><span class="line">  version: int                    → 算子版本号</span><br><span class="line">  builtin_code: BuiltinOperator   → 算子枚举 (CONV_2D=3, MAX_POOL_2D=17, ...)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Buffer（数据块）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">table Buffer &#123;</span><br><span class="line">  data: [ubyte] (force_align: 16);  → 权重、偏置等常量数据（向量自带长度前缀）</span><br><span class="line">  offset: ulong;                    → 大模型(&gt;2GB)使用，数据在 FlatBuffer 外部</span><br><span class="line">  size: ulong;                      → 大模型专用</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>示例模型只用 <code>data</code> 字段，二进制中分两种：</p>
+<ul>
+<li><strong>非空</strong>：<code>data</code> 指向 <code>[length:4B][byte₀]...[byteₙ]</code> 向量，如 buffers[15] 存放 Conv1 filter 288 字节</li>
+<li><strong>空</strong>：vtable 中 <code>data</code> 偏移为 0，<code>data()</code> 返回 <code>nullptr</code>，如 buffers[16]（Conv1 output 无预存数据）</li>
+</ul>
+<p>多个空 Buffer 共享同一个最小 vtable（FlatBuffer 去重优化）。</p>
+<h4 id="Tensor-buffer-字段与数据来源"><a href="#Tensor-buffer-字段与数据来源" class="headerlink" title="Tensor.buffer 字段与数据来源"></a>Tensor.buffer 字段与数据来源</h4><p><code>Tensor.buffer</code> 是 <code>buffers[]</code> 数组的索引，决定该 tensor 的数据存在哪里。运行时通过 <code>GetFlatbufferTensorBuffer()</code> 检查对应 buffer 是否包含实际数据：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span>* <span class="title">GetFlatbufferTensorBuffer</span><span class="params">(tensor, buffers)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span>* buffer = (*buffers)[tensor.<span class="built_in">buffer</span>()];</span><br><span class="line">    <span class="keyword">if</span> (buffer &amp;&amp; buffer-&gt;<span class="built_in">data</span>() &amp;&amp; buffer-&gt;<span class="built_in">data</span>()-&gt;<span class="built_in">size</span>() &gt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">const_cast</span>&lt;<span class="type">void</span>*&gt;(buffer-&gt;<span class="built_in">data</span>()-&gt;<span class="built_in">data</span>());</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意：判断依据是 <strong>buffer 中是否有实际数据</strong>（<code>size() &gt; 0</code>），而非 buffer 索引本身。</p>
+<p>两种情况：</p>
+<table>
+<thead>
+<tr>
+<th align="center">buffer 数据状态</th>
+<th>初始化后 data 指针</th>
+<th>推理时处理</th>
+<th align="center">参与内存规划</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">非空（有权重字节）</td>
+<td>直接指向 .tflite 文件内数据</td>
+<td>零拷贝，推理时只读</td>
+<td align="center">否</td>
+</tr>
+<tr>
+<td align="center">空（size&#x3D;0 或不存在）</td>
+<td><code>nullptr</code></td>
+<td><code>CommitPlan()</code> 在 Arena head 区分配地址（第 4 篇）</td>
+<td align="center">是</td>
+</tr>
+</tbody></table>
+<p>示例模型中，转换器为每个 tensor 分配了唯一的 buffer 索引（1~31），没有 tensor 使用默认的 buffer&#x3D;0：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">T[0]  输入         buffer=1  → buffers[1]  空    → data=nullptr → Arena 分配</span><br><span class="line">T[14] Conv1 filter buffer=15 → buffers[15] 288B  → data 直接指向 .tflite 文件</span><br><span class="line">T[13] Conv1 bias   buffer=14 → buffers[14] 128B  → data 直接指向 .tflite 文件</span><br><span class="line">T[15] Conv1 output buffer=16 → buffers[16] 空    → data=nullptr → Arena 分配</span><br></pre></td></tr></table></figure>
+
+<p>权重 tensor 在初始化阶段就拿到了有效指针（零拷贝），不需要参与后续的内存规划。只有 buffer 为空的 tensor 才需要在 Arena 中分配空间。</p>
+<h4 id="算子参数——BuiltinOptions-联合体"><a href="#算子参数——BuiltinOptions-联合体" class="headerlink" title="算子参数——BuiltinOptions 联合体"></a>算子参数——BuiltinOptions 联合体</h4><p><code>Operator.builtin_options</code> 是联合体（union），不同算子指向不同参数表：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Conv2DOptions &#123;</span><br><span class="line">  padding: Padding                 → SAME / VALID</span><br><span class="line">  stride_w, stride_h: int          → 步幅</span><br><span class="line">  fused_activation_function         → NONE / RELU / RELU6</span><br><span class="line">  dilation_w/h_factor: int          → 膨胀系数</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Pool2DOptions &#123;</span><br><span class="line">  padding, stride_w, stride_h</span><br><span class="line">  filter_width, filter_height</span><br><span class="line">  fused_activation_function</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">StridedSliceOptions &#123;</span><br><span class="line">  begin_mask, end_mask, ellipsis_mask, new_axis_mask, shrink_axis_mask: int</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="量化参数"><a href="#量化参数" class="headerlink" title="量化参数"></a>量化参数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">QuantizationParameters &#123;</span><br><span class="line">  scale: [float]          → 量化比例因子（per-channel 时每个通道一个）</span><br><span class="line">  zero_point: [long]      → 零点偏移</span><br><span class="line">  quantized_dimension: int → 按哪个维度量化（通常=3，通道维度）</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">反量化公式: float_value = scale × (int8_value - zero_point)</span><br><span class="line">量化公式:   int8_value = round(float_value / scale + zero_point)</span><br></pre></td></tr></table></figure>
+
+<h4 id="索引引用追踪——以-Conv1-为例"><a href="#索引引用追踪——以-Conv1-为例" class="headerlink" title="索引引用追踪——以 Conv1 为例"></a>索引引用追踪——以 Conv1 为例</h4><p><code>operators[0]</code> 是第一个 Conv2D 算子，通过索引串联所有相关对象：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">operators[0] = &#123; opcode_index=0, inputs=[0,14,13], outputs=[15] &#125;</span><br><span class="line">                 │                 │                   │</span><br><span class="line">                 │                 │                   └─ 输出 → T[15] &#123;Conv1 output, buffer=16→空&#125;</span><br><span class="line">                 │                 │</span><br><span class="line">                 │                 ├─ inputs[0] → T[0]  &#123;输入图像, buffer=1→空&#125;</span><br><span class="line">                 │                 ├─ inputs[1] → T[14] &#123;Conv1 filter, buffer=15→288B&#125;</span><br><span class="line">                 │                 └─ inputs[2] → T[13] &#123;Conv1 bias, buffer=14→128B&#125;</span><br><span class="line">                 │</span><br><span class="line">                 └─ opcode_index=0 → operator_codes[0] = CONV_2D</span><br></pre></td></tr></table></figure>
+
+<p>注意 inputs 的顺序：<code>[input, filter, bias]</code>。这是 Conv2D 算子的固定约定，定义在 schema 的算子签名中。整个模型中没有任何内存地址&#x2F;指针——所有引用都是数组下标。</p>
+<h3 id="1-3-FlatBuffer-二进制格式——导航规则"><a href="#1-3-FlatBuffer-二进制格式——导航规则" class="headerlink" title="1.3 FlatBuffer 二进制格式——导航规则"></a>1.3 FlatBuffer 二进制格式——导航规则</h3><p>掌握了逻辑结构和 schema 之后，本节揭示这些内容在二进制中是如何编码的。理解这一层才能看懂源码中的 <code>GetRoot</code> &#x2F; <code>GetField</code> &#x2F; <code>GetPointer</code>。</p>
+<h4 id="导航的三个基本操作"><a href="#导航的三个基本操作" class="headerlink" title="导航的三个基本操作"></a>导航的三个基本操作</h4><p>FlatBuffer 的所有数据访问只有 3 种操作：</p>
+<p><strong>操作 1：soffset 向后跳（减法）——找 vtable</strong></p>
+<p>每个表的前 4 字节都是 <code>soffset_t</code>（有符号 32 位），指向该表的 vtable：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// flatbuffers/table.h</span></span><br><span class="line"><span class="function"><span class="type">const</span> <span class="type">uint8_t</span> *<span class="title">GetVTable</span><span class="params">()</span> <span class="type">const</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> data_ - <span class="built_in">ReadScalar</span>&lt;<span class="type">soffset_t</span>&gt;(data_);   <span class="comment">// 减法，向后跳</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>操作 2：uoffset 向前跳（加法）——找根表、读引用字段</strong></p>
+<p>用于定位根表和所有引用类型字段（string、vector、子表）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 找根表 — flatbuffers/buffer.h</span></span><br><span class="line">buf + *(<span class="type">uoffset_t</span>*)buf                              <span class="comment">// 加法，向前跳</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 读引用字段 — flatbuffers/table.h</span></span><br><span class="line"><span class="keyword">auto</span> p = data_ + field_offset;</span><br><span class="line">p + *(<span class="type">uoffset_t</span>*)p                                   <span class="comment">// 加法，向前跳</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>操作 3：直接读取（不跳）——读标量字段</strong></p>
+<p><code>uint</code>、<code>int</code>、<code>float</code>、<code>bool</code>、<code>enum</code> 等标量在表中内联存储，直接读取：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// flatbuffers/table.h</span></span><br><span class="line"><span class="built_in">ReadScalar</span>&lt;T&gt;(data_ + field_offset)                  <span class="comment">// 直接读值</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="vtable——字段寻址表"><a href="#vtable——字段寻址表" class="headerlink" title="vtable——字段寻址表"></a>vtable——字段寻址表</h4><p>每个 FlatBuffer 表都有一个 <strong>vtable</strong>（虚表），它告诉运行时每个字段在表数据中的偏移位置。</p>
+<p>vtable 布局：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[vtable_size: uint16][object_size: uint16][field 0 偏移: uint16][field 1 偏移: uint16]...</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>vtable_size</code>：vtable 自身大小（字节）</li>
+<li><code>object_size</code>：表数据大小（字节）</li>
+<li>后面每 2 字节是一个字段的偏移，<strong>顺序 &#x3D; schema 声明顺序</strong></li>
+<li>偏移 &#x3D; 0 表示该字段不存在（用于向前兼容；也用于标量字段值为默认值时省略存储）</li>
+</ul>
+<h4 id="谁决定用哪种操作"><a href="#谁决定用哪种操作" class="headerlink" title="谁决定用哪种操作"></a>谁决定用哪种操作</h4><table>
+<thead>
+<tr>
+<th align="center">决定者</th>
+<th align="left">规则</th>
+<th align="left">依据</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>格式规范</strong>（源码硬编码）</td>
+<td align="left">每个表前 4 字节 &#x3D; soffset，固定减法找 vtable</td>
+<td align="left"><code>GetVTable()</code> 写死的</td>
+</tr>
+<tr>
+<td align="center"><strong>schema 字段类型</strong>（flatc 生成代码选择）</td>
+<td align="left">标量 → <code>GetField</code> 直接读；引用 → <code>GetPointer</code> 加法跳</td>
+<td align="left">flatc 根据 <code>.fbs</code> 生成代码</td>
+</tr>
+</tbody></table>
+<p>同一块 4 字节数据，schema 说它是 <code>uint</code> 就当标量直接读，说它是 <code>[Buffer]</code> 就当 uoffset 跳转。<strong>二进制本身不标记类型——解读方式完全由 schema 决定</strong>。</p>
+<h4 id="核心规则总结"><a href="#核心规则总结" class="headerlink" title="核心规则总结"></a>核心规则总结</h4><table>
+<thead>
+<tr>
+<th align="center">#</th>
+<th>规则</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td>soffset 永远用减法</td>
+<td align="left">表前 4 字节，向回找 vtable</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td>uoffset 永远用加法</td>
+<td align="left">根表定位、引用字段跳转</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td>标量直接读不跳</td>
+<td align="left">uint&#x2F;int&#x2F;float 等在表中内联存储</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td>vtable 索引 &#x3D; schema 声明顺序</td>
+<td align="left">field 0 对应第一个声明的字段</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td>vtable 偏移 &#x3D; 0 表示字段不存在</td>
+<td align="left">向前兼容 + 默认值省略</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td>二进制不标记类型</td>
+<td align="left">同样的 4 字节，schema 决定读法</td>
+</tr>
+</tbody></table>
+<h3 id="1-4-字节级验证：用真实模型走一遍"><a href="#1-4-字节级验证：用真实模型走一遍" class="headerlink" title="1.4 字节级验证：用真实模型走一遍"></a>1.4 字节级验证：用真实模型走一遍</h3><p>用示例模型（257,304 字节）的真实二进制数据逐步验证导航规则。<br>buf 为 .tflite 模型实际二进制数据数组。</p>
+<p><strong>Step 1：找根表（uoffset 加法）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">buf[0..3]:  20 00 00 00     uoffset = 32</span><br><span class="line">            │</span><br><span class="line">            │  buf + 32</span><br><span class="line">            ▼</span><br><span class="line">buf[32]:    Model 表数据起始</span><br></pre></td></tr></table></figure>
+
+<p><strong>Step 2：找 vtable（soffset 减法）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">buf[32..35]: 14 00 00 00    soffset = 20</span><br><span class="line">             │</span><br><span class="line">             │  buf[32] - 20</span><br><span class="line">             ▼</span><br><span class="line">buf[12]:     vtable 起始</span><br></pre></td></tr></table></figure>
+
+<p><strong>Step 3：读取 vtable</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">buf[12..31] = vtable (20 字节)</span><br><span class="line"></span><br><span class="line">偏移   字节      含义</span><br><span class="line">[12]   14 00     vtable_size = 20</span><br><span class="line">[14]   20 00     object_size = 32</span><br><span class="line">[16]   1c 00     field 0 (version)          偏移 = 28</span><br><span class="line">[18]   18 00     field 1 (operator_codes)   偏移 = 24</span><br><span class="line">[20]   14 00     field 2 (subgraphs)        偏移 = 20</span><br><span class="line">[22]   10 00     field 3 (description)      偏移 = 16</span><br><span class="line">[24]   0c 00     field 4 (buffers)          偏移 = 12</span><br><span class="line">[26]   00 00     field 5 (metadata_buffer)  偏移 = 0 → 不存在</span><br><span class="line">[28]   08 00     field 6 (metadata)         偏移 = 8</span><br><span class="line">[30]   04 00     field 7 (signature_defs)   偏移 = 4</span><br></pre></td></tr></table></figure>
+
+<p>vtable 中的 field 索引 &#x3D; schema 声明顺序：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">table Model &#123;                                    // schema.fbs</span><br><span class="line">  version:uint;                  ← field 0      // 标量</span><br><span class="line">  operator_codes:[OperatorCode]; ← field 1      // 引用</span><br><span class="line">  subgraphs:[SubGraph];          ← field 2      // 引用</span><br><span class="line">  description:string;            ← field 3      // 引用</span><br><span class="line">  buffers:[Buffer];              ← field 4      // 引用</span><br><span class="line">  metadata_buffer:[int];         ← field 5      // 引用 (不存在)</span><br><span class="line">  metadata:[Metadata];           ← field 6      // 引用</span><br><span class="line">  signature_defs:[SignatureDef]; ← field 7      // 引用</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Step 4：读取各字段</strong></p>
+<p>标量字段——直接读：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Field 0: version (uint, 标量)</span><br><span class="line">  位置: buf[32 + 28] = buf[60]</span><br><span class="line">  数据: 03 00 00 00</span><br><span class="line">  → version = 3</span><br></pre></td></tr></table></figure>
+
+<p>引用字段——uoffset 加法跳转：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Field 4: buffers ([Buffer], 引用)</span><br><span class="line">  位置: buf[32 + 12] = buf[44]</span><br><span class="line">  数据: 94 00 00 00 → uoffset = 148</span><br><span class="line">  跳转: buf[44 + 148] = buf[192]</span><br><span class="line">  → buffers 向量在 buf[192]</span><br><span class="line"></span><br><span class="line">Field 6: metadata ([Metadata], 引用)</span><br><span class="line">  位置: buf[32 + 8] = buf[40]</span><br><span class="line">  数据: 1c 00 00 00 → uoffset = 28</span><br><span class="line">  跳转: buf[40 + 28] = buf[68]</span><br><span class="line">  → metadata 向量在 buf[68]</span><br><span class="line"></span><br><span class="line">Field 7: signature_defs ([SignatureDef], 引用)</span><br><span class="line">  位置: buf[32 + 4] = buf[36]</span><br><span class="line">  数据: 1c 00 00 00 → uoffset = 28</span><br><span class="line">  跳转: buf[36 + 28] = buf[64]</span><br><span class="line">  → signature_defs 向量在 buf[64]</span><br></pre></td></tr></table></figure>
+
+<p><strong>Step 5：读取向量</strong></p>
+<p>到达向量后，前 4 字节是长度，后面是元素：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">signature_defs 向量 (buf[64]):</span><br><span class="line">  [64..67]: 00 00 00 00 → length = 0（空）</span><br><span class="line"></span><br><span class="line">metadata 向量 (buf[68]):</span><br><span class="line">  [68..71]: 03 00 00 00 → length = 3</span><br><span class="line">  [72..75]: 54 00 00 00 → metadata[0] uoffset=84 → buf[156]</span><br><span class="line">  [76..79]: 2c 00 00 00 → metadata[1] uoffset=44 → buf[120]</span><br><span class="line">  [80..83]: 04 00 00 00 → metadata[2] uoffset=4  → buf[84]</span><br><span class="line"></span><br><span class="line">buffers 向量 (buf[192]):</span><br><span class="line">  [192..195]: 23 00 00 00 → length = 35</span><br><span class="line">  [196..335]: 35 × 4字节 uoffset → 每个 Buffer 子表</span><br></pre></td></tr></table></figure>
+
+<p><strong>Step 6：子表（Metadata）——规则完全相同</strong></p>
+<p>Schema 定义：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">table Metadata &#123;</span><br><span class="line">  name: string;    ← field 0  (引用，uoffset)</span><br><span class="line">  buffer: uint;    ← field 1  (标量，直接读)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">metadata[2] 在 buf[84]:</span><br><span class="line">  [84..87]: 30 4a fc ff → soffset = -243152 (有符号)</span><br><span class="line">            │</span><br><span class="line">            │  buf[84] - (-243152) = buf[243236]</span><br><span class="line">            ▼</span><br><span class="line">            vtable（3个 Metadata 表共享此 vtable）</span><br><span class="line"></span><br><span class="line">  vtable 映射:</span><br><span class="line">    field 0 (name:string)   → 偏移 = 8</span><br><span class="line">    field 1 (buffer:uint)   → 偏移 = 4</span><br><span class="line"></span><br><span class="line">  读取:</span><br><span class="line">    field 1 (buffer, 标量): buf[84+4] = buf[88] = 22 00 00 00 → 34</span><br><span class="line">    field 0 (name, 引用):   buf[84+8] = buf[92] = 04 00 00 00</span><br><span class="line">                            uoffset=4 → buf[92+4] = buf[96]</span><br><span class="line">                            → &quot;CONVERSION_METADATA&quot;</span><br></pre></td></tr></table></figure>
+
+<p>三个 Metadata 条目：</p>
+<table>
+<thead>
+<tr>
+<th align="center">条目</th>
+<th align="center">name</th>
+<th align="center">buffer 索引</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">[0]</td>
+<td align="center">min_runtime_version</td>
+<td align="center">32</td>
+</tr>
+<tr>
+<td align="center">[1]</td>
+<td align="center">min_runtime_version</td>
+<td align="center">33</td>
+</tr>
+<tr>
+<td align="center">[2]</td>
+<td align="center">CONVERSION_METADATA</td>
+<td align="center">34</td>
+</tr>
+</tbody></table>
+<p>注意：Metadata 的 vtable 中 field 0 (name) 偏移 &#x3D; 8、field 1 (buffer) 偏移 &#x3D; 4。物理存储顺序与 schema 声明顺序不同，但 vtable 正确映射了 field index → 物理偏移。FlatBuffer 编译器可以自由安排字段在表数据中的物理位置（通常为了对齐优化）。</p>
+<h4 id="完整导航流程图"><a href="#完整导航流程图" class="headerlink" title="完整导航流程图"></a>完整导航流程图</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">buf[0]: uoffset=32</span><br><span class="line">    │</span><br><span class="line">    │ uoffset 加法</span><br><span class="line">    ▼</span><br><span class="line">buf[32]: Model 表  (soffset=20 → vtable 在 buf[32-20]=buf[12]，低地址方向)</span><br><span class="line">    │</span><br><span class="line">    │  vtable (buf[12]) 告诉每个字段的偏移位置:</span><br><span class="line">    │</span><br><span class="line">    ├── buf[60] field 0 (version)     → 标量，直接读 → 3</span><br><span class="line">    │</span><br><span class="line">    ├── buf[56] field 1 (op_codes)    → uoffset=257084 ──加法──→ buf[257140]</span><br><span class="line">    │</span><br><span class="line">    ├── buf[52] field 2 (subgraphs)   → uoffset=242224 ──加法──→ buf[242276]</span><br><span class="line">    │</span><br><span class="line">    ├── buf[48] field 3 (description) → uoffset=242208 ──加法──→ buf[242256]</span><br><span class="line">    │</span><br><span class="line">    ├── buf[44] field 4 (buffers)     → uoffset=148 ──加法──→ buf[192]</span><br><span class="line">    │                                                          │</span><br><span class="line">    │                                                          ▼</span><br><span class="line">    │                                                    len=35, 35个Buffer子表</span><br><span class="line">    │</span><br><span class="line">    ├── field 5 (metadata_buffer)     → 偏移=0, 不存在</span><br><span class="line">    │</span><br><span class="line">    ├── buf[40] field 6 (metadata)    → uoffset=28 ──加法──→ buf[68]</span><br><span class="line">    │                                                          │</span><br><span class="line">    │                                                          ▼</span><br><span class="line">    │                                                    len=3, 3个Metadata子表</span><br><span class="line">    │</span><br><span class="line">    └── buf[36] field 7 (sig_defs)    → uoffset=28 ──加法──→ buf[64]</span><br><span class="line">                                                             │</span><br><span class="line">                                                             ▼</span><br><span class="line">                                                       len=0, 空向量</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-5-代码中的模型加载实践"><a href="#1-5-代码中的模型加载实践" class="headerlink" title="1.5 代码中的模型加载实践"></a>1.5 代码中的模型加载实践</h3><h4 id="GetModel-——零拷贝的本质"><a href="#GetModel-——零拷贝的本质" class="headerlink" title="GetModel()——零拷贝的本质"></a>GetModel()——零拷贝的本质</h4><p><code>GetModel()</code> 定义在 <code>schema_generated.h</code>（由 <code>flatc</code> 编译器自动生成）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">const</span> tflite::Model *<span class="title">GetModel</span><span class="params">(<span class="type">const</span> <span class="type">void</span> *buf)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> ::flatbuffers::<span class="built_in">GetRoot</span>&lt;tflite::Model&gt;(buf);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>flatbuffers::GetRoot&lt;T&gt;()</code> 的实际实现：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// flatbuffers/buffer.h</span></span><br><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; T *<span class="title">GetMutableRoot</span><span class="params">(<span class="type">void</span> *buf)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!buf) <span class="keyword">return</span> <span class="literal">nullptr</span>;     <span class="comment">// 空指针保护</span></span><br><span class="line">  <span class="built_in">EndianCheck</span>();                 <span class="comment">// 运行时 assert 校验字节序</span></span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">reinterpret_cast</span>&lt;T *&gt;(</span><br><span class="line">      <span class="built_in">reinterpret_cast</span>&lt;<span class="type">uint8_t</span> *&gt;(buf) +</span><br><span class="line">      <span class="built_in">EndianScalar</span>(*<span class="built_in">reinterpret_cast</span>&lt;<span class="type">uoffset_t</span> *&gt;(buf)));  <span class="comment">// buf[0..3] 是 offset</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>结合 1.4 节 Step 1 的验证：读取 <code>buf[0..3]</code> &#x3D; 32（uoffset），然后 <code>buf + 32</code> 得到 Model 表指针。</p>
+<p><strong>关键</strong>：没有任何内存拷贝、没有任何解析、没有任何构造。<code>Model*</code> 直接指向原始 buffer。</p>
+<h4 id="为什么需要对齐"><a href="#为什么需要对齐" class="headerlink" title="为什么需要对齐"></a>为什么需要对齐</h4><p>在 ARM Cortex-M 上，如果 FlatBuffer 数据没有按 4&#x2F;8 字节对齐，访问时会触发 UNALIGNED fault。因此实际使用中需要将模型数据拷贝到对齐的缓冲区：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将模型数据复制到对齐的缓冲区（解决 flash 中不对齐的问题）</span></span><br><span class="line"><span class="built_in">memcpy</span>(aligned_model_buffer, model_data_ptr, model_data_len);</span><br><span class="line">model = tflite::<span class="built_in">GetModel</span>(aligned_model_buffer);</span><br></pre></td></tr></table></figure>
+
+<p><code>aligned_model_buffer</code> 通常用 <code>__attribute__((aligned(64)))</code> 保证 64 字节对齐。</p>
+<h4 id="版本校验"><a href="#版本校验" class="headerlink" title="版本校验"></a>版本校验</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (model-&gt;<span class="built_in">version</span>() != TFLITE_SCHEMA_VERSION) &#123;</span><br><span class="line">    <span class="comment">// 版本不匹配，字段偏移可能不同</span></span><br><span class="line">    <span class="keyword">return</span> error;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>FlatBuffer schema 有版本号。<code>.tflite</code> 文件由某版本的 <code>flatc</code> 编译器生成，<code>TFLITE_SCHEMA_VERSION</code> 是 TFLM 库编译时的版本。两者必须匹配。</p>
+<h4 id="零拷贝的类型转换技巧"><a href="#零拷贝的类型转换技巧" class="headerlink" title="零拷贝的类型转换技巧"></a>零拷贝的类型转换技巧</h4><p>FlatBuffer 的 <code>Vector&lt;int32_t&gt;</code> 和 TFLite 运行时的 <code>TfLiteIntArray</code> 内存布局相同：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tflite/micro/flatbuffer_utils.cc</span></span><br><span class="line"><span class="function">TfLiteIntArray* <span class="title">FlatBufferVectorToTfLiteTypeArray</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">const</span> flatbuffers::Vector&lt;<span class="type">int32_t</span>&gt;* flatbuffer_array)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 小端机器上，TfLiteIntArray 和 Vector&lt;int32_t&gt; 内存布局一致</span></span><br><span class="line">    <span class="comment">// 直接 reinterpret_cast，零拷贝！</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">const_cast</span>&lt;TfLiteIntArray*&gt;(</span><br><span class="line">        <span class="built_in">reinterpret_cast</span>&lt;<span class="type">const</span> TfLiteIntArray*&gt;(flatbuffer_array));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FlatBuffer Vector&lt;int32_t&gt;:  [length:4bytes][data0][data1][...]</span><br><span class="line">TfLiteIntArray:              [size:int][data[0]][data[1]][...]</span><br></pre></td></tr></table></figure>
+
+<p>两者在内存中完全一致，直接强转。</p>
+<h4 id="模型加载阶段的完整流程图"><a href="#模型加载阶段的完整流程图" class="headerlink" title="模型加载阶段的完整流程图"></a>模型加载阶段的完整流程图</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">aligned_model_buffer (64B 对齐缓冲区)</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">tflite::GetModel(buffer)</span><br><span class="line">       │</span><br><span class="line">       ▼ flatbuffers::GetRoot&lt;Model&gt;()</span><br><span class="line">       │ 读取 buffer[0:4] 作为 offset</span><br><span class="line">       │ 返回 (buffer + offset) 强转为 Model*</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">model-&gt;version() 检查</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">model 指针就绪，后续传给 MicroInterpreter 构造函数</span><br></pre></td></tr></table></figure>
+
+<p><strong>模型加载阶段零动态内存分配，零拷贝，零解析</strong>。真正的解析发生在后续的 AllocateTensors() 阶段。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2026/05/18/tfite-load-model/" title="TFLite Micro 深度剖析（一）：模型加载——FlatBuffer 零拷贝的秘密（基于AI协助总结）">http://fengxun2017.github.io/2026/05/18/tfite-load-model/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/04/27/zephyr-boot-progress/" rel="prev" title="深入理解 Zephyr RTOS 启动流程：从上电复位到 main 函数的完整追踪（基于AI协助总结）">
+                  <i class="fa fa-chevron-left"></i> 深入理解 Zephyr RTOS 启动流程：从上电复位到 main 函数的完整追踪（基于AI协助总结）
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">757k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">15:46</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
