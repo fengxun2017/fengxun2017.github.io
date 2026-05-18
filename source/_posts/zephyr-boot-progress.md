@@ -1578,7 +1578,7 @@ GCC 内联汇编占位符 `%0` 对应输入约束 `"r"(_main)`。保存到 r4 �
 
 ##### 7.2.5.1 z_thread_entry — 线程的真正入口
 
-上面的流程图以 `z_thread_entry` 结尾， main 线程的真正执行从 `z_thread_entry` **内部**开始。它不是架构相关的汇编代码，而是一个**通用的 C 函数**（`lib/os/thread_entry.c`），所有架构、所有线程都经过它：
+main 线程的真正执行从 `z_thread_entry` **内部**开始。它不是架构相关的汇编代码，而是一个**通用的 C 函数**（`lib/os/thread_entry.c`），所有架构、所有线程都经过它：
 
 ```c
 // lib/os/thread_entry.c
