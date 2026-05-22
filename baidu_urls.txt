@@ -1,5 +1,5 @@
+http://fengxun2017.github.io/2026/05/22/tfite-operator_registration/
 http://fengxun2017.github.io/2026/05/18/tfite-load-model/
 http://fengxun2017.github.io/2026/04/27/zephyr-boot-progress/
 http://fengxun2017.github.io/2026/04/20/zephyr-compile-progress/
 http://fengxun2017.github.io/2026/04/07/stm32h747-bottle-detector/
-http://fengxun2017.github.io/2026/03/09/stm32h747-DMA2D/

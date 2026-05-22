@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文是 TFLite Micro 内部实现深度剖析系列的第 2 篇。主要介绍 TFLite Micro 的模型算子注册相关内容">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TFLite Micro 深度剖析（二）：算子注册——从类型编号到计算函数">
+<meta property="og:url" content="http://fengxun2017.github.io/2026/05/22/tfite-operator_registration/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="本文是 TFLite Micro 内部实现深度剖析系列的第 2 篇。主要介绍 TFLite Micro 的模型算子注册相关内容">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-05-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-22T15:08:29.535Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2026/05/22/tfite-operator_registration/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2026/05/22/tfite-operator_registration/","path":"2026/05/22/tfite-operator_registration/","title":"TFLite Micro 深度剖析（二）：算子注册——从类型编号到计算函数"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>TFLite Micro 深度剖析（二）：算子注册——从类型编号到计算函数 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E7%AE%97%E5%AD%90%E6%B3%A8%E5%86%8C%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">1.1 为什么需要算子注册？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-TFLMRegistration%E2%80%94%E2%80%94%E7%AE%97%E5%AD%90%E7%9A%84%E2%80%9D%E8%BA%AB%E4%BB%BD%E8%AF%81%E2%80%9D"><span class="nav-number">2.</span> <span class="nav-text">1.2 TFLMRegistration——算子的”身份证”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-MicroMutableOpResolver%E2%80%94%E2%80%94%E6%B3%A8%E5%86%8C%E5%AE%B9%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">1.3 MicroMutableOpResolver——注册容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-AddConv2D-%E7%9A%84%E5%AE%8C%E6%95%B4%E9%93%BE%E8%B7%AF"><span class="nav-number">4.</span> <span class="nav-text">1.4 AddConv2D() 的完整链路</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9ARegister-CONV-2D-INT8-%E7%94%9F%E6%88%90-TFLMRegistration"><span class="nav-number">4.1.</span> <span class="nav-text">第一步：Register_CONV_2D_INT8() 生成 TFLMRegistration</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9AAddBuiltin-%E5%AD%98%E5%85%A5%E6%95%B0%E7%BB%84"><span class="nav-number">4.2.</span> <span class="nav-text">第二步：AddBuiltin() 存入数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E6%95%B0%E8%A7%A3%E6%9E%90%E5%87%BD%E6%95%B0%EF%BC%9AParseConv2D"><span class="nav-number">4.3.</span> <span class="nav-text">参数解析函数：ParseConv2D</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-CMSIS-NN-%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F%E4%B8%A2%E5%A4%B1%E7%9A%84%E9%99%B7%E9%98%B1"><span class="nav-number">5.</span> <span class="nav-text">1.5 CMSIS-NN 硬件加速丢失的陷阱</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-%E7%A1%AC%E4%BB%B6%E5%8A%A0%E9%80%9F%E7%9A%84%E5%BA%95%E5%B1%82%E6%9C%BA%E5%88%B6"><span class="nav-number">6.</span> <span class="nav-text">1.6 硬件加速的底层机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cortex-M7-DSP-%E7%9A%84%E6%A0%B8%E5%BF%83%E6%8C%87%E4%BB%A4"><span class="nav-number">6.1.</span> <span class="nav-text">Cortex-M7 DSP 的核心指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DSP-%E6%8C%87%E4%BB%A4%E7%9A%84%E5%AF%84%E5%AD%98%E5%99%A8%E4%BD%BF%E7%94%A8"><span class="nav-number">6.2.</span> <span class="nav-text">DSP 指令的寄存器使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DSP-%E5%8A%A0%E9%80%9F%E5%9B%A0%E7%B4%A0%E5%88%86%E6%9E%90"><span class="nav-number">6.3.</span> <span class="nav-text">DSP 加速因素分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%B4%E9%AB%98%E6%80%A7%E8%83%BD%E8%B7%AF%E5%BE%84%EF%BC%9AHelium-%E4%B8%8E-NEON"><span class="nav-number">6.4.</span> <span class="nav-text">更高性能路径：Helium 与 NEON</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-%E6%B3%A8%E5%86%8C%E9%98%B6%E6%AE%B5%E5%AE%8C%E6%95%B4%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">7.</span> <span class="nav-text">1.7 注册阶段完整流程图</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">121</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2026/05/22/tfite-operator_registration/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="TFLite Micro 深度剖析（二）：算子注册——从类型编号到计算函数 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TFLite Micro 深度剖析（二）：算子注册——从类型编号到计算函数
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-05-22 00:00:00" itemprop="dateCreated datePublished" datetime="2026-05-22T00:00:00+08:00">2026-05-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/tflite/" itemprop="url" rel="index"><span itemprop="name">tflite</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>11k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>13 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+本文是 TFLite Micro 内部实现深度剖析系列的第 2 篇。主要介绍 TFLite Micro 的模型算子注册相关内容
+</center>
+<span id="more"></span>
+
+<hr>
+<p><strong>示例模型的完整参考数据见</strong><a href="https://fengxun2017.github.io/2026/05/18/tfite-load-model">第1篇前置信息</a>。</p>
+<br>
+
+<h3 id="1-1-为什么需要算子注册？"><a href="#1-1-为什么需要算子注册？" class="headerlink" title="1.1 为什么需要算子注册？"></a>1.1 为什么需要算子注册？</h3><p><code>.tflite</code> 文件里存的是模型的结构和权重数据（FlatBuffer 编码）。模型中的每个算子（Conv2D、MaxPool、Relu 等）只记录了<strong>类型编号</strong>和<strong>参数</strong>（如步长、padding），但没有记录<strong>怎么计算</strong>。</p>
+<p>这就像一份建筑图纸——图纸标注了”这里要装一扇门”（类型&#x3D;门，参数&#x3D;宽80cm、高2m），但<strong>怎么做门</strong>、<strong>用什么材料</strong>，图纸不管。施工队需要自己准备”门的安装方法”。</p>
+<p>TFLM 也是一样。<code>.tflite</code> 文件说”第 0 个算子是 Conv2D，步长 1x1，padding SAME”，但 Conv2D 的实际计算代码不在文件里——<strong>需要你在代码中手动注册</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">.tflite 文件只存:               代码中需要注册:</span><br><span class="line">┌─────────────────┐            ┌──────────────────────────────┐</span><br><span class="line">│ operator_codes: │            │ resolver.AddConv2D(...)      │</span><br><span class="line">│   [0] CONV_2D   │  --匹配--&gt; │   → EvalInt8() 计算函数       │</span><br><span class="line">│   [1] MAX_POOL  │            │                              │</span><br><span class="line">│   ...           │            │ resolver.AddMaxPool2D(...)   │</span><br><span class="line">│                 │            │   → EvalInt8() 计算函数       │</span><br><span class="line">│ operators[0]:   │            │                              │</span><br><span class="line">│   opcode=0      │            │ 16 个实例，7 种类型，每种需注册│</span><br><span class="line">│   inputs=[0,1,2]│            └──────────────────────────────┘</span><br><span class="line">└─────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>核心问题</strong>：如果代码没注册某个算子（比如模型用了 Quantize 但你忘了注册），运行时 <code>AllocateTensors()</code> 会报错——解释器找到 operator_codes 里的类型编号，但在注册表里找不到对应的计算函数。</p>
+<p><strong>为什么不在文件里自带计算代码？</strong> 因为同一个算子在不同硬件上有不同实现：</p>
+<ul>
+<li><strong>Reference 实现</strong>：纯 C，任何平台都能跑，但慢</li>
+<li><strong>CMSIS-NN 实现</strong>：用 Cortex-M 的 DSP&#x2F;NEON 指令加速</li>
+<li><strong>可能还有</strong>：Xtensa、GPU 等实现</li>
+</ul>
+<p>注册机制让你选择<strong>用哪个实现</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// CMSIS-NN 优化版</span></span><br><span class="line">resolver.<span class="built_in">AddConv2D</span>(tflite::<span class="built_in">Register_CONV_2D_INT8</span>());</span><br><span class="line"></span><br><span class="line"><span class="comment">// Reference 版（不传参数）</span></span><br><span class="line">resolver.<span class="built_in">AddConv2D</span>(); </span><br></pre></td></tr></table></figure>
+
+<p>两种写法都合法、编译通过、推理结果一致，但性能有很大差距。</p>
+<h3 id="1-2-TFLMRegistration——算子的”身份证”"><a href="#1-2-TFLMRegistration——算子的”身份证”" class="headerlink" title="1.2 TFLMRegistration——算子的”身份证”"></a>1.2 TFLMRegistration——算子的”身份证”</h3><p>理解了”为什么注册”，接下来看”注册什么”。</p>
+<p>每个算子的注册信息用一个 <code>TFLMRegistration</code> 结构体表示，可以理解为一个”算子身份证”：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tflite/micro/micro_common.h</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">TFLMRegistration</span> &#123;</span><br><span class="line">    <span class="type">void</span>*        (*init)(TfLiteContext*, <span class="type">const</span> <span class="type">char</span>*, <span class="type">size_t</span>);   <span class="comment">// ① 初始化</span></span><br><span class="line">    <span class="built_in">void</span>         (*free)(TfLiteContext*, <span class="type">void</span>*);                 <span class="comment">// ② 释放</span></span><br><span class="line">    <span class="built_in">TfLiteStatus</span> (*prepare)(TfLiteContext*, TfLiteNode*);        <span class="comment">// ③ 准备</span></span><br><span class="line">    <span class="built_in">TfLiteStatus</span> (*invoke)(TfLiteContext*, TfLiteNode*);         <span class="comment">// ④ 执行</span></span><br><span class="line">    <span class="built_in">void</span>         (*reset)(TfLiteContext*, <span class="type">void</span>*);                <span class="comment">// ⑤ 重置</span></span><br><span class="line">    <span class="type">int32_t</span>      builtin_code;      <span class="comment">// 算子类型编码</span></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>*  custom_name;       <span class="comment">// 自定义算子名</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>核心是 5 个<strong>回调函数</strong>，它们在推理的不同阶段被调用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">推理生命周期:</span><br><span class="line"></span><br><span class="line">  AllocateTensors()                     Invoke()</span><br><span class="line">   ──────────────┐                  ┌──────────────┐</span><br><span class="line">                 │                  │              │</span><br><span class="line">  ┌──────────────▼──────────────────▼───────────┐  │</span><br><span class="line">  │ init()  →  prepare()  →  invoke() → 输出结果 │  │</span><br><span class="line">  │  (1次)      (1次)       (每次推理)           │──┘</span><br><span class="line">  └─────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>回调</th>
+<th>调用时机</th>
+<th>做什么</th>
+<th>能分配内存？</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>init</code></td>
+<td>AllocateTensors 期间，每个算子一次</td>
+<td>分配 OpData 结构体（保存量化参数等）</td>
+<td>可以（持久内存）</td>
+</tr>
+<tr>
+<td><code>prepare</code></td>
+<td>AllocateTensors 期间，每个算子一次</td>
+<td>验证形状、计算量化参数、请求 scratch buffer</td>
+<td>可以（持久+scratch）</td>
+</tr>
+<tr>
+<td><code>invoke</code></td>
+<td>每次 Invoke()</td>
+<td>执行实际计算（这就是”算子”的核心）</td>
+<td>禁止</td>
+</tr>
+<tr>
+<td><code>free</code></td>
+<td>析构时</td>
+<td>释放资源</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>reset</code></td>
+<td>Reset() 时</td>
+<td>重置内部状态</td>
+<td>-</td>
+</tr>
+</tbody></table>
+<p>以 Conv2D INT8 (CMSIS-NN) 为例，注册时填入的回调：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">TFLMRegistration for Conv2D INT8 (CMSIS-NN):</span><br><span class="line">  .init       = Init()          → 分配 OpData（卷积参数、scratch buffer 大小）</span><br><span class="line">  .free       = nullptr         → 不需要</span><br><span class="line">  .prepare    = Prepare()       → 验证输入形状、计算 im2col 参数、请求 scratch buffer</span><br><span class="line">  .invoke     = EvalInt8()      → 调用 arm_convolve_wrapper_int8_s8()（CMSIS-NN）</span><br><span class="line">  .reset      = nullptr</span><br><span class="line">  .builtin_code = 0             → 将被 AddBuiltin 覆写为 CONV_2D=3</span><br></pre></td></tr></table></figure>
+
+<p>关键区别在 <code>invoke</code>：CMSIS-NN 版的 <code>invoke=EvalInt8()</code> 调用底层函数，内部通过 DSP intrinsics（SMLAD 等）使用硬件加速；Reference 版的 <code>invoke=Eval()</code> 内部通过 switch 分发到纯 C 循环实现。</p>
+<h3 id="1-3-MicroMutableOpResolver——注册容器"><a href="#1-3-MicroMutableOpResolver——注册容器" class="headerlink" title="1.3 MicroMutableOpResolver——注册容器"></a>1.3 MicroMutableOpResolver——注册容器</h3><p>知道了”注册什么”（TFLMRegistration），再看”存在哪里”。</p>
+<p><code>MicroMutableOpResolver</code> 是注册容器，内部用<strong>编译期确定大小的固定数组</strong>存储所有注册信息：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// tflite/micro/micro_mutable_op_resolver.h</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="type">unsigned</span> <span class="type">int</span> tOpCount&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MicroMutableOpResolver</span> : <span class="keyword">public</span> MicroOpResolver &#123;</span><br><span class="line"> <span class="keyword">private</span>:</span><br><span class="line">  <span class="comment">// 三组固定数组，编译期确定大小，零动态分配</span></span><br><span class="line">  TFLMRegistration registrations_[tOpCount];           <span class="comment">// 算子实现（回调函数表）</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> registrations_len_ = <span class="number">0</span>;                  <span class="comment">// 当前注册数量</span></span><br><span class="line"></span><br><span class="line">  BuiltinOperator builtin_codes_[tOpCount];             <span class="comment">// 算子类型编码</span></span><br><span class="line">  TfLiteBridgeBuiltinParseFunction builtin_parsers_[tOpCount]; <span class="comment">// 参数解析函数</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> num_buitin_ops_ = <span class="number">0</span>;                     <span class="comment">// 内置算子计数</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么用模板？</strong> 嵌入式上不能 <code>malloc</code>。<code>tOpCount=20</code> 在编译期确定数组大小，直接分配在栈或静态区，零堆内存开销。</p>
+<p>三组数组各有用途：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">registrations_[20]     → 存算子的计算函数（init/prepare/invoke）</span><br><span class="line">                          推理时，解释器遍历模型中的 operator，</span><br><span class="line">                          用 opcode_index 查找对应的 registration，调用其 invoke</span><br><span class="line"></span><br><span class="line">builtin_codes_[20]     → 存算子类型编码（CONV_2D=3, MAX_POOL_2D=17, ...）</span><br><span class="line">                          用于去重检查和查找</span><br><span class="line"></span><br><span class="line">builtin_parsers_[20]   → 存参数解析函数（ParseConv2D, ParseMaxPool, ...）</span><br><span class="line">                          AllocateTensors 时，将 FlatBuffer 中的算子参数</span><br><span class="line">                          转成 C 结构体（如 TfLiteConvParams）</span><br></pre></td></tr></table></figure>
+
+<p><strong>查找机制</strong>——线性查找：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// micro_mutable_op_resolver.h</span></span><br><span class="line"><span class="function"><span class="type">const</span> TFLMRegistration* <span class="title">FindOp</span><span class="params">(tflite::BuiltinOperator op)</span> <span class="type">const</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (op == BuiltinOperator_CUSTOM) <span class="keyword">return</span> <span class="literal">nullptr</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">unsigned</span> <span class="type">int</span> i = <span class="number">0</span>; i &lt; registrations_len_; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (registrations_[i].builtin_code == op) &#123;</span><br><span class="line">            <span class="keyword">return</span> &amp;registrations_[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nullptr</span>;  <span class="comment">// 未注册 → AllocateTensors() 报错</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为什么不用哈希表？算子数量少（&lt; 20），线性查找足够快，且无额外内存开销。</p>
+<h3 id="1-4-AddConv2D-的完整链路"><a href="#1-4-AddConv2D-的完整链路" class="headerlink" title="1.4 AddConv2D() 的完整链路"></a>1.4 AddConv2D() 的完整链路</h3><p>以 <code>AddConv2D</code> 为例，跟踪一次完整的注册过程。整个过程分两步：<strong>生成身份证</strong> → <strong>存入数组</strong>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">static</span> tflite::MicroMutableOpResolver&lt;<span class="number">20</span>&gt; resolver;</span><br><span class="line">status = resolver.<span class="built_in">AddConv2D</span>(tflite::<span class="built_in">Register_CONV_2D_INT8</span>());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// micro_mutable_op_resolver.h</span></span><br><span class="line"><span class="function">TfLiteStatus <span class="title">AddConv2D</span><span class="params">(<span class="type">const</span> TFLMRegistration&amp; registration = Register_CONV_2D())</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">AddBuiltin</span>(BuiltinOperator_CONV_2D, registration, ParseConv2D);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="第一步：Register-CONV-2D-INT8-生成-TFLMRegistration"><a href="#第一步：Register-CONV-2D-INT8-生成-TFLMRegistration" class="headerlink" title="第一步：Register_CONV_2D_INT8() 生成 TFLMRegistration"></a>第一步：Register_CONV_2D_INT8() 生成 TFLMRegistration</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// kernels/cmsis_nn/conv.cc</span></span><br><span class="line"><span class="function">TFLMRegistration <span class="title">Register_CONV_2D_INT8</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> tflite::micro::<span class="built_in">RegisterOp</span>(Init, Prepare, EvalInt8);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>RegisterOp()</code> 定义在 <code>kernels/kernel_util.cc</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">TFLMRegistration <span class="title">RegisterOp</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">void</span>* (*init)(TfLiteContext* context, <span class="type">const</span> <span class="type">char</span>* buffer, <span class="type">size_t</span> length),</span></span></span><br><span class="line"><span class="params"><span class="function">    TfLiteStatus (*prepare)(TfLiteContext* context, TfLiteNode* node),</span></span></span><br><span class="line"><span class="params"><span class="function">    TfLiteStatus (*invoke)(TfLiteContext* context, TfLiteNode* node),</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">void</span> (*free)(TfLiteContext* context, <span class="type">void</span>* buffer) = <span class="literal">nullptr</span>,</span></span></span><br><span class="line"><span class="params"><span class="function">    <span class="type">void</span> (*reset)(TfLiteContext* context, <span class="type">void</span>* buffer) = <span class="literal">nullptr</span>)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;<span class="comment">/*init=*/</span>init,</span><br><span class="line">          <span class="comment">/*free=*/</span>free,</span><br><span class="line">          <span class="comment">/*prepare=*/</span>prepare,</span><br><span class="line">          <span class="comment">/*invoke=*/</span>invoke,</span><br><span class="line">          <span class="comment">/*reset=*/</span>reset,</span><br><span class="line">          <span class="comment">/*builtin_code=*/</span><span class="number">0</span>,        <span class="comment">// 由 AddBuiltin 覆写</span></span><br><span class="line">          <span class="comment">/*custom_name=*/</span><span class="literal">nullptr</span>&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="第二步：AddBuiltin-存入数组"><a href="#第二步：AddBuiltin-存入数组" class="headerlink" title="第二步：AddBuiltin() 存入数组"></a>第二步：AddBuiltin() 存入数组</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// micro_mutable_op_resolver.h</span></span><br><span class="line"><span class="function">TfLiteStatus <span class="title">AddBuiltin</span><span class="params">(tflite::BuiltinOperator op,</span></span></span><br><span class="line"><span class="params"><span class="function">                        <span class="type">const</span> TFLMRegistration&amp; registration,</span></span></span><br><span class="line"><span class="params"><span class="function">                        TfLiteBridgeBuiltinParseFunction parser)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ① 检查：不允许 CUSTOM 类型走这个路径</span></span><br><span class="line">    <span class="keyword">if</span> (op == BuiltinOperator_CUSTOM) &#123;</span><br><span class="line">        <span class="keyword">return</span> kTfLiteError;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ② 检查：同一个算子不能重复注册</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">FindOp</span>(op) != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> kTfLiteError;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ③ 检查：数组是否已满</span></span><br><span class="line">    <span class="keyword">if</span> (registrations_len_ &gt;= tOpCount) &#123;</span><br><span class="line">        <span class="keyword">return</span> kTfLiteError;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ④ 存入算子实现</span></span><br><span class="line">    registrations_[registrations_len_] = registration;</span><br><span class="line">    registrations_[registrations_len_].builtin_code = op;  <span class="comment">// 覆写 builtin_code</span></span><br><span class="line">    registrations_len_++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ⑤ 存入解析函数</span></span><br><span class="line">    builtin_codes_[num_buitin_ops_] = op;</span><br><span class="line">    builtin_parsers_[num_buitin_ops_] = parser;</span><br><span class="line">    num_buitin_ops_++;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> kTfLiteOk;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>三重检查（非 CUSTOM、不重复、不溢出）后，分别存入 <code>registrations_</code> 和 <code>builtin_parsers_</code> 两个数组。</p>
+<h4 id="参数解析函数：ParseConv2D"><a href="#参数解析函数：ParseConv2D" class="headerlink" title="参数解析函数：ParseConv2D"></a>参数解析函数：ParseConv2D</h4><p>每个 AddBuiltin 除了存入 <code>TFLMRegistration</code>，还存入一个 <code>parser</code> 函数。它的作用是将 FlatBuffer 中的算子参数转成 C 结构体：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">.tflite 文件中:</span><br><span class="line">  Operator &#123;</span><br><span class="line">    opcode_index: 0           → operator_codes[0] = CONV_2D</span><br><span class="line">    builtin_options: Conv2DOptions &#123;</span><br><span class="line">      stride_h: 1</span><br><span class="line">      stride_w: 1</span><br><span class="line">      padding: SAME</span><br><span class="line">      activation: RELU</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ParseConv2D</code> 把上面的 FlatBuffer <code>Conv2DOptions</code> 转成 C 结构体 <code>TfLiteConvParams</code>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">TfLiteConvParams</span> &#123;</span><br><span class="line">    TfLitePadding padding;</span><br><span class="line">    <span class="type">int</span> stride_width;</span><br><span class="line">    <span class="type">int</span> stride_height;</span><br><span class="line">    TfLiteFusedActivation activation;</span><br><span class="line">    <span class="comment">// ... dilation 等</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注册完成后的内存布局</strong>（示例模型注册了 7 种算子）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">MicroMutableOpResolver&lt;20&gt; 内部:</span><br><span class="line"></span><br><span class="line">registrations_[0]:  CONV_2D        → Init/Prepare/EvalInt8 (CMSIS-NN)  ← 5 个实例共用</span><br><span class="line">registrations_[1]:  MAX_POOL_2D    → Init/Prepare/EvalInt8 (CMSIS-NN)  ← 3 个实例共用</span><br><span class="line">registrations_[2]:  STRIDED_SLICE  → Init/Prepare/Eval                 ← 2 个实例共用</span><br><span class="line">registrations_[3]:  LOGISTIC       → Init/Prepare/Eval                 ← 2 个实例共用</span><br><span class="line">registrations_[4]:  QUANTIZE       → Init/Prepare/Eval                 ← 2 个实例共用</span><br><span class="line">registrations_[5]:  CONCATENATION  → Init/Prepare/Eval                 ← 1 个实例</span><br><span class="line">registrations_[6]:  DEQUANTIZE     → Init/Prepare/Eval                 ← 1 个实例</span><br><span class="line">registrations_[7-19]: 空</span><br><span class="line"></span><br><span class="line">builtin_codes_[0-6] = &#123;3, 17, 45, 14, 114, 2, 6&#125;  对应 BuiltinOperator 枚举值</span><br><span class="line">builtin_parsers_[0-6] = &#123;ParseConv2D, ParseMaxPool, ParseStridedSlice, ...&#125;</span><br></pre></td></tr></table></figure>
+
+<p>前 2 个注册了 CMSIS-NN INT8 优化版（Conv2D、MaxPool），后 5 个用 Reference 版（Logistic、Quantize 等轻量算子）。</p>
+<h3 id="1-5-CMSIS-NN-硬件加速丢失的陷阱"><a href="#1-5-CMSIS-NN-硬件加速丢失的陷阱" class="headerlink" title="1.5 CMSIS-NN 硬件加速丢失的陷阱"></a>1.5 CMSIS-NN 硬件加速丢失的陷阱</h3><p>注册算子时有一个容易踩的坑：<strong>即使代码写了 INT8 版，如果没有启用编译开关，会静默丢失硬件加速，变成纯 C 参考实现</strong>。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// kernels/conv.h</span></span><br><span class="line"><span class="meta">#<span class="keyword">if</span> defined(CMSIS_NN) || defined(XTENSA)</span></span><br><span class="line">    <span class="comment">// 硬件加速版：由 CMSIS-NN 或 Xtensa 提供</span></span><br><span class="line">    <span class="function">TFLMRegistration <span class="title">Register_CONV_2D_INT8</span><span class="params">()</span></span>;</span><br><span class="line"><span class="meta">#<span class="keyword">else</span></span></span><br><span class="line">    <span class="comment">// 丢失加速！退回到通用版</span></span><br><span class="line">    <span class="function"><span class="keyword">inline</span> TFLMRegistration <span class="title">Register_CONV_2D_INT8</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Register_CONV_2D</span>();  <span class="comment">// → Eval() 带 switch 分发的通用版</span></span><br><span class="line">    &#125;</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<p>如果没有启用 <code>CONFIG_TENSORFLOW_LITE_MICRO_CMSIS_NN_KERNELS</code>，编译时 <code>CMSIS_NN</code> 宏未定义，<code>Register_CONV_2D_INT8()</code> 会变成 <code>Register_CONV_2D()</code>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">硬件加速路径 (编译开关开启):</span><br><span class="line">  Register_CONV_2D_INT8()</span><br><span class="line">    → cmsis_nn/conv.cc</span><br><span class="line">    → RegisterOp(Init, Prepare, EvalInt8)</span><br><span class="line">    → EvalInt8() 直接调用 arm_convolve_wrapper_int8_s8()</span><br><span class="line">    → 底层通过 C intrinsics（SMLAD/SXTB16 等）使用 DSP 指令</span><br><span class="line"></span><br><span class="line">纯 C 参考路径 (编译开关未开启):</span><br><span class="line">  Register_CONV_2D_INT8()</span><br><span class="line">    → Register_CONV_2D()</span><br><span class="line">    → RegisterOp(Init, Prepare, Eval)</span><br><span class="line">    → Eval() 内部 switch(tensor_type)</span><br><span class="line">    → case kTfLiteInt8: reference_ops::Conv()</span><br><span class="line">    → 底层是纯 C 循环，无 SIMD/DSP 加速</span><br></pre></td></tr></table></figure>
+
+<p>注意 Generic 路径的 <code>Eval()</code> 也能正确处理 INT8——计算结果和 CMSIS-NN 版完全一致，只是底层实现不同。</p>
+<h3 id="1-6-硬件加速的底层机制"><a href="#1-6-硬件加速的底层机制" class="headerlink" title="1.6 硬件加速的底层机制"></a>1.6 硬件加速的底层机制</h3><h4 id="Cortex-M7-DSP-的核心指令"><a href="#Cortex-M7-DSP-的核心指令" class="headerlink" title="Cortex-M7 DSP 的核心指令"></a>Cortex-M7 DSP 的核心指令</h4><p><strong><code>SMLAD</code>——双 16-bit 乘加，SIMD 的核心</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">SMLAD Rd, Rn, Rm, Ra</span><br><span class="line">; Rd = Ra + Rn[15:0]×Rm[15:0] + Rn[31:16]×Rm[31:16]</span><br><span class="line">; 一个 32-bit 寄存器里打包两个 int8 对 → 2 次乘加 = 1 条指令 1 个周期</span><br></pre></td></tr></table></figure>
+
+<p>纯 C 实现需要 2 次乘法 + 1 次加法 &#x3D; 至少 3 条指令。SMLAD 一条指令完成。</p>
+<p><strong><code>SMLAL</code>——64-bit 乘累加（量化 requantize）</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SMLAL RdLo, RdHi, Rn, Rm</span><br><span class="line">; RdHi:RdLo += Rn × Rm     (32×32 → 64-bit 乘累加)</span><br></pre></td></tr></table></figure>
+
+<p>用于 per-channel 量化中的 <code>val × multiplier</code> 计算。纯 C 实现需要 64-bit 中间变量 + 多条移位&#x2F;加法。CMSIS-NN 用 <code>SMLAL</code> 加上 <code>lsr #31</code> 和 <code>orr</code> 拼接完成高精度定点乘法，比纯 C 软件模拟更高效。</p>
+<h4 id="DSP-指令的寄存器使用"><a href="#DSP-指令的寄存器使用" class="headerlink" title="DSP 指令的寄存器使用"></a>DSP 指令的寄存器使用</h4><p>Cortex-M7 的 DSP 扩展（SMLAD&#x2F;SXTB16 等）操作 <strong>32-bit 通用寄存器（GPR：R0-R12）</strong>，不涉及 FPU 的 D&#x2F;Q 寄存器。SMLAD 把一个 32-bit GPR 拆成两个 16-bit 半字做双乘加。FPU 寄存器（D0-D15）由浮点运算使用，与 DSP 的 GPR 操作互不干扰。</p>
+<p>这与 Helium&#x2F;NEON 不同。Helium 和 NEON 有真正的<strong>向量寄存器</strong>（Q 寄存器，128-bit），这些 Q 寄存器与 FPU 共享同一组物理存储。 Cortex-M7 的 DSP 指令没有这个概念。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Cortex-M7 的寄存器关系:</span><br><span class="line"></span><br><span class="line">  GPR (R0-R12)           FPU 寄存器</span><br><span class="line">  ┌──────────────┐       ┌────────────────────────────┐</span><br><span class="line">  │ DSP 指令使用  │       │ S0-S31 (32×32-bit)         │</span><br><span class="line">  │ SMLAD, SXTB16│       │ D0-D15 (16×64-bit)         │</span><br><span class="line">  │ SXTAB16, ... │       │ 仅供浮点运算使用            │</span><br><span class="line">  └──────────────┘       └────────────────────────────┘</span><br><span class="line">       ↓ 独立                    ↓ 内部共享</span><br><span class="line">   整数 SIMD 操作          D0 = S0:S1, D1 = S2:S3 ...</span><br><span class="line">   无向量寄存器            S/D 是同一物理存储的两个视图</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Helium (Cortex-M55) 的寄存器关系:</span><br><span class="line"></span><br><span class="line">  GPR (R0-R12)           向量/FPU 寄存器（共享物理存储）</span><br><span class="line">  ┌──────────────┐       ┌────────────────────────────┐</span><br><span class="line">  │ 通用整数运算  │       │ S0-S31 / D0-D15 / Q0-Q7   │</span><br><span class="line">  └──────────────┘       │ Helium 向量指令 ←→ FPU 浮点 │</span><br><span class="line">                         │ 三者是同一物理存储的三个视图  │</span><br><span class="line">                         └────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h4 id="DSP-加速因素分析"><a href="#DSP-加速因素分析" class="headerlink" title="DSP 加速因素分析"></a>DSP 加速因素分析</h4><p>CMSIS-NN 相比纯 C Reference 的加速来自多个因素的叠加：</p>
+<table>
+<thead>
+<tr>
+<th>因素</th>
+<th>纯 C Reference</th>
+<th>CMSIS-NN DSP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>乘加并行度</td>
+<td>每次 1 个 MAC</td>
+<td>每次 2 个 MAC（SMLAD）</td>
+</tr>
+<tr>
+<td>Requantize</td>
+<td>64-bit 软件模拟</td>
+<td>SMLAL 64 位乘累加</td>
+</tr>
+<tr>
+<td>循环展开</td>
+<td>编译器普通优化</td>
+<td>手写 4x 展开，减少循环开销</td>
+</tr>
+<tr>
+<td>数据预处理</td>
+<td>逐元素转换</td>
+<td>SXTB16&#x2F;SXTAB16 批量展开</td>
+</tr>
+<tr>
+<td>Im2col + GEMM</td>
+<td>逐元素访问</td>
+<td>批量矩阵乘，缓存友好</td>
+</tr>
+</tbody></table>
+<h4 id="更高性能路径：Helium-与-NEON"><a href="#更高性能路径：Helium-与-NEON" class="headerlink" title="更高性能路径：Helium 与 NEON"></a>更高性能路径：Helium 与 NEON</h4><p>Cortex-M7 DSP 只是起点。ARM 三个 profile 各有更高性能的向量扩展方案：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Cortex-M7 DSP</th>
+<th>Helium (M55)</th>
+<th>NEON (AArch32, R52)</th>
+<th>NEON (AArch64, A53)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>寄存器类型</td>
+<td>GPR (32-bit)</td>
+<td>Q0-Q7 (128-bit)</td>
+<td>Q0-Q15 (128-bit)</td>
+<td>Q0-Q31 (128-bit)</td>
+</tr>
+<tr>
+<td>与 FPU 寄存器关系</td>
+<td>独立（GPR vs D0-D15）</td>
+<td>共享物理存储</td>
+<td>共享物理存储</td>
+<td>共享物理存储</td>
+</tr>
+<tr>
+<td>INT8 MAC&#x2F;周期</td>
+<td>2</td>
+<td>16</td>
+<td>16</td>
+<td>16</td>
+</tr>
+<tr>
+<td>INT8 加载&#x2F;周期</td>
+<td>1</td>
+<td>16</td>
+<td>16</td>
+<td>16</td>
+</tr>
+</tbody></table>
+<p>Cortex-M7 是唯一”DSP 用 GPR、FPU 用 D 寄存器、两者独立”的方案。Helium 和 NEON 的向量指令操作 Q 寄存器，Q 与 FPU 的 S&#x2F;D 共享同一组物理存储——执行向量指令时，这些寄存器被当作 Q 视图使用；执行浮点指令时，被当作 S&#x2F;D 视图使用。</p>
+<p>Helium 的关键指令（128-bit 向量，16 个 int8 同时操作）：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 加载 16 个 int8（vs M7 逐个 load）</span></span><br><span class="line"><span class="type">int8x16_t</span> wgt = vldrbq_s8(weight_ptr);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 16 个 int8 乘加，累加到 int32</span></span><br><span class="line"><span class="type">int32_t</span> acc = vmladavq_s8(inp, wgt);    <span class="comment">// 一条指令 = 16 次乘加</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// int16 → 饱和截断为 int8（16 个同时）</span></span><br><span class="line"><span class="type">int8x16_t</span> out = vqmovnbq_s16(acc_vec);</span><br></pre></td></tr></table></figure>
+
+<p>NEON 的指令形式类似，但寄存器更多（AArch32 有 16 个 Q，AArch64 有 32 个 Q），循环展开时更多数据常驻寄存器，减少 load&#x2F;store。</p>
+<p>回到示例项目：STM32H747 (Cortex-M7) 使用 DSP 扩展已是该芯片的最优路径。若换用 Cortex-M55 (Helium)，凭借 128-bit 向量宽度（一次处理 16 个 int8），推理速度可显著提升。要跑更大模型（如 MobileNetV2），则需要 Cortex-A + NEON 的算力。</p>
+<h3 id="1-7-注册阶段完整流程图"><a href="#1-7-注册阶段完整流程图" class="headerlink" title="1.7 注册阶段完整流程图"></a>1.7 注册阶段完整流程图</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">编译期:</span><br><span class="line">  MicroMutableOpResolver&lt;20&gt; resolver;</span><br><span class="line">  ├─ registrations_[20]  固定数组，栈/静态分配</span><br><span class="line">  ├─ builtin_codes_[20]</span><br><span class="line">  └─ builtin_parsers_[20]</span><br><span class="line"></span><br><span class="line">运行时:</span><br><span class="line">  resolver.AddConv2D(Register_CONV_2D_INT8())</span><br><span class="line">       │</span><br><span class="line">       ├─ Register_CONV_2D_INT8()</span><br><span class="line">       │     └─ RegisterOp(Init, Prepare, EvalInt8)</span><br><span class="line">       │           └─ 返回 TFLMRegistration &#123;init=Init, invoke=EvalInt8, ...&#125;</span><br><span class="line">       │</span><br><span class="line">       └─ AddBuiltin(CONV_2D, registration, ParseConv2D)</span><br><span class="line">             ├─ FindOp(CONV_2D) → nullptr (未注册过)</span><br><span class="line">             ├─ registrations_[0] = &#123;init, nullptr, prepare, EvalInt8, nullptr&#125;</span><br><span class="line">             ├─ registrations_[0].builtin_code = CONV_2D</span><br><span class="line">             ├─ registrations_len_++</span><br><span class="line">             ├─ builtin_codes_[0] = CONV_2D</span><br><span class="line">             ├─ builtin_parsers_[0] = ParseConv2D</span><br><span class="line">             └─ num_buitin_ops_++</span><br><span class="line"></span><br><span class="line">  resolver.AddMaxPool2D(Register_MAX_POOL_2D_INT8())</span><br><span class="line">       └─ registrations_[1] = &#123;init, nullptr, prepare, EvalInt8, nullptr&#125;</span><br><span class="line">          registrations_[1].builtin_code = MAX_POOL_2D</span><br><span class="line">          registrations_len_ = 2</span><br><span class="line"></span><br><span class="line">  ... 共注册 7 种算子（16 个实例共用）</span><br></pre></td></tr></table></figure>
+
+<p><strong>注册阶段零堆分配</strong>。所有数据都在编译期确定的固定数组中。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2026/05/22/tfite-operator_registration/" title="TFLite Micro 深度剖析（二）：算子注册——从类型编号到计算函数">http://fengxun2017.github.io/2026/05/22/tfite-operator_registration/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/05/18/tfite-load-model/" rel="prev" title="TFLite Micro 深度剖析（一）：模型加载——FlatBuffer 零拷贝的秘密（基于AI协助总结）">
+                  <i class="fa fa-chevron-left"></i> TFLite Micro 深度剖析（一）：模型加载——FlatBuffer 零拷贝的秘密（基于AI协助总结）
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">768k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">16:01</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
