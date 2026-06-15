@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha256-AbA177XfpSnFEvgpYu1jMygiLabzPCJCRIBtR5jGc0k=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"fengxun2017.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.13.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="模型推理依赖解释器，本文主要介绍解释器的创建细节和内部实现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TFLite Micro 深度剖析（四）：解释器创建——Arena 内存体系的自举">
+<meta property="og:url" content="http://fengxun2017.github.io/2026/06/15/tfite-conv2d/index.html">
+<meta property="og:site_name" content="fx">
+<meta property="og:description" content="模型推理依赖解释器，本文主要介绍解释器的创建细节和内部实现。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-06-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-06-15T13:23:58.272Z">
+<meta property="article:author" content="feng xun">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://fengxun2017.github.io/2026/06/15/tfite-conv2d/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://fengxun2017.github.io/2026/06/15/tfite-conv2d/","path":"2026/06/15/tfite-conv2d/","title":"TFLite Micro 深度剖析（四）：解释器创建——Arena 内存体系的自举"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>TFLite Micro 深度剖析（四）：解释器创建——Arena 内存体系的自举 | fx</title>
+  
+
+
+
+
+
+
+  <script async defer data-website-id="" src=""></script>
+
+  <script defer data-domain="" src=""></script>
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+  <a target="_blank" rel="noopener" href="https://github.com/fengxun2017" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">fx</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84%E6%95%B4%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">1.2 构造函数的整体流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E6%AD%A5%E9%AA%A4%E2%91%A2%E2%80%94%E2%80%94Arena-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E4%BD%93%E7%B3%BB%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-number">2.</span> <span class="nav-text">1.3 步骤③——Arena 内存管理体系的创建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#SingleArenaBufferAllocator%E2%80%94%E2%80%94%E4%BA%94%E4%B8%AA%E6%8C%87%E9%92%88%E7%AE%A1%E5%A5%BD%E4%B8%80%E5%9D%97%E5%86%85%E5%AD%98"><span class="nav-number">2.1.</span> <span class="nav-text">SingleArenaBufferAllocator——五个指针管好一块内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#GreedyMemoryPlanner%E2%80%94%E2%80%94%E8%AE%A9%E4%B8%8D%E9%87%8D%E5%8F%A0%E7%9A%84-buffer-%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98"><span class="nav-number">2.2.</span> <span class="nav-text">GreedyMemoryPlanner——让不重叠的 buffer 共享内存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MicroAllocator%E2%80%94%E2%80%94%E5%8D%8F%E8%B0%83%E5%91%98"><span class="nav-number">2.3.</span> <span class="nav-text">MicroAllocator——协调员</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E4%B8%BE%E8%BF%87%E7%A8%8B%E8%AF%A6%E8%A7%A3"><span class="nav-number">2.4.</span> <span class="nav-text">自举过程详解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-%E6%AD%A5%E9%AA%A4%E2%91%A3%E2%91%A5%E2%80%94%E2%80%94Graph-%E5%92%8C-MicroContext"><span class="nav-number">3.</span> <span class="nav-text">1.4 步骤④⑥——Graph 和 MicroContext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-%E6%AD%A5%E9%AA%A4%E2%91%A6%E2%80%94%E2%80%94Init-%E8%AE%BE%E7%BD%AE-TfLiteContext-C-%E5%9B%9E%E8%B0%83%E8%A1%A8"><span class="nav-number">4.</span> <span class="nav-text">1.5 步骤⑦——Init() 设置 TfLiteContext C 回调表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%AE%8C%E6%88%90%E5%90%8E%E7%9A%84%E5%86%85%E5%AD%98%E5%85%A8%E6%99%AF"><span class="nav-number">5.</span> <span class="nav-text">1.6 构造函数完成后的内存全景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-%E5%AE%8C%E6%95%B4%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">6.</span> <span class="nav-text">1.7 完整流程图</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">feng xun</p>
+  <div class="site-description" itemprop="description">FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">123</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license site-overview-item animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://fengxun2017.github.io/2026/06/15/tfite-conv2d/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="feng xun">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fx">
+      <meta itemprop="description" content="FreeRTOS交流QQ群-663806972 BLE学习交流群-498676838">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="TFLite Micro 深度剖析（四）：解释器创建——Arena 内存体系的自举 | fx">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TFLite Micro 深度剖析（四）：解释器创建——Arena 内存体系的自举
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2026-06-15 00:00:00" itemprop="dateCreated datePublished" datetime="2026-06-15T00:00:00+08:00">2026-06-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/tflite/" itemprop="url" rel="index"><span itemprop="name">tflite</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>14k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>18 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <center>
+模型推理依赖解释器，本文主要介绍解释器的创建细节和内部实现。
+</center>
+<span id="more"></span>
+
+<hr>
+<p>之前的文章完成了：<a href="https://fengxun2017.github.io/2026/05/18/tfite-load-model/">模型加载（拿到了 FlatBuffer 数据指针）</a>和<a href="https://fengxun2017.github.io/2026/05/22/tfite-operator_registration/">算子注册（准备好了 7 种算子的计算函数，16 个实例共用）</a>。但这两样东西各自独立，需要一个”指挥官”把它们串联起来。</p>
+<p>这个指挥官就是 <strong>MicroInterpreter</strong>（解释器）。它做两件事：</p>
+<ol>
+<li><strong>规划并分配内存</strong>：在初始化阶段一次性完成所有内存规划——遍历每个算子，收集其内存需求（tensor 数据缓冲区、scratch buffer、op_data），然后由内存规划器根据各 tensor 的生命周期（何时写入、何时读完）让不重叠的 tensor 共享同一块内存，算出最小 Arena 需求。初始化完成后，推理阶段零动态分配</li>
+<li><strong>调度算子</strong>：按模型定义的顺序，依次调用每个算子的 init → prepare → invoke</li>
+</ol>
+<pre class="mermaid">flowchart LR
+    subgraph without["没有解释器"]
+        direction LR
+        M1["Model (指针)"]
+        R1["Resolver (7种算子)"]
+        M1 x-.-x R1
+    end
+
+    subgraph with["有解释器"]
+        direction TB
+        M2["Model"] --> I["Interpreter<br>规划并分配内存<br>调度算子"]
+        I --> R2["Resolver (7种算子)"]
+    end</pre>
+
+<p>创建解释器的典型代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> tflite::MicroInterpreter <span class="title">static_interpreter</span><span class="params">(</span></span></span><br><span class="line"><span class="params"><span class="function">    model, resolver, tensor_arena, TENSOR_ARENA_SIZE)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>传入 4 个参数：Model 指针、OpResolver 引用、Arena 缓冲区地址和大小。</p>
+<h3 id="1-2-构造函数的整体流程"><a href="#1-2-构造函数的整体流程" class="headerlink" title="1.2 构造函数的整体流程"></a>1.2 构造函数的整体流程</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">MicroInterpreter::<span class="built_in">MicroInterpreter</span>(</span><br><span class="line">    <span class="type">const</span> Model* model,</span><br><span class="line">    <span class="type">const</span> MicroOpResolver&amp; op_resolver,</span><br><span class="line">    <span class="type">uint8_t</span>* tensor_arena,</span><br><span class="line">    <span class="type">size_t</span> tensor_arena_size,</span><br><span class="line">    ...)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化列表—— 按声明顺序初始化成员</span></span><br><span class="line">    : <span class="built_in">model_</span>(model),                          <span class="comment">// ① 保存 Model 指针</span></span><br><span class="line">      <span class="built_in">op_resolver_</span>(op_resolver),              <span class="comment">// ② 保存 OpResolver 引用</span></span><br><span class="line">      <span class="built_in">allocator_</span>(*MicroAllocator::<span class="built_in">Create</span>(     <span class="comment">// ③ 创建 MicroAllocator</span></span><br><span class="line">          tensor_arena, tensor_arena_size, ...)),</span><br><span class="line">      <span class="built_in">graph_</span>(&amp;context_, model, &amp;allocator_,   <span class="comment">// ④ 创建 Graph</span></span><br><span class="line">             ...),</span><br><span class="line">      <span class="built_in">tensors_allocated_</span>(<span class="literal">false</span>),              <span class="comment">// ⑤ 状态标志</span></span><br><span class="line">      <span class="built_in">initialization_status_</span>(kTfLiteError),   <span class="comment">// 默认错误，Init()成功后改为Ok</span></span><br><span class="line">      <span class="built_in">input_tensors_</span>(<span class="literal">nullptr</span>),                <span class="comment">// AllocateTensors 时填充</span></span><br><span class="line">      <span class="built_in">output_tensors_</span>(<span class="literal">nullptr</span>),</span><br><span class="line">      <span class="built_in">micro_context_</span>(&amp;allocator_, model_, &amp;graph_)  <span class="comment">// ⑥ 创建 MicroContext</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">Init</span>(profiler);  <span class="comment">// ⑦ 初始化 TfLiteContext 回调表</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>7 个步骤可以分成四组：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">①② 保存输入参数    → 拿到 Model 和 Resolver 的指针/引用</span><br><span class="line">③   创建内存管理器  → MicroAllocator 在 Arena 里自举</span><br><span class="line">④   创建图执行引擎  → MicroInterpreterGraph 保存子图指针</span><br><span class="line">⑤⑥⑦ 初始化框架    → 状态标志、MicroContext、C 回调表</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-步骤③——Arena-内存管理体系的创建"><a href="#1-3-步骤③——Arena-内存管理体系的创建" class="headerlink" title="1.3 步骤③——Arena 内存管理体系的创建"></a>1.3 步骤③——Arena 内存管理体系的创建</h3><p>构造函数中最复杂的步骤。<code>MicroAllocator::Create()</code> 被调用时，会在 Arena 里依次创建<strong>三层管理对象</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MicroAllocator::Create(tensor_arena, arena_size)</span><br><span class="line">  ├─ SingleArenaBufferAllocator::Create()     // 第一层：原始内存指针管理</span><br><span class="line">  ├─ CreateMemoryPlanner(kGreedy)             // 第二层：内存布局优化器</span><br><span class="line">  └─ new MicroAllocator(...)                  // 第三层：协调员</span><br></pre></td></tr></table></figure>
+
+<p>为什么要三层？因为 TFLM 需要解决三个独立的问题：</p>
+<ol>
+<li><strong>底层指针运算</strong>：从 Arena 的头尾双向分配内存（SingleArenaBufferAllocator）</li>
+<li><strong>内存复用规划</strong>：让生命周期不重叠的 tensor 共享同一块内存（GreedyMemoryPlanner）</li>
+<li><strong>协调调度</strong>：把 FlatBuffer 中的模型信息翻译成内存分配请求，调用规划器并提交方案（MicroAllocator）</li>
+</ol>
+<p>三者都在 Arena 尾部自举分配——这是嵌入式系统零 malloc 的核心约束。</p>
+<h4 id="SingleArenaBufferAllocator——五个指针管好一块内存"><a href="#SingleArenaBufferAllocator——五个指针管好一块内存" class="headerlink" title="SingleArenaBufferAllocator——五个指针管好一块内存"></a>SingleArenaBufferAllocator——五个指针管好一块内存</h4><p>SingleArenaBufferAllocator 是最底层的管理器。它不关心”谁用什么”，只关心”这块内存还能往哪里放”。核心是<strong>五个指针</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">buffer_head_    Arena 的起始地址（创建后不变）</span><br><span class="line">buffer_tail_    Arena 的结束地址（创建后不变）</span><br><span class="line">head_           head 区的当前位置（向高地址方向增长，存放 tensor 数据）</span><br><span class="line">tail_           tail 区的当前位置（向低地址方向增长，存放持久对象）</span><br><span class="line">temp_           temp 区的当前位置（在 head 之上，临时分配）</span><br></pre></td></tr></table></figure>
+
+<p>Arena 的三区布局（5 个指针全部标出）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">  低地址                                                          高地址 </span><br><span class="line">buffer_head_                                                    buffer_tail_</span><br><span class="line">    │                                                                 │</span><br><span class="line">    ▼                                                                 ▼</span><br><span class="line">    ┌────────────────────────┬────────┬──────┬────────────────────────┐</span><br><span class="line">    │     HEAD 区            │ TEMP区 │ 空闲 │     TAIL 区             │</span><br><span class="line">    │     tensor overlay     │ 临时   │      │     管理对象·持久数据    │</span><br><span class="line">    │     (规划后复用)        │ 借用   │      │     (op_data等)         │</span><br><span class="line">    └────────────────────────┴────────┴──────┴────────────────────────┘</span><br><span class="line">                             ↑        ↑      ↑</span><br><span class="line">                            head_   temp_   tail_(向左增长)</span><br><span class="line">                        (向右增长)  (head_之上波动)     </span><br></pre></td></tr></table></figure>
+
+<p><strong>三种分配操作</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>方向</th>
+<th>实现要点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AllocatePersistentBuffer</td>
+<td>tail 向低地址</td>
+<td><code>AlignPointerDown(tail_ - size, alignment)</code> → <code>tail_ = aligned_result</code></td>
+</tr>
+<tr>
+<td>AllocateTemp</td>
+<td>temp 向高地址</td>
+<td><code>AlignPointerUp(temp_, alignment)</code> → <code>temp_ = aligned_result + size</code></td>
+</tr>
+<tr>
+<td>ResizeBuffer</td>
+<td>head 向高地址</td>
+<td><code>head_ = aligned_result + size</code>，同时 <code>temp_ = head_</code></td>
+</tr>
+</tbody></table>
+<p><strong>ResizeBuffer 的具体意义</strong>：所有算子的内存规划完成后，GreedyMemoryPlanner 算出了 head 区所需的最大字节数 <code>max_head_buffer_usage_</code>。<code>ResizeBuffer</code> 被调用一次，把 <code>head_</code> 推到最终位置。之后 head_ 不再移动，推理阶段直接使用这块预分配好的空间。核心实现只有两行：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">head_ = aligned_result + size;   <span class="comment">// head_ 向右推到新位置</span></span><br><span class="line">temp_ = head_;                    <span class="comment">// temp_ 重置到 head_（清除所有临时分配）</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>AllocatePersistentBuffer 为什么只检查 head_ 而不检查 temp_？</strong></p>
+<p>该函数的碰撞检测是 <code>aligned_result &lt; head_</code>，但 temp_ ≥ head_，理论上 tail_ 向下增长时可能先碰到 temp 区。TFLM 通过调用顺序规避了这个问题：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Init 阶段：所有 persistent buffer（op_data、LUT 表）集中分配</span><br><span class="line">           此时 temp_ == head_，不存在 temp 区</span><br><span class="line">           tail_ 从 buffer_tail_ 向下增长</span><br><span class="line"></span><br><span class="line">Prepare 阶段：每个算子执行前分配 temp tensor，执行后归还</span><br><span class="line">             persistent buffer 在 Init 阶段已分配完毕</span><br><span class="line">             tail_ 几乎不再移动</span><br></pre></td></tr></table></figure>
+
+<p>如果代码层面要严格保证，应检查 <code>aligned_result &lt; temp_</code>（当 temp_ &gt; head_ 时）。TFLM 选择用调用顺序保证正确性，而非在每次分配时做更严格的检查。</p>
+<p>关键约束：</p>
+<ul>
+<li><strong>head_ 只会增长，不会缩小</strong>——ResizeBuffer 只支持扩大</li>
+<li>**temp_ ≥ head_**——临时分配在 head 之上；<code>ResetTempAllocations()</code> 时 <code>temp_</code> 回到 <code>head_</code></li>
+<li><strong>head 和 tail 从不交叉</strong>——如果 <code>aligned_result &lt; head_</code>，说明 Arena 不够了</li>
+</ul>
+<p><strong>head_ 与 temp_ 的本质区别</strong>：</p>
+<p><code>head_</code> 是已提交的边界（tensor overlay 空间），<code>temp_</code> 是可以回收的游标（临时借用空间）。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>head_ 管的区域</th>
+<th>temp_ 管的区域</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>内容</td>
+<td>tensor overlay（规划好的 tensor + scratch buffer 数据）</td>
+<td>prepare 阶段的临时 TfLiteTensor 结构体</td>
+</tr>
+<tr>
+<td>生命周期</td>
+<td>整个推理过程都在</td>
+<td>单个算子的 prepare() 期间</td>
+</tr>
+<tr>
+<td>谁分配</td>
+<td><code>ResizeBuffer</code> — 一次性确定大小</td>
+<td><code>AllocateTemp</code> — 按需借，用完还</td>
+</tr>
+<tr>
+<td>谁释放</td>
+<td>不释放</td>
+<td><code>ResetTempAllocations()</code> 一把收回</td>
+</tr>
+</tbody></table>
+<p>如果没有这个分离设计，16 个算子实例的 prepare 阶段需要 16 份临时空间。有了 head_&#x2F;temp_ 分离，所有 prepare 共享同一块空间轮流使用。</p>
+<p><strong>temp 区分配的具体对象——临时 TfLiteTensor 结构体</strong></p>
+<p>temp 区分配的是 TfLiteTensor 结构体（约 80-100 字节），它是 FlatBuffer 中 tensor 信息的”C 语言翻译版”。kernel 代码（如 ConvPrepare）通过它读取量化参数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// conv_common.cc — Conv2D 算子的 Prepare 阶段</span></span><br><span class="line"><span class="function">TfLiteStatus <span class="title">ConvPrepare</span><span class="params">(TfLiteContext* context, TfLiteNode* node)</span> </span>&#123;</span><br><span class="line">    MicroContext* micro_context = <span class="built_in">GetMicroContext</span>(context);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 从 Arena temp 区分配临时 TfLiteTensor（翻译 FlatBuffer 中的 tensor 信息）</span></span><br><span class="line">    TfLiteTensor* input  = micro_context-&gt;<span class="built_in">AllocateTempInputTensor</span>(node, <span class="number">0</span>);</span><br><span class="line">    TfLiteTensor* filter = micro_context-&gt;<span class="built_in">AllocateTempInputTensor</span>(node, <span class="number">1</span>);</span><br><span class="line">    TfLiteTensor* output = micro_context-&gt;<span class="built_in">AllocateTempOutputTensor</span>(node, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 用 input/filter/output 的量化参数计算 multiplier、shift、offset</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 归还 temp 空间</span></span><br><span class="line">    micro_context-&gt;<span class="built_in">DeallocateTempTfLiteTensor</span>(output);</span><br><span class="line">    micro_context-&gt;<span class="built_in">DeallocateTempTfLiteTensor</span>(input);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>TfLiteTensor 结构体的内容：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">TfLiteTensor &#123;              ← 整个结构体从 Arena temp 区分配</span><br><span class="line">    dims          → 指向 FlatBuffer 中的维度信息</span><br><span class="line">    type          = kTfLiteInt8</span><br><span class="line">    params.scale  = <span class="number">0.035</span>     ← 从 FlatBuffer 的 QuantizationParameters 解析</span><br><span class="line">    params.zero_point = <span class="number">-128</span></span><br><span class="line">    data.data     → 指向 Arena HEAD 区的实际 tensor 数据</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为什么要翻译？因为 FlatBuffer 中的 tensor 信息是压缩存储的（offset 链表），kernel 代码不能直接读取。需要解压为连续的 C 结构体，kernel 才能直接访问 <code>input-&gt;params.scale</code>。</p>
+<p>为什么是临时的？这个结构体只在 Prepare 期间用一下（读 scale、zero_point、dims 来计算量化参数），用完就归还。推理阶段用的是更轻量的 <code>TfLiteEvalTensor</code>（持久分配在 tail 区），不需要这个完整的 TfLiteTensor。</p>
+<h4 id="GreedyMemoryPlanner——让不重叠的-buffer-共享内存"><a href="#GreedyMemoryPlanner——让不重叠的-buffer-共享内存" class="headerlink" title="GreedyMemoryPlanner——让不重叠的 buffer 共享内存"></a>GreedyMemoryPlanner——让不重叠的 buffer 共享内存</h4><p>如果 head 区为每个 tensor 单独分配空间，17 个需要 Arena 分配的 tensor（输入 + 中间激活 + 输出）需要 17 份大小。但 TFLM 的推理是<strong>顺序执行</strong>的：第 1 个算子用完的中间 tensor，第 5 个算子可以覆盖。</p>
+<p>GreedyMemoryPlanner 解决的问题：<strong>给定 N 个 buffer 的大小和生命周期，计算每个 buffer 在 head 区的偏移量，使总内存最小</strong>。</p>
+<p><strong>输入</strong>：每个 buffer 的四个属性</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">BufferRequirements</span> &#123;</span><br><span class="line">    <span class="type">int</span> size;              <span class="comment">// buffer 大小（字节）</span></span><br><span class="line">    <span class="type">int</span> first_time_used;   <span class="comment">// 第一次使用的算子序号</span></span><br><span class="line">    <span class="type">int</span> last_time_used;    <span class="comment">// 最后一次使用的算子序号</span></span><br><span class="line">    <span class="type">int</span> offline_offset;    <span class="comment">// 离线规划偏移（通常 = -1，表示在线规划）</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>输出</strong>：<code>buffer_offsets_[i]</code> &#x3D; 第 i 个 buffer 在 head 区的起始偏移。</p>
+<p><strong>贪心算法</strong>：</p>
+<p>算法维护一个 <code>candidate_offset</code>（候选位置），从 0 开始。按偏移顺序逐个检查已放置的活跃 buffer，遇到够大的间隙就停下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">1. 按大小降序排列所有 buffer（大块先放，小块填缝）</span><br><span class="line">2. 第一个 buffer 放在偏移 0，记入偏移有序链表</span><br><span class="line">3. 对每个后续 buffer B（按大小降序）：</span><br><span class="line">   candidate_offset = 0</span><br><span class="line">   按偏移顺序遍历已放置的 buffer：</span><br><span class="line">     跳过与 B 时间不重叠的（它们不冲突，不产生约束）</span><br><span class="line">     对每个与 B 时间重叠的已放置 buffer：</span><br><span class="line">       gap = 该 buffer 的起始偏移 - candidate_offset</span><br><span class="line">       如果 gap ≥ B.size → 放在 candidate_offset（找到了间隙）</span><br><span class="line">       否则 → candidate_offset 推进到该 buffer 结尾之后</span><br><span class="line">   遍历结束仍无间隙 → 放在 candidate_offset</span><br></pre></td></tr></table></figure>
+
+<p>为什么按大小降序？大 buffer 难以放入间隙，小 buffer 容易填缝。先放大块再插小块，减少碎片。</p>
+<p><strong>实例</strong>：3 个 buffer 的布局</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Buffer A: size=100, lifetime=[0,1]  (算子0-1使用)</span><br><span class="line">Buffer B: size=80,  lifetime=[2,3]  (算子2-3使用)</span><br><span class="line">Buffer C: size=50,  lifetime=[1,2]  (算子1-2使用)</span><br><span class="line"></span><br><span class="line">排序: A(100) &gt; B(80) &gt; C(50)</span><br><span class="line"></span><br><span class="line">--- 放置 A ---</span><br><span class="line">candidate_offset = 0，无已放置 buffer</span><br><span class="line">A 放在 offset=0，占 [0,100)</span><br><span class="line"></span><br><span class="line">--- 放置 B ---</span><br><span class="line">检查 A: A 的 lifetime [0,1]，B 的 lifetime [2,3]，不重叠 → 跳过</span><br><span class="line">B 放在 candidate_offset=0，占 [0,80)    ← 与 A 共享内存！</span><br><span class="line"></span><br><span class="line">--- 放置 C ---</span><br><span class="line">检查 A: lifetime [0,1] 与 C [1,2] 重叠</span><br><span class="line">  gap = 0，不够放 50 → candidate_offset = 100</span><br><span class="line">检查 B: lifetime [2,3] 与 C [1,2] 重叠</span><br><span class="line">  B.offset(0) &lt; candidate_offset(100)，不影响 → candidate_offset = 100（不变）</span><br><span class="line">C 放在 candidate_offset=100，占 [100,150)</span><br><span class="line"></span><br><span class="line">最终: head 区只需 150 字节（不共享需要 230 字节，节省 35%）</span><br></pre></td></tr></table></figure>
+
+<h4 id="MicroAllocator——协调员"><a href="#MicroAllocator——协调员" class="headerlink" title="MicroAllocator——协调员"></a>MicroAllocator——协调员</h4><p>MicroAllocator 是上层接口。它持有一个 <code>SingleArenaBufferAllocator</code> 指针和一个 <code>MicroMemoryPlanner</code> 指针，对上提供语义化的分配 API，对下调用底层分配和规划。</p>
+<p><strong>核心数据成员</strong>：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MicroAllocator</span> &#123;</span><br><span class="line">    INonPersistentBufferAllocator* non_persistent_buffer_allocator_;  <span class="comment">// → SingleArenaBuf</span></span><br><span class="line">    IPersistentBufferAllocator* persistent_buffer_allocator_;         <span class="comment">// → SingleArenaBuf（同一个对象）</span></span><br><span class="line">    MicroMemoryPlanner* memory_planner_;                              <span class="comment">// → GreedyMemPlanner</span></span><br><span class="line">    <span class="type">bool</span> model_is_allocating_;</span><br><span class="line">    <span class="type">size_t</span> scratch_buffer_request_count_;</span><br><span class="line">    <span class="type">uint8_t</span>* scratch_buffer_head_;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>注意：<code>non_persistent_buffer_allocator_</code> 和 <code>persistent_buffer_allocator_</code> 都指向同一个 <code>SingleArenaBufferAllocator</code> 对象。这是因为 SingleArenaBufferAllocator 同时继承了两个接口——用不同基类指针访问不同功能。</p>
+<p><strong>MicroAllocator 提供的关键 API</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>用途</th>
+<th>调用时机</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>StartModelAllocation</td>
+<td>解析 FlatBuffer，分配 TfLiteEvalTensor 和 NodeAndRegistration 数组</td>
+<td>AllocateTensors() 开始</td>
+</tr>
+<tr>
+<td>RequestScratchBufferInArena</td>
+<td>记录算子的 scratch buffer 需求</td>
+<td>算子 prepare() 中</td>
+</tr>
+<tr>
+<td>FinishModelAllocation</td>
+<td>运行规划器，提交内存方案</td>
+<td>AllocateTensors() 结束</td>
+</tr>
+<tr>
+<td>AllocatePersistentBuffer</td>
+<td>分配持久内存（从 tail）</td>
+<td>任何阶段</td>
+</tr>
+<tr>
+<td>AllocateTempTfLiteTensor</td>
+<td>分配临时 tensor（从 temp）</td>
+<td>算子 prepare() 中</td>
+</tr>
+</tbody></table>
+<h4 id="自举过程详解"><a href="#自举过程详解" class="headerlink" title="自举过程详解"></a>自举过程详解</h4><p>理解了三个组件各自的职责，回头看 <code>MicroAllocator::Create()</code> 的完整链路：</p>
+<p><strong>Step 1: 对齐 Arena</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint8_t</span>* aligned_arena = <span class="built_in">AlignPointerUp</span>(tensor_arena, <span class="number">16</span>);  <span class="comment">// 16 字节对齐（SIMD 要求）</span></span><br><span class="line"><span class="type">size_t</span> aligned_arena_size = tensor_arena + arena_size - aligned_arena;</span><br></pre></td></tr></table></figure>
+
+<p>如果 <code>tensor_arena</code> 本身不是 16 字节对齐的，会损失几个字节。</p>
+<p><strong>Step 2: 创建 SingleArenaBufferAllocator（自举）</strong></p>
+<p>这是最巧妙的一步。<code>Create()</code> 需要在 Arena 里创建自己：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">SingleArenaBufferAllocator::<span class="built_in">Create</span>(buffer_head, buffer_size) &#123;</span><br><span class="line">    <span class="comment">// 1. 在栈上创建临时对象，用于计算 tail 位置</span></span><br><span class="line">    <span class="function">SingleArenaBufferAllocator <span class="title">tmp</span><span class="params">(buffer_head, buffer_size)</span></span>;</span><br><span class="line">    <span class="comment">//    tmp 的状态: head_=buffer_head, tail_=buffer_head+buffer_size</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 从 tmp 的 tail 向低地址分配 sizeof(SingleArenaBufferAllocator) 字节</span></span><br><span class="line">    <span class="type">uint8_t</span>* allocator_buffer = tmp.<span class="built_in">AllocatePersistentBuffer</span>(</span><br><span class="line">        <span class="built_in">sizeof</span>(SingleArenaBufferAllocator), <span class="built_in">alignof</span>(SingleArenaBufferAllocator));</span><br><span class="line">    <span class="comment">//    现在 tmp.tail_ 向低地址移动了 ~40 字节</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 在分配的位置上用 placement new 构造真正的对象</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">new</span> (allocator_buffer) <span class="built_in">SingleArenaBufferAllocator</span>(tmp);</span><br><span class="line">    <span class="comment">//    拷贝构造：新对象的 head_、tail_ 与 tmp 相同</span></span><br><span class="line">    <span class="comment">//    tmp 在函数返回后销毁（栈变量），但数据已拷贝到 Arena 里了</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为什么用临时对象？因为真正的对象还没构造，不能调用自己的方法。用栈上的临时对象做一次”预演”，计算出 tail 的正确位置，然后在 Arena 中构造真正的对象。</p>
+<p><strong>Step 3: 创建 GreedyMemoryPlanner</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint8_t</span>* planner_buffer = memory_allocator-&gt;<span class="built_in">AllocatePersistentBuffer</span>(</span><br><span class="line">    <span class="built_in">sizeof</span>(GreedyMemoryPlanner), <span class="built_in">alignof</span>(GreedyMemoryPlanner));</span><br><span class="line">MicroMemoryPlanner* memory_planner = <span class="built_in">new</span> (planner_buffer) <span class="built_in">GreedyMemoryPlanner</span>();</span><br></pre></td></tr></table></figure>
+
+<p>从 tail 继续向低地址分配，placement new 构造。此时 GreedyMemoryPlanner 是空壳——还没接收任何 buffer 信息。</p>
+<p><strong>Step 4: 创建 MicroAllocator 自身</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint8_t</span>* allocator_buffer = memory_allocator-&gt;<span class="built_in">AllocatePersistentBuffer</span>(</span><br><span class="line">    <span class="built_in">sizeof</span>(MicroAllocator), <span class="built_in">alignof</span>(MicroAllocator));</span><br><span class="line">MicroAllocator* allocator = <span class="built_in">new</span> (allocator_buffer)</span><br><span class="line">    <span class="built_in">MicroAllocator</span>(memory_allocator, memory_allocator, memory_planner);</span><br></pre></td></tr></table></figure>
+
+<p>同样从 tail 分配，placement new 构造。</p>
+<p><strong>完成后 Arena 的状态</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">← 低地址                                                  高地址 →</span><br><span class="line">┌──────────────────────┬────────────────────────────────────────┐</span><br><span class="line">│  空闲空间             │         TAIL 区 (~1KB)                 │</span><br><span class="line">│  head_ = temp_       │  MicroAllocator | GreedyPlanner | SAB  │</span><br><span class="line">│  待 AllocateTensors  │  ← tail_                               │</span><br><span class="line">└──────────────────────┴────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p>三个管理对象占用 Arena 的尾部。头部全是空闲空间，等待 AllocateTensors() 分配 tensor 数据。</p>
+<h3 id="1-4-步骤④⑥——Graph-和-MicroContext"><a href="#1-4-步骤④⑥——Graph-和-MicroContext" class="headerlink" title="1.4 步骤④⑥——Graph 和 MicroContext"></a>1.4 步骤④⑥——Graph 和 MicroContext</h3><p><strong>MicroInterpreterGraph</strong>——图执行引擎：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">MicroInterpreterGraph::<span class="built_in">MicroInterpreterGraph</span>(</span><br><span class="line">    TfLiteContext* context, <span class="type">const</span> Model* model,</span><br><span class="line">    MicroAllocator* allocator, ...)</span><br><span class="line">    : <span class="built_in">context_</span>(context),</span><br><span class="line">      <span class="built_in">model_</span>(model),</span><br><span class="line">      <span class="built_in">allocator_</span>(allocator),</span><br><span class="line">      <span class="built_in">current_subgraph_index_</span>(<span class="number">0</span>),</span><br><span class="line">      <span class="built_in">current_operator_index_</span>(<span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (model != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        subgraphs_ = model-&gt;<span class="built_in">subgraphs</span>();  <span class="comment">// 直接指向 FlatBuffer 中的子图数组（零拷贝）</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>只是保存指针。<code>subgraphs_</code> 直接指向 FlatBuffer 中的数据。</p>
+<p><strong>MicroInterpreterContext</strong>——kernel 与框架之间的桥梁：</p>
+<p>它持有一个<strong>状态机</strong>（<code>InterpreterState</code>），随推理流程推进：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kInit → kPrepare → kMemoryPlanning → kInvoke</span><br></pre></td></tr></table></figure>
+
+<p>状态机控制每个阶段允许哪些 API 调用。比如 <code>kInit</code>&#x2F;<code>kPrepare</code> 阶段可以分配内存，<code>kInvoke</code> 阶段只能读取 tensor 和 scratch buffer。这防止了 kernel 在错误阶段做不该做的事（比如 invoke 期间分配内存）。</p>
+<h3 id="1-5-步骤⑦——Init-设置-TfLiteContext-C-回调表"><a href="#1-5-步骤⑦——Init-设置-TfLiteContext-C-回调表" class="headerlink" title="1.5 步骤⑦——Init() 设置 TfLiteContext C 回调表"></a>1.5 步骤⑦——Init() 设置 TfLiteContext C 回调表</h3><p><strong>为什么必须是 C 回调？</strong> kernel 代码（Conv2D、MaxPool 等）需要申请内存、读取 tensor，但它们只认识 <code>TfLiteContext*</code>——一个 C 结构体。同一套 kernel 代码要跑在 Android（TFLite）和 STM32（TFLM）上，两者的解释器实现完全不同。C 接口是它们之间的<strong>稳定契约</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Kernel 代码（跨平台通用）:</span><br><span class="line">  context-&gt;AllocatePersistentBuffer(context, size)</span><br><span class="line">       │</span><br><span class="line">       ▼  C 函数指针调用</span><br><span class="line">  TfLiteContext.AllocatePersistentBuffer ── 指向哪个函数？</span><br><span class="line">       │</span><br><span class="line">       ├─ Android TFLite → 指向 TFLite 的 C++ 实现（有 malloc）</span><br><span class="line">       └─ STM32 TFLM    → 指向 TFLM 的 C++ 实现（从 Arena tail 分配）</span><br></pre></td></tr></table></figure>
+
+<p><code>Init()</code> 的工作就是把 7 个函数指针填上：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">MicroInterpreter::Init</span><span class="params">(MicroProfilerInterface* profiler)</span> </span>&#123;</span><br><span class="line">    micro_context_.<span class="built_in">SetInterpreterState</span>(InterpreterState::kInit);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// context_.impl_ 指向 micro_context_</span></span><br><span class="line">    context_.impl_ = <span class="built_in">static_cast</span>&lt;<span class="type">void</span>*&gt;(&amp;micro_context_);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注册 C 风格回调函数（kernel 通过 context-&gt;xxx 调用）</span></span><br><span class="line">    context_.ReportError = MicroContextReportOpError;</span><br><span class="line">    context_.GetTensor = MicroContextGetTensor;</span><br><span class="line">    context_.GetEvalTensor = MicroContextGetEvalTensor;</span><br><span class="line">    context_.RequestScratchBufferInArena = MicroContextRequestScratchBufferInArena;</span><br><span class="line">    context_.GetExternalContext = MicroContextGetExternalContext;</span><br><span class="line">    context_.AllocatePersistentBuffer = MicroContextAllocatePersistentBuffer;</span><br><span class="line">    context_.GetScratchBuffer = MicroContextGetScratchBuffer;</span><br><span class="line"></span><br><span class="line">    initialization_status_ = kTfLiteOk;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>桥接层只做一件事</strong>——把 C 函数指针调用转发到 C++ 对象。<code>context_.impl_</code> 是那座桥，指向 <code>MicroInterpreterContext</code>（C++ 对象）。</p>
+<p>以 <code>AllocatePersistentBuffer</code> 为例，三步拆解：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">步骤 1: Init() 中存入 C++ 对象地址</span><br><span class="line">  context_.impl_ = static_cast&lt;void*&gt;(&amp;micro_context_);</span><br><span class="line">  // MicroInterpreterContext* → void*，抹掉类型信息</span><br><span class="line"></span><br><span class="line">步骤 2: Kernel 通过 C 函数指针调用</span><br><span class="line">  context-&gt;AllocatePersistentBuffer(context, sizeof(OpData))</span><br><span class="line"></span><br><span class="line">步骤 3: 桥接函数恢复类型，转发到 C++ 方法</span><br><span class="line">  void* MicroContextAllocatePersistentBuffer(TfLiteContext* ctx, size_t bytes) &#123;</span><br><span class="line">      return GetMicroContext(ctx)-&gt;AllocatePersistentBuffer(bytes);</span><br><span class="line">      // GetMicroContext(ctx) 展开为：</span><br><span class="line">      //   reinterpret_cast&lt;MicroContext*&gt;(ctx-&gt;impl_)</span><br><span class="line">      //   从 void* 恢复为 MicroContext*，然后调 C++ 方法</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>所有 7 个回调都遵循同一模式：C 函数指针 → 从 <code>impl_</code> 恢复 C++ 对象 → 调用 C++ 方法。这是实现多态的最轻量方案——不需要虚函数表，不需要继承体系，一个指针 + 一个静态函数就够了。</p>
+<p><strong>完整调用链——从用户代码到 Arena 分配</strong></p>
+<p>以 CONV_2D 算子申请 op_data 为例，从 <code>ai_engine.cpp</code> 入口追踪完整路径：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">ai_engine.cpp                          用户代码</span><br><span class="line">  └─ MicroInterpreter(model, resolver, tensor_arena, size)</span><br><span class="line">       ├─ micro_context_(&amp;allocator_, ...)              创建 MicroContext C++ 对象</span><br><span class="line">       └─ Init()</span><br><span class="line">            ├─ context_.impl_ = &amp;micro_context_          把 C++ 对象指针藏进 C 结构体</span><br><span class="line">            └─ context_.AllocatePersistentBuffer         = &amp;桥接函数</span><br><span class="line"></span><br><span class="line">之后，解释器调用 Conv 算子的 Init:</span><br><span class="line">  conv_common.cc: ConvInit(context, ...)</span><br><span class="line">    └─ context-&gt;AllocatePersistentBuffer(context, sizeof(OpDataConv))</span><br><span class="line">         │</span><br><span class="line">         │  ① 通过函数指针间接调用</span><br><span class="line">         ▼</span><br><span class="line">    MicroContextAllocatePersistentBuffer(ctx, bytes)     桥接函数（C 接口）</span><br><span class="line">         │</span><br><span class="line">         │  ② GetMicroContext(ctx) = reinterpret_cast&lt;MicroContext*&gt;(ctx-&gt;impl_)</span><br><span class="line">         ▼</span><br><span class="line">    MicroContext::AllocatePersistentBuffer(bytes)        C++ 方法</span><br><span class="line">         │</span><br><span class="line">         │  ③ 转发到分配器</span><br><span class="line">         ▼</span><br><span class="line">    MicroAllocator::AllocatePersistentBuffer(bytes)</span><br><span class="line">         │</span><br><span class="line">         │  ④ 调用底层 Arena 分配</span><br><span class="line">         ▼</span><br><span class="line">    SingleArenaBufferAllocator::AllocatePersistentBuffer(bytes)</span><br><span class="line">         │</span><br><span class="line">         │  ⑤ 从 Arena tail 区分配</span><br><span class="line">         ▼</span><br><span class="line">    tail_ = AlignPointerDown(tail_ - size, alignment)   你的 tensor_arena[] 里的空间</span><br></pre></td></tr></table></figure>
+
+<p>kernel 代码只知道第 1 步的 C 接口，不知道底层是 malloc（Android）还是 Arena tail（STM32）。</p>
+<h3 id="1-6-构造函数完成后的内存全景"><a href="#1-6-构造函数完成后的内存全景" class="headerlink" title="1.6 构造函数完成后的内存全景"></a>1.6 构造函数完成后的内存全景</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────┐</span><br><span class="line">│           Arena (1MB)                       │</span><br><span class="line">│  ┌──────────────────────┬────────────────┐  │</span><br><span class="line">│  │  空闲空间             │  管理对象 (~1KB)│ │</span><br><span class="line">│  │  head_ = temp_       │  MicroAllocator│  │</span><br><span class="line">│  │  待 AllocateTensors  │  GreedyPlanner │  │</span><br><span class="line">│  │                      │  SingleArenaBuf│  │</span><br><span class="line">│  └──────────────────────┴────────────────┘  │</span><br><span class="line">└─────────────────────────────────────────────┘</span><br><span class="line"></span><br><span class="line">栈/静态区:</span><br><span class="line">  MicroMutableOpResolver&lt;20&gt;   registrations_[20]</span><br><span class="line">  MicroInterpreter              model_, context_, graph_</span><br><span class="line">  TfLiteContext                 7 个函数指针</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-7-完整流程图"><a href="#1-7-完整流程图" class="headerlink" title="1.7 完整流程图"></a>1.7 完整流程图</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">MicroInterpreter(model, resolver, tensor_arena, arena_size)</span><br><span class="line">  │</span><br><span class="line">  ├─ ① model_ = model                     (保存指针)</span><br><span class="line">  ├─ ② op_resolver_ = resolver             (保存引用)</span><br><span class="line">  │</span><br><span class="line">  ├─ ③ MicroAllocator::Create(arena, size)</span><br><span class="line">  │     ├─ SingleArenaBufferAllocator::Create()</span><br><span class="line">  │     │     └─ 在 arena tail 分配自身 (~40字节)</span><br><span class="line">  │     ├─ CreateMemoryPlanner(kGreedy)</span><br><span class="line">  │     │     └─ 在 arena tail 分配 GreedyMemoryPlanner (~20字节)</span><br><span class="line">  │     └─ 在 arena tail 分配 MicroAllocator (~60字节)</span><br><span class="line">  │</span><br><span class="line">  ├─ ④ MicroInterpreterGraph(&amp;context_, model, &amp;allocator_)</span><br><span class="line">  │     └─ 保存指针，subgraphs_ 指向 FlatBuffer</span><br><span class="line">  │</span><br><span class="line">  ├─ ⑤ tensors_allocated_ = false</span><br><span class="line">  ├─ ⑥ micro_context_(&amp;allocator_, model_, &amp;graph_)</span><br><span class="line">  │</span><br><span class="line">  └─ ⑦ Init(profiler)</span><br><span class="line">        ├─ state_ = kInit</span><br><span class="line">        ├─ context_.impl_ = &amp;micro_context_</span><br><span class="line">        ├─ context_.AllocatePersistentBuffer = 桥接函数</span><br><span class="line">        ├─ context_.GetScratchBuffer = 桥接函数</span><br><span class="line">        ├─ context_.RequestScratchBufferInArena = 桥接函数</span><br><span class="line">        ├─ context_.ReportError = 桥接函数</span><br><span class="line">        ├─ context_.GetTensor = 桥接函数</span><br><span class="line">        ├─ context_.GetEvalTensor = 桥接函数</span><br><span class="line">        └─ initialization_status_ = kTfLiteOk</span><br><span class="line"></span><br><span class="line">此时：模型指针就绪，分配器就绪，回调表就绪</span><br><span class="line">但还没有解析 FlatBuffer，还没有分配 tensor 内存</span><br><span class="line">下一步是 AllocateTensors()</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>feng xun
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="http://fengxun2017.github.io/2026/06/15/tfite-conv2d/" title="TFLite Micro 深度剖析（四）：解释器创建——Arena 内存体系的自举">http://fengxun2017.github.io/2026/06/15/tfite-conv2d/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/05/22/tfite-operator_registration/" rel="prev" title="TFLite Micro 深度剖析（二）：算子注册——从类型编号到计算函数">
+                  <i class="fa fa-chevron-left"></i> TFLite Micro 深度剖析（二）：算子注册——从类型编号到计算函数
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">feng xun</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">797k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">16:37</span>
+  </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.7/mermaid.min.js","integrity":"sha256-G58AID1YoX5YaEtWfXSI0VLrZ6N4kvNvwg0BI8zUFxE="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
