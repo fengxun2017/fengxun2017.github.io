@@ -1,5 +1,5 @@
-http://fengxun2017.github.io/2026/06/15/tfite-conv2d/
-http://fengxun2017.github.io/2026/05/22/tfite-operator_registration/
-http://fengxun2017.github.io/2026/05/18/tfite-interpreter-creation/
-http://fengxun2017.github.io/2026/05/18/tfite-load-model/
+http://fengxun2017.github.io/2026/06/15/tfite-interpreter-creation/
+http://fengxun2017.github.io/2026/06/07/tflite-conv2d/
+http://fengxun2017.github.io/2026/05/22/tflite-operator_registration/
+http://fengxun2017.github.io/2026/05/18/tflite-load-model/
 http://fengxun2017.github.io/2026/04/27/zephyr-boot-progress/
